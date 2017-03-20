@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\engine">
+      <UniqueIdentifier>{759f5f6b-ca44-4a45-953d-00f937d74367}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\program_states">
+      <UniqueIdentifier>{09ef689b-a76c-43e9-abdf-5c84559639f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\objects">
+      <UniqueIdentifier>{864b6d70-9340-44f4-822e-eb5015561576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine">
+      <UniqueIdentifier>{45e4bf7a-abb4-46f3-b4b3-bdc7a987547d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\objects">
+      <UniqueIdentifier>{1d72c0c2-c9ef-4322-8348-07f44b347e2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\program_states">
+      <UniqueIdentifier>{bbcd745b-45e8-4088-a907-609341725506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\layers">
+      <UniqueIdentifier>{4ff60e3e-9a9c-4a8e-97a5-1d7036922548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\loaders">
+      <UniqueIdentifier>{e7c6f43f-0599-4967-9180-6789f5c5dd13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\math">
+      <UniqueIdentifier>{002dfdeb-0bdf-4861-b8f5-4535124834a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\math">
+      <UniqueIdentifier>{e3360072-e8a2-4fc2-8c92-a892aa4c1ccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\text">
+      <UniqueIdentifier>{81304e62-6dc9-46f8-bf35-d19921d4aaed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\text">
+      <UniqueIdentifier>{c2907483-f81d-44ce-a67e-70e97ab982b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\assets">
+      <UniqueIdentifier>{8b4321e0-7ecd-4b6b-b03b-a620c7d6edc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\assets">
+      <UniqueIdentifier>{a4963118-f557-4cfb-b6c7-448392237fc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\program_states\game">
+      <UniqueIdentifier>{1e464119-86aa-4036-b356-516c4e2696b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\program_states\menu">
+      <UniqueIdentifier>{0f727483-8401-4c3c-b6ab-de73b109f782}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\program_states\title">
+      <UniqueIdentifier>{2d414d96-0e25-4eef-a3ac-49baee91b94e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\program_states\game">
+      <UniqueIdentifier>{81d187ff-3e88-4a8a-a899-7249a4983e4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\program_states\menu">
+      <UniqueIdentifier>{e34c6494-0e9f-492d-8108-f4ecd3752780}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\program_states\title">
+      <UniqueIdentifier>{5622634a-cb2e-4bb4-9ed8-5072e689cfe5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\debug">
+      <UniqueIdentifier>{57d91cfe-88e9-4efb-9f2b-e177f625f9e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\debug">
+      <UniqueIdentifier>{9f3a3bd1-ac1a-4700-9c2f-9a60729a96e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\layers">
+      <UniqueIdentifier>{2c57cccc-6e76-4ff3-a63b-9babb4317326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\memory">
+      <UniqueIdentifier>{adecbc3b-4b48-4687-840a-bcd619857542}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\memory">
+      <UniqueIdentifier>{765fceb0-8c79-430b-8a46-92c3b7062146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\clock">
+      <UniqueIdentifier>{7bb4b6f1-fc60-4cee-bb4b-cd5420a0378c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\clock">
+      <UniqueIdentifier>{b4c044a5-80d1-4907-829f-94dff721c2e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\camera">
+      <UniqueIdentifier>{a6aa86b2-c69a-46d0-9df0-9216893c6088}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\camera">
+      <UniqueIdentifier>{b8d94832-50c0-4f04-9069-5069fa2b8acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\entity">
+      <UniqueIdentifier>{e1b7cb9d-e70a-4f69-abdc-75958c246e76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\entity">
+      <UniqueIdentifier>{9d408852-5fd1-47b0-8ca5-3a5a696c1d90}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="box.cpp">
+      <Filter>Source Files\engine\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="rectangle.cpp">
+      <Filter>Source Files\engine\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sphere.cpp">
+      <Filter>Source Files\engine\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="linear_algebra.cpp">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="plane2d.cpp">
+      <Filter>Source Files\engine\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="asset_system.cpp">
+      <Filter>Source Files\engine\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Source Files\engine\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="math.cpp">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="line.cpp">
+      <Filter>Source Files\engine\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="point.cpp">
+      <Filter>Source Files\engine\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="game_state.cpp">
+      <Filter>Source Files\engine\program_states\game</Filter>
+    </ClCompile>
+    <ClCompile Include="menu_state.cpp">
+      <Filter>Source Files\engine\program_states\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="title_state.cpp">
+      <Filter>Source Files\engine\program_states\title</Filter>
+    </ClCompile>
+    <ClCompile Include="world_system.cpp">
+      <Filter>Source Files\engine\program_states\game</Filter>
+    </ClCompile>
+    <ClCompile Include="user_interface.cpp">
+      <Filter>Source Files\engine\program_states\game</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_system.cpp">
+      <Filter>Source Files\engine\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="heightmap.cpp">
+      <Filter>Source Files\engine\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="text_system.cpp">
+      <Filter>Source Files\engine\text</Filter>
+    </ClCompile>
+    <ClCompile Include="win32_layer.cpp">
+      <Filter>Source Files\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="opengl_layer.cpp">
+      <Filter>Source Files\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="memory_management.cpp">
+      <Filter>Source Files\engine\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="clock.cpp">
+      <Filter>Source Files\engine\clock</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files\engine\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="game_loop.cpp">
+      <Filter>Source Files\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="collision_system.cpp">
+      <Filter>Source Files\engine\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="physics_system.cpp">
+      <Filter>Source Files\engine\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="entity_system.cpp">
+      <Filter>Source Files\engine\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="object_system.cpp">
+      <Filter>Source Files\engine\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="world_objects.cpp">
+      <Filter>Source Files\engine\program_states\game</Filter>
+    </ClCompile>
+    <ClCompile Include="world_terrain.cpp">
+      <Filter>Source Files\engine\program_states\game</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Source Files\engine\entity</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="box.h">
+      <Filter>Header Files\engine\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="plane2d.h">
+      <Filter>Header Files\engine\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="rectangle.h">
+      <Filter>Header Files\engine\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>Header Files\engine\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="platform_layer.h">
+      <Filter>Header Files\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="render_layer.h">
+      <Filter>Header Files\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="bmp.h">
+      <Filter>Header Files\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="linear_algebra.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="asset_system.h">
+      <Filter>Header Files\engine\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Header Files\engine\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="line.h">
+      <Filter>Header Files\engine\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="point.h">
+      <Filter>Header Files\engine\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="title_state.h">
+      <Filter>Header Files\engine\program_states\title</Filter>
+    </ClInclude>
+    <ClInclude Include="game_state.h">
+      <Filter>Header Files\engine\program_states\game</Filter>
+    </ClInclude>
+    <ClInclude Include="menu_state.h">
+      <Filter>Header Files\engine\program_states\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="world_system.h">
+      <Filter>Header Files\engine\program_states\game</Filter>
+    </ClInclude>
+    <ClInclude Include="user_interface.h">
+      <Filter>Header Files\engine\program_states\game</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_system.h">
+      <Filter>Header Files\engine\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="opengl.h">
+      <Filter>Header Files\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="heightmap.h">
+      <Filter>Header Files\engine\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="png.h">
+      <Filter>Header Files\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="text_system.h">
+      <Filter>Header Files\engine\text</Filter>
+    </ClInclude>
+    <ClInclude Include="memory_management.h">
+      <Filter>Header Files\engine\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="clock.h">
+      <Filter>Header Files\engine\clock</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Header Files\engine\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="game_loop.h">
+      <Filter>Header Files\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="state_system.h">
+      <Filter>Header Files\engine\program_states</Filter>
+    </ClInclude>
+    <ClInclude Include="collision_system.h">
+      <Filter>Header Files\engine\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="object_system.h">
+      <Filter>Header Files\engine\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_system.h">
+      <Filter>Header Files\engine\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="physics_system.h">
+      <Filter>Header Files\engine\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="world_objects.h">
+      <Filter>Header Files\engine\program_states\game</Filter>
+    </ClInclude>
+    <ClInclude Include="world_terrain.h">
+      <Filter>Header Files\engine\program_states\game</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Header Files\engine\entity</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
