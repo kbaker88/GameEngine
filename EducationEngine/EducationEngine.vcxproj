@@ -178,6 +178,7 @@
     <ClInclude Include="point.h" />
     <ClInclude Include="rectangle.h" />
     <ClInclude Include="render_layer.h" />
+    <ClInclude Include="shaders.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="state_system.h" />
     <ClInclude Include="text_system.h" />

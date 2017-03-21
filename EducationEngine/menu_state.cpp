@@ -1,62 +1,5 @@
 #include "menu_state.h"
 
-const char* VertexShaderSource1 = "#version 430 core\n"
-"layout (location = 0) in vec3 VertexPosition;\n"
-"layout (location = 1) in vec3 VertexColor;\n"
-"layout (location = 2) in vec2 TextureCoord;\n"
-"out vec3 Color;\n"
-"out vec2 TexCoord;\n"
-"uniform mat4 model;\n"
-"uniform mat4 view;\n"
-"uniform mat4 projection;\n"
-"void main()\n"
-"{\n"
-"Color = VertexColor;\n"
-"gl_Position = projection * view * model * vec4(VertexPosition, 1.0);\n"
-"TexCoord = TextureCoord;\n"
-"}\0";
-
-const char* FragmentShaderSource1 = "#version 430 core\n"
-"in vec3 Color;\n"
-"in vec2 TexCoord;\n"
-"out vec4 FragColor;\n"
-"uniform sampler2D myTexture;\n"
-"void main()\n"
-"{\n"
-//"FragColor = vec4(Color, 1.0);\n"
-"FragColor = texture2D(myTexture, TexCoord);\n" //* vec4(Color, 1.0);\n"
-"}\n\0";
-
-////////////////////FOR TEXT ///////////////////////
-
-const char* TextVertexShaderSource1 = "#version 430 core\n"
-"layout (location = 0) in vec3 VertexPosition;\n"
-"layout (location = 1) in vec3 VertexColor;\n"
-"layout (location = 2) in vec2 TextureCoord;\n"
-"out vec3 Color;\n"
-"out vec2 TexCoord;\n"
-"uniform mat4 model;\n"
-"uniform mat4 view;\n"
-"uniform mat4 projection;\n"
-"void main()\n"
-"{\n"
-"Color = VertexColor;\n"
-"gl_Position = projection * view * model * vec4(VertexPosition, 1.0);\n"
-"TexCoord = TextureCoord;\n"
-"}\0";
-
-const char* TextFragmentShaderSource1 = "#version 430 core\n"
-"in vec3 Color;\n"
-"in vec2 TexCoord;\n"
-"out vec4 FragColor;\n"
-"uniform sampler2D myTexture;\n"
-"void main()\n"
-"{\n"
-"if (texture2D(myTexture, TexCoord).rgb == vec3(0.0,0.0,0.0))\n"
-"discard;\n"
-"FragColor = texture2D(myTexture, TexCoord) * vec4(0.0, 1.0, 0.0, 1.0);\n" //* vec4(Color, 1.0);\n"
-"}\0";
-
 void Menu_Initialize(ProgramState* State)
 {
 	Entity_CreateBlock(State->EntityBlockNum, 32);
@@ -72,9 +15,9 @@ void Menu_Initialize(ProgramState* State)
 
 
 	State->ShaderHandles[0] = 
-		Render_CompileShaders(VertexShaderSource1, FragmentShaderSource1);
+		Render_CompileShaders(VertexShaderSource, FragmentShaderSource);
 	State->ShaderHandles[1] = 
-		Render_CompileShaders(TextVertexShaderSource1, TextFragmentShaderSource1);
+		Render_CompileShaders(TextVertexShaderSource, TextFragmentShaderSource);
 
 	float ButtonWidth = 160.0f;
 	float ButtonHeight = 40.0f;

@@ -1,129 +1,5 @@
 #include "game_state.h"
 
-static const char* VertShaderForTextureAndLight = "#version 430 core\n"
-"layout (location = 0) in vec3 VertexPosition;\n"
-"layout (location = 1) in vec3 VertexColor;\n"
-"layout (location = 2) in vec3 NormalPosition;\n"
-"layout (location = 3) in vec2 TextureCoord;\n"
-
-"out vec3 Color;\n"
-"out vec3 FragPos;\n"
-"out vec3 Normal;\n"
-"out vec3 LightPos;\n"
-"out vec2 TexCoord;\n"
-
-"uniform vec3 lightPos;\n"
-"uniform mat4 model;\n"
-"uniform mat4 view;\n"
-"uniform mat4 projection;\n"
-
-"void main()\n"
-"{\n"
-"Color = VertexColor;\n"
-"TexCoord = TextureCoord;\n"
-"gl_Position = projection * view * model * vec4(VertexPosition, 1.0);\n"
-"FragPos = vec3(model * vec4(VertexPosition, 1.0f));\n"
-"Normal = mat3(transpose(inverse(view * model))) * NormalPosition;\n"
-"LightPos = vec3(view * vec4(lightPos, 1.0));\n"
-"}\0";
-
-static const char* FragShaderForTextureAndLight = "#version 430 core\n"
-"in vec3 FragPos;\n"
-"in vec3 Normal;\n"
-"in vec3 LightPos;\n"
-"in vec3 Color;\n"
-"in vec2 TexCoord;\n"
-
-"out vec4 color;\n"
-
-"uniform vec3 lightColor;\n"
-"uniform sampler2D myTexture;\n"
-"uniform vec3 viewPos;\n"
-"uniform bool isTextured;\n"
-
-"void main()\n"
-"{\n"
-"float ambientStrength = 0.5f;\n" // Ambient Light
-"vec3 ambient = ambientStrength * lightColor;\n" // Ambient Light
-
-"vec3 norm = normalize(Normal);\n" // Diffuse Light
-"vec3 lightDir = normalize(LightPos - FragPos);\n" // Diffuse Light
-"float diff = max(dot(norm, lightDir), 0.0);\n" // Diffuse Light
-"vec3 diffuse = diff * lightColor;\n" // Diffuse Light
-
-"float specularStrength = 1.5f;\n" // Specular Light
-"vec3 viewDir = normalize(-FragPos);\n" // Specular Light
-"vec3 reflectDir = reflect(-lightDir, norm);\n" // Specular Light
-"float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);\n" // Specular Light
-"vec3 specular = specularStrength * spec * lightColor;\n" // Specular Light
-"vec3 result = (ambient + diffuse + specular) * Color;\n"
-
-"if (isTextured)\n"
-"{\n"
-"color = vec4(result, 1.0f) * texture2D(myTexture, TexCoord);\n"
-"}\n"
-"else\n"
-"{\n"
-"color = vec4(result, 1.0f);\n" //* texture2D(myTexture, TexCoord);\n" //vec4(result, 1.0f);\n"
-"}\n"
-"}\0";
-
-////////////////////////////////////////
-
-static const char* TestVertexShader = "#version 430 core\n"
-"layout (location = 0) in vec3 VertexPosition;\n"
-"layout (location = 1) in vec3 VertexColor;\n"
-
-"out vec3 Color;\n"
-"uniform mat4 model;\n"
-"uniform mat4 view;\n"
-"uniform mat4 projection;\n"
-
-"void main()\n"
-"{\n"
-"Color = VertexColor;\n"
-"gl_Position = projection * view * model * vec4(VertexPosition, 1.0);\n"
-"}\0";
-
-static const char* TestFragShader = "#version 430 core\n"
-"in vec3 Color;\n"
-
-"out vec4 color;\n"
-
-"void main()\n"
-"{\n"
-"color = vec4(Color, 1.0f);\n"
-
-"}\n\0";
-
-static const char* TextVertexShaderSource = "#version 430 core\n"
-	"layout (location = 0) in vec3 VertexPosition;\n"
-	"layout (location = 1) in vec3 VertexColor;\n"
-	"layout (location = 2) in vec2 TextureCoord;\n"
-	"out vec3 Color;\n"
-	"out vec2 TexCoord;\n"
-	"uniform mat4 model;\n"
-	"uniform mat4 view;\n"
-	"uniform mat4 projection;\n"
-	"void main()\n"
-	"{\n"
-	"Color = VertexColor;\n"
-	"gl_Position = projection * view * model * vec4(VertexPosition, 1.0);\n"
-	"TexCoord = TextureCoord;\n"
-	"}\0";
-
-static const char* TextFragmentShaderSource = "#version 430 core\n"
-	"in vec3 Color;\n"
-	"in vec2 TexCoord;\n"
-	"out vec4 FragColor;\n"
-	"uniform sampler2D myTexture;\n"
-	"void main()\n"
-	"{\n"
-	"if (texture2D(myTexture, TexCoord).rgb == vec3(0.0,0.0,0.0))\n"
-	"discard;\n"
-	"FragColor = texture2D(myTexture, TexCoord) * vec4(0.0, 1.0, 0.0, 1.0);\n" //* vec4(Color, 1.0);\n"
-	"}\0";
-
 void Game_Initialize(ProgramState* State)
 {
 	Entity_CreateBlock(State->EntityBlockNum, 256);
@@ -134,16 +10,16 @@ void Game_Initialize(ProgramState* State)
 	State->ShaderHandles[1] = Render_CompileShaders(TestVertexShader,
 		TestFragShader);
 
-	if (!GetPlayer(0)->InitPlayer(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, v3(0.0f, 6.0f, 20.0f)))
-	{
-		Platform_TemporaryError("\nGetPlayer Problem\n");
-	}
+	//NOTE: This represents player for now
+	Object_Create(new Box, State->EntityBlockNum, 0, 0.25f, 0.25f, 0.25f);
+	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, v3(0.0f, 6.0f, 20.0f));
+	Entity_CreatePlayer(State->EntityBlockNum, 0, new Player);
+
 	State->CameraArray[0].SetPosition(&v3(0.0f, 6.0f, 20.0f));//TODO: Link in the manager player1camera to player 1
 	State->CameraArray[0].SetFrontDirection(&v3(0.0f, 0.0f, -1.0f));
 	State->CameraArray[0].SetProjectionMatrix(1);
 
-	Pysc_SetAccelerationRate(Entity_GetPhysObjPtr(State->EntityBlockNum, 
-		GetPlayer(0)->PlayerEntityID), 1000.0f);
+	Pysc_SetAccelerationRate(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), 1000.0f);
 
 	//NOTE: Init Objects
 	Object_Create(new Box, State->ObjectBlockNum, 1, 0.25f, 0.25f, 0.25f);
@@ -184,19 +60,19 @@ void Game_Draw(ProgramState* State)
 
 	Render_ClearScreen();
 
-	void* Player1 = GetPlayer(0);
+	void* Player1 = Entity_GetPlayerPtr(State->EntityBlockNum, 0);
 	static_cast<Player*>(Player1)->UpdateRotation();
 	State->CameraArray[0].SetFrontDirection(
 		static_cast<Player*>(Player1)->GetFrontDirection());
 	static_cast<Player*>(Player1)->UpdateTranslation();
 
-	Phys_SetMoveDirection(Entity_GetPhysObjPtr(State->EntityBlockNum, static_cast<Player*>(Player1)->PlayerEntityID),
+	Phys_SetMoveDirection(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 		*static_cast<Player*>(Player1)->GetDirection());
-	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, static_cast<Player*>(Player1)->PlayerEntityID));
+	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 0));
 	State->CameraArray[0].SetPosition(
-		&Entity_GetPosition(State->EntityBlockNum, static_cast<Player*>(Player1)->PlayerEntityID));
+		&Entity_GetPosition(State->EntityBlockNum, 0));
 
-	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, static_cast<Player*>(Player1)->PlayerEntityID), &Gravity);
+	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), &Gravity);
 
 	// Bind New Shaders
 	Render_BindShaders(State->ShaderHandles[0]);
@@ -229,8 +105,7 @@ void Game_Draw(ProgramState* State)
 		(float*)&ModelMatrix);
 	Entity_DrawPolyGonMode(State->EntityBlockNum, 4, State->GPUShaderVarArray[0]);
 
-	v3 Position =
-		Entity_GetPosition(State->EntityBlockNum, static_cast<Player*>(Player1)->PlayerEntityID);
+	v3 Position = Entity_GetPosition(State->EntityBlockNum, 0);
 
 	if ((Position.x < 1.0f) ||
 		(Position.x > Entity_GetWidth(State->EntityBlockNum, 4) - 1) ||
@@ -241,15 +116,11 @@ void Game_Draw(ProgramState* State)
 		if (Position.y < 0)
 		{
 			Position.y = 0;
-			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 
-				static_cast<Player*>(Player1)->PlayerEntityID), &(-Gravity));
-			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 
-				static_cast<Player*>(Player1)->PlayerEntityID), &v3(0.0f,
-					-Entity_GetPhysObjPtr(State->EntityBlockNum, 
-						static_cast<Player*>(Player1)->PlayerEntityID)->Acceleration.y,
+			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), &(-Gravity));
+			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), 
+				&v3(0.0f, -Entity_GetPhysObjPtr(State->EntityBlockNum, 0)->Acceleration.y,
 					0.0f));
-			Entity_SetPosition(State->EntityBlockNum, 
-				static_cast<Player*>(Player1)->PlayerEntityID, Position);
+			Entity_SetPosition(State->EntityBlockNum, 0, Position);
 		}
 	}
 	else
@@ -269,15 +140,11 @@ void Game_Draw(ProgramState* State)
 
 		if (Collision_HeightMap(static_cast<HeightMap*>(Entity_GetObjInstancePtr(State->EntityBlockNum, 4)->ObjectPtr), Position))
 		{
-			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 
-				static_cast<Player*>(Player1)->PlayerEntityID), &(-Gravity));
-			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 
-				static_cast<Player*>(Player1)->PlayerEntityID), &v3(0.0f,
-					-Entity_GetPhysObjPtr(State->EntityBlockNum, 
-						static_cast<Player*>(Player1)->PlayerEntityID)->Acceleration.y, 
+			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), &(-Gravity));
+			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), &v3(0.0f,
+					-Entity_GetPhysObjPtr(State->EntityBlockNum, 0)->Acceleration.y, 
 					0.0f));
-			Entity_SetPosition(State->EntityBlockNum, 
-				static_cast<Player*>(Player1)->PlayerEntityID, Position);
+			Entity_SetPosition(State->EntityBlockNum, 0, Position);
 		}
 	}
 
@@ -335,7 +202,7 @@ void Game_Draw(ProgramState* State)
 		v3(Right - 200.0f, Top - 20.0f,
 			0.0f), 0.15f, State->GPUShaderVarArray[0]);
 
-	v3 PlayerPosition = Entity_GetPosition(State->EntityBlockNum, GetPlayer(0)->PlayerEntityID);
+	v3 PlayerPosition = Entity_GetPosition(State->EntityBlockNum, 0);
 
 	Text_DrawCharLine(string("Player Position: \0") +
 		string(Platform_FloatToChar(PlayerPosition.x)) + string(" ") +

@@ -1,12 +1,5 @@
 #include "player.h"
 
-Player Players[2];
-
-Player* GetPlayer(uint32 ID)
-{
-	return &Players[ID];
-}
-
 Player::Player() : yaw(-90.0f), pitch(0.0f), PlayerUpVect(0.0f, 1.0f, 0.0f)
 {
 	window_properties WindowDimensions = Render_GetWindowProperties();
@@ -16,23 +9,6 @@ Player::Player() : yaw(-90.0f), pitch(0.0f), PlayerUpVect(0.0f, 1.0f, 0.0f)
 
 Player::~Player()
 {}
-
-bool Player::InitPlayer(uint32 EntityBlockNumber, uint32 EntityID, uint32 ObjectBlockNumber,
-	uint32 ObjectID, v3 &StartPosition)
-{
-	//ObjectID = Object_Load(new Box, 0.25f, 0.25f, 0.25f); //TODO: pull this out into management system
-	Object_Create(new Box, ObjectBlockNumber, ObjectID, 0.25f, 0.25f, 0.25f);
-
-	if (Entity_Create(EntityBlockNumber, EntityID, ObjectBlockNumber, ObjectID, StartPosition) == 1)
-	{
-		PlayerEntityID = EntityID;
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
-}
 
 void Player::UpdateRotation()
 {
@@ -141,9 +117,4 @@ v3* Player::GetDirection()
 v3* Player::GetFrontDirection()
 {
 	return &PlayerFrontVect;
-}
-
-uint32 Player::GetID()
-{
-	return PlayerEntityID;
 }

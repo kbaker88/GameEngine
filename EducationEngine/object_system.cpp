@@ -13,6 +13,7 @@ ObjectBlock ObjectBlocks[3];
 void Object_CreateBlock(uint32 BlockID, uint32 Size)
 {
 	ObjectBlocks[BlockID].BlockObjects = new Object*[Size] {};
+	ObjectBlocks[BlockID].BlockSize = Size;
 }
 
 void Object_DeleteBlock(uint32 BlockID)

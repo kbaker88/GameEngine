@@ -275,5 +275,8 @@
     <ClInclude Include="title_state.h">
       <Filter>Header Files\engine\program_states</Filter>
     </ClInclude>
+    <ClInclude Include="shaders.h">
+      <Filter>Header Files\layers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

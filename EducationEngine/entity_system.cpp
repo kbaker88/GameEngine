@@ -29,6 +29,14 @@ void Entity_DeleteBlock(uint32 BlockNumber)
 {
 	if (EntityBlocks[BlockNumber].BlockEntities != NULL)
 	{
+		for (uint32 i = 0; i < EntityBlocks[BlockNumber].BlockSize; i++)
+		{
+			if (EntityBlocks[BlockNumber].BlockEntities->PlayerPtr != NULL)
+			{
+				delete EntityBlocks[BlockNumber].BlockEntities->PlayerPtr;
+				EntityBlocks[BlockNumber].BlockEntities->PlayerPtr = NULL;;
+			}
+		}
 		delete[] EntityBlocks[BlockNumber].BlockEntities;
 		EntityBlocks[BlockNumber].BlockEntities = NULL;
 		EntityBlocks[BlockNumber].BlockSize = 0;
@@ -86,6 +94,18 @@ int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, uint32 ObjectBloc
 	}
 }
 
+void Entity_CreatePlayer(uint32 EntityBlockNumber, uint32 IDNumber, Player* NewPlayer)
+{
+	if (EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].PlayerPtr == NULL)
+	{
+		EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].PlayerPtr = NewPlayer;
+	}
+	else
+	{
+		//TODO: Already Player assigned here
+	}
+}
+
 void Entity_AddTexture(uint32 BlockNumber, uint32 IDNumber, TextureStorage* Texture)
 {
 	EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst.ObjectPtr->InputTexture(Texture);
@@ -129,6 +149,11 @@ PhysicsObject* Entity_GetPhysObjPtr(uint32 BlockNumber, uint32 IDNumber)
 ObjectInstance* Entity_GetObjInstancePtr(uint32 BlockNumber, uint32 IDNumber)
 {
 	return &EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst;
+}
+
+Player* Entity_GetPlayerPtr(uint32 BlockNumber, uint32 IDNumber)
+{
+	return EntityBlocks[BlockNumber].BlockEntities[IDNumber].PlayerPtr;
 }
 
 float Entity_GetWidth(uint32 BlockNumber, uint32 IDNumber)
