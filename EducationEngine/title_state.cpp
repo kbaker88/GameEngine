@@ -1,32 +1,86 @@
 #include "title_state.h"
 
-static uint32 EntityBlockNum = 0; //TODO: Remove This later, temporary
+//static uint32 EntityBlockNum = 0; //TODO: Remove This later, temporary
 
-TitleState::TitleState() : initialized(0), mouseoverstart(0), NeedToClean(0), ConsoleOn(0)
-{
-}
+const char* VertexShaderSource = "#version 430 core\n"
+"layout (location = 0) in vec3 VertexPosition;\n"
+"layout (location = 1) in vec3 VertexColor;\n"
+"layout (location = 2) in vec2 TextureCoord;\n"
+"out vec3 Color;\n"
+"out vec2 TexCoord;\n"
+"uniform mat4 model;\n"
+"uniform mat4 view;\n"
+"uniform mat4 projection;\n"
+"void main()\n"
+"{\n"
+"Color = VertexColor;\n"
+"gl_Position = projection * view * model * vec4(VertexPosition, 1.0);\n"
+"TexCoord = TextureCoord;\n"
+"}\0";
 
-TitleState::~TitleState()
-{
-}
+const char* FragmentShaderSource = "#version 430 core\n"
+"in vec3 Color;\n"
+"in vec2 TexCoord;\n"
+"out vec4 FragColor;\n"
+"uniform sampler2D myTexture;\n"
+"uniform bool isClicked;\n"
+"void main()\n"
+"{\n"
+"FragColor = texture2D(myTexture, TexCoord);\n" //* vec4(Color, 1.0);\n"
+"}\0";
 
-void TitleState::Init(uint8 &programState)
+////////////////////FOR TEXT ///////////////////////
+
+const char* TextVertexShaderSource = "#version 430 core\n"
+"layout (location = 0) in vec3 VertexPosition;\n"
+"layout (location = 1) in vec3 VertexColor;\n"
+"layout (location = 2) in vec2 TextureCoord;\n"
+"out vec3 Color;\n"
+"out vec2 TexCoord;\n"
+"uniform mat4 model;\n"
+"uniform mat4 view;\n"
+"uniform mat4 projection;\n"
+"void main()\n"
+"{\n"
+"Color = VertexColor;\n"
+"gl_Position = projection * view * model * vec4(VertexPosition, 1.0);\n"
+"TexCoord = TextureCoord;\n"
+"}\0";
+
+const char* TextFragmentShaderSource = "#version 430 core\n"
+"in vec3 Color;\n"
+"in vec2 TexCoord;\n"
+"out vec4 FragColor;\n"
+"uniform sampler2D myTexture;\n"
+"void main()\n"
+"{\n"
+"if (texture2D(myTexture, TexCoord).rgb == vec3(0.0,0.0,0.0))\n"
+"discard;\n"
+"FragColor = texture2D(myTexture, TexCoord) * vec4(0.0, 1.0, 0.0, 1.0);\n" //* vec4(Color, 1.0);\n"
+"}\0";
+
+
+void Title_Initialize(ProgramState* State)
 {
-	Entity_CreateBlock(EntityBlockNum, 32);
+	Entity_CreateBlock(State->EntityBlockNum, 32);
 
 	WindowProperties = Render_GetWindowProperties();
 	float HalfScreenWidth = 0.5f * (float)WindowProperties.Width;
 	float HalfScreenHeight = 0.5f * (float)WindowProperties.Height;
 
-	StateOfProgram = &programState;
+	//StateOfProgram = &programState;
 
-	TempCamera.SetPosition(&v3(-HalfScreenWidth, -HalfScreenHeight, 1.0f));
-	TempCamera.SetProjectionMatrix(0);
-
-	ProgramShaderHandle = Render_CompileShaders(VertexShaderSource,
+	State->CameraArray[0].SetPosition(&v3(-HalfScreenWidth, -HalfScreenHeight, 1.0f));
+	State->CameraArray[0].SetProjectionMatrix(0);
+	
+	State->ShaderHandles[0] = Render_CompileShaders(VertexShaderSource,
 		FragmentShaderSource);
-	TextShaderHandle = Render_CompileShaders(TextVertexShaderSource,
+	State->ShaderHandles[1] = Render_CompileShaders(TextVertexShaderSource,
 		TextFragmentShaderSource);
+//	ProgramShaderHandle = Render_CompileShaders(VertexShaderSource,
+//		FragmentShaderSource);
+	//TextShaderHandle = Render_CompileShaders(TextVertexShaderSource,
+	//	TextFragmentShaderSource);
 
 	float ButtonWidth = 160.0f;
 	float ButtonHeight = 40.0f;
@@ -35,146 +89,138 @@ void TitleState::Init(uint8 &programState)
 	v3 ButtonPosition = { MenuButtonsXPos, MenuButtonsYPos, 0.0f };
 
 	uint32 ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(EntityBlockNum, 0, ObjectID, ButtonPosition);
-	Entity_AddTexture(EntityBlockNum, 0, Asset_GetTexture(0));
+	Entity_Create(State->EntityBlockNum, 0, ObjectID, ButtonPosition);
+	Entity_AddTexture(State->EntityBlockNum, 0, Asset_GetTexture(0));
 	//TODO: Remove all seconds and try to do in the shader
 	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(EntityBlockNum, 1, ObjectID, ButtonPosition);
-	Entity_AddTexture(EntityBlockNum, 1, Asset_GetTexture(1));
+	Entity_Create(State->EntityBlockNum, 1, ObjectID, ButtonPosition);
+	Entity_AddTexture(State->EntityBlockNum, 1, Asset_GetTexture(1));
 
 	ButtonPosition.y -= ButtonHeight;
 	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(EntityBlockNum, 2, ObjectID, ButtonPosition);
-	Entity_AddTexture(EntityBlockNum, 2, Asset_GetTexture(2));
+	Entity_Create(State->EntityBlockNum, 2, ObjectID, ButtonPosition);
+	Entity_AddTexture(State->EntityBlockNum, 2, Asset_GetTexture(2));
 	//TODO: Remove all seconds and try to do in the shader
 	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(EntityBlockNum, 3, ObjectID, ButtonPosition);
-	Entity_AddTexture(EntityBlockNum, 3, Asset_GetTexture(6));
+	Entity_Create(State->EntityBlockNum, 3, ObjectID, ButtonPosition);
+	Entity_AddTexture(State->EntityBlockNum, 3, Asset_GetTexture(6));
 
 	ButtonPosition.y -= ButtonHeight;
 	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(EntityBlockNum, 4, ObjectID, ButtonPosition);
-	Entity_AddTexture(EntityBlockNum, 4, Asset_GetTexture(7));
+	Entity_Create(State->EntityBlockNum, 4, ObjectID, ButtonPosition);
+	Entity_AddTexture(State->EntityBlockNum, 4, Asset_GetTexture(7));
 	//TODO: Remove all seconds and try to do in the shader
 	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(EntityBlockNum, 5, ObjectID, ButtonPosition);
-	Entity_AddTexture(EntityBlockNum, 5, Asset_GetTexture(8));
+	Entity_Create(State->EntityBlockNum, 5, ObjectID, ButtonPosition);
+	Entity_AddTexture(State->EntityBlockNum, 5, Asset_GetTexture(8));
 
-	initialized = 1;
+	//initialized = 1;
 }
 
-uint8 TitleState::CheckInitialization()
-{
-	return initialized;
-}
-
-void TitleState::Display()
+void Title_Draw(ProgramState* State)
 {
 	Render_ClearScreen();
 
-	DisplayButtons();
-	DisplayConsole();
+	Render_BindShaders(State->ShaderHandles[0]);//ProgramShaderHandle);
+	State->GPUShaderVarArray[0] = 
+		Render_GetShaderVariable(State->ShaderHandles[0], "model");
+	State->GPUShaderVarArray[1] = 
+		Render_GetShaderVariable(State->ShaderHandles[0], "view");
+	State->GPUShaderVarArray[2] = 
+		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
+	State->GPUShaderVarArray[3] = 
+		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
 
-	if (NeedToClean == 1)
+	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[1],
+		(float*)State->CameraArray[0].GetViewMatrix());
+	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[2], 
+		(float*)State->CameraArray[0].GetProjectionMatrix());
+	Render_UpdateShaderVariable(1, State->GPUShaderVarArray[3], 0);
+
+	if (Collision_OrthoMouseToRect(Entity_GetPosition(State->EntityBlockNum, 0),
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 0)->Width,
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 0)->Height))
 	{
-		CleanUp();
-	}
-}
-
-void TitleState::DisplayButtons()
-{
-	Render_BindShaders(ProgramShaderHandle);
-	ShaderVars[0] = Render_GetShaderVariable(ProgramShaderHandle, "model");
-	ShaderVars[1] = Render_GetShaderVariable(ProgramShaderHandle, "view");
-	ShaderVars[2] = Render_GetShaderVariable(ProgramShaderHandle, "projection");
-	ShaderVars[3] = Render_GetShaderVariable(ProgramShaderHandle, "myTexture");
-
-	Render_UpdateShaderVariable(3, ShaderVars[1], (float*)TempCamera.GetViewMatrix());
-	Render_UpdateShaderVariable(3, ShaderVars[2], (float*)TempCamera.GetProjectionMatrix());
-	Render_UpdateShaderVariable(1, ShaderVars[3], 0);
-
-	if (Collision_OrthoMouseToRect(Entity_GetPosition(EntityBlockNum, 0),
-		Entity_GetCollisionObjPtr(EntityBlockNum, 0)->Width,
-		Entity_GetCollisionObjPtr(EntityBlockNum, 0)->Height))
-	{
-		Entity_Draw(EntityBlockNum, 1, ShaderVars[0]);
+		Entity_Draw(State->EntityBlockNum, 1, State->GPUShaderVarArray[0]);
 		if (Platform_GetMouseState())
 		{
-			NeedToClean = true;
-			*StateOfProgram = 2;
+			State->Status = -1;
+			*State->StateOfProgram = 2;
 		}
 	}
 	else
 	{
-		Entity_Draw(EntityBlockNum, 0, ShaderVars[0]);
+		Entity_Draw(State->EntityBlockNum, 0, State->GPUShaderVarArray[0]);
 	}
 
-	if (Collision_OrthoMouseToRect(Entity_GetPosition(EntityBlockNum, 2), 
-		Entity_GetCollisionObjPtr(EntityBlockNum, 2)->Width,
-		Entity_GetCollisionObjPtr(EntityBlockNum, 2)->Height))
+	if (Collision_OrthoMouseToRect(Entity_GetPosition(State->EntityBlockNum, 2),
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 2)->Width,
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 2)->Height))
 	{
-		Entity_Draw(EntityBlockNum, 3, ShaderVars[0]);
+		Entity_Draw(State->EntityBlockNum, 3, State->GPUShaderVarArray[0]);
 		if (Platform_GetMouseState())
 		{
-			NeedToClean = true;
-			*StateOfProgram = 3;
+			State->Status = -1;
+			*State->StateOfProgram = 3;
 		}
 	}
 	else
 	{
-		Entity_Draw(EntityBlockNum, 2, ShaderVars[0]);
+		Entity_Draw(State->EntityBlockNum, 2, State->GPUShaderVarArray[0]);
 	}
 
-	if (Collision_OrthoMouseToRect(Entity_GetPosition(EntityBlockNum, 4),
-		Entity_GetCollisionObjPtr(EntityBlockNum, 4)->Width,
-		Entity_GetCollisionObjPtr(EntityBlockNum, 4)->Height))
+	if (Collision_OrthoMouseToRect(Entity_GetPosition(State->EntityBlockNum, 4),
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 4)->Width,
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 4)->Height))
 	{
-		Entity_Draw(EntityBlockNum, 5, ShaderVars[0]);
+		Entity_Draw(State->EntityBlockNum, 5, State->GPUShaderVarArray[0]);
 		if (Platform_GetMouseState())
 		{
-			NeedToClean = true;
-			*StateOfProgram = 4;
+			State->Status = -1;
+			*State->StateOfProgram = 4;
 		}
 	}
 	else
 	{
-		Entity_Draw(EntityBlockNum, 4, ShaderVars[0]);
+		Entity_Draw(State->EntityBlockNum, 4, State->GPUShaderVarArray[0]);
 	}
 
 	Platform_UpdateMouseState(0); // TODO : Remove this and fix error
 
-	if (NeedToClean == 1)
+	if (State->Status == -1)
 	{
-		CleanUp();
+		Title_Clean(State);
 	}
-}
 
-void TitleState::DisplayConsole()
-{
-	Render_BindShaders(TextShaderHandle);
-	ShaderVars[0] = Render_GetShaderVariable(TextShaderHandle, "model");
-	ShaderVars[1] = Render_GetShaderVariable(TextShaderHandle, "view");
-	ShaderVars[2] = Render_GetShaderVariable(TextShaderHandle, "projection");
-	ShaderVars[3] = Render_GetShaderVariable(TextShaderHandle, "myTexture");
+	Render_BindShaders(State->ShaderHandles[1]);
+	State->GPUShaderVarArray[0] = Render_GetShaderVariable(State->ShaderHandles[1], "model");
+	State->GPUShaderVarArray[1] = Render_GetShaderVariable(State->ShaderHandles[1], "view");
+	State->GPUShaderVarArray[2] = Render_GetShaderVariable(State->ShaderHandles[1], "projection");
+	State->GPUShaderVarArray[3] = Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
 
-	Render_UpdateShaderVariable(3, ShaderVars[1], (float*)TempCamera.GetViewMatrix());
-	Render_UpdateShaderVariable(3, ShaderVars[2], (float*)TempCamera.GetProjectionMatrix());
-	Render_UpdateShaderVariable(1, ShaderVars[3], 0);
+	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[1], (float*)State->CameraArray[0].GetViewMatrix());
+	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[2], (float*)State->CameraArray[0].GetProjectionMatrix());
+	Render_UpdateShaderVariable(1, State->GPUShaderVarArray[3], 0);
 
 	v3 TextStartPosition = { (float)(-0.5f * WindowProperties.Width) + 20.0f,
 		(float)(-0.5f * WindowProperties.Height) + 100.0f, 0.0f };
 
 	Text_GetFromStream();
-	Text_DrawStream(TextStartPosition, 0.3f, ShaderVars[0]);
+	Text_DrawStream(TextStartPosition, 0.3f, State->GPUShaderVarArray[0]);
 
 	Text_ClearGlobalStream();
+
+	if (State->Status == -1)
+	{
+		Title_Clean(State);
+	}
 }
 
-void TitleState::CleanUp()
+void Title_Clean(ProgramState* State)
 {
-	Entity_DeleteBlock(EntityBlockNum);
-	Object_ClearAll();
-	Render_DeleteShaderProgram(ProgramShaderHandle);
-	NeedToClean = 0;
-	initialized = 0; 
+	Entity_DeleteBlock(State->EntityBlockNum);
+	Object_ClearAll(); //TODO: Keep these in blocks like entities
+	Render_DeleteShaderProgram(State->ShaderHandles[0]);
+	Render_DeleteShaderProgram(State->ShaderHandles[1]);
+	State->Status = 0;
 }

@@ -1,9 +1,11 @@
 #include "game_loop.h"
 
 static uint8 StateOfProgram = 0;
-static TitleState Title;
+//static TitleState Title;
 static MenuState Menu;
 static GameState Game;
+uint32 CurrentState;
+ProgramState States[3];
 
 void Game_Loop()
 {
@@ -22,19 +24,46 @@ void Game_Loop()
 
 	case 1: // Title Screen
 	{
-		if (Title.CheckInitialization() == 1)
+		if (States[0].Status == 0)
 		{
-			Title.Display();
-			if (Platform_GetStateOfKey(0x27) == 1) // SPACE BAR (VK_SPACE) REPLACE WITH SELF MADE KEY CODES
-			{
-				StateOfProgram = 2;
-				Title.CleanUp();
-			}
+			State_CreateCameras(&States[0], 1);
+			State_CreateShaderVariables(&States[0], 4);
+			State_CreateShaderHandles(&States[0], 2);
+			State_LinkToProgram(&States[0], &StateOfProgram);
+
+			States[0].EntityBlockNum = 0;
+			States[0].Status = 1;
+
+			Title_Initialize(&States[0]);
 		}
 		else
 		{
-			Title.Init(StateOfProgram);
+			Title_Draw(&States[0]);
+			if (Platform_GetStateOfKey(0x27) == 1) // SPACE BAR (VK_SPACE) REPLACE WITH SELF MADE KEY CODES
+			{
+				StateOfProgram = 2;
+				Title_Clean(&States[0]);
+				//Title.CleanUp();
+			}
 		}
+
+		if (StateOfProgram != 1)
+		{
+			State_Clean(&States[0]);
+		}
+		//if (Title.CheckInitialization() == 1)
+		//{
+		//	Title.Display();
+		//	if (Platform_GetStateOfKey(0x27) == 1) // SPACE BAR (VK_SPACE) REPLACE WITH SELF MADE KEY CODES
+		//	{
+		//		StateOfProgram = 2;
+		//		Title.CleanUp();
+		//	}
+		//}
+		//else
+		//{
+		//	Title.Init(StateOfProgram);
+		//}
 	} break;
 
 	case 2: // Game

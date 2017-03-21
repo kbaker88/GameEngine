@@ -1,7 +1,8 @@
 #ifndef MENU_STATE_H
 #define MENU_STATE_H
 
-#include "world_system.h"
+#include "state_system.h"
+//#include "world_system.h"
 
 class MenuState
 {
