@@ -147,12 +147,8 @@
     <ClCompile Include="state_system.cpp" />
     <ClCompile Include="text_system.cpp" />
     <ClCompile Include="title_state.cpp" />
-    <ClCompile Include="user_interface.cpp" />
     <ClCompile Include="utility.cpp" />
     <ClCompile Include="win32_layer.cpp" />
-    <ClCompile Include="world_terrain.cpp" />
-    <ClCompile Include="world_objects.cpp" />
-    <ClCompile Include="world_system.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asset_system.h" />
@@ -186,11 +182,7 @@
     <ClInclude Include="state_system.h" />
     <ClInclude Include="text_system.h" />
     <ClInclude Include="title_state.h" />
-    <ClInclude Include="user_interface.h" />
     <ClInclude Include="utility.h" />
-    <ClInclude Include="world_terrain.h" />
-    <ClInclude Include="world_objects.h" />
-    <ClInclude Include="world_system.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

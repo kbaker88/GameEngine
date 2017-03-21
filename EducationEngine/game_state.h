@@ -3,26 +3,9 @@
 
 #include "menu_state.h"
 
-class GameState
-{
-public:
-	GameState();
-	~GameState();
-
-	void Init(uint8 &programState);
-	uint8 CheckInitialization();
-	void Display();
-	void CleanUp();
-
-private:
-	UserInterface UI;
-
-	Box DefaultBox;
-	Box ActiveBox;
-
-	uint8 *StateOfProgram;
-	uint8 initialized;
-};
+void Game_Initialize(ProgramState* State);
+void Game_Draw(ProgramState* State);
+void Game_Clean(ProgramState* State);
 
 #endif
 

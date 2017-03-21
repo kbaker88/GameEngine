@@ -1,10 +1,6 @@
 #include "game_loop.h"
 
 static uint8 StateOfProgram = 0;
-//static TitleState Title;
-static MenuState Menu;
-static GameState Game;
-uint32 CurrentState;
 ProgramState States[3];
 
 void Game_Loop()
@@ -43,60 +39,73 @@ void Game_Loop()
 			{
 				StateOfProgram = 2;
 				Title_Clean(&States[0]);
-				//Title.CleanUp();
 			}
 		}
 
-		if (StateOfProgram != 1)
+		if ((StateOfProgram != 1) || (States[0].Status == -1))
 		{
 			State_Clean(&States[0]);
 		}
-		//if (Title.CheckInitialization() == 1)
-		//{
-		//	Title.Display();
-		//	if (Platform_GetStateOfKey(0x27) == 1) // SPACE BAR (VK_SPACE) REPLACE WITH SELF MADE KEY CODES
-		//	{
-		//		StateOfProgram = 2;
-		//		Title.CleanUp();
-		//	}
-		//}
-		//else
-		//{
-		//	Title.Init(StateOfProgram);
-		//}
 	} break;
 
 	case 2: // Game
 	{
-		if (Game.CheckInitialization() == 1)
+		if (States[1].Status == 0)
 		{
-			Game.Display();
-			if (Platform_GetStateOfKey(0x0D) == 1) // Right Arrow, replace later.
-			{
-				StateOfProgram = 1;
-				Game.CleanUp();
-			}
+			State_CreateCameras(&States[1], 2);
+			State_CreateTimers(&States[1], 1);
+			State_CreateShaderVariables(&States[1], 7);
+			State_CreateShaderHandles(&States[1], 3);
+			State_LinkToProgram(&States[1], &StateOfProgram);
+
+			States[1].EntityBlockNum = 0;
+			States[1].Status = 1;
+
+			Game_Initialize(&States[1]);
 		}
 		else
 		{
-			Game.Init(StateOfProgram);
+			Game_Draw(&States[1]);
+			if (Platform_GetStateOfKey(0x25) == 1) // Left Arrow, replace later.
+			{
+				StateOfProgram = 1;
+				Game_Clean(&States[1]);
+			}
+		}
+
+		if ((StateOfProgram != 2) || (States[1].Status == -1))
+		{
+			State_Clean(&States[1]);
 		}
 	} break;
 
 	case 3: // Menu Screen
 	{
-		if (Menu.CheckInitialization() == 1)
+		if (States[2].Status == 0)
 		{
-			Menu.Display();
-			if (Platform_GetStateOfKey(0x25) == 1) // Left Arrow, replace later.
-			{
-				StateOfProgram = 1;
-				Menu.CleanUp();
-			}
+			State_CreateCameras(&States[2], 1);
+			State_CreateShaderVariables(&States[2], 3);
+			State_CreateShaderHandles(&States[2], 2);
+			State_LinkToProgram(&States[2], &StateOfProgram);
+
+			States[2].EntityBlockNum = 0;
+			States[2].Status = 1;
+
+			Menu_Initialize(&States[2]);
 		}
 		else
 		{
-			Menu.Init(StateOfProgram);
+			Menu_Draw(&States[2]);
+			if (Platform_GetStateOfKey(0x25) == 1) // Left Arrow, replace later.
+			{
+				StateOfProgram = 1;
+				Menu_Clean(&States[2]);
+			}
+		}
+
+		if ((StateOfProgram != 3) || (States[2].Status == -1))
+		{
+			State_Clean(&States[2]);
 		}
 	} break;
 

@@ -1,7 +1,6 @@
 #include "title_state.h"
 
-//static uint32 EntityBlockNum = 0; //TODO: Remove This later, temporary
-
+//TODO: Move Shaders into a shader file
 const char* VertexShaderSource = "#version 430 core\n"
 "layout (location = 0) in vec3 VertexPosition;\n"
 "layout (location = 1) in vec3 VertexColor;\n"
@@ -68,8 +67,6 @@ void Title_Initialize(ProgramState* State)
 	float HalfScreenWidth = 0.5f * (float)WindowProperties.Width;
 	float HalfScreenHeight = 0.5f * (float)WindowProperties.Height;
 
-	//StateOfProgram = &programState;
-
 	State->CameraArray[0].SetPosition(&v3(-HalfScreenWidth, -HalfScreenHeight, 1.0f));
 	State->CameraArray[0].SetProjectionMatrix(0);
 	
@@ -77,10 +74,6 @@ void Title_Initialize(ProgramState* State)
 		FragmentShaderSource);
 	State->ShaderHandles[1] = Render_CompileShaders(TextVertexShaderSource,
 		TextFragmentShaderSource);
-//	ProgramShaderHandle = Render_CompileShaders(VertexShaderSource,
-//		FragmentShaderSource);
-	//TextShaderHandle = Render_CompileShaders(TextVertexShaderSource,
-	//	TextFragmentShaderSource);
 
 	float ButtonWidth = 160.0f;
 	float ButtonHeight = 40.0f;
@@ -113,15 +106,13 @@ void Title_Initialize(ProgramState* State)
 	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
 	Entity_Create(State->EntityBlockNum, 5, ObjectID, ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 5, Asset_GetTexture(8));
-
-	//initialized = 1;
 }
 
 void Title_Draw(ProgramState* State)
 {
 	Render_ClearScreen();
 
-	Render_BindShaders(State->ShaderHandles[0]);//ProgramShaderHandle);
+	Render_BindShaders(State->ShaderHandles[0]);
 	State->GPUShaderVarArray[0] = 
 		Render_GetShaderVariable(State->ShaderHandles[0], "model");
 	State->GPUShaderVarArray[1] = 
@@ -222,5 +213,4 @@ void Title_Clean(ProgramState* State)
 	Object_ClearAll(); //TODO: Keep these in blocks like entities
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
-	State->Status = 0;
 }
