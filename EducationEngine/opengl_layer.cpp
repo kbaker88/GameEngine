@@ -350,6 +350,18 @@ void Render_DrawObjectIndices(PipelineObjectDescription &ObjectDescription,
 	glBindVertexArray(0);
 }
 
+void Render_UpdateColorVertice(PipelineObjectDescription& Description,
+	uint32 ArrayPosition, float* Color)
+{
+	float* GPUMemoryMapPtr = (float*)Render_GetObjectShaderDataPtr(
+		Description, ArrayPosition, 1);
+	*GPUMemoryMapPtr = Color[0];
+	*++GPUMemoryMapPtr = Color[1];
+	*++GPUMemoryMapPtr = Color[2];
+
+	Render_UnmapShaderDataPtr();
+}
+
 void Render_DeleteTextureBuffer(uint32 Size, uint32 &TextureID)
 {
 	glDeleteTextures(Size, &TextureID);

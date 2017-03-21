@@ -2,14 +2,15 @@
 #define STATE_SYSTEM_H
 
 #include "player.h"
-#include "clock.h" // TODO: move this later. 
+#include "clock.h"  // TODO: move this later. 
 #include "camera.h" // TODO: move this later. 
 
 struct ProgramState
 {
 	ProgramState() : CameraArray(NULL), TimerArray(NULL),
 		GPUShaderVarArray(NULL), ShaderHandles(NULL),
-		Status(0), StateOfProgram(NULL) {}
+		Status(0), EntityBlockNum(0), ObjectBlockNum(0),
+		StateOfProgram(NULL) {}
 
 	//TODO: Make Camera and Player a special type of entity
 	Camera* CameraArray;
@@ -17,7 +18,7 @@ struct ProgramState
 	int32* GPUShaderVarArray;
 	uint32* ShaderHandles;
 	int32 Status;
-	uint32 EntityBlockNum;
+	uint32 EntityBlockNum, ObjectBlockNum;
 	uint8* StateOfProgram;
 };
 

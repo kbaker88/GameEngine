@@ -795,19 +795,19 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 {
 	int32 x, z;
 	x = (int32)round(ObjectPosition.x) - 1; // because negative is backwards?
-	z = (int32)round(ObjectPosition.z);
+	z = (int32)round(ObjectPosition.z); //TODO: Write round to get rid of cmath
 
 	v3 TerrainVertice;
 	
 	TerrainVertice.x =
-		HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-		(HeightMapPlane->TerrainMaxDepth - z)) * 3];
+		HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+		((uint32)HeightMapPlane->Depth - z)) * 3];
 	TerrainVertice.y =
-		HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-		(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 1];
+		HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+		((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
 	TerrainVertice.z =
-		HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-		(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 2];
+		HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+		((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
 
 	if ((ObjectPosition.y) < TerrainVertice.y + 1.0f)
 	{
@@ -819,42 +819,42 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 		{
 			if ((ObjectPosition.z - z) < 0)
 			{
-				if (z < (int32)HeightMapPlane->TerrainMaxDepth)
+				if (z < (int32)HeightMapPlane->Depth)
 				{
 					TerrainVertice2.x =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z - 1))) * 3];
+						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z - 1))) * 3];
 					TerrainVertice2.y =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z - 1))) * 3 + 1];
+						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 1];
 					TerrainVertice2.z =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z - 1))) * 3 + 2];
+						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 2];
 				}
 				if (x > 0)
 				{
 					TerrainVertice3.x =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - z)) * 3];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - z)) * 3];
 					TerrainVertice3.y =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 1];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
 					TerrainVertice3.z =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 2];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
 				}
 			}
 			else
 			{
 				TerrainVertice2.x =
-					HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * HeightMapPlane->TerrainMaxDepth) +
-					(HeightMapPlane->TerrainMaxDepth - (z + 1))) * 3];
+					HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
+					((uint32)HeightMapPlane->Depth - (z + 1))) * 3];
 				TerrainVertice2.y =
-					HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * HeightMapPlane->TerrainMaxDepth) +
-					(HeightMapPlane->TerrainMaxDepth - (z + 1))) * 3 + 1];
+					HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
+					((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 1];
 				TerrainVertice2.z =
-					HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * HeightMapPlane->TerrainMaxDepth) +
-					(HeightMapPlane->TerrainMaxDepth - (z + 1))) * 3 + 2];
+					HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
+					((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 2];
 
 				if ((((TerrainVertice.x - TerrainVertice2.x) * // Determinant 
 					((-ObjectPosition.z) - (-TerrainVertice2.z))) -
@@ -862,26 +862,26 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 					(ObjectPosition.x - TerrainVertice2.x))) < 0)
 				{
 					TerrainVertice3.x =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z + 1))) * 3];
+						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z + 1))) * 3];
 					TerrainVertice3.y =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z + 1))) * 3 + 1];
+						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 1];
 					TerrainVertice3.z =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z + 1))) * 3 + 2];
+						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 2];
 				}
 				else
 				{
 					TerrainVertice3.x =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - z)) * 3];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - z)) * 3];
 					TerrainVertice3.y =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 1];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
 					TerrainVertice3.z =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 2];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
 				}
 			}
 		}
@@ -890,17 +890,17 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 			if ((ObjectPosition.z - z) < 0) // red
 			{
 				if ((z < 0) &&
-					(x < (int32)HeightMapPlane->TerrainMaxWidth))
+					(x < (int32)HeightMapPlane->Width))
 				{
 					TerrainVertice2.x =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z - 1))) * 3];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z - 1))) * 3];
 					TerrainVertice2.y =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z - 1))) * 3 + 1];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 1];
 					TerrainVertice2.z =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z - 1))) * 3 + 2];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 2];
 
 					if ((((TerrainVertice2.x - TerrainVertice.x) *
 						((-ObjectPosition.z) - (-TerrainVertice.z))) -
@@ -908,26 +908,26 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 						(ObjectPosition.x - TerrainVertice.x))) < 0)
 					{
 						TerrainVertice3.x =
-							HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * HeightMapPlane->TerrainMaxDepth) +
-							(HeightMapPlane->TerrainMaxDepth - z)) * 3];
+							HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
+							((uint32)HeightMapPlane->Depth - z)) * 3];
 						TerrainVertice3.y =
-							HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * HeightMapPlane->TerrainMaxDepth) +
-							(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 1];
+							HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
+							((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
 						TerrainVertice3.z =
-							HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * HeightMapPlane->TerrainMaxDepth) +
-							(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 2];
+							HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
+							((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
 					}
 					else
 					{
 						TerrainVertice3.x =
-							HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-							(HeightMapPlane->TerrainMaxDepth - (z - 1))) * 3];
+							HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+							((uint32)HeightMapPlane->Depth - (z - 1))) * 3];
 						TerrainVertice3.y =
-							HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-							(HeightMapPlane->TerrainMaxDepth - (z - 1))) * 3 + 1];
+							HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+							((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 1];
 						TerrainVertice3.z =
-							HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-							(HeightMapPlane->TerrainMaxDepth - (z - 1))) * 3 + 2];
+							HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+							((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 2];
 					}
 				}
 			}
@@ -936,26 +936,26 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 				if (z < 0)
 				{
 					TerrainVertice2.x =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z + 1))) * 3];
+						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z + 1))) * 3];
 					TerrainVertice2.y =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z + 1))) * 3 + 1];
+						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 1];
 					TerrainVertice2.z =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - (z + 1))) * 3 + 2];
+						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 2];
 				}
-				if (x < (int32)HeightMapPlane->TerrainMaxWidth) // conversation errors?
+				if (x < (int32)HeightMapPlane->Width) // conversation errors?
 				{
 					TerrainVertice3.x =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - z)) * 3];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - z)) * 3];
 					TerrainVertice3.y =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 1];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
 					TerrainVertice3.z =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * HeightMapPlane->TerrainMaxDepth) +
-						(HeightMapPlane->TerrainMaxDepth - z)) * 3 + 2];
+						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
+						((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
 				}
 			}
 		}

@@ -16,29 +16,30 @@ HeightMap::~HeightMap()
 
 void HeightMap::Init(TextureStorage* ImageData)
 {
-	TerrainMaxWidth = ImageData->Width;
-	TerrainMaxDepth = ImageData->Height;
-
-	NumberOfIndices = 6 * TerrainMaxWidth * TerrainMaxDepth;
+	uint32 ConvertedWidth = ImageData->Width;
+	uint32 ConvertedDepth = ImageData->Height;
+	Width = static_cast<float>(ConvertedWidth);
+	Depth = static_cast<float>(ConvertedDepth);
+	NumberOfIndices = 6 * ConvertedWidth * ConvertedDepth;
 
 	uint32 BytesPerPixel = (ImageData->NumPixelComps * ImageData->PixelCompSize) / 8;
 	uint32 Pixel;
-	uint32 TotalVertices = TerrainMaxWidth * TerrainMaxDepth;
+	uint32 TotalVertices = ConvertedWidth * ConvertedDepth;
 
 	float *VerticePositions = new float[3 * TotalVertices]{};
 	v3 *Vertices = new v3[TotalVertices]{};
 	uint32 Index = 0;
 	uint32 ImagePixelIndex = 0;
-	for (uint32 Rows = 0; Rows < TerrainMaxWidth; Rows++)
+	for (uint32 Rows = 0; Rows < ConvertedWidth; Rows++)
 	{
-		for (uint32 Columns = 0; Columns < TerrainMaxDepth; Columns++)
+		for (uint32 Columns = 0; Columns < ConvertedDepth; Columns++)
 		{
-			VerticePositions[3 * Rows * TerrainMaxDepth + 3 * Columns + 0] =
+			VerticePositions[3 * Rows * ConvertedDepth + 3 * Columns + 0] =
 				(float)Rows;
 			Pixel = ImageData->data[ImagePixelIndex++] << 8 | ImageData->data[ImagePixelIndex++];
-			VerticePositions[3 * Rows * TerrainMaxDepth + 3 * Columns + 1] =
+			VerticePositions[3 * Rows * ConvertedDepth + 3 * Columns + 1] =
 				(float)Pixel / 1000.0f;
-			VerticePositions[3 * Rows * TerrainMaxDepth + 3 * Columns + 2] =
+			VerticePositions[3 * Rows * ConvertedDepth + 3 * Columns + 2] =
 				-(float)Columns;
 			Vertices[Index] = v3((float)Rows,
 				(float)Pixel / 1000.0f, -(float)Columns);
@@ -50,61 +51,61 @@ void HeightMap::Init(TextureStorage* ImageData)
 
 	uint32 *Indices = new uint32[NumberOfIndices]{};
 	Index = 0;
-	for (uint32 Rows = 0; Rows < TerrainMaxWidth - 1; Rows++)
+	for (uint32 Rows = 0; Rows < ConvertedWidth - 1; Rows++)
 	{
-		for (uint32 Columns = 0; Columns < TerrainMaxDepth - 1; Columns++)
+		for (uint32 Columns = 0; Columns < ConvertedDepth - 1; Columns++)
 		{
-			Indices[Index++] = (Rows + 1) * TerrainMaxDepth + Columns;
-			Indices[Index++] = (Rows + 1) * TerrainMaxDepth + Columns + 1;
-			Indices[Index++] = (Rows)* TerrainMaxDepth + Columns;
+			Indices[Index++] = (Rows + 1) * ConvertedDepth + Columns;
+			Indices[Index++] = (Rows + 1) * ConvertedDepth + Columns + 1;
+			Indices[Index++] = (Rows)* ConvertedDepth + Columns;
 
-			Indices[Index++] = (Rows)* TerrainMaxDepth + Columns;
-			Indices[Index++] = (Rows + 1) * TerrainMaxDepth + Columns + 1;
-			Indices[Index++] = (Rows)* TerrainMaxDepth + Columns + 1;
+			Indices[Index++] = (Rows)* ConvertedDepth + Columns;
+			Indices[Index++] = (Rows + 1) * ConvertedDepth + Columns + 1;
+			Indices[Index++] = (Rows)* ConvertedDepth + Columns + 1;
 		}
 	}
 
 	float *ColorData = new float[3 * TotalVertices]{};
 	Index = 0;
 	ImagePixelIndex = 0;
-	for (uint32 Rows = 0; Rows < TerrainMaxWidth; Rows++)
+	for (uint32 Rows = 0; Rows < ConvertedWidth; Rows++)
 	{
-		for (uint32 Columns = 0; Columns < TerrainMaxDepth; Columns++)
+		for (uint32 Columns = 0; Columns < ConvertedDepth; Columns++)
 		{
-			ColorData[3 * Rows * TerrainMaxDepth + 3 * Columns + 0] = 1.0f;
+			ColorData[3 * Rows * ConvertedDepth + 3 * Columns + 0] = 1.0f;
 			Pixel = ImageData->data[ImagePixelIndex++] << 8 | ImageData->data[ImagePixelIndex++];
-			ColorData[3 * Rows * TerrainMaxDepth + 3 * Columns + 1] =
+			ColorData[3 * Rows * ConvertedDepth + 3 * Columns + 1] =
 				(float)((float)Pixel / 255.0f);
-			ColorData[3 * Rows * TerrainMaxDepth + 3 * Columns + 2] = 0.0f;
+			ColorData[3 * Rows * ConvertedDepth + 3 * Columns + 2] = 0.0f;
 			Index++;
 		}
 	}
 
 	float *NormalData = new float[3 * TotalVertices]{};
-	for (uint32 Rows = 0; Rows < TerrainMaxWidth - 1; Rows++)
+	for (uint32 Rows = 0; Rows < ConvertedWidth - 1; Rows++)
 	{
-		for (uint32 Columns = 0; Columns < TerrainMaxDepth - 1; Columns++)
+		for (uint32 Columns = 0; Columns < ConvertedDepth - 1; Columns++)
 		{
-			v3 Line1 = Vertices[((Rows + 1) * TerrainMaxDepth + (Columns + 1))] -
-				Vertices[((Rows + 1) * TerrainMaxDepth + (Columns))];
+			v3 Line1 = Vertices[((Rows + 1) * ConvertedDepth + (Columns + 1))] -
+				Vertices[((Rows + 1) * ConvertedDepth + (Columns))];
 
-			v3 Line2 = Vertices[((Rows + 1) * TerrainMaxDepth + (Columns))] -
-				Vertices[((Rows)* TerrainMaxDepth + (Columns))];
+			v3 Line2 = Vertices[((Rows + 1) * ConvertedDepth + (Columns))] -
+				Vertices[((Rows)* ConvertedDepth + (Columns))];
 
 			v3 Normal = CrossProduct(Line1, Line2);
-			NormalData[3 * (Rows + 1) * TerrainMaxDepth + 3 * Columns + 0] = Normal.x;
-			NormalData[3 * (Rows + 1) * TerrainMaxDepth + 3 * Columns + 1] = Normal.y;
-			NormalData[3 * (Rows + 1) * TerrainMaxDepth + 3 * Columns + 2] = Normal.z;
+			NormalData[3 * (Rows + 1) * ConvertedDepth + 3 * Columns + 0] = Normal.x;
+			NormalData[3 * (Rows + 1) * ConvertedDepth + 3 * Columns + 1] = Normal.y;
+			NormalData[3 * (Rows + 1) * ConvertedDepth + 3 * Columns + 2] = Normal.z;
 		}
 	}
 
-	for (uint32 Columns = 0; Columns < TerrainMaxDepth - 1; Columns++)
+	for (uint32 Columns = 0; Columns < ConvertedDepth - 1; Columns++)
 	{
 		v3 Line1 = Vertices[Columns + 1] -
 			Vertices[Columns];
 
 		v3 Line2 = Vertices[Columns + 1] -
-			Vertices[TerrainMaxDepth + Columns + 1];
+			Vertices[ConvertedDepth + Columns + 1];
 
 		v3 Normal = CrossProduct(Line1, Line2);
 		NormalData[3 * (Columns + 1) + 0] = Normal.x;
@@ -113,35 +114,35 @@ void HeightMap::Init(TextureStorage* ImageData)
 	}
 
 	v3 FirstNormal;
-	NormalData[0 + 0] = (NormalData[TerrainMaxDepth + 0] + NormalData[3 + 0]) / 2.0f;
-	NormalData[0 + 1] = (NormalData[TerrainMaxDepth + 1] + NormalData[3 + 1]) / 2.0f;
-	NormalData[0 + 2] = (NormalData[TerrainMaxDepth + 2] + NormalData[3 + 2]) / 2.0f;
+	NormalData[0 + 0] = (NormalData[ConvertedDepth + 0] + NormalData[3 + 0]) / 2.0f;
+	NormalData[0 + 1] = (NormalData[ConvertedDepth + 1] + NormalData[3 + 1]) / 2.0f;
+	NormalData[0 + 2] = (NormalData[ConvertedDepth + 2] + NormalData[3 + 2]) / 2.0f;
 
-	for (uint32 Rows = 2; Rows < TerrainMaxWidth; Rows++)
+	for (uint32 Rows = 2; Rows < ConvertedWidth; Rows++)
 	{
-		v3 Line1 = Vertices[Rows * TerrainMaxDepth - 1] -
-			Vertices[Rows * TerrainMaxDepth - 2];
+		v3 Line1 = Vertices[Rows * ConvertedDepth - 1] -
+			Vertices[Rows * ConvertedDepth - 2];
 
-		v3 Line2 = Vertices[Rows * TerrainMaxDepth - 1] -
-			Vertices[(Rows + 1) * TerrainMaxDepth - 1];
+		v3 Line2 = Vertices[Rows * ConvertedDepth - 1] -
+			Vertices[(Rows + 1) * ConvertedDepth - 1];
 
 		v3 Normal = CrossProduct(Line1, Line2);
-		NormalData[Rows * TerrainMaxDepth - 3 + 0] = Normal.x;
-		NormalData[Rows * TerrainMaxDepth - 3 + 1] = Normal.y;
-		NormalData[Rows * TerrainMaxDepth - 3 + 2] = Normal.z;
+		NormalData[Rows * ConvertedDepth - 3 + 0] = Normal.x;
+		NormalData[Rows * ConvertedDepth - 3 + 1] = Normal.y;
+		NormalData[Rows * ConvertedDepth - 3 + 2] = Normal.z;
 	}
 
-	NormalData[(TerrainMaxWidth - 1) * (TerrainMaxDepth - 1) + 0] = 
-		(NormalData[(TerrainMaxWidth - 1) * (TerrainMaxDepth - 1) + 0 - 3] + 
-			NormalData[(TerrainMaxWidth - 2) * (TerrainMaxDepth - 1)  + 0]) / 2.0f;
+	NormalData[(ConvertedWidth - 1) * (ConvertedDepth - 1) + 0] =
+		(NormalData[(ConvertedWidth - 1) * (ConvertedDepth - 1) + 0 - 3] +
+			NormalData[(ConvertedWidth - 2) * (ConvertedDepth - 1)  + 0]) / 2.0f;
 
-	NormalData[(TerrainMaxWidth - 1) * (TerrainMaxDepth - 1) + 1] = 
-		(NormalData[(TerrainMaxWidth - 1) * (TerrainMaxDepth - 1) + 1 - 3] +
-			NormalData[(TerrainMaxWidth - 2) * (TerrainMaxDepth - 1)  + 1]) / 2.0f;
+	NormalData[(ConvertedWidth - 1) * (ConvertedDepth - 1) + 1] =
+		(NormalData[(ConvertedWidth - 1) * (ConvertedDepth - 1) + 1 - 3] +
+			NormalData[(ConvertedWidth - 2) * (ConvertedDepth - 1)  + 1]) / 2.0f;
 
-	NormalData[(TerrainMaxWidth - 1) * (TerrainMaxDepth - 1) + 2] = 
-		(NormalData[(TerrainMaxWidth - 1) * (TerrainMaxDepth - 1) + 2 - 3] + 
-			NormalData[(TerrainMaxWidth - 2) * (TerrainMaxDepth - 1)  + 2]) / 2.0f;
+	NormalData[(ConvertedWidth - 1) * (ConvertedDepth - 1) + 2] =
+		(NormalData[(ConvertedWidth - 1) * (ConvertedDepth - 1) + 2 - 3] +
+			NormalData[(ConvertedWidth - 2) * (ConvertedDepth - 1)  + 2]) / 2.0f;
 
 	// Average out the normals
 	// v3 T0 = HeightMapPlane.VerticesPtr[(x*HeightMapPlane.TerrainMaxDepth) + (HeightMapPlane.TerrainMaxDepth - z)]; // center
@@ -198,29 +199,4 @@ void HeightMap::Init(TextureStorage* ImageData)
 	delete[] ColorData;
 	delete[] NormalData;
 	delete[] TextureCoords;
-}
-
-void HeightMap::InputTexture(TextureStorage* Texture)
-{
-	Render_SetTexture(Texture->data, Texture->Width,
-		Texture->Height, TextureID);
-}
-
-void HeightMap::UpdateColorVertice(PipelineObjectDescription& Description, 
-	uint32 ArrayPosition, float* Color)
-{
-	float* GPUMemoryMapPtr = (float*)Render_GetObjectShaderDataPtr(
-		Description, ArrayPosition, 1);
-	*GPUMemoryMapPtr = Color[0];
-	*++GPUMemoryMapPtr = Color[1];
-	*++GPUMemoryMapPtr = Color[2];
-
-	Render_UnmapShaderDataPtr();
-}
-
-void HeightMap::DrawIndices()
-{
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	Render_DrawObjectIndices(ObjectDescription, TextureID, NumberOfIndices);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

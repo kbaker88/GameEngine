@@ -14,7 +14,8 @@ public:
 	Player();
 	~Player();
 
-	bool InitPlayer(uint32 EntityBlockNumber, uint32 DesiredID, v3 &StartPosition);
+	bool InitPlayer(uint32 EntityBlockNumber, uint32 DesiredID,
+		uint32 ObjectBlockNumber, uint32 ObjectID, v3 &StartPosition);
 
 	void UpdateRotation();
 	void UpdateTranslation();

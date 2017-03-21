@@ -13,7 +13,6 @@ void Game_Loop()
 	{
 		DEBUG_Initialize();
 		Asset_LoadTextures(); // Too general, need to make multiple loads
-		Object_ResetObjectCounter();
 		Text_BuildFont("arial\0");
 		StateOfProgram = 1;
 	} break;
@@ -28,6 +27,7 @@ void Game_Loop()
 			State_LinkToProgram(&States[0], &StateOfProgram);
 
 			States[0].EntityBlockNum = 0;
+			States[0].ObjectBlockNum = 0;
 			States[0].Status = 1;
 
 			Title_Initialize(&States[0]);
@@ -59,6 +59,7 @@ void Game_Loop()
 			State_LinkToProgram(&States[1], &StateOfProgram);
 
 			States[1].EntityBlockNum = 0;
+			States[1].ObjectBlockNum = 0;
 			States[1].Status = 1;
 
 			Game_Initialize(&States[1]);
@@ -89,6 +90,7 @@ void Game_Loop()
 			State_LinkToProgram(&States[2], &StateOfProgram);
 
 			States[2].EntityBlockNum = 0;
+			States[2].ObjectBlockNum = 0;
 			States[2].Status = 1;
 
 			Menu_Initialize(&States[2]);

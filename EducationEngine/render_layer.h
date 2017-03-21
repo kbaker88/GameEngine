@@ -50,6 +50,10 @@ void Render_DrawObject(PipelineObjectDescription &ObjectDescription,
 	uint32 &Texture, uint32 numVertices);
 void Render_DrawObjectIndices(PipelineObjectDescription &ObjectDescription,
 	uint32 &Texture, uint32 NumberOfIndices);
+
+void Render_UpdateColorVertice(PipelineObjectDescription& Description,
+	uint32 ArrayPosition, float* Color);
+
 void* Render_GetObjectShaderDataPtr(PipelineObjectDescription& Description, int32 Offset, uint32 Length);
 void Render_UnmapShaderDataPtr();
 void Render_DeleteTextureBuffer(uint32 Size, uint32 &TextureID);

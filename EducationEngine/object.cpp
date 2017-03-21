@@ -18,6 +18,11 @@ void Object::Init()
 {
 }
 
+void Object::Init(TextureStorage* ImageData)
+{
+
+}
+
 void Object::Init(uint32 width, uint32 depth)
 {
 	Width = 0;
@@ -34,8 +39,6 @@ void Object::Init(float width, float height, float depth)
 
 void Object::InputTexture(TextureStorage* Texture)
 {
-	//CurrentTexturePtr = Texture;
-
 	Render_SetTexture(Texture->data, Texture->Width,
 		Texture->Height, TextureID);
 }
@@ -44,6 +47,20 @@ void Object::Draw()
 {
 	//DrawObject(ObjectDescription, TextureID, NumberOfVertices);
 	Render_DrawObjectIndices(ObjectDescription, TextureID, NumberOfIndices);
+}
+
+void Object::Draw(uint8 Choice)
+{
+	if (Choice == 1)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		Render_DrawObjectIndices(ObjectDescription, TextureID, NumberOfIndices);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else
+	{
+		Render_DrawObjectIndices(ObjectDescription, TextureID, NumberOfIndices);
+	}
 }
 
 void Object::Delete()

@@ -62,10 +62,11 @@ const char* TextFragmentShaderSource = "#version 430 core\n"
 void Title_Initialize(ProgramState* State)
 {
 	Entity_CreateBlock(State->EntityBlockNum, 32);
+	Object_CreateBlock(State->ObjectBlockNum, 32);
 
-	WindowProperties = Render_GetWindowProperties();
-	float HalfScreenWidth = 0.5f * (float)WindowProperties.Width;
-	float HalfScreenHeight = 0.5f * (float)WindowProperties.Height;
+	window_properties WindowDimensions = Render_GetWindowProperties();
+	float HalfScreenWidth = 0.5f * (float)WindowDimensions.Width;
+	float HalfScreenHeight = 0.5f * (float)WindowDimensions.Height;
 
 	State->CameraArray[0].SetPosition(&v3(-HalfScreenWidth, -HalfScreenHeight, 1.0f));
 	State->CameraArray[0].SetProjectionMatrix(0);
@@ -81,30 +82,30 @@ void Title_Initialize(ProgramState* State)
 	float MenuButtonsYPos = HalfScreenHeight - (ButtonHeight * 0.5f) - 100.0f;
 	v3 ButtonPosition = { MenuButtonsXPos, MenuButtonsYPos, 0.0f };
 
-	uint32 ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 0, ObjectID, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 0, ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 0, Asset_GetTexture(0));
 	//TODO: Remove all seconds and try to do in the shader
-	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 1, ObjectID, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 1, ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 1, Asset_GetTexture(1));
 
 	ButtonPosition.y -= ButtonHeight;
-	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 2, ObjectID, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 2, ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2, ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 2, Asset_GetTexture(2));
 	//TODO: Remove all seconds and try to do in the shader
-	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 3, ObjectID, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 3, ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 3, State->ObjectBlockNum, 3, ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 3, Asset_GetTexture(6));
 
 	ButtonPosition.y -= ButtonHeight;
-	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 4, ObjectID, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 4, ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 4, State->ObjectBlockNum, 4, ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 4, Asset_GetTexture(7));
 	//TODO: Remove all seconds and try to do in the shader
-	ObjectID = Object_Load(new MyRectangle, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 5, ObjectID, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 5, ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 5, State->ObjectBlockNum, 5, ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 5, Asset_GetTexture(8));
 }
 
@@ -210,7 +211,7 @@ void Title_Draw(ProgramState* State)
 void Title_Clean(ProgramState* State)
 {
 	Entity_DeleteBlock(State->EntityBlockNum);
-	Object_ClearAll(); //TODO: Keep these in blocks like entities
+	Object_DeleteBlock(State->ObjectBlockNum);
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
 }

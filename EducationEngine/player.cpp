@@ -17,13 +17,15 @@ Player::Player() : yaw(-90.0f), pitch(0.0f), PlayerUpVect(0.0f, 1.0f, 0.0f)
 Player::~Player()
 {}
 
-bool Player::InitPlayer(uint32 EntityBlockNumber, uint32 DesiredID, v3 &StartPosition)
+bool Player::InitPlayer(uint32 EntityBlockNumber, uint32 EntityID, uint32 ObjectBlockNumber,
+	uint32 ObjectID, v3 &StartPosition)
 {
-	ObjectID = Object_Load(new Box, 0.25f, 0.25f, 0.25f); //TODO: pull this out into management system
+	//ObjectID = Object_Load(new Box, 0.25f, 0.25f, 0.25f); //TODO: pull this out into management system
+	Object_Create(new Box, ObjectBlockNumber, ObjectID, 0.25f, 0.25f, 0.25f);
 
-	if (Entity_Create(EntityBlockNumber, DesiredID, ObjectID, StartPosition) == 1)
+	if (Entity_Create(EntityBlockNumber, EntityID, ObjectBlockNumber, ObjectID, StartPosition) == 1)
 	{
-		PlayerEntityID = DesiredID;
+		PlayerEntityID = EntityID;
 		return 1;
 	}
 	else

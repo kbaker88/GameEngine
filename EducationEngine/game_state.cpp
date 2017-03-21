@@ -1,9 +1,5 @@
 #include "game_state.h"
 
-v3 LightPosition = { 2.0f, 1.0f, -17.0f }; //TODO: Move into a shader struct?
-v3 LightColor = { 1.0f, 1.0f, 1.0f };
-static HeightMap HeightMapPlane; //TODO: Move this to entity
-
 static const char* VertShaderForTextureAndLight = "#version 430 core\n"
 "layout (location = 0) in vec3 VertexPosition;\n"
 "layout (location = 1) in vec3 VertexColor;\n"
@@ -123,63 +119,22 @@ static const char* TextFragmentShaderSource = "#version 430 core\n"
 	"uniform sampler2D myTexture;\n"
 	"void main()\n"
 	"{\n"
-	//"if (texture2D(myTexture, TexCoord).rgb == vec3(1.0,1.0,1.0))\n"
-	//	"discard;\n"
 	"if (texture2D(myTexture, TexCoord).rgb == vec3(0.0,0.0,0.0))\n"
 	"discard;\n"
 	"FragColor = texture2D(myTexture, TexCoord) * vec4(0.0, 1.0, 0.0, 1.0);\n" //* vec4(Color, 1.0);\n"
 	"}\0";
 
-//GameState::GameState() : initialized(0)
-//{
-//}
-//
-//GameState::~GameState()
-//{
-//}
-//
-//void GameState::Init(uint8 &programState)
-//{
-//	StateOfProgram = &programState;
-//
-//	InitializeWorld();
-//
-//	UI.Init();
-//
-//	initialized = 1;
-//}
-
-//uint8 GameState::CheckInitialization()
-//{
-//	return initialized;
-//}
-
-//void GameState::Display()
-//{
-//	Render_ClearScreen();
-//
-//	DrawWorld();
-//	UI.Draw();
-//
-//	Text_ClearGlobalStream();
-//}
-
-//void GameState::CleanUp()
-//{
-//	WorldCleanUp();
-//	initialized = 0;
-//}
-
 void Game_Initialize(ProgramState* State)
 {
 	Entity_CreateBlock(State->EntityBlockNum, 256);
+	Object_CreateBlock(State->ObjectBlockNum, 256);
 
 	State->ShaderHandles[0] = Render_CompileShaders(VertShaderForTextureAndLight,
 		FragShaderForTextureAndLight);
 	State->ShaderHandles[1] = Render_CompileShaders(TestVertexShader,
 		TestFragShader);
 
-	if (!GetPlayer(0)->InitPlayer(State->EntityBlockNum, 0, v3(0.0f, 6.0f, 20.0f)))
+	if (!GetPlayer(0)->InitPlayer(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, v3(0.0f, 6.0f, 20.0f)))
 	{
 		Platform_TemporaryError("\nGetPlayer Problem\n");
 	}
@@ -190,22 +145,21 @@ void Game_Initialize(ProgramState* State)
 	Pysc_SetAccelerationRate(Entity_GetPhysObjPtr(State->EntityBlockNum, 
 		GetPlayer(0)->PlayerEntityID), 1000.0f);
 
-	//NOTE: Init Terrain
-	HeightMapPlane.Init(Asset_GetTexture(15));
-	HeightMapPlane.InputTexture(Asset_GetTexture(3));
-
 	//NOTE: Init Objects
-	uint32 ObjectID = Object_Load(new Box, 0.25f, 0.25f, 0.25f);
-	Entity_Create(State->EntityBlockNum, 1, ObjectID, v3(3.0f, 0.0f, 15.0f));
+	Object_Create(new Box, State->ObjectBlockNum, 1, 0.25f, 0.25f, 0.25f);
+	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, v3(3.0f, 0.0f, 15.0f));
 
-	ObjectID = Object_Load(new Box, 0.1f, 0.1f, 0.1f);
-	Entity_Create(State->EntityBlockNum, 2, ObjectID, v3(2.0f, 1.0f, 17.0f)); // light
+	Object_Create(new Box, State->ObjectBlockNum, 2, 0.25f, 0.25f, 0.25f);
+	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2, v3(2.0f, 1.0f, 17.0f)); // light
 
-	ObjectID = Object_Load(new Plane2D, 10, 10);
-	Entity_Create(State->EntityBlockNum, 3, ObjectID, v3(0.0f, -0.5f, 20.0f));
+	Object_Create(new Plane2D, State->ObjectBlockNum, 3, 10, 10);
+	Entity_Create(State->EntityBlockNum, 3, State->ObjectBlockNum, 3, v3(0.0f, -0.5f, 20.0f));
 	Entity_AddTexture(State->EntityBlockNum, 3, Asset_GetTexture(11));
 
-	//ActiveWorldChunks = 1;
+	//NOTE: Init Terrain
+	Object_Create(new HeightMap, State->ObjectBlockNum, 4, Asset_GetTexture(15));
+	Entity_Create(State->EntityBlockNum, 4, State->ObjectBlockNum, 4, v3(0.0f, 0.0f, 0.0f));
+	Entity_AddTexture(State->EntityBlockNum, 4, Asset_GetTexture(3));
 
 	//NOTE: User Inferface Below
 
@@ -217,7 +171,6 @@ void Game_Initialize(ProgramState* State)
 		-WindowHalfHeight, 1.0f));
 	State->CameraArray[1].SetProjectionMatrix(0);
 
-
 	State->ShaderHandles[2] = Render_CompileShaders(TextVertexShaderSource,
 		TextFragmentShaderSource);
 
@@ -226,6 +179,9 @@ void Game_Initialize(ProgramState* State)
 
 void Game_Draw(ProgramState* State)
 {
+	v3 LightPosition = { 2.0f, 1.0f, -17.0f }; //TODO: Move into a shader struct?
+	v3 LightColor = { 1.0f, 1.0f, 1.0f };
+
 	Render_ClearScreen();
 
 	void* Player1 = GetPlayer(0);
@@ -268,19 +224,18 @@ void Game_Draw(ProgramState* State)
 
 	// NOTE: Draw terrain below
 	m4 ModelMatrix = IdentityMatrix();
-	//void* Player1 = GetPlayer(0);
 
 	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[0],
 		(float*)&ModelMatrix);
-	HeightMapPlane.DrawIndices();
+	Entity_DrawPolyGonMode(State->EntityBlockNum, 4, State->GPUShaderVarArray[0]);
 
 	v3 Position =
 		Entity_GetPosition(State->EntityBlockNum, static_cast<Player*>(Player1)->PlayerEntityID);
 
 	if ((Position.x < 1.0f) ||
-		(Position.x >(float)HeightMapPlane.TerrainMaxWidth - 1) ||
+		(Position.x > Entity_GetWidth(State->EntityBlockNum, 4) - 1) ||
 		(Position.z > -1.0f) ||
-		(Position.z < -(float)HeightMapPlane.TerrainMaxDepth + 1))
+		(Position.z < -Entity_GetDepth(State->EntityBlockNum, 4) + 1))
 	{
 		// outside of terrain map
 		if (Position.y < 0)
@@ -304,15 +259,15 @@ void Game_Draw(ProgramState* State)
 		z = (int32)round(Position.z);
 
 		// Test Code
-		uint32 PlayerPosition = ((x * HeightMapPlane.TerrainMaxDepth) +
-			(HeightMapPlane.TerrainMaxDepth - z)) * 3 * sizeof(float);
+		uint32 PlayerPosition = static_cast<uint32>(((x * Entity_GetWidth(State->EntityBlockNum, 4)) +
+			(Entity_GetDepth(State->EntityBlockNum, 4) - z)) * 3 * sizeof(float));
 
-		HeightMapPlane.UpdateColorVertice(HeightMapPlane.ObjectDescription,
+		Render_UpdateColorVertice(Entity_GetObjInstancePtr(State->EntityBlockNum, 4)->ObjectPtr->ObjectDescription,
 			PlayerPosition,
 			v3(0.0f, 0.0f, 1.0f).Arr);
 		Render_UnmapShaderDataPtr();
 
-		if (Collision_HeightMap(&HeightMapPlane, Position))
+		if (Collision_HeightMap(static_cast<HeightMap*>(Entity_GetObjInstancePtr(State->EntityBlockNum, 4)->ObjectPtr), Position))
 		{
 			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 
 				static_cast<Player*>(Player1)->PlayerEntityID), &(-Gravity));
@@ -399,15 +354,13 @@ void Game_Draw(ProgramState* State)
 	//	string(Platform_FloatToChar(CursorPosition.x)) + string(" ") +
 	//	string(Platform_FloatToChar(CursorPosition.y)));
 
-	//Text_ClearGlobalStream();
-
 	Text_ClearGlobalStream();
 }
 
 void Game_Clean(ProgramState* State)
 {
 	Entity_DeleteBlock(State->EntityBlockNum);
-	Object_ClearAll();
+	Object_DeleteBlock(State->ObjectBlockNum);
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
 	Render_DeleteShaderProgram(State->ShaderHandles[2]);
