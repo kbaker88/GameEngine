@@ -22,7 +22,7 @@ void Game_Loop()
 		if (States[0].Status == 0)
 		{
 			State_CreateCameras(&States[0], 1);
-			State_CreateShaderVariables(&States[0], 4);
+			State_CreateShaderVariables(&States[0], 5);
 			State_CreateShaderHandles(&States[0], 2);
 			State_LinkToProgram(&States[0], &StateOfProgram);
 
@@ -85,7 +85,7 @@ void Game_Loop()
 		if (States[2].Status == 0)
 		{
 			State_CreateCameras(&States[2], 1);
-			State_CreateShaderVariables(&States[2], 3);
+			State_CreateShaderVariables(&States[2], 5);
 			State_CreateShaderHandles(&States[2], 2);
 			State_LinkToProgram(&States[2], &StateOfProgram);
 

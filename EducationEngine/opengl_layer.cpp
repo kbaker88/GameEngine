@@ -163,10 +163,11 @@ uint32 Render_CompileShaders(const char* VertexShaderSource,
 
 	glLinkProgram(ShaderProgramHandle);
 
-	glDeleteShader(VertexShader);
-	glDeleteShader(FragmentShader);
 	glDetachShader(ShaderProgramHandle, VertexShader);
 	glDetachShader(ShaderProgramHandle, FragmentShader);
+
+	glDeleteShader(VertexShader);
+	glDeleteShader(FragmentShader);
 
 	return ShaderProgramHandle;
 }
@@ -185,6 +186,11 @@ void Render_BindShaders(uint32 ShaderProgramHandle)
 	}
 }
 
+void Render_ClearCurrentShaderProgram()
+{
+	glUseProgram(0);
+}
+
 void Render_DeleteShaderProgram(uint32 ShaderProgramHandle)
 {
 	glDeleteProgram(ShaderProgramHandle);
@@ -198,6 +204,11 @@ int32 Render_GetShaderVariable(uint32 ShaderProgramHandle, char* name)
 	ReturnValue = glGetUniformLocation(ShaderProgramHandle, name);
 
 	return ReturnValue;
+}
+
+void Render_UpdateShaderVariable(int32 UniformVariable, int32 Integer)
+{
+	glUniform1i(UniformVariable, Integer);
 }
 
 void Render_UpdateShaderVariable(int32 Type, int32 UniformVariable, float* NewData)

@@ -15,27 +15,30 @@ void Game_Initialize(ProgramState* State)
 	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, v3(0.0f, 6.0f, 20.0f));
 	Entity_CreatePlayer(State->EntityBlockNum, 0, new Player);
 
-	State->CameraArray[0].SetPosition(&v3(0.0f, 6.0f, 20.0f));//TODO: Link in the manager player1camera to player 1
+	//TODO: Find a better way to link player and camera?
+	State->CameraArray[0].SetPosition(&v3(0.0f, 6.0f, 20.0f));
 	State->CameraArray[0].SetFrontDirection(&v3(0.0f, 0.0f, -1.0f));
 	State->CameraArray[0].SetProjectionMatrix(1);
 
 	Pysc_SetAccelerationRate(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), 1000.0f);
 
-	//NOTE: Init Objects
+	// Light Box
 	Object_Create(new Box, State->ObjectBlockNum, 1, 0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, v3(3.0f, 0.0f, 15.0f));
 
+	// Wood Box
 	Object_Create(new Box, State->ObjectBlockNum, 2, 0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2, v3(2.0f, 1.0f, 17.0f)); // light
 
+	// Wood Floor
 	Object_Create(new Plane2D, State->ObjectBlockNum, 3, 10, 10);
 	Entity_Create(State->EntityBlockNum, 3, State->ObjectBlockNum, 3, v3(0.0f, -0.5f, 20.0f));
-	Entity_AddTexture(State->EntityBlockNum, 3, Asset_GetTexture(11));
+	Entity_AddTexture(State->EntityBlockNum, 3, Asset_GetTexture(6));
 
-	//NOTE: Init Terrain
-	Object_Create(new HeightMap, State->ObjectBlockNum, 4, Asset_GetTexture(15));
+	//NOTE: Terrain
+	Object_Create(new HeightMap, State->ObjectBlockNum, 4, Asset_GetTexture(7));
 	Entity_Create(State->EntityBlockNum, 4, State->ObjectBlockNum, 4, v3(0.0f, 0.0f, 0.0f));
-	Entity_AddTexture(State->EntityBlockNum, 4, Asset_GetTexture(3));
+	Entity_AddTexture(State->EntityBlockNum, 4, Asset_GetTexture(4));
 
 	//NOTE: User Inferface Below
 
@@ -228,6 +231,7 @@ void Game_Clean(ProgramState* State)
 {
 	Entity_DeleteBlock(State->EntityBlockNum);
 	Object_DeleteBlock(State->ObjectBlockNum);
+	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
 	Render_DeleteShaderProgram(State->ShaderHandles[2]);

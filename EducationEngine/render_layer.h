@@ -33,8 +33,10 @@ window_properties Render_GetWindowProperties(); // Should this be here?
 uint32 Render_CompileShaders(const char* VertexShaderSource,
 	const char* FragmentShaderSource);
 void Render_BindShaders(uint32 ShaderProgramHandle);
+void Render_ClearCurrentShaderProgram();
 void Render_DeleteShaderProgram(uint32 ShaderProgramHandle);
 int32 Render_GetShaderVariable(uint32 ShaderProgramHandle, char* name);
+void Render_UpdateShaderVariable(int32 UniformVariable, int32 Integer);
 void Render_UpdateShaderVariable(int32 Type, int32 UniformVariable, float* NewData);
 
 // Object Rendering Functions

@@ -12,21 +12,13 @@ void Asset_LoadTextures()
 	TextureCount = 0;
 
 	Asset_LoadBMP("Images/startbutton.bmp"); // 0
-	Asset_LoadBMP("Images/startbuttonover.bmp"); // 1
-	Asset_LoadBMP("Images/menubutton.bmp"); // 2
-	Asset_LoadBMP("Images/grass2.bmp"); // 3
-	Asset_LoadBMP("Images/container.bmp"); // 4
-	Asset_LoadBMP("Images/containeractive.bmp"); // 5
-	Asset_LoadBMP("Images/menubuttonover.bmp"); // 6
-	Asset_LoadBMP("Images/exitbutton.bmp"); // 7
-	Asset_LoadBMP("Images/exitbuttonover.bmp"); // 8
-	Asset_LoadBMP("Images/titlebutton.bmp"); // 9
-	Asset_LoadBMP("Images/titlebuttonover.bmp"); // 10
-	Asset_LoadBMP("Images/woodfloor.bmp"); // 11
-	Asset_LoadBMP("Images/heightmap.bmp"); // 12
-	Asset_LoadBMP("Images/test2heightmap.bmp"); // 13
-	Asset_LoadBMP("Images/heightmap02.bmp"); // 14
-	Asset_LoadPNG("Images/StartHeightMap.png"); // 15
+	Asset_LoadBMP("Images/menubutton.bmp"); // 1
+	Asset_LoadBMP("Images/exitbutton.bmp"); // 2
+	Asset_LoadBMP("Images/titlebutton.bmp"); // 3
+	Asset_LoadBMP("Images/grass2.bmp"); // 4
+	Asset_LoadBMP("Images/container.bmp"); // 5
+	Asset_LoadBMP("Images/woodfloor.bmp"); // 6
+	Asset_LoadPNG("Images/StartHeightMap.png"); // 7
 }
 
 void Asset_LoadBMP(char* FileName)

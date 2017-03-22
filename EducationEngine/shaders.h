@@ -3,7 +3,7 @@
 
 // TODO: Temporary file until shaders are pre-compiled.
 
-static const char* VertexShaderSource = "#version 430 core\n"
+static const char* MenuVertexShaderSource = "#version 430 core\n"
 "layout (location = 0) in vec3 VertexPosition;\n"
 "layout (location = 1) in vec3 VertexColor;\n"
 "layout (location = 2) in vec2 TextureCoord;\n"
@@ -19,15 +19,19 @@ static const char* VertexShaderSource = "#version 430 core\n"
 "TexCoord = TextureCoord;\n"
 "}\0";
 
-static const char* FragmentShaderSource = "#version 430 core\n"
+static const char* MenuFragmentShaderSource = "#version 430 core\n"
 "in vec3 Color;\n"
 "in vec2 TexCoord;\n"
 "out vec4 FragColor;\n"
 "uniform sampler2D myTexture;\n"
-"uniform bool isClicked;\n"
+"uniform int mouseOver;\n"
 "void main()\n"
 "{\n"
-"FragColor = texture2D(myTexture, TexCoord);\n" //* vec4(Color, 1.0);\n"
+"if (mouseOver == 1.0f) {\n"
+"FragColor = texture2D(myTexture, TexCoord) * vec4(0.0f, 1.0f, 0.0f, 1.0);\n"
+"} else {\n"
+"FragColor = texture2D(myTexture, TexCoord);\n"
+"}\n"
 "}\0";
 
 ////////////////////FOR TEXT ///////////////////////
