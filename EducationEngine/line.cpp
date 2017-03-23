@@ -9,6 +9,9 @@ void Line::Init(float* Point1, float* Point2, float lineSize)
 	ObjectDescription.NumberOfVertexHandles = 2;
 	ObjectDescription.VertexBufferDescriptions =
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+	ObjectDescription.VertexBufferObjectHandleIDs =
+		new uint32[ObjectDescription.NumberOfVertexHandles];
+
 	LineSize = lineSize;
 
 	float VerticePositions[] =
@@ -31,10 +34,10 @@ void Line::Init(float* Point1, float* Point2, float lineSize)
 	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	Render_ObjectPipelineInit(ObjectDescription);
+	Render_ObjectPipelineInit(&ObjectDescription);
 }
 
 void Line::Draw()
 {
-	Render_DrawLine(ObjectDescription, LineSize, 2);
+	Render_DrawLine(ObjectDescription.VertexArrayObjectID, LineSize, 2);
 }

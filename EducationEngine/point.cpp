@@ -9,6 +9,8 @@ void Point::Init(float* PointPosition, float Size)
 	ObjectDescription.NumberOfVertexHandles = 2;
 	ObjectDescription.VertexBufferDescriptions =
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+	ObjectDescription.VertexBufferObjectHandleIDs =
+		new uint32[ObjectDescription.NumberOfVertexHandles];
 
 	PointSize = Size;
 
@@ -30,10 +32,10 @@ void Point::Init(float* PointPosition, float Size)
 	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	Render_ObjectPipelineInit(ObjectDescription);
+	Render_ObjectPipelineInit(&ObjectDescription);
 }
 
 void Point::Draw()
 {
-	Render_DrawPoint(ObjectDescription, PointSize, 1);
+	Render_DrawPoint(ObjectDescription.VertexArrayObjectID, PointSize, 1);
 }

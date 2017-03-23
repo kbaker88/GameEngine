@@ -88,24 +88,26 @@ void Game_Draw(ProgramState* State)
 	State->GPUShaderVarArray[6] = Render_GetShaderVariable(State->ShaderHandles[0], "isTextured");
 
 	// Update Shader Variables for Player 1
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[1],
-		(float*)State->CameraArray[0].GetViewMatrix());
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[2],
-		(float*)State->CameraArray[0].GetProjectionMatrix());
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
+		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
+		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
 
 	// Update Shader Variables for World
-	Render_UpdateShaderVariable(2, State->GPUShaderVarArray[3], LightColor.Arr);
-	Render_UpdateShaderVariable(2, State->GPUShaderVarArray[4], LightPosition.Arr);
-	Render_UpdateShaderVariable(1, State->GPUShaderVarArray[5], 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[3],
+		LightColor.x, LightColor.y, LightColor.z);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[4],
+		LightPosition.x, LightPosition.y, LightPosition.z);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[5], (int32)0);
 
 	float Choice = 0;
-	Render_UpdateShaderVariable(4, State->GPUShaderVarArray[6], &Choice);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
 
 	// NOTE: Draw terrain below
 	m4 ModelMatrix = IdentityMatrix();
 
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[0],
-		(float*)&ModelMatrix);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
+		(float*)&ModelMatrix, 1, 0);
 	Entity_DrawPolyGonMode(State->EntityBlockNum, 4, State->GPUShaderVarArray[0]);
 
 	v3 Position = Entity_GetPosition(State->EntityBlockNum, 0);
@@ -136,7 +138,9 @@ void Game_Draw(ProgramState* State)
 		uint32 PlayerPosition = static_cast<uint32>(((x * Entity_GetWidth(State->EntityBlockNum, 4)) +
 			(Entity_GetDepth(State->EntityBlockNum, 4) - z)) * 3 * sizeof(float));
 
-		Render_UpdateColorVertice(Entity_GetObjInstancePtr(State->EntityBlockNum, 4)->ObjectPtr->ObjectDescription,
+		Render_UpdateColorVertice(
+			Entity_GetObjInstancePtr(State->EntityBlockNum, 4)->
+			ObjectPtr->ObjectDescription.VertexBufferObjectHandleIDs,
 			PlayerPosition,
 			v3(0.0f, 0.0f, 1.0f).Arr);
 		Render_UnmapShaderDataPtr();
@@ -166,13 +170,13 @@ void Game_Draw(ProgramState* State)
 	Choice = 0.0f;
 	for (uint32 Index = 1; Index < 3; Index++) // not textured
 	{
-		Render_UpdateShaderVariable(4, State->GPUShaderVarArray[6], &Choice);
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
 		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
 	}
 	Choice = 1.0f;
 	for (uint32 Index = 3; Index < 4; Index++) // textured
 	{
-		Render_UpdateShaderVariable(4, State->GPUShaderVarArray[6], &Choice);
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
 		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
 	}
 	//NOTE: Draw UI Below
@@ -190,9 +194,9 @@ void Game_Draw(ProgramState* State)
 	State->GPUShaderVarArray[2] = Render_GetShaderVariable(State->ShaderHandles[2], "projection");
 	State->GPUShaderVarArray[3] = Render_GetShaderVariable(State->ShaderHandles[2], "myTexture");
 
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[1], &(*State->CameraArray[1].GetViewMatrix()).Rc[0][0]); // TODO: clean this up
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[2], &(*State->CameraArray[1].GetProjectionMatrix()).Rc[0][0]);
-	Render_UpdateShaderVariable(1, State->GPUShaderVarArray[3], 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44, (float*)State->CameraArray[1].GetViewMatrix(), 1, 0); // TODO: clean this up
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44, (float*)State->CameraArray[1].GetViewMatrix(), 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], (int32)0);
 
 	// TODO: Remove, Test timer and clock features
 	Text_DrawCharLine(string("Elapsed Time: ") + 

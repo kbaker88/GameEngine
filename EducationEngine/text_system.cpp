@@ -127,8 +127,8 @@ void Text_DrawStream(v3 &Position, float Scale, uint32 ShaderID)
 			NextWidth = 0;
 		}
 
-		Render_UpdateShaderVariable(3, ShaderID,
-			&ModelMatrix.Rc[0][0]);
+		Render_UpdateShaderVariable(ShaderID, 44,
+			&ModelMatrix.Rc[0][0], 1, 0);
 
 		Font[0].Glyph[TextStream[i]].Draw();
 
@@ -157,8 +157,8 @@ void Text_DrawCharLine(string &Text, v3 &Position, float Scale, uint32 ShaderID)
 			NextWidth = 0;
 		}
 
-		Render_UpdateShaderVariable(3, ShaderID,
-			&ModelMatrix.Rc[0][0]);
+		Render_UpdateShaderVariable(ShaderID, 44,
+			&ModelMatrix.Rc[0][0], 1, 0);
 
 		Font[0].Glyph[Text.CharStr[i]].Draw();
 

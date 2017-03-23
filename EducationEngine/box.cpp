@@ -10,6 +10,8 @@ void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 	ObjectDescription.NumberOfVertexHandles = 5;
 	ObjectDescription.VertexBufferDescriptions =
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+	ObjectDescription.VertexBufferObjectHandleIDs =
+		new uint32[ObjectDescription.NumberOfVertexHandles];
 
 	Width = NewWidth;
 	Height = NewHeight;
@@ -117,5 +119,5 @@ void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
 	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
-	Render_ObjectPipelineInit(ObjectDescription);
+	Render_ObjectPipelineInit(&ObjectDescription);
 }

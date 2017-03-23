@@ -16,6 +16,12 @@ HeightMap::~HeightMap()
 
 void HeightMap::Init(TextureStorage* ImageData)
 {
+	ObjectDescription.NumberOfVertexHandles = 5;
+	ObjectDescription.VertexBufferDescriptions =
+		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+	ObjectDescription.VertexBufferObjectHandleIDs =
+		new uint32[ObjectDescription.NumberOfVertexHandles];
+
 	uint32 ConvertedWidth = ImageData->Width;
 	uint32 ConvertedDepth = ImageData->Height;
 	Width = static_cast<float>(ConvertedWidth);
@@ -171,9 +177,6 @@ void HeightMap::Init(TextureStorage* ImageData)
 		TextureCoords[i + 7] = 1.0f;
 	}
 
-
-	ObjectDescription.NumberOfVertexHandles = 5;
-
 	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
 	ObjectDescription.VertexBufferDescriptions[1].Size = 3 * TotalVertices * sizeof(float);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
@@ -193,7 +196,7 @@ void HeightMap::Init(TextureStorage* ImageData)
 	ObjectDescription.VertexBufferDescriptions[4].Size = 8 * TotalVertices * sizeof(float);
 	ObjectDescription.VertexBufferDescriptions[4].Offset = 2;
 
-	Render_ObjectPipelineInit(ObjectDescription);
+	Render_ObjectPipelineInit(&ObjectDescription);
 
 	delete[] Indices;
 	delete[] ColorData;

@@ -12,6 +12,8 @@ void MyRectangle::Init()
 	ObjectDescription.NumberOfVertexHandles = 5;
 	ObjectDescription.VertexBufferDescriptions =
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+	ObjectDescription.VertexBufferObjectHandleIDs =
+		new uint32[ObjectDescription.NumberOfVertexHandles];
 
 	Width = 1;
 	Height = 1;
@@ -70,7 +72,7 @@ void MyRectangle::Init()
 	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
 	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
-	Render_ObjectPipelineInit(ObjectDescription);
+	Render_ObjectPipelineInit(&ObjectDescription);
 }
 
 void MyRectangle::Init(float size)
@@ -78,6 +80,8 @@ void MyRectangle::Init(float size)
 	ObjectDescription.NumberOfVertexHandles = 5;
 	ObjectDescription.VertexBufferDescriptions =
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+	ObjectDescription.VertexBufferObjectHandleIDs =
+		new uint32[ObjectDescription.NumberOfVertexHandles];
 
 	Width = size;
 	Height = size;
@@ -137,7 +141,7 @@ void MyRectangle::Init(float size)
 	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
 	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
-	Render_ObjectPipelineInit(ObjectDescription);
+	Render_ObjectPipelineInit(&ObjectDescription);
 }
 
 void MyRectangle::Init(float width, float height)
@@ -145,6 +149,8 @@ void MyRectangle::Init(float width, float height)
 	ObjectDescription.NumberOfVertexHandles = 5;
 	ObjectDescription.VertexBufferDescriptions =
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+	ObjectDescription.VertexBufferObjectHandleIDs =
+		new uint32[ObjectDescription.NumberOfVertexHandles];
 
 	Width = width;
 	Height = height;
@@ -204,7 +210,7 @@ void MyRectangle::Init(float width, float height)
 	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
 	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
-	Render_ObjectPipelineInit(ObjectDescription);
+	Render_ObjectPipelineInit(&ObjectDescription);
 }
 
 void MyRectangle::Init(float width, float height, float depth)
@@ -212,6 +218,8 @@ void MyRectangle::Init(float width, float height, float depth)
 	ObjectDescription.NumberOfVertexHandles = 5;
 	ObjectDescription.VertexBufferDescriptions =
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+	ObjectDescription.VertexBufferObjectHandleIDs =
+		new uint32[ObjectDescription.NumberOfVertexHandles];
 
 	Width = width;
 	Height = height;
@@ -272,5 +280,5 @@ void MyRectangle::Init(float width, float height, float depth)
 	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
 	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
-	Render_ObjectPipelineInit(ObjectDescription);
+	Render_ObjectPipelineInit(&ObjectDescription);
 }

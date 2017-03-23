@@ -15,8 +15,38 @@ static gl_get_program_iv *glGetProgramiv;
 static gl_use_program *glUseProgram;
 static gl_get_uniform_location *glGetUniformLocation;
 static gl_uniform_1i *glUniform1i;
+static gl_uniform_2i *glUniform2i;
+static gl_uniform_3i *glUniform3i;
+static gl_uniform_4i *glUniform4i;
+static gl_uniform_1iv *glUniform1iv;
+static gl_uniform_2iv *glUniform2iv;
+static gl_uniform_3iv *glUniform3iv;
+static gl_uniform_4iv *glUniform4iv;
+static gl_uniform_1ui *glUniform1ui;
+static gl_uniform_2ui *glUniform2ui;
+static gl_uniform_3ui *glUniform3ui;
+static gl_uniform_4ui *glUniform4ui;
+static gl_uniform_1uiv *glUniform1uiv;
+static gl_uniform_2uiv *glUniform2uiv;
+static gl_uniform_3uiv *glUniform3uiv;
+static gl_uniform_4uiv *glUniform4uiv;
+static gl_uniform_1f *glUniform1f;
+static gl_uniform_2f *glUniform2f;
 static gl_uniform_3f *glUniform3f;
+static gl_uniform_4f *glUniform4f;
+static gl_uniform_1fv *glUniform1fv;
+static gl_uniform_2fv *glUniform2fv;
+static gl_uniform_3fv *glUniform3fv;
+static gl_uniform_4fv *glUniform4fv;
+static gl_uniform_matrix_2fv *glUniformMatrix2fv;
+static gl_uniform_matrix_3fv *glUniformMatrix3fv;
 static gl_uniform_matrix_4fv *glUniformMatrix4fv;
+static gl_uniform_matrix_2x3fv *glUniformMatrix2x3fv;
+static gl_uniform_matrix_3x2fv *glUniformMatrix3x2fv;
+static gl_uniform_matrix_2x4fv *glUniformMatrix2x4fv;
+static gl_uniform_matrix_4x2fv *glUniformMatrix4x2fv;
+static gl_uniform_matrix_3x4fv *glUniformMatrix3x4fv;
+static gl_uniform_matrix_4x3fv *glUniformMatrix4x3fv;
 static gl_delete_program *glDeleteProgram;
 static gl_gen_buffers *glGenBuffers;
 static gl_bind_buffer *glBindBuffer;
@@ -60,9 +90,39 @@ void Render_Init(window_properties Window)
 	glUseProgram = (gl_use_program *)wglGetProcAddress("glUseProgram");
 	glGetUniformLocation = (gl_get_uniform_location *)wglGetProcAddress("glGetUniformLocation");
 	glDeleteProgram = (gl_delete_program *)wglGetProcAddress("glDeleteProgram");
-	glUniformMatrix4fv = (gl_uniform_matrix_4fv *)wglGetProcAddress("glUniformMatrix4fv");
-	glUniform3f = (gl_uniform_3f *)wglGetProcAddress("glUniform3f");
 	glUniform1i = (gl_uniform_1i *)wglGetProcAddress("glUniform1i");
+	glUniform2i = (gl_uniform_2i *)wglGetProcAddress("glUniform2i");
+	glUniform3i = (gl_uniform_3i *)wglGetProcAddress("glUniform3i");
+	glUniform4i = (gl_uniform_4i *)wglGetProcAddress("glUniform4i");
+	glUniform1iv = (gl_uniform_1iv *)wglGetProcAddress("glUniform1iv");
+	glUniform2iv = (gl_uniform_2iv *)wglGetProcAddress("glUniform2iv");
+	glUniform3iv = (gl_uniform_3iv *)wglGetProcAddress("glUniform3iv");
+	glUniform4iv = (gl_uniform_4iv *)wglGetProcAddress("glUniform4iv");
+	glUniform1ui = (gl_uniform_1ui *)wglGetProcAddress("glUniform1ui");
+	glUniform2ui = (gl_uniform_2ui *)wglGetProcAddress("glUniform2ui");
+	glUniform3ui = (gl_uniform_3ui *)wglGetProcAddress("glUniform3ui");
+	glUniform4ui = (gl_uniform_4ui *)wglGetProcAddress("glUniform4ui");
+	glUniform1uiv = (gl_uniform_1uiv *)wglGetProcAddress("glUniform1uiv");
+	glUniform2uiv = (gl_uniform_2uiv *)wglGetProcAddress("glUniform2uiv");
+	glUniform3uiv = (gl_uniform_3uiv *)wglGetProcAddress("glUniform3uiv");
+	glUniform4uiv = (gl_uniform_4uiv *)wglGetProcAddress("glUniform4uiv");
+	glUniform1f = (gl_uniform_1f *)wglGetProcAddress("glUniform1f");
+	glUniform2f = (gl_uniform_2f *)wglGetProcAddress("glUniform2f");
+	glUniform3f = (gl_uniform_3f *)wglGetProcAddress("glUniform3f");
+	glUniform4f = (gl_uniform_4f *)wglGetProcAddress("glUniform4f");
+	glUniform1fv = (gl_uniform_1fv *)wglGetProcAddress("glUniform1fv");
+	glUniform2fv = (gl_uniform_2fv *)wglGetProcAddress("glUniform2fv");
+	glUniform3fv = (gl_uniform_3fv *)wglGetProcAddress("glUniform3fv");
+	glUniform4fv = (gl_uniform_4fv *)wglGetProcAddress("glUniform4fv");
+	glUniformMatrix2fv = (gl_uniform_matrix_2fv *)wglGetProcAddress("glUniformMatrix2fv");
+	glUniformMatrix3fv = (gl_uniform_matrix_3fv *)wglGetProcAddress("glUniformMatrix3fv");
+	glUniformMatrix4fv = (gl_uniform_matrix_4fv *)wglGetProcAddress("glUniformMatrix4fv");
+	glUniformMatrix2x3fv = (gl_uniform_matrix_2x3fv *)wglGetProcAddress("glUniformMatrix2x3fv");
+	glUniformMatrix3x2fv = (gl_uniform_matrix_3x2fv *)wglGetProcAddress("glUniformMatrix3x2fv");
+	glUniformMatrix2x4fv = (gl_uniform_matrix_2x4fv *)wglGetProcAddress("glUniformMatrix2x4fv");
+	glUniformMatrix4x2fv = (gl_uniform_matrix_4x2fv *)wglGetProcAddress("glUniformMatrix4x2fv");
+	glUniformMatrix3x4fv = (gl_uniform_matrix_3x4fv *)wglGetProcAddress("glUniformMatrix3x4fv");
+	glUniformMatrix4x3fv = (gl_uniform_matrix_4x3fv *)wglGetProcAddress("glUniformMatrix4x3fv");
 	glGenBuffers = (gl_gen_buffers *)wglGetProcAddress("glGenBuffers");
 	glBindBuffer = (gl_bind_buffer *)wglGetProcAddress("glBindBuffer");
 	glBufferData = (gl_buffer_data *)wglGetProcAddress("glBufferData");
@@ -206,80 +266,248 @@ int32 Render_GetShaderVariable(uint32 ShaderProgramHandle, char* name)
 	return ReturnValue;
 }
 
-void Render_UpdateShaderVariable(int32 UniformVariable, int32 Integer)
+void Render_UpdateShaderVariable(int32 Location, int32 Integer)
 {
-	glUniform1i(UniformVariable, Integer);
+	glUniform1i(Location, Integer);
 }
 
-void Render_UpdateShaderVariable(int32 Type, int32 UniformVariable, float* NewData)
+void Render_UpdateShaderVariable(int32 Location, int32 IntegerX, int32 IntegerY)
 {
-	switch (Type)
+	glUniform2i(Location, IntegerX, IntegerY);
+}
+
+void Render_UpdateShaderVariable(int32 Location, int32 IntegerX,
+	int32 IntegerY, int32 IntegerZ)
+{
+	glUniform3i(Location, IntegerX, IntegerY, IntegerZ);
+}
+
+void Render_UpdateShaderVariable(int32 Location, int32 IntegerX,
+	int32 IntegerY, int32 IntegerZ, int32 IntegerW)
+{
+	glUniform4i(Location, IntegerX, IntegerY, IntegerZ, IntegerW);
+}
+
+void Render_UpdateShaderVariable(int32 Location, int32 VectorSize,
+	int32* IntegerArray, int32 ArraySize)
+{
+	switch (VectorSize)
 	{
-	case 0: 
+	case 1:
 	{
+		glUniform1iv(Location, ArraySize, IntegerArray);
 	} break;
-	case 1: // Texture
+	case 2:
 	{
-		glUniform1i(UniformVariable, 0);
+		glUniform2iv(Location, ArraySize, IntegerArray);
 	} break;
-	case 2: // vector of 3 floats
+	case 3:
 	{
-		glUniform3f(UniformVariable, NewData[0], NewData[1], NewData[2]);
-	} break;
-	case 3: // 4x4 matrix of floats
-	{
-		glUniformMatrix4fv(UniformVariable, 1, GL_FALSE, NewData);
+		glUniform3iv(Location, ArraySize, IntegerArray);
 	} break;
 	case 4:
 	{
-		glUniform1i(UniformVariable, (int)*NewData);
+		glUniform4iv(Location, ArraySize, IntegerArray);
+	} break;
+	default:
+	{
+		//TODO: Error, not a valid array size
 	} break;
 	}
 }
 
-void Render_ObjectPipelineInit(
-	PipelineObjectDescription& ObjectDescription)
+void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedInteger)
 {
-	glGenBuffers(ObjectDescription.NumberOfVertexHandles,
-		ObjectDescription.VertexBufferObjectHandleIDs);
-	glGenVertexArrays(1, &ObjectDescription.VertexArrayObjectID);
-	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
+	glUniform1i(Location, UnsignedInteger);
+}
+
+void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedIntegerX, 
+	uint32 UnsignedIntegerY)
+{
+	glUniform2i(Location, UnsignedIntegerX, UnsignedIntegerY);
+}
+
+void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedIntegerX,
+	uint32 UnsignedIntegerY, uint32 UnsignedIntegerZ)
+{
+	glUniform3i(Location, UnsignedIntegerX, UnsignedIntegerY, UnsignedIntegerZ);
+}
+
+void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedIntegerX,
+	uint32 UnsignedIntegerY, uint32 UnsignedIntegerZ, uint32 UnsignedIntegerW)
+{
+	glUniform4i(Location, UnsignedIntegerX, UnsignedIntegerY, 
+		UnsignedIntegerZ, UnsignedIntegerW);
+}
+
+void Render_UpdateShaderVariable(int32 Location, int32 VectorSize,
+	uint32* UnsignedIntegerArray, int32 ArraySize)
+{
+	switch (VectorSize)
+	{
+	case 1:
+	{
+		glUniform1uiv(Location, ArraySize, UnsignedIntegerArray);
+	} break;
+	case 2:
+	{
+		glUniform2uiv(Location, ArraySize, UnsignedIntegerArray);
+	} break;
+	case 3:
+	{
+		glUniform3uiv(Location, ArraySize, UnsignedIntegerArray);
+	} break;
+	case 4:
+	{
+		glUniform4uiv(Location, ArraySize, UnsignedIntegerArray);
+	} break;
+	default:
+	{
+		//TODO: Error, not a valid array size
+	} break;
+	}
+}
+
+void Render_UpdateShaderVariable(int32 Location, float Float)
+{
+	glUniform1f(Location, Float);
+}
+
+void Render_UpdateShaderVariable(int32 Location, float FloatX, float FloatY)
+{
+	glUniform2f(Location, FloatX, FloatY);
+}
+
+void Render_UpdateShaderVariable(int32 Location, float FloatX,
+	float FloatY, float FloatZ)
+{
+	glUniform3f(Location, FloatX, FloatY, FloatZ);
+}
+
+void Render_UpdateShaderVariable(int32 Location, float FloatX,
+	float FloatY, float FloatZ, float FloatW)
+{
+	glUniform4f(Location, FloatX, FloatY, FloatZ, FloatW);
+}
+
+void Render_UpdateShaderVariable(int32 Location, int32 VectorSize,
+	float* FloatArray, int32 ArraySize)
+{
+	switch (VectorSize)
+	{
+	case 1:
+	{
+		glUniform1fv(Location, ArraySize, FloatArray);
+	} break;
+	case 2:
+	{
+		glUniform2fv(Location, ArraySize, FloatArray);
+	} break;
+	case 3:
+	{
+		glUniform3fv(Location, ArraySize, FloatArray);
+	} break;
+	case 4:
+	{
+		glUniform4fv(Location, ArraySize, FloatArray);
+	} break;
+	default:
+	{
+		//TODO: Error, not a valid array size
+	} break;
+	}
+}
+
+void Render_UpdateShaderVariable(int32 Location, int32 MatrixSize, 
+	float* NewData, int32 MatrixArraySize, bool Transpose)
+{
+	switch (MatrixSize)
+	{
+	case 22: 
+	{	
+		glUniformMatrix2fv(Location, MatrixArraySize, Transpose, NewData);
+	} break;
+	case 33: 
+	{
+		glUniformMatrix3fv(Location, MatrixArraySize, Transpose, NewData);
+	} break;
+	case 44:
+	{
+		glUniformMatrix4fv(Location, MatrixArraySize, Transpose, NewData);
+	} break;
+	case 23:
+	{
+		glUniformMatrix2x3fv(Location, MatrixArraySize, Transpose, NewData);
+	} break;
+	case 32:
+	{
+		glUniformMatrix3x2fv(Location, MatrixArraySize, Transpose, NewData);
+	} break;
+	case 24:
+	{
+		glUniformMatrix2x4fv(Location, MatrixArraySize, Transpose, NewData);
+	} break;
+	case 42:
+	{
+		glUniformMatrix4x2fv(Location, MatrixArraySize, Transpose, NewData);
+	} break;
+	case 34:
+	{
+		glUniformMatrix3x4fv(Location, MatrixArraySize, Transpose, NewData);
+	} break;
+	case 43:
+	{
+		glUniformMatrix4x3fv(Location, MatrixArraySize, Transpose, NewData);
+	} break;
+	default:
+	{
+		//TODO: Error, not a valid matrix size.
+	} break;
+	}
+}
+
+void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
+{
+	glGenBuffers(ObjectDescription->NumberOfVertexHandles,
+		ObjectDescription->VertexBufferObjectHandleIDs);
+	glGenVertexArrays(1, &ObjectDescription->VertexArrayObjectID);
+	glBindVertexArray(ObjectDescription->VertexArrayObjectID);
 
 	uint32 Index = 0;
 
-	for (Index; Index < ObjectDescription.NumberOfVertexHandles; Index++)
+	for (Index; Index < ObjectDescription->NumberOfVertexHandles; Index++)
 	{
-		if (ObjectDescription.VertexBufferDescriptions[0].Uint32Data == 0)
+		if (ObjectDescription->VertexBufferDescriptions[0].Uint32Data == 0)
 		{
 			//TODO: Naming scheme may be too long here.
-			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandleIDs[Index]);
-			glBufferData(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferDescriptions[Index].Size,
-				ObjectDescription.VertexBufferDescriptions[Index].FloatData, GL_STATIC_DRAW);
+			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferObjectHandleIDs[Index]);
+			glBufferData(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferDescriptions[Index].Size,
+				ObjectDescription->VertexBufferDescriptions[Index].FloatData, GL_STATIC_DRAW);
 
 			glEnableVertexAttribArray(Index);
-			glBindVertexBuffer(Index, ObjectDescription.VertexBufferObjectHandleIDs[Index],
-				0, sizeof(GLfloat) * ObjectDescription.VertexBufferDescriptions[Index].Offset);
-			glVertexAttribFormat(Index, ObjectDescription.VertexBufferDescriptions[Index].Offset, GL_FLOAT, GL_FALSE, 0);
+			glBindVertexBuffer(Index, ObjectDescription->VertexBufferObjectHandleIDs[Index],
+				0, sizeof(GLfloat) * ObjectDescription->VertexBufferDescriptions[Index].Offset);
+			glVertexAttribFormat(Index, ObjectDescription->VertexBufferDescriptions[Index].Offset, GL_FLOAT, GL_FALSE, 0);
 			glVertexAttribBinding(Index, Index);
 		}
 		else
 		{
 			if (Index == 0)
 			{
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandleIDs[Index]);
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription.VertexBufferDescriptions[Index].Size,
-					ObjectDescription.VertexBufferDescriptions[Index].Uint32Data, GL_STATIC_DRAW);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription->VertexBufferObjectHandleIDs[Index]);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription->VertexBufferDescriptions[Index].Size,
+					ObjectDescription->VertexBufferDescriptions[Index].Uint32Data, GL_STATIC_DRAW);
 				Index++;
 			}
 
-			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandleIDs[Index]);
-			glBufferData(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferDescriptions[Index].Size,
-				ObjectDescription.VertexBufferDescriptions[Index].FloatData, GL_STATIC_DRAW);
+			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferObjectHandleIDs[Index]);
+			glBufferData(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferDescriptions[Index].Size,
+				ObjectDescription->VertexBufferDescriptions[Index].FloatData, GL_STATIC_DRAW);
 
 			glEnableVertexAttribArray(Index - 1);
-			glBindVertexBuffer(Index - 1, ObjectDescription.VertexBufferObjectHandleIDs[Index],
-				0, sizeof(GLfloat) * ObjectDescription.VertexBufferDescriptions[Index].Offset);
-			glVertexAttribFormat(Index - 1, ObjectDescription.VertexBufferDescriptions[Index].Offset, GL_FLOAT, GL_FALSE, 0);
+			glBindVertexBuffer(Index - 1, ObjectDescription->VertexBufferObjectHandleIDs[Index],
+				0, sizeof(GLfloat) * ObjectDescription->VertexBufferDescriptions[Index].Offset);
+			glVertexAttribFormat(Index - 1, ObjectDescription->VertexBufferDescriptions[Index].Offset, GL_FLOAT, GL_FALSE, 0);
 			glVertexAttribBinding(Index - 1, Index - 1);
 		}
 	}
@@ -288,9 +516,9 @@ void Render_ObjectPipelineInit(
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
 }
 
-void* Render_GetObjectShaderDataPtr(PipelineObjectDescription& Description, int32 Offset, uint32 Length)
+void* Render_GetObjectShaderDataPtr(uint32* VertexObjectHandleIDArray, int32 Offset, uint32 Length)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, Description.VertexBufferObjectHandleIDs[2]);
+	glBindBuffer(GL_ARRAY_BUFFER, VertexObjectHandleIDArray[2]);
 	GLsizeiptr NewDataSize;
 	NewDataSize = Length * 3 * sizeof(float);
 	void* test = glMapBufferRange(GL_ARRAY_BUFFER, Offset,
@@ -320,30 +548,30 @@ void Render_SetTexture(unsigned char* ImageData, int32 Width,
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Render_DrawPoint(PipelineObjectDescription &ObjectDescription,
+void Render_DrawPoint(uint32 VertexArrayObjectID,
 	float PointSize, uint32 numVertices)
 {
 	glPointSize(PointSize);
-	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
+	glBindVertexArray(VertexArrayObjectID);
 	glDrawArrays(GL_POINTS, 0, numVertices);
 	glBindVertexArray(0);
 	glPointSize(1.0f);
 }
 
-void Render_DrawLine(PipelineObjectDescription &ObjectDescription,
+void Render_DrawLine(uint32 VertexArrayObjectID,
 	float LineSize, uint32 numVertices)
 {
 	glLineWidth(LineSize);
-	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
+	glBindVertexArray(VertexArrayObjectID);
 	glDrawArrays(GL_LINES, 0, numVertices);
 	glBindVertexArray(0);
 	glLineWidth(1.0f);
 }
 
-void Render_DrawObject(PipelineObjectDescription &ObjectDescription,
+void Render_DrawObject(uint32 VertexArrayObjectID,
 	uint32 &Texture, uint32 numVertices)
 {
-	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
+	glBindVertexArray(VertexArrayObjectID);
 	glBindTexture(GL_TEXTURE_2D, Texture);
 
 	glDrawArrays(GL_TRIANGLES, 0, numVertices);
@@ -352,21 +580,21 @@ void Render_DrawObject(PipelineObjectDescription &ObjectDescription,
 	glBindVertexArray(0);
 }
 
-void Render_DrawObjectIndices(PipelineObjectDescription &ObjectDescription,
+void Render_DrawObjectIndices(uint32 VertexArrayObjectID,
 	uint32 &Texture, uint32 NumberOfIndices)
 {
-	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
+	glBindVertexArray(VertexArrayObjectID);
 	glBindTexture(GL_TEXTURE_2D, Texture);
 	glDrawElements(GL_TRIANGLES, NumberOfIndices, GL_UNSIGNED_INT, (void*)0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 }
 
-void Render_UpdateColorVertice(PipelineObjectDescription& Description,
+void Render_UpdateColorVertice(uint32* VertexObjectHandleIDArray,
 	uint32 ArrayPosition, float* Color)
 {
 	float* GPUMemoryMapPtr = (float*)Render_GetObjectShaderDataPtr(
-		Description, ArrayPosition, 1);
+		VertexObjectHandleIDArray, ArrayPosition, 1);
 	*GPUMemoryMapPtr = Color[0];
 	*++GPUMemoryMapPtr = Color[1];
 	*++GPUMemoryMapPtr = Color[2];

@@ -63,11 +63,11 @@ void Menu_Draw(ProgramState* State)
 	State->GPUShaderVarArray[4] =
 		Render_GetShaderVariable(State->ShaderHandles[0], "mouseOver");
 
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[1],
-		(float*)State->CameraArray[0].GetViewMatrix());
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[2],
-		(float*)State->CameraArray[0].GetProjectionMatrix());
-	Render_UpdateShaderVariable(1, State->GPUShaderVarArray[3], 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
+		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
+		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], (int32)0);
 
 	int MouseOver = 0;
 

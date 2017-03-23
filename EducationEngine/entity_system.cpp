@@ -115,8 +115,8 @@ void Entity_Draw(uint32 BlockNumber, uint32 IDNumber, uint32 ShaderVariableID)
 {
 	if (EntityBlocks[BlockNumber].BlockEntities[IDNumber].Active == 1)
 	{
-		Render_UpdateShaderVariable(3, ShaderVariableID,
-			(float*)&EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst.ModelMatrix);
+		Render_UpdateShaderVariable(ShaderVariableID, 44,
+			(float*)&EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst.ModelMatrix, 1, 0);
 		EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst.ObjectPtr->Draw();
 	}
 }
@@ -125,8 +125,8 @@ void Entity_DrawPolyGonMode(uint32 BlockNumber, uint32 IDNumber, uint32 ShaderVa
 {
 	if (EntityBlocks[BlockNumber].BlockEntities[IDNumber].Active == 1)
 	{
-		Render_UpdateShaderVariable(3, ShaderVariableID,
-			(float*)&EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst.ModelMatrix);
+		Render_UpdateShaderVariable(ShaderVariableID, 44,
+			(float*)&EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst.ModelMatrix, 1, 0);
 		EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst.ObjectPtr->Draw(1);
 	}
 }

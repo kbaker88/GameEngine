@@ -9,6 +9,8 @@ void Plane2D::Init(uint32 width, uint32 height)
 	ObjectDescription.NumberOfVertexHandles = 4;
 	ObjectDescription.VertexBufferDescriptions =
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+	ObjectDescription.VertexBufferObjectHandleIDs =
+		new uint32[ObjectDescription.NumberOfVertexHandles];
 
 	uint32 index = 0;
 	NumberOfSquares = width * height;
@@ -247,7 +249,7 @@ void Plane2D::Init(uint32 width, uint32 height)
 		12 * NumberOfSquares * sizeof(float);
 	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
 
-	Render_ObjectPipelineInit(ObjectDescription);
+	Render_ObjectPipelineInit(&ObjectDescription);
 
 	delete[] ColorData;
 	delete[] NormalData; 
@@ -258,5 +260,5 @@ void Plane2D::Init(uint32 width, uint32 height)
 
 void Plane2D::Draw()
 {
-	Render_DrawObject(ObjectDescription, TextureID, NumberOfVertices);
+	Render_DrawObject(ObjectDescription.VertexArrayObjectID, TextureID, NumberOfVertices);
 }

@@ -9,7 +9,8 @@ void Title_Initialize(ProgramState* State)
 	float HalfScreenWidth = 0.5f * (float)WindowDimensions.Width;
 	float HalfScreenHeight = 0.5f * (float)WindowDimensions.Height;
 
-	State->CameraArray[0].SetPosition(&v3(-HalfScreenWidth, -HalfScreenHeight, 1.0f));
+	State->CameraArray[0].SetPosition(&v3(-HalfScreenWidth, 
+		-HalfScreenHeight, 1.0f));
 	State->CameraArray[0].SetProjectionMatrix(0);
 	
 	State->ShaderHandles[0] = Render_CompileShaders(MenuVertexShaderSource,
@@ -24,20 +25,26 @@ void Title_Initialize(ProgramState* State)
 	v3 ButtonPosition = { MenuButtonsXPos, MenuButtonsYPos, 0.0f };
 
 	// Start Button
-	Object_Create(new MyRectangle, State->ObjectBlockNum, 0, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 0, 
+		ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, 
+		ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 0, Asset_GetTexture(0));
 
 	// Menu Button
 	ButtonPosition.y -= ButtonHeight;
-	Object_Create(new MyRectangle, State->ObjectBlockNum, 1, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 1, 
+		ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, 
+		ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 1, Asset_GetTexture(1));
 
 	// Exit Button
 	ButtonPosition.y -= ButtonHeight;
-	Object_Create(new MyRectangle, State->ObjectBlockNum, 2, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 2,
+		ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2,
+		ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 2, Asset_GetTexture(2));
 }
 
@@ -57,11 +64,11 @@ void Title_Draw(ProgramState* State)
 	State->GPUShaderVarArray[4] =
 		Render_GetShaderVariable(State->ShaderHandles[0], "mouseOver");
 
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[1],
-		(float*)State->CameraArray[0].GetViewMatrix());
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[2], 
-		(float*)State->CameraArray[0].GetProjectionMatrix());
-	Render_UpdateShaderVariable(1, State->GPUShaderVarArray[3], 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
+		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
+		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], (int32)0);
 
 	int MouseOver = 0;
 
@@ -127,13 +134,19 @@ void Title_Draw(ProgramState* State)
 	}
 
 	Render_BindShaders(State->ShaderHandles[1]);
-	State->GPUShaderVarArray[0] = Render_GetShaderVariable(State->ShaderHandles[1], "model");
-	State->GPUShaderVarArray[1] = Render_GetShaderVariable(State->ShaderHandles[1], "view");
-	State->GPUShaderVarArray[2] = Render_GetShaderVariable(State->ShaderHandles[1], "projection");
-	State->GPUShaderVarArray[3] = Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
+	State->GPUShaderVarArray[0] = 
+		Render_GetShaderVariable(State->ShaderHandles[1], "model");
+	State->GPUShaderVarArray[1] = 
+		Render_GetShaderVariable(State->ShaderHandles[1], "view");
+	State->GPUShaderVarArray[2] =
+		Render_GetShaderVariable(State->ShaderHandles[1], "projection");
+	State->GPUShaderVarArray[3] = 
+		Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
 
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[1], (float*)State->CameraArray[0].GetViewMatrix());
-	Render_UpdateShaderVariable(3, State->GPUShaderVarArray[2], (float*)State->CameraArray[0].GetProjectionMatrix());
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44, 
+		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44, 
+		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
 	Render_UpdateShaderVariable(1, State->GPUShaderVarArray[3], 0);
 
 	v3 TextStartPosition = { (float)(-0.5f * WindowProperties.Width) + 20.0f,

@@ -45,7 +45,7 @@ void Object::InputTexture(TextureStorage* Texture)
 void Object::Draw()
 {
 	//DrawObject(ObjectDescription, TextureID, NumberOfVertices);
-	Render_DrawObjectIndices(ObjectDescription, TextureID, NumberOfIndices);
+	Render_DrawObjectIndices(ObjectDescription.VertexArrayObjectID, TextureID, NumberOfIndices);
 }
 
 void Object::Draw(uint8 Choice)
@@ -53,12 +53,12 @@ void Object::Draw(uint8 Choice)
 	if (Choice == 1)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		Render_DrawObjectIndices(ObjectDescription, TextureID, NumberOfIndices);
+		Render_DrawObjectIndices(ObjectDescription.VertexArrayObjectID, TextureID, NumberOfIndices);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	else
 	{
-		Render_DrawObjectIndices(ObjectDescription, TextureID, NumberOfIndices);
+		Render_DrawObjectIndices(ObjectDescription.VertexArrayObjectID, TextureID, NumberOfIndices);
 	}
 }
 
@@ -71,24 +71,33 @@ void Object::Delete()
 	Render_DeleteVertexArrays(1, &ObjectDescription.VertexArrayObjectID);
 	Render_DeleteTexture(1, &TextureID);
 
-	for (uint32 Index = 0; 
-		Index < ObjectDescription.NumberOfVertexHandles; 
-		Index++)
-	{
-		//TODO: Are these actually needed?
-		if (ObjectDescription.VertexBufferDescriptions[Index].FloatData)
-		{
-			delete[] ObjectDescription.VertexBufferDescriptions[Index].FloatData;
-		}
-		if (ObjectDescription.VertexBufferDescriptions[Index].Uint32Data)
-		{
-			delete[] ObjectDescription.VertexBufferDescriptions[Index].Uint32Data;
-		}
-	}
+	//for (uint32 Index = 0; 
+	//	Index < ObjectDescription.NumberOfVertexHandles; 
+	//	Index++)
+	//{
+	//	//TODO: Are these actually needed?
+	//	if (ObjectDescription.VertexBufferDescriptions[Index].FloatData)
+	//	{
+	//		delete[] ObjectDescription.VertexBufferDescriptions[Index].FloatData;
+	//		ObjectDescription.VertexBufferDescriptions[Index].FloatData = NULL;
+	//	}
+	//	if (ObjectDescription.VertexBufferDescriptions[Index].Uint32Data)
+	//	{
+	//		delete[] ObjectDescription.VertexBufferDescriptions[Index].Uint32Data;
+	//		ObjectDescription.VertexBufferDescriptions[Index].Uint32Data = NULL;
+	//	}
+	//}
 
 	if (ObjectDescription.VertexBufferDescriptions)
 	{
 		delete[] ObjectDescription.VertexBufferDescriptions;
+		ObjectDescription.VertexBufferDescriptions = NULL;
+	}
+
+	if (ObjectDescription.VertexBufferObjectHandleIDs)
+	{
+		delete[] ObjectDescription.VertexBufferObjectHandleIDs;
+		ObjectDescription.VertexBufferObjectHandleIDs = NULL;
 	}
 
 	if (VerticeFloatArrayPtr)
