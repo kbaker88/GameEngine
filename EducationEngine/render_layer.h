@@ -16,10 +16,10 @@ struct VBODescription
 
 struct PipelineObjectDescription
 {
-	uint32 VertexArrayObject;
+	uint32 VertexArrayObjectID;
 	uint32 NumberOfVertexHandles;
-	uint32 VertexBufferObjectHandles[8]; // TODO : Error point
-	VBODescription Description[8]; // TODO : Error point
+	uint32* VertexBufferObjectHandleIDs; 
+	VBODescription* VertexBufferDescriptions; //[8]; 
 };
 
 // General Functions
@@ -37,13 +37,14 @@ void Render_ClearCurrentShaderProgram();
 void Render_DeleteShaderProgram(uint32 ShaderProgramHandle);
 int32 Render_GetShaderVariable(uint32 ShaderProgramHandle, char* name);
 void Render_UpdateShaderVariable(int32 UniformVariable, int32 Integer);
-void Render_UpdateShaderVariable(int32 Type, int32 UniformVariable, float* NewData);
+void Render_UpdateShaderVariable(int32 Type, int32 UniformVariable,
+	float* NewData);
 
 // Object Rendering Functions
 void Render_ObjectPipelineInit(
 	PipelineObjectDescription& ObjectDescription);
 void Render_SetTexture(unsigned char* ImageData, int32 Width,
-				int32 Height, uint32 &TextureID);
+				int32 Height, uint32 *TextureID);
 void Render_DrawPoint(PipelineObjectDescription &ObjectDescription,
 	float PointSize, uint32 numVertices);
 void Render_DrawLine(PipelineObjectDescription &ObjectDescription,
@@ -56,10 +57,13 @@ void Render_DrawObjectIndices(PipelineObjectDescription &ObjectDescription,
 void Render_UpdateColorVertice(PipelineObjectDescription& Description,
 	uint32 ArrayPosition, float* Color);
 
-void* Render_GetObjectShaderDataPtr(PipelineObjectDescription& Description, int32 Offset, uint32 Length);
+void* Render_GetObjectShaderDataPtr(PipelineObjectDescription& Description,
+	int32 Offset, uint32 Length);
 void Render_UnmapShaderDataPtr();
-void Render_DeleteTextureBuffer(uint32 Size, uint32 &TextureID);
-void Render_DeleteVertexArrays(uint32 Size, uint32 *VAO);
-void Render_DeleteBuffers(uint32 Size, uint32 *Buffers);
+void Render_DeleteTexture(uint32 NumberOfTextures, uint32 *TextureID);
+void Render_DeleteVertexArrays(uint32 NumberOfVertexArrayObjects, uint32 *VAO);
+void Render_DeleteBuffers(uint32 NumberOfBuffers, uint32 *Buffers); //TODO: Will this one ever be used?
+void Render_DeleteBuffers(uint32 NumberOfBuffers, 
+	uint32 VertexArrayObjectID, uint32 *Buffers);
 
 #endif

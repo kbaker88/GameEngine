@@ -24,6 +24,7 @@ void Object_DeleteBlock(uint32 BlockID)
 		{
 			if (ObjectBlocks[BlockID].BlockObjects[i])
 			{
+				ObjectBlocks[BlockID].BlockObjects[i]->Delete();
 				delete ObjectBlocks[BlockID].BlockObjects[i];
 			}
 		}

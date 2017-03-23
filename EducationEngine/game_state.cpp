@@ -22,13 +22,13 @@ void Game_Initialize(ProgramState* State)
 
 	Pysc_SetAccelerationRate(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), 1000.0f);
 
-	// Light Box
+	// Wood Box
 	Object_Create(new Box, State->ObjectBlockNum, 1, 0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, v3(3.0f, 0.0f, 15.0f));
-
-	// Wood Box
+	//TODO: Add Opengl uniforms for all
+	// Light Box
 	Object_Create(new Box, State->ObjectBlockNum, 2, 0.25f, 0.25f, 0.25f);
-	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2, v3(2.0f, 1.0f, 17.0f)); // light
+	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2, v3(2.0f, 1.0f, 17.0f)); 
 
 	// Wood Floor
 	Object_Create(new Plane2D, State->ObjectBlockNum, 3, 10, 10);

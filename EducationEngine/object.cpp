@@ -1,16 +1,14 @@
 #include "object.h"
 
-Object::Object() : TextureID(0)
-{
-	VerticeFloatArrayPtr = 0;
-}
+Object::Object() : TextureID(0), VerticeFloatArrayPtr(NULL)
+{}
 
 Object::~Object()
 {
 	if (VerticeFloatArrayPtr)
 	{
 		delete[] VerticeFloatArrayPtr;
-		VerticeFloatArrayPtr = 0;
+		VerticeFloatArrayPtr = NULL;
 	}
 }
 
@@ -40,7 +38,7 @@ void Object::Init(float width, float height, float depth)
 void Object::InputTexture(TextureStorage* Texture)
 {
 	Render_SetTexture(Texture->data, Texture->Width,
-		Texture->Height, TextureID);
+		Texture->Height, &TextureID);
 }
 
 void Object::Draw()
@@ -65,7 +63,16 @@ void Object::Draw(uint8 Choice)
 
 void Object::Delete()
 {
-	Render_DeleteVertexArrays(1, &ObjectDescription.VertexArrayObject);
-	Render_DeleteBuffers(4, ObjectDescription.VertexBufferObjectHandles);
-	Render_DeleteTextureBuffer(1, TextureID);
+	//TODO: Change the 1 for deletion of texture and vertex arrays so multiple is possible
+	Render_DeleteBuffers(ObjectDescription.NumberOfVertexHandles,
+		ObjectDescription.VertexArrayObjectID,
+		ObjectDescription.VertexBufferObjectHandleIDs);
+	Render_DeleteVertexArrays(1, &ObjectDescription.VertexArrayObjectID);
+	Render_DeleteTexture(1, &TextureID);
+
+	if (VerticeFloatArrayPtr)
+	{
+		delete[] VerticeFloatArrayPtr;
+		VerticeFloatArrayPtr = NULL;
+	}
 }

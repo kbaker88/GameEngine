@@ -11,8 +11,6 @@ struct TextureStorage
 	uint32 Height;
 	uint32 NumPixelComps;
 	uint32 PixelCompSize;
-
-	//BmpDimensions dimension;
 };
 
 static TextureStorage Textures[512];
@@ -22,10 +20,10 @@ void Asset_LoadTextures();
 void Asset_LoadBMP(char* FileName);
 
 void Asset_LoadPNG(char* FileName);
-//void LoadGlyphs();
 uint32 Asset_GetTextureCount();
 TextureStorage* Asset_GetTexture(uint32 TextureNumber);
 
+void Asset_DeleteAll();
 /* TO DO
 - Clean up textures glDeleteTextures(1, &Texture); and delete[] TextureData;
 

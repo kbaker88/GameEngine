@@ -1,12 +1,5 @@
 #include "asset_system.h"
 
-unsigned char* TextureData = NULL;
-BmpDimensions TextureDimensions;
-
-PNGProperties ImageProperties;
-unsigned char* PNGData = NULL;
-
-
 void Asset_LoadTextures()
 {
 	TextureCount = 0;
@@ -23,9 +16,11 @@ void Asset_LoadTextures()
 
 void Asset_LoadBMP(char* FileName)
 {
-	TextureData = Platform_ReadFile(FileName);
-	TextureData = GetBmpData(TextureData, TextureDimensions);
-	Textures[TextureCount].data = TextureData;
+	BmpDimensions TextureDimensions;
+	unsigned char* BMPData = NULL;
+	BMPData = Platform_ReadFile(FileName);
+	BMPData = GetBmpData(BMPData, TextureDimensions);
+	Textures[TextureCount].data = BMPData; 
 	Textures[TextureCount].Width = TextureDimensions.Width;
 	Textures[TextureCount].Height = TextureDimensions.Height;
 	TextureCount++;
@@ -33,6 +28,8 @@ void Asset_LoadBMP(char* FileName)
 
 void Asset_LoadPNG(char* FileName)
 {
+	PNGProperties ImageProperties;
+	unsigned char* PNGData;
 	PNGData = Platform_ReadFile(FileName);
 	PNGData = GetPNGData(PNGData, ImageProperties);
 	Textures[TextureCount].data = PNGData;
@@ -41,30 +38,7 @@ void Asset_LoadPNG(char* FileName)
 	Textures[TextureCount].NumPixelComps = ImageProperties.NumPixelComps;
 	Textures[TextureCount].PixelCompSize = ImageProperties.PixelCompSize;
 	TextureCount++;
-	//delete[] PNGData;
 }
-/*
-void LoadGlyphs()
-{
-	loaded_bitmap test;
-
-	uint8* TextureData = NULL;
-	BmpDimensions TextureDimensions;
-
-	void* Bits;
-	SetupFont("c:/Windows/Fonts/arial.ttf", "Courier New", Bits);
-	for (uint32 Character = 'A'; Character < 'Z'; Character++)
-	{
-		test = LoadGlyphFromPlatform("c:/Windows/Fonts/arial.ttf", "Courier New", Character);
-		TextureData = (uint8*)test.Memory;
-		TextureDimensions.Width = test.Width;
-		TextureDimensions.Height = test.Height;
-
-		Textures[TextureCount].data = TextureData;
-		Textures[TextureCount].dimension = TextureDimensions;
-		TextureCount++;
-	}
-}*/
 
 uint32 Asset_GetTextureCount()
 {
@@ -74,4 +48,18 @@ uint32 Asset_GetTextureCount()
 TextureStorage* Asset_GetTexture(uint32 TextureNumber)
 {
 	return &Textures[TextureNumber];
+}
+
+void Asset_DeleteAll()
+{
+	for (uint32 Index = 0; Index < TextureCount; Index++)
+	{
+		delete[] Textures[Index].data;
+		Textures[Index].data = NULL;
+		Textures[Index].Height = 0;
+		Textures[Index].Width = 0;
+		Textures[Index].NumPixelComps = 0;
+		Textures[Index].PixelCompSize = 0;
+	}
+	TextureCount = 0;
 }

@@ -421,6 +421,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 	}
 
+	Asset_DeleteAll(); //TODO: Temporary, remove this later.
 	Platform_Cleanup();
 
 	return Message.message;

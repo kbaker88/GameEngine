@@ -1,14 +1,11 @@
 #include "line.h"
 
-Line::Line()
-{
-
-}
+Line::Line() {}
 
 Line::~Line()
 {
-	Render_DeleteVertexArrays(1, &ObjectDescription.VertexArrayObject);
-	Render_DeleteBuffers(2, ObjectDescription.VertexBufferObjectHandles);
+	//Render_DeleteVertexArrays(1, &ObjectDescription.VertexArrayObjectID);
+	//Render_DeleteBuffers(2, ObjectDescription.VertexBufferObjectHandleIDs);
 }
 
 void Line::Init(float* Point1, float* Point2, float lineSize)

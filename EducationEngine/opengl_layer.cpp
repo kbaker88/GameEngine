@@ -241,9 +241,9 @@ void Render_ObjectPipelineInit(
 	PipelineObjectDescription& ObjectDescription)
 {
 	glGenBuffers(ObjectDescription.NumberOfVertexHandles,
-		ObjectDescription.VertexBufferObjectHandles);
-	glGenVertexArrays(1, &ObjectDescription.VertexArrayObject);
-	glBindVertexArray(ObjectDescription.VertexArrayObject);
+		ObjectDescription.VertexBufferObjectHandleIDs);
+	glGenVertexArrays(1, &ObjectDescription.VertexArrayObjectID);
+	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
 
 	uint32 Index = 0;
 
@@ -251,12 +251,12 @@ void Render_ObjectPipelineInit(
 	{
 		if (ObjectDescription.Description[0].IndiceData == 0)
 		{
-			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandles[Index]);
+			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandleIDs[Index]);
 			glBufferData(GL_ARRAY_BUFFER, ObjectDescription.Description[Index].Size,
 				ObjectDescription.Description[Index].Data, GL_STATIC_DRAW);
 
 			glEnableVertexAttribArray(Index);
-			glBindVertexBuffer(Index, ObjectDescription.VertexBufferObjectHandles[Index],
+			glBindVertexBuffer(Index, ObjectDescription.VertexBufferObjectHandleIDs[Index],
 				0, sizeof(GLfloat) * ObjectDescription.Description[Index].Offset);
 			glVertexAttribFormat(Index, ObjectDescription.Description[Index].Offset, GL_FLOAT, GL_FALSE, 0);
 			glVertexAttribBinding(Index, Index);
@@ -265,18 +265,18 @@ void Render_ObjectPipelineInit(
 		{
 			if (Index == 0)
 			{
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandles[Index]);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandleIDs[Index]);
 				glBufferData(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription.Description[Index].Size,
 					ObjectDescription.Description[Index].IndiceData, GL_STATIC_DRAW);
 				Index++;
 			}
 
-			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandles[Index]);
+			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandleIDs[Index]);
 			glBufferData(GL_ARRAY_BUFFER, ObjectDescription.Description[Index].Size,
 				ObjectDescription.Description[Index].Data, GL_STATIC_DRAW);
 
 			glEnableVertexAttribArray(Index - 1);
-			glBindVertexBuffer(Index - 1, ObjectDescription.VertexBufferObjectHandles[Index],
+			glBindVertexBuffer(Index - 1, ObjectDescription.VertexBufferObjectHandleIDs[Index],
 				0, sizeof(GLfloat) * ObjectDescription.Description[Index].Offset);
 			glVertexAttribFormat(Index - 1, ObjectDescription.Description[Index].Offset, GL_FLOAT, GL_FALSE, 0);
 			glVertexAttribBinding(Index - 1, Index - 1);
@@ -289,7 +289,7 @@ void Render_ObjectPipelineInit(
 
 void* Render_GetObjectShaderDataPtr(PipelineObjectDescription& Description, int32 Offset, uint32 Length)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, Description.VertexBufferObjectHandles[2]);
+	glBindBuffer(GL_ARRAY_BUFFER, Description.VertexBufferObjectHandleIDs[2]);
 	GLsizeiptr NewDataSize;
 	NewDataSize = Length * 3 * sizeof(float);
 	void* test = glMapBufferRange(GL_ARRAY_BUFFER, Offset,
@@ -304,10 +304,10 @@ void Render_UnmapShaderDataPtr()
 }
 
 void Render_SetTexture(unsigned char* ImageData, int32 Width,
-				int32 Height, uint32 &TextureID)
+				int32 Height, uint32 *TextureID)
 {
-	glGenTextures(1, &TextureID);
-	glBindTexture(GL_TEXTURE_2D, TextureID);
+	glGenTextures(1, TextureID);
+	glBindTexture(GL_TEXTURE_2D, *TextureID);
 
 	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, Width, Height);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, Width, Height, GL_RGBA,
@@ -323,7 +323,7 @@ void Render_DrawPoint(PipelineObjectDescription &ObjectDescription,
 	float PointSize, uint32 numVertices)
 {
 	glPointSize(PointSize);
-	glBindVertexArray(ObjectDescription.VertexArrayObject);
+	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
 	glDrawArrays(GL_POINTS, 0, numVertices);
 	glBindVertexArray(0);
 	glPointSize(1.0f);
@@ -333,7 +333,7 @@ void Render_DrawLine(PipelineObjectDescription &ObjectDescription,
 	float LineSize, uint32 numVertices)
 {
 	glLineWidth(LineSize);
-	glBindVertexArray(ObjectDescription.VertexArrayObject);
+	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
 	glDrawArrays(GL_LINES, 0, numVertices);
 	glBindVertexArray(0);
 	glLineWidth(1.0f);
@@ -342,7 +342,7 @@ void Render_DrawLine(PipelineObjectDescription &ObjectDescription,
 void Render_DrawObject(PipelineObjectDescription &ObjectDescription,
 	uint32 &Texture, uint32 numVertices)
 {
-	glBindVertexArray(ObjectDescription.VertexArrayObject);
+	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
 	glBindTexture(GL_TEXTURE_2D, Texture);
 
 	glDrawArrays(GL_TRIANGLES, 0, numVertices);
@@ -354,7 +354,7 @@ void Render_DrawObject(PipelineObjectDescription &ObjectDescription,
 void Render_DrawObjectIndices(PipelineObjectDescription &ObjectDescription,
 	uint32 &Texture, uint32 NumberOfIndices)
 {
-	glBindVertexArray(ObjectDescription.VertexArrayObject);
+	glBindVertexArray(ObjectDescription.VertexArrayObjectID);
 	glBindTexture(GL_TEXTURE_2D, Texture);
 	glDrawElements(GL_TRIANGLES, NumberOfIndices, GL_UNSIGNED_INT, (void*)0);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -373,17 +373,25 @@ void Render_UpdateColorVertice(PipelineObjectDescription& Description,
 	Render_UnmapShaderDataPtr();
 }
 
-void Render_DeleteTextureBuffer(uint32 Size, uint32 &TextureID)
+void Render_DeleteTexture(uint32 NumberOfTextures, uint32 *TextureID)
 {
-	glDeleteTextures(Size, &TextureID);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDeleteTextures(NumberOfTextures, TextureID);
 }
 
-void Render_DeleteVertexArrays(uint32 Size, uint32 *VAO)
+void Render_DeleteVertexArrays(uint32 NumberOfVertexArrayObjects, uint32 *VAO)
 {
-	glDeleteVertexArrays(1, VAO);
+	glBindVertexArray(0);
+	glDeleteVertexArrays(NumberOfVertexArrayObjects, VAO);
 }
 
-void Render_DeleteBuffers(uint32 Size, uint32 *Buffers)
+void Render_DeleteBuffers(uint32 NumberOfBuffers, uint32 *Buffers)
 {
-	glDeleteBuffers(4, Buffers);
+	glDeleteBuffers(NumberOfBuffers, Buffers);
+}
+
+void Render_DeleteBuffers(uint32 NumberOfBuffers, uint32 VertexArrayObjectID, uint32 *Buffers)
+{
+	glBindVertexArray(VertexArrayObjectID);
+	glDeleteBuffers(NumberOfBuffers, Buffers);
 }

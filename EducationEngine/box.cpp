@@ -1,20 +1,17 @@
 
 #include "box.h"
 
-Box::Box() 
-{
-	NumberOfVertices = 36;
-}
+Box::Box() {}
 
-Box::~Box() 
-{
-}
+Box::~Box() {}
 
 void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 {
 	Width = NewWidth;
 	Height = NewHeight;
 	Depth = NewDepth;
+
+	NumberOfVertices = 36;
 
 	float VerticePositions[] =
 	{

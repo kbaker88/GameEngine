@@ -248,7 +248,6 @@ void Plane2D::Init(uint32 width, uint32 height)
 
 	Render_ObjectPipelineInit(ObjectDescription);
 
-	//delete[] VerticePositions;
 	delete[] ColorData;
 	delete[] TextureCoords;
 	delete[] NormalData; 
