@@ -4,6 +4,8 @@
 #include "debug_system.h"
 #include "asset_system.h"
 
+//TODO: Is ObjectID actually needed?
+
 class Object
 {
 public:
@@ -20,14 +22,9 @@ public:
 	void Delete();
 
 	PipelineObjectDescription ObjectDescription;
-	uint32 ID;
 	float* VerticeFloatArrayPtr;
-	uint32 NumberOfVertices;
-	uint32 NumberOfIndices;
-
 	float Width, Height, Depth;
-	
-	uint32 TextureID;
+	uint32 ObjectID, TextureID, NumberOfVertices, NumberOfIndices;
 };
 
 #endif

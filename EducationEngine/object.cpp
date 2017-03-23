@@ -1,7 +1,8 @@
 #include "object.h"
 
-Object::Object() : TextureID(0), VerticeFloatArrayPtr(NULL)
-{}
+Object::Object() : VerticeFloatArrayPtr(NULL), ObjectID(0), 
+TextureID(0), NumberOfVertices(0), NumberOfIndices(0), Width(0.0f), 
+Height(0.0f), Depth(0.0f) {}
 
 Object::~Object()
 {
@@ -69,6 +70,26 @@ void Object::Delete()
 		ObjectDescription.VertexBufferObjectHandleIDs);
 	Render_DeleteVertexArrays(1, &ObjectDescription.VertexArrayObjectID);
 	Render_DeleteTexture(1, &TextureID);
+
+	for (uint32 Index = 0; 
+		Index < ObjectDescription.NumberOfVertexHandles; 
+		Index++)
+	{
+		//TODO: Are these actually needed?
+		if (ObjectDescription.VertexBufferDescriptions[Index].FloatData)
+		{
+			delete[] ObjectDescription.VertexBufferDescriptions[Index].FloatData;
+		}
+		if (ObjectDescription.VertexBufferDescriptions[Index].Uint32Data)
+		{
+			delete[] ObjectDescription.VertexBufferDescriptions[Index].Uint32Data;
+		}
+	}
+
+	if (ObjectDescription.VertexBufferDescriptions)
+	{
+		delete[] ObjectDescription.VertexBufferDescriptions;
+	}
 
 	if (VerticeFloatArrayPtr)
 	{

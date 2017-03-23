@@ -5,12 +5,14 @@ MyRectangle::MyRectangle()
 	NumberOfVertices = 4;
 }
 
-MyRectangle::~MyRectangle()
-{
-}
+MyRectangle::~MyRectangle() {}
 
 void MyRectangle::Init()
 {
+	ObjectDescription.NumberOfVertexHandles = 5;
+	ObjectDescription.VertexBufferDescriptions =
+		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+
 	Width = 1;
 	Height = 1;
 	float VerticePositions[] = {
@@ -49,32 +51,34 @@ void MyRectangle::Init()
 		0.0f, 0.0f, 1.0f,
 	};
 
-	ObjectDescription.NumberOfVertexHandles = 5;
+	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	ObjectDescription.Description[1].Data = VerticePositions;
-	ObjectDescription.Description[1].Size = sizeof(VerticePositions);
-	ObjectDescription.Description[1].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(Indices);
 
-	ObjectDescription.Description[0].IndiceData = Indices;
-	ObjectDescription.Description[0].Size = sizeof(Indices);
+	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(ColorData);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
 
-	ObjectDescription.Description[2].Data = ColorData;
-	ObjectDescription.Description[2].Size = sizeof(ColorData);
-	ObjectDescription.Description[2].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
 
-	ObjectDescription.Description[3].Data = TextureCoords;
-	ObjectDescription.Description[3].Size = sizeof(TextureCoords);
-	ObjectDescription.Description[3].Offset = 2;
-
-	ObjectDescription.Description[4].Data = NormalData;
-	ObjectDescription.Description[4].Size = sizeof(NormalData);
-	ObjectDescription.Description[4].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[4].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
 	Render_ObjectPipelineInit(ObjectDescription);
 }
 
 void MyRectangle::Init(float size)
 {
+	ObjectDescription.NumberOfVertexHandles = 5;
+	ObjectDescription.VertexBufferDescriptions =
+		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+
 	Width = size;
 	Height = size;
 
@@ -114,32 +118,34 @@ void MyRectangle::Init(float size)
 		0.0f, 0.0f, 1.0f,
 	};
 
-	ObjectDescription.NumberOfVertexHandles = 5;
-
-	ObjectDescription.Description[1].Data = VerticePositions;
-	ObjectDescription.Description[1].Size = sizeof(VerticePositions);
-	ObjectDescription.Description[1].Offset = 3;
-
-	ObjectDescription.Description[0].IndiceData = Indices;
-	ObjectDescription.Description[0].Size = sizeof(Indices);
-
-	ObjectDescription.Description[2].Data = ColorData;
-	ObjectDescription.Description[2].Size = sizeof(ColorData);
-	ObjectDescription.Description[2].Offset = 3;
-
-	ObjectDescription.Description[3].Data = TextureCoords;
-	ObjectDescription.Description[3].Size = sizeof(TextureCoords);
-	ObjectDescription.Description[3].Offset = 2;
-
-	ObjectDescription.Description[4].Data = NormalData;
-	ObjectDescription.Description[4].Size = sizeof(NormalData);
-	ObjectDescription.Description[4].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(Indices);
+					  
+	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(ColorData);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
+					  
+	ObjectDescription.VertexBufferDescriptions[4].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
 	Render_ObjectPipelineInit(ObjectDescription);
 }
 
 void MyRectangle::Init(float width, float height)
 {
+	ObjectDescription.NumberOfVertexHandles = 5;
+	ObjectDescription.VertexBufferDescriptions =
+		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+
 	Width = width;
 	Height = height;
 
@@ -179,32 +185,34 @@ void MyRectangle::Init(float width, float height)
 		0.0f, 0.0f, 1.0f,
 	};
 
-	ObjectDescription.NumberOfVertexHandles = 5;
-
-	ObjectDescription.Description[1].Data = VerticePositions;
-	ObjectDescription.Description[1].Size = sizeof(VerticePositions);
-	ObjectDescription.Description[1].Offset = 3;
-
-	ObjectDescription.Description[0].IndiceData = Indices;
-	ObjectDescription.Description[0].Size = sizeof(Indices);
-
-	ObjectDescription.Description[2].Data = ColorData;
-	ObjectDescription.Description[2].Size = sizeof(ColorData);
-	ObjectDescription.Description[2].Offset = 3;
-
-	ObjectDescription.Description[3].Data = TextureCoords;
-	ObjectDescription.Description[3].Size = sizeof(TextureCoords);
-	ObjectDescription.Description[3].Offset = 2;
-
-	ObjectDescription.Description[4].Data = NormalData;
-	ObjectDescription.Description[4].Size = sizeof(NormalData);
-	ObjectDescription.Description[4].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(Indices);
+					  
+	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(ColorData);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
+					  
+	ObjectDescription.VertexBufferDescriptions[4].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
 	Render_ObjectPipelineInit(ObjectDescription);
 }
 
 void MyRectangle::Init(float width, float height, float depth)
 {
+	ObjectDescription.NumberOfVertexHandles = 5;
+	ObjectDescription.VertexBufferDescriptions =
+		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+
 	Width = width;
 	Height = height;
 	Depth = depth;
@@ -245,26 +253,24 @@ void MyRectangle::Init(float width, float height, float depth)
 		0.0f, 0.0f, 1.0f,
 	};
 
-	ObjectDescription.NumberOfVertexHandles = 5;
-
-	ObjectDescription.Description[1].Data = VerticePositions;
-	ObjectDescription.Description[1].Size = sizeof(VerticePositions);
-	ObjectDescription.Description[1].Offset = 3;
-
-	ObjectDescription.Description[0].IndiceData = Indices;
-	ObjectDescription.Description[0].Size = sizeof(Indices);
-
-	ObjectDescription.Description[2].Data = ColorData;
-	ObjectDescription.Description[2].Size = sizeof(ColorData);
-	ObjectDescription.Description[2].Offset = 3;
-
-	ObjectDescription.Description[3].Data = TextureCoords;
-	ObjectDescription.Description[3].Size = sizeof(TextureCoords);
-	ObjectDescription.Description[3].Offset = 2;
-
-	ObjectDescription.Description[4].Data = NormalData;
-	ObjectDescription.Description[4].Size = sizeof(NormalData);
-	ObjectDescription.Description[4].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(Indices);
+					  
+	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(ColorData);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
+					  
+	ObjectDescription.VertexBufferDescriptions[4].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
 	Render_ObjectPipelineInit(ObjectDescription);
 }

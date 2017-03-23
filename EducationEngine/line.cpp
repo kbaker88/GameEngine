@@ -2,14 +2,13 @@
 
 Line::Line() {}
 
-Line::~Line()
-{
-	//Render_DeleteVertexArrays(1, &ObjectDescription.VertexArrayObjectID);
-	//Render_DeleteBuffers(2, ObjectDescription.VertexBufferObjectHandleIDs);
-}
+Line::~Line() {}
 
 void Line::Init(float* Point1, float* Point2, float lineSize)
 {
+	ObjectDescription.NumberOfVertexHandles = 2;
+	ObjectDescription.VertexBufferDescriptions =
+		new VBODescription[ObjectDescription.NumberOfVertexHandles];
 	LineSize = lineSize;
 
 	float VerticePositions[] =
@@ -24,15 +23,13 @@ void Line::Init(float* Point1, float* Point2, float lineSize)
 		1.0f, 1.0f, 1.0f
 	};
 
-	ObjectDescription.NumberOfVertexHandles = 2;
+	ObjectDescription.VertexBufferDescriptions[0].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[0].Offset = 3;
 
-	ObjectDescription.Description[0].Data = VerticePositions;
-	ObjectDescription.Description[0].Size = sizeof(VerticePositions);
-	ObjectDescription.Description[0].Offset = 3;
-
-	ObjectDescription.Description[1].Data = ColorData;
-	ObjectDescription.Description[1].Size = sizeof(ColorData);
-	ObjectDescription.Description[1].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[1].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
+	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
 	Render_ObjectPipelineInit(ObjectDescription);
 }

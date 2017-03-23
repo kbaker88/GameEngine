@@ -7,6 +7,10 @@ Box::~Box() {}
 
 void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 {
+	ObjectDescription.NumberOfVertexHandles = 5;
+	ObjectDescription.VertexBufferDescriptions =
+		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+
 	Width = NewWidth;
 	Height = NewHeight;
 	Depth = NewDepth;
@@ -32,7 +36,7 @@ void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 		VerticeFloatArrayPtr[i] = VerticePositions[i];
 	}
 
-	uint32 Indices[]
+	uint32 Indices[] =
 	{
 		0, 1, 2, // front face
 		2, 3, 0,
@@ -94,26 +98,24 @@ void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 		1.0f, 0.0f, 0.0f
 	};
 
-	ObjectDescription.NumberOfVertexHandles = 5;
+	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	ObjectDescription.Description[1].Data = VerticePositions;
-	ObjectDescription.Description[1].Size = sizeof(VerticePositions);
-	ObjectDescription.Description[1].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(Indices);
 
-	ObjectDescription.Description[0].IndiceData = Indices;
-	ObjectDescription.Description[0].Size = sizeof(Indices);
+	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(ColorData);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
 
-	ObjectDescription.Description[2].Data = ColorData;
-	ObjectDescription.Description[2].Size = sizeof(ColorData);
-	ObjectDescription.Description[2].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
 
-	ObjectDescription.Description[3].Data = TextureCoords;
-	ObjectDescription.Description[3].Size = sizeof(TextureCoords);
-	ObjectDescription.Description[3].Offset = 2;
-
-	ObjectDescription.Description[4].Data = NormalData;
-	ObjectDescription.Description[4].Size = sizeof(NormalData);
-	ObjectDescription.Description[4].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[4].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
 
 	Render_ObjectPipelineInit(ObjectDescription);
 }

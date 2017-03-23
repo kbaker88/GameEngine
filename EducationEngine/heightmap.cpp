@@ -174,24 +174,24 @@ void HeightMap::Init(TextureStorage* ImageData)
 
 	ObjectDescription.NumberOfVertexHandles = 5;
 
-	ObjectDescription.Description[1].Data = VerticePositions;
-	ObjectDescription.Description[1].Size = 3 * TotalVertices * sizeof(float);
-	ObjectDescription.Description[1].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[1].Size = 3 * TotalVertices * sizeof(float);
+	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	ObjectDescription.Description[0].IndiceData = Indices;
-	ObjectDescription.Description[0].Size = NumberOfIndices * sizeof(uint32);
-
-	ObjectDescription.Description[2].Data = ColorData;
-	ObjectDescription.Description[2].Size = 3 * TotalVertices * sizeof(float);
-	ObjectDescription.Description[2].Offset = 3;
-
-	ObjectDescription.Description[3].Data = NormalData;
-	ObjectDescription.Description[3].Size = 3 * TotalVertices * sizeof(float);
-	ObjectDescription.Description[3].Offset = 3;
-
-	ObjectDescription.Description[4].Data = TextureCoords;
-	ObjectDescription.Description[4].Size = 8 * TotalVertices * sizeof(float);
-	ObjectDescription.Description[4].Offset = 2;
+	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
+	ObjectDescription.VertexBufferDescriptions[0].Size = NumberOfIndices * sizeof(uint32);
+					  
+	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[2].Size = 3 * TotalVertices * sizeof(float);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[3].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[3].Size = 3 * TotalVertices * sizeof(float);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[4].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[4].Size = 8 * TotalVertices * sizeof(float);
+	ObjectDescription.VertexBufferDescriptions[4].Offset = 2;
 
 	Render_ObjectPipelineInit(ObjectDescription);
 

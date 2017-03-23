@@ -38,28 +38,28 @@ void Object_Create(Object* NewObject, uint32 BlockID, uint32 ObjectID)
 {
 	ObjectBlocks[BlockID].BlockObjects[ObjectID] = NewObject;
 	ObjectBlocks[BlockID].BlockObjects[ObjectID]->Init();
-	ObjectBlocks[BlockID].BlockObjects[ObjectID]->ID = ObjectID;
+	ObjectBlocks[BlockID].BlockObjects[ObjectID]->ObjectID = ObjectID;
 }
 
 void Object_Create(Object* NewObject, uint32 BlockID, uint32 ObjectID, TextureStorage* HeightMapTexture)
 {
 	ObjectBlocks[BlockID].BlockObjects[ObjectID] = NewObject;
 	ObjectBlocks[BlockID].BlockObjects[ObjectID]->Init(HeightMapTexture);
-	ObjectBlocks[BlockID].BlockObjects[ObjectID]->ID = ObjectID;
+	ObjectBlocks[BlockID].BlockObjects[ObjectID]->ObjectID = ObjectID;
 }
 
 void Object_Create(Object* NewObject, uint32 BlockID, uint32 ObjectID, uint32 Width, uint32 Depth)
 {
 	ObjectBlocks[BlockID].BlockObjects[ObjectID] = NewObject;
 	ObjectBlocks[BlockID].BlockObjects[ObjectID]->Init(Width, Depth);
-	ObjectBlocks[BlockID].BlockObjects[ObjectID]->ID = ObjectID;
+	ObjectBlocks[BlockID].BlockObjects[ObjectID]->ObjectID = ObjectID;
 }
 
 void Object_Create(Object* NewObject, uint32 BlockID, uint32 ObjectID, float Width, float Height, float Depth)
 {
 	ObjectBlocks[BlockID].BlockObjects[ObjectID] = NewObject;
 	ObjectBlocks[BlockID].BlockObjects[ObjectID]->Init(Width, Height, Depth);
-	ObjectBlocks[BlockID].BlockObjects[ObjectID]->ID = ObjectID;
+	ObjectBlocks[BlockID].BlockObjects[ObjectID]->ObjectID = ObjectID;
 }
 
 void Object_SetTexture(uint32 BlockID, uint32 ObjectID, TextureStorage* Texture)

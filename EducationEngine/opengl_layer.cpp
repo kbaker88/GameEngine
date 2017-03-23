@@ -249,16 +249,17 @@ void Render_ObjectPipelineInit(
 
 	for (Index; Index < ObjectDescription.NumberOfVertexHandles; Index++)
 	{
-		if (ObjectDescription.Description[0].IndiceData == 0)
+		if (ObjectDescription.VertexBufferDescriptions[0].Uint32Data == 0)
 		{
+			//TODO: Naming scheme may be too long here.
 			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandleIDs[Index]);
-			glBufferData(GL_ARRAY_BUFFER, ObjectDescription.Description[Index].Size,
-				ObjectDescription.Description[Index].Data, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferDescriptions[Index].Size,
+				ObjectDescription.VertexBufferDescriptions[Index].FloatData, GL_STATIC_DRAW);
 
 			glEnableVertexAttribArray(Index);
 			glBindVertexBuffer(Index, ObjectDescription.VertexBufferObjectHandleIDs[Index],
-				0, sizeof(GLfloat) * ObjectDescription.Description[Index].Offset);
-			glVertexAttribFormat(Index, ObjectDescription.Description[Index].Offset, GL_FLOAT, GL_FALSE, 0);
+				0, sizeof(GLfloat) * ObjectDescription.VertexBufferDescriptions[Index].Offset);
+			glVertexAttribFormat(Index, ObjectDescription.VertexBufferDescriptions[Index].Offset, GL_FLOAT, GL_FALSE, 0);
 			glVertexAttribBinding(Index, Index);
 		}
 		else
@@ -266,19 +267,19 @@ void Render_ObjectPipelineInit(
 			if (Index == 0)
 			{
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandleIDs[Index]);
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription.Description[Index].Size,
-					ObjectDescription.Description[Index].IndiceData, GL_STATIC_DRAW);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription.VertexBufferDescriptions[Index].Size,
+					ObjectDescription.VertexBufferDescriptions[Index].Uint32Data, GL_STATIC_DRAW);
 				Index++;
 			}
 
 			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferObjectHandleIDs[Index]);
-			glBufferData(GL_ARRAY_BUFFER, ObjectDescription.Description[Index].Size,
-				ObjectDescription.Description[Index].Data, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, ObjectDescription.VertexBufferDescriptions[Index].Size,
+				ObjectDescription.VertexBufferDescriptions[Index].FloatData, GL_STATIC_DRAW);
 
 			glEnableVertexAttribArray(Index - 1);
 			glBindVertexBuffer(Index - 1, ObjectDescription.VertexBufferObjectHandleIDs[Index],
-				0, sizeof(GLfloat) * ObjectDescription.Description[Index].Offset);
-			glVertexAttribFormat(Index - 1, ObjectDescription.Description[Index].Offset, GL_FLOAT, GL_FALSE, 0);
+				0, sizeof(GLfloat) * ObjectDescription.VertexBufferDescriptions[Index].Offset);
+			glVertexAttribFormat(Index - 1, ObjectDescription.VertexBufferDescriptions[Index].Offset, GL_FLOAT, GL_FALSE, 0);
 			glVertexAttribBinding(Index - 1, Index - 1);
 		}
 	}

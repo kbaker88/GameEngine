@@ -1,15 +1,15 @@
 #include "plane2d.h"
 
-Plane2D::Plane2D() 
-{
-}
+Plane2D::Plane2D() {}
 
-Plane2D::~Plane2D() 
-{
-}
+Plane2D::~Plane2D() {}
 
 void Plane2D::Init(uint32 width, uint32 height)
 {
+	ObjectDescription.NumberOfVertexHandles = 4;
+	ObjectDescription.VertexBufferDescriptions =
+		new VBODescription[ObjectDescription.NumberOfVertexHandles];
+
 	uint32 index = 0;
 	NumberOfSquares = width * height;
 	const uint32 floatsPerSquare = 18;
@@ -131,7 +131,6 @@ void Plane2D::Init(uint32 width, uint32 height)
 	index = 0;
 	flip = false;
 
-
 	float *TextureCoords = new float[12 * NumberOfSquares]{};
 
 	for (uint32 i = 0; i < width; i++)
@@ -228,29 +227,31 @@ void Plane2D::Init(uint32 width, uint32 height)
 		}
 	} 
 
-	ObjectDescription.NumberOfVertexHandles = 4;
+	ObjectDescription.VertexBufferDescriptions[0].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[0].Size = 
+		floatsPerSquare * NumberOfSquares * sizeof(float);
+	ObjectDescription.VertexBufferDescriptions[0].Offset = 3;
 
-	ObjectDescription.Description[0].Data = VerticePositions;
-	ObjectDescription.Description[0].Size = floatsPerSquare * NumberOfSquares * sizeof(float);
-	ObjectDescription.Description[0].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[1].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[1].Size = 
+		floatsPerSquare * NumberOfSquares * sizeof(float);;
+	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	ObjectDescription.Description[1].Data = ColorData;
-	ObjectDescription.Description[1].Size = floatsPerSquare * NumberOfSquares * sizeof(float);;
-	ObjectDescription.Description[1].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[2].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[2].Size = 
+		floatsPerSquare * NumberOfSquares * sizeof(float);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
 
-	ObjectDescription.Description[2].Data = NormalData;
-	ObjectDescription.Description[2].Size = floatsPerSquare * NumberOfSquares * sizeof(float);
-	ObjectDescription.Description[2].Offset = 3;
-
-	ObjectDescription.Description[3].Data = TextureCoords;
-	ObjectDescription.Description[3].Size = 12 * NumberOfSquares * sizeof(float);
-	ObjectDescription.Description[3].Offset = 2;
+	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[3].Size = 
+		12 * NumberOfSquares * sizeof(float);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
 
 	Render_ObjectPipelineInit(ObjectDescription);
 
 	delete[] ColorData;
-	delete[] TextureCoords;
 	delete[] NormalData; 
+	delete[] TextureCoords;
 
 	NumberOfVertices = 6 * NumberOfSquares;
 }
