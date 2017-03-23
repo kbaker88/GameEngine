@@ -44,8 +44,14 @@ void Object::InputTexture(TextureStorage* Texture)
 
 void Object::Draw()
 {
-	//DrawObject(ObjectDescription, TextureID, NumberOfVertices);
-	Render_DrawObjectIndices(ObjectDescription.VertexArrayObjectID, TextureID, NumberOfIndices);
+	if (NumberOfIndices)
+	{
+		Render_DrawObjectIndices(ObjectDescription.VertexArrayObjectID, TextureID, NumberOfIndices);
+	}
+	else
+	{
+		Render_DrawObject(ObjectDescription.VertexArrayObjectID, TextureID, NumberOfVertices);
+	}
 }
 
 void Object::Draw(uint8 Choice)

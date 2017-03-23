@@ -466,6 +466,7 @@ void Render_UpdateShaderVariable(int32 Location, int32 MatrixSize,
 	}
 }
 
+//TODO: Fix this for textures
 void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 {
 	glGenBuffers(ObjectDescription->NumberOfVertexHandles,

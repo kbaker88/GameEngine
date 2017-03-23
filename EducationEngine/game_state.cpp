@@ -25,6 +25,7 @@ void Game_Initialize(ProgramState* State)
 	// Wood Box
 	Object_Create(new Box, State->ObjectBlockNum, 1, 0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, v3(3.0f, 0.0f, 15.0f));
+	Entity_AddTexture(State->EntityBlockNum, 1, Asset_GetTexture(5));
 	//TODO: Add Opengl uniforms for all
 	// Light Box
 	Object_Create(new Box, State->ObjectBlockNum, 2, 0.25f, 0.25f, 0.25f);
@@ -100,11 +101,11 @@ void Game_Draw(ProgramState* State)
 		LightPosition.x, LightPosition.y, LightPosition.z);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[5], (int32)0);
 
-	float Choice = 0;
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
-
 	// NOTE: Draw terrain below
 	m4 ModelMatrix = IdentityMatrix();
+
+	bool Choice = 0;
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
 
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		(float*)&ModelMatrix, 1, 0);
@@ -167,16 +168,10 @@ void Game_Draw(ProgramState* State)
 	//	//}
 	//	DrawObjectMap(ObjectMaps[i], ShaderVariableID);
 	//}
-	Choice = 0.0f;
-	for (uint32 Index = 1; Index < 3; Index++) // not textured
+	Choice = 1;
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
+	for (uint32 Index = 1; Index < 4; Index++) 
 	{
-		Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
-		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
-	}
-	Choice = 1.0f;
-	for (uint32 Index = 3; Index < 4; Index++) // textured
-	{
-		Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
 		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
 	}
 	//NOTE: Draw UI Below

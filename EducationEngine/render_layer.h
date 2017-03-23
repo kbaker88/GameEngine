@@ -6,6 +6,7 @@
 
 static window_properties WindowProperties;
 
+//TODO: Fix Render_ObjectPipelineInit, if handles are out of order textures don't render.
 struct VBODescription
 {
 	VBODescription() : FloatData(NULL), Uint32Data(NULL),
