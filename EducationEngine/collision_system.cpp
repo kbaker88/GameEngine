@@ -12,6 +12,18 @@ void FillCollisionObject(CollisionObject* Object, uint32 NumVertices,
 	Object->Depth = Depth;
 }
 
+uint8 GetClickState()
+{
+	uint8 Result = 0;
+
+	if (Platform_GetStateOfKey(0x01))
+	{
+		Result = 1;
+	}
+
+	return Result;
+}
+
 v2 GetOrthoMousePosition() // TODO: RENAME
 {
 	v2 Result = {};
@@ -23,18 +35,6 @@ v2 GetOrthoMousePosition() // TODO: RENAME
 
 	Result.x = Result.x - ((float)Width / 2);
 	Result.y = ((float)Height / 2) - Result.y;
-
-	return Result;
-}
-
-uint8 GetClickState()
-{
-	uint8 Result = 0;
-
-	if (Platform_GetStateOfKey(0x01))
-	{
-		Result = 1;
-	}
 
 	return Result;
 }
@@ -66,13 +66,13 @@ bool Collision_UpdateMousePickRay(m4 &ProjectionMatrix, m4 &ViewMatrix)
 	v2 ray_nds = MousePosition;
 
 	v4 ray_clip = v4(ray_nds.x, ray_nds.y, -1.0f, 0.0f);
-	//v4 ray_eye = MatrixInverse(ProjectionMatrix) * ray_clip;
-	//ray_eye = v4(ray_eye.x, ray_eye.y, -1.0f, 1.0f);
+	v4 ray_eye = GetMatrixInverse(&ProjectionMatrix) * ray_clip;
+	ray_eye = v4(ray_eye.x, ray_eye.y, -1.0f, 1.0f);
 
-	//v4 Result = MatrixInverse(ViewMatrix) * ray_eye;
-	//v3 ray_world = v3(Result.x, Result.y, Result.z);
+	v4 Result = MatrixInverse(ViewMatrix) * ray_eye;
+	v3 ray_world = v3(Result.x, Result.y, Result.z);
 
-	//ray_world = Normalize(ray_world)
+	ray_world = Normalize(ray_world);
 
 	return true;
 }
@@ -960,17 +960,17 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 			}
 		}
 
-		Line Test;
-		Test.Init(TerrainVertice.Arr, (TerrainVertice + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
-		Test.Draw();
-		
-		Line Test2;
-		Test2.Init(TerrainVertice2.Arr, (TerrainVertice2 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
-		Test2.Draw();
-		
-		Line Test3;
-		Test3.Init(TerrainVertice3.Arr, (TerrainVertice3 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
-		Test3.Draw();
+		//Line Test;
+		//Test.Init(TerrainVertice.Arr, (TerrainVertice + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
+		//Test.Draw();
+		//
+		//Line Test2;
+		//Test2.Init(TerrainVertice2.Arr, (TerrainVertice2 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
+		//Test2.Draw();
+		//
+		//Line Test3;
+		//Test3.Init(TerrainVertice3.Arr, (TerrainVertice3 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
+		//Test3.Draw();
 
 		v3 Line1 = (TerrainVertice2 - TerrainVertice);
 		v3 Line2 = (TerrainVertice3 - TerrainVertice);

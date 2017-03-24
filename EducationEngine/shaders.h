@@ -2,7 +2,7 @@
 #define SHADERS_H
 
 // TODO: Temporary file until shaders are pre-compiled.
-
+//TODO: Include shader header with shader version defined
 static const char* MenuVertexShaderSource = "#version 430 core\n"
 "layout (location = 0) in vec3 VertexPosition;\n"
 "layout (location = 1) in vec3 VertexColor;\n"
