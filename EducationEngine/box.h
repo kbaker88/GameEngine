@@ -6,8 +6,8 @@
 class Box : public Object
 {
 public:
-	Box();
-	~Box();
+	Box() {};
+	~Box() {};
 
 	void Init(float NewWidth, float NewHeight, float NewDepth);
 

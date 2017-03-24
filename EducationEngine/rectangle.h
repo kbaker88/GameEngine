@@ -6,8 +6,8 @@
 class MyRectangle : public Object
 {
 public:
-	MyRectangle();
-	~MyRectangle();
+	MyRectangle() {};
+	~MyRectangle() {};
 
 	void Init();
 	void Init(float size);

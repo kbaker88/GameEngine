@@ -1,9 +1,5 @@
 #include "point.h"
 
-Point::Point() : PointSize(1.0f) {}
-
-Point::~Point() {}
-
 void Point::Init(float* PointPosition, float Size)
 {
 	ObjectDescription.NumberOfVertexHandles = 2;

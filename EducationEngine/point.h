@@ -6,8 +6,8 @@
 class Point : public Object
 {
 public:
-	Point();
-	~Point();
+	Point() : PointSize(1.0f) {};
+	~Point() {};
 
 	void Init(float* PointPositon, float Size);
 	void Draw();

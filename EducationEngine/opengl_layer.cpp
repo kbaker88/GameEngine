@@ -148,7 +148,6 @@ void Render_UpdateWindow(window_properties Window)
 	WindowProperties.Width = Window.Width;
 	WindowProperties.Height = Window.Height;
 	glViewport(0, 0, WindowProperties.Width, WindowProperties.Height); 
-	//UpdateWindowSize(Window.Width, Window.Height);
 }
 
 void Render_UpdateWindow(uint32 Width, uint32 Height)
@@ -255,7 +254,6 @@ void Render_DeleteShaderProgram(uint32 ShaderProgramHandle)
 {
 	glDeleteProgram(ShaderProgramHandle);
 }
-
 
 int32 Render_GetShaderVariable(uint32 ShaderProgramHandle, char* name)
 {
@@ -484,14 +482,15 @@ void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferObjectHandleIDs[Index]);
 			glBufferData(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferDescriptions[Index].Size,
 				ObjectDescription->VertexBufferDescriptions[Index].FloatData, GL_STATIC_DRAW);
-
+			
 			glEnableVertexAttribArray(Index);
 			glBindVertexBuffer(Index, ObjectDescription->VertexBufferObjectHandleIDs[Index],
 				0, sizeof(GLfloat) * ObjectDescription->VertexBufferDescriptions[Index].Offset);
-			glVertexAttribFormat(Index, ObjectDescription->VertexBufferDescriptions[Index].Offset, GL_FLOAT, GL_FALSE, 0);
+			glVertexAttribFormat(Index, ObjectDescription->VertexBufferDescriptions[Index].Offset,
+				GL_FLOAT, GL_FALSE, 0);
 			glVertexAttribBinding(Index, Index);
 		}
-		else
+		else  //TODO: Within heightmap, clean
 		{
 			if (Index == 0)
 			{

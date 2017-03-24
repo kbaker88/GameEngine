@@ -1,10 +1,5 @@
 #include "heightmap.h"
 
-HeightMap::HeightMap()
-{
-	NumberOfIndices = 0;
-}
-
 HeightMap::~HeightMap()
 {
 	if (VerticeFloatArrayPtr)
@@ -21,6 +16,8 @@ void HeightMap::Init(TextureStorage* ImageData)
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];
 	ObjectDescription.VertexBufferObjectHandleIDs =
 		new uint32[ObjectDescription.NumberOfVertexHandles];
+
+	NumberOfIndices = 0;
 
 	uint32 ConvertedWidth = ImageData->Width;
 	uint32 ConvertedDepth = ImageData->Height;

@@ -6,8 +6,8 @@
 class Line : public Object
 {
 public:
-	Line();
-	~Line();
+	Line() {};
+	~Line() {};
 
 	void Init(float* Point1, float* Point2, float lineSize);
 	void Draw();

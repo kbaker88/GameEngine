@@ -6,11 +6,10 @@
 class HeightMap: public Object
 {
 public:
-	HeightMap();
+	HeightMap() {};
 	~HeightMap();
 
 	void Init(TextureStorage* ImageData);
-
 };
 
 

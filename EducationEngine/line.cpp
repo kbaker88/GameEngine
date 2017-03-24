@@ -1,9 +1,5 @@
 #include "line.h"
 
-Line::Line() {}
-
-Line::~Line() {}
-
 void Line::Init(float* Point1, float* Point2, float lineSize)
 {
 	ObjectDescription.NumberOfVertexHandles = 2;

@@ -1,8 +1,13 @@
 #include "plane2d.h"
 
-Plane2D::Plane2D() {}
-
-Plane2D::~Plane2D() {}
+Plane2D::~Plane2D()
+{
+	if (VerticeFloatArrayPtr)
+	{
+		delete[] VerticeFloatArrayPtr;
+		VerticeFloatArrayPtr = NULL;
+	}
+}
 
 void Plane2D::Init(uint32 width, uint32 height)
 {
@@ -239,15 +244,15 @@ void Plane2D::Init(uint32 width, uint32 height)
 		floatsPerSquare * NumberOfSquares * sizeof(float);;
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	ObjectDescription.VertexBufferDescriptions[2].FloatData = NormalData;
-	ObjectDescription.VertexBufferDescriptions[2].Size = 
-		floatsPerSquare * NumberOfSquares * sizeof(float);
-	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
-
-	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
-	ObjectDescription.VertexBufferDescriptions[3].Size = 
+	ObjectDescription.VertexBufferDescriptions[2].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[2].Size =
 		12 * NumberOfSquares * sizeof(float);
-	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 2;
+
+	ObjectDescription.VertexBufferDescriptions[3].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[3].Size = 
+		floatsPerSquare * NumberOfSquares * sizeof(float);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 3;
 
 	Render_ObjectPipelineInit(&ObjectDescription);
 

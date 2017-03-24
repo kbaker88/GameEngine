@@ -1,10 +1,6 @@
 
 #include "box.h"
 
-Box::Box() {}
-
-Box::~Box() {}
-
 void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 {
 	ObjectDescription.NumberOfVertexHandles = 4;
@@ -216,14 +212,13 @@ void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	ObjectDescription.VertexBufferDescriptions[2].FloatData = NormalData;
-	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(NormalData);
-	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[2].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 2;
 
-	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
-	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
-	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
-
+	ObjectDescription.VertexBufferDescriptions[3].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 3;
 
 	Render_ObjectPipelineInit(&ObjectDescription);
 

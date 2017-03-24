@@ -1,12 +1,5 @@
 #include "rectangle.h"
 
-MyRectangle::MyRectangle() 
-{
-	NumberOfVertices = 4;
-}
-
-MyRectangle::~MyRectangle() {}
-
 void MyRectangle::Init()
 {
 	ObjectDescription.NumberOfVertexHandles = 5;
@@ -15,8 +8,11 @@ void MyRectangle::Init()
 	ObjectDescription.VertexBufferObjectHandleIDs =
 		new uint32[ObjectDescription.NumberOfVertexHandles];
 
+	NumberOfVertices = 4;
+
 	Width = 1;
 	Height = 1;
+
 	float VerticePositions[] = {
 		-0.5f, -0.5f, 0.0f,   // bottom left 0
 		 0.5f, -0.5f, 0.0f,   // bottom right 1
