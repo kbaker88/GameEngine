@@ -55,7 +55,7 @@ void Game_Loop()
 			State_CreateCameras(&States[1], 2);
 			State_CreateTimers(&States[1], 1);
 			State_CreateShaderVariables(&States[1], 7);
-			State_CreateShaderHandles(&States[1], 3);
+			State_CreateShaderHandles(&States[1], 2);
 			State_LinkToProgram(&States[1], &StateOfProgram);
 
 			States[1].EntityBlockNum = 0;

@@ -57,7 +57,7 @@ bool Collision_OrthoMouseToRect(v3 &ObjectPosition,
 
 }
 
-bool Collision_UpdateMousePickRay(m4 &ProjectionMatrix, m4 &ViewMatrix)
+v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix)
 {
 	window_properties Window = Render_GetWindowProperties();
 	v2 MousePosition = GetOrthoMousePosition();
@@ -66,15 +66,15 @@ bool Collision_UpdateMousePickRay(m4 &ProjectionMatrix, m4 &ViewMatrix)
 	v2 ray_nds = MousePosition;
 
 	v4 ray_clip = v4(ray_nds.x, ray_nds.y, -1.0f, 0.0f);
-	v4 ray_eye = GetMatrixInverse(&ProjectionMatrix) * ray_clip;
+	v4 ray_eye = GetMatrixInverse(ProjectionMatrix) * ray_clip;
 	ray_eye = v4(ray_eye.x, ray_eye.y, -1.0f, 1.0f);
 
-	v4 Result = MatrixInverse(ViewMatrix) * ray_eye;
+	v4 Result = MatrixInverse(*ViewMatrix) * ray_eye;
 	v3 ray_world = v3(Result.x, Result.y, Result.z);
 
 	ray_world = Normalize(ray_world);
 
-	return true;
+	return ray_world;
 }
 
 v3 GetFurthestPoint(CollisionObject* Object, v3 &Direction)

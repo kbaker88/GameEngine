@@ -64,8 +64,8 @@ struct SupportPoint
 	bool operator==(const SupportPoint& B)
 	{
 		if (MinkowskiPoint == B.MinkowskiPoint) //&&
-												//(ObjAPoint == B.ObjAPoint) &&
-												//(ObjBPoint == B.ObjBPoint))
+			//(ObjAPoint == B.ObjAPoint) &&
+			//(ObjBPoint == B.ObjBPoint))
 		{
 			return true;
 		}
@@ -129,7 +129,7 @@ uint8 GetClickState(); // Does this belong in Collision?
 v2 GetOrthoMousePosition(); // Does this belong in Collision?
 
 bool Collision_OrthoMouseToRect(v3 &ObjectPosition, float ObjWidth, float ObjHeight);
-bool Collision_UpdateMousePickRay(m4 &ProjectionMatrix, m4 &ViewMatrix);
+v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix);
 
 // Entity Only Functions
 //v3 GetFurthestPoint(ObjectInstance *ObjA, v3 &Direction);
