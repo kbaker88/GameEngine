@@ -31,10 +31,15 @@ void Entity_DeleteBlock(uint32 BlockNumber)
 	{
 		for (uint32 i = 0; i < EntityBlocks[BlockNumber].BlockSize; i++)
 		{
-			if (EntityBlocks[BlockNumber].BlockEntities->PlayerPtr != NULL)
+//			if (EntityBlocks[BlockNumber].BlockEntities->PlayerPtr != NULL)
+//			{
+//				delete EntityBlocks[BlockNumber].BlockEntities->PlayerPtr;
+//				EntityBlocks[BlockNumber].BlockEntities->PlayerPtr = NULL;;
+//			}
+			if (EntityBlocks[BlockNumber].BlockEntities->CameraObj)
 			{
-				delete EntityBlocks[BlockNumber].BlockEntities->PlayerPtr;
-				EntityBlocks[BlockNumber].BlockEntities->PlayerPtr = NULL;;
+				delete[] EntityBlocks[BlockNumber].BlockEntities->CameraObj;
+				EntityBlocks[BlockNumber].BlockEntities->CameraObj = NULL;
 			}
 		}
 		delete[] EntityBlocks[BlockNumber].BlockEntities;
@@ -47,7 +52,7 @@ void Entity_DeleteBlock(uint32 BlockNumber)
 	}
 }
 
-int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, uint32 ObjectBlockNumber, uint32 ObjectID, v3 &Position)
+int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, uint32 ObjectBlockNumber, uint32 ObjectID, v3 *Position)
 {
 	if (IDNumber < EntityBlocks[EntityBlockNumber].BlockSize)
 	{
@@ -57,13 +62,14 @@ int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, uint32 ObjectBloc
 			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectInst.ObjectPtr =
 				Object_GetObjectPtr(ObjectBlockNumber, ObjectID);
 			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectInst.ModelMatrix =
-				TranslateMatrix(IdentityMatrix(), Position);
+				TranslateMatrix(IdentityMatrix(), *Position);
 			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectInst.Position =
-				Position;
+				*Position;
 
 			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].PhysicsObj.Position =
 				&EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectInst.Position;
-
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].PhysicsObj.MoveDirection =
+				&EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].DirectionVector;
 			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].CollisionObj.Position =
 				&EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectInst.Position;
 			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].CollisionObj.NumVertices =
@@ -94,21 +100,24 @@ int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, uint32 ObjectBloc
 	}
 }
 
-void Entity_CreatePlayer(uint32 EntityBlockNumber, uint32 IDNumber, Player* NewPlayer)
-{
-	if (EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].PlayerPtr == NULL)
-	{
-		EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].PlayerPtr = NewPlayer;
-	}
-	else
-	{
-		//TODO: Already Player assigned here
-	}
-}
-
 void Entity_AddTexture(uint32 BlockNumber, uint32 IDNumber, TextureStorage* Texture)
 {
 	EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst.ObjectPtr->InputTexture(Texture);
+}
+
+void Entity_AddCamera(uint32 BlockNumber, uint32 IDNumber, Camera* NewCamera)
+{
+	EntityBlocks[BlockNumber].BlockEntities[IDNumber].CameraObj = 
+		NewCamera;
+	EntityBlocks[BlockNumber].BlockEntities[IDNumber].CameraObj->
+		SetPosition(&EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst.Position);
+	EntityBlocks[BlockNumber].BlockEntities[IDNumber].CameraObj->
+		SetProjectionMatrix(1);
+}
+
+Camera* Entity_GetCamera(uint32 BlockNumber, uint32 IDNumber)
+{
+	return EntityBlocks[BlockNumber].BlockEntities[IDNumber].CameraObj;
 }
 
 void Entity_Draw(uint32 BlockNumber, uint32 IDNumber, uint32 ShaderVariableID)
@@ -131,6 +140,11 @@ void Entity_DrawPolyGonMode(uint32 BlockNumber, uint32 IDNumber, uint32 ShaderVa
 	}
 }
 
+Entity* Entity_Ptr(uint32 BlockNumber, uint32 IDNumber)
+{
+	return &EntityBlocks[BlockNumber].BlockEntities[IDNumber];
+}
+
 uint32 Entity_GetObjectID(uint32 BlockNumber, uint32 IDNumber)
 {
 	return EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectID;
@@ -149,11 +163,6 @@ PhysicsObject* Entity_GetPhysObjPtr(uint32 BlockNumber, uint32 IDNumber)
 ObjectInstance* Entity_GetObjInstancePtr(uint32 BlockNumber, uint32 IDNumber)
 {
 	return &EntityBlocks[BlockNumber].BlockEntities[IDNumber].ObjectInst;
-}
-
-Player* Entity_GetPlayerPtr(uint32 BlockNumber, uint32 IDNumber)
-{
-	return EntityBlocks[BlockNumber].BlockEntities[IDNumber].PlayerPtr;
 }
 
 float Entity_GetWidth(uint32 BlockNumber, uint32 IDNumber)

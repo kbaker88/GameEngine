@@ -1,19 +1,12 @@
 #include "camera.h"
 
-Camera::Camera()
-{
-	Position = v3(0.0f, 0.0f, 1.0f);
-	UpDirection = v3(0.0f, 1.0f, 0.0f);
-	FrontDirection = v3(0.0f, 0.0f, -1.0f);
-}
-
 void Camera::SetPosition(v3* NewPosition) //TODO: Make sure this is only called once per frame
 {
 	Position = *NewPosition;
 
 	ViewMatrix = LookAtMatrix(Position,
-		Position + FrontDirection,
-		UpDirection);
+		Position + FacingVector,
+		UpVector);
 }
 
 v3* Camera::GetPosition()
@@ -23,22 +16,22 @@ v3* Camera::GetPosition()
 
 void Camera::SetFrontDirection(v3* Direction)
 {
-	FrontDirection = *Direction;
+	FacingVector = *Direction;
 }
 
 v3* Camera::GetFrontDirection()
 {
-	return &FrontDirection;
+	return &FacingVector;
 }
 
 void Camera::SetUpDirection(v3* Direction)
 {
-	UpDirection = *Direction;
+	UpVector = *Direction;
 }
 
 v3* Camera::GetUpDirection()
 {
-	return &UpDirection;
+	return &UpVector;
 }
 
 m4* Camera::GetViewMatrix()
@@ -75,4 +68,9 @@ void Camera::SetProjectionMatrix(uint8 Type)
 m4* Camera::GetProjectionMatrix()
 {
 	return &ProjectionMatrix;
+}
+
+void Camera_Link(Camera* Camera1, Camera* Camera2)
+{
+	Camera2 = Camera1;
 }

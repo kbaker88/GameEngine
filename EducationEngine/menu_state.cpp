@@ -26,25 +26,32 @@ void Menu_Initialize(ProgramState* State)
 	v3 ButtonPosition = { MenuButtonsXPos, MenuButtonsYPos, 0.0f };
 
 	// Start Button
-	Object_Create(new MyRectangle, State->ObjectBlockNum, 0, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 0, 
+		ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, 
+		&ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 0, Asset_GetTexture(0));
 
 	// Title Button
 	ButtonPosition.y -= ButtonHeight;
-	Object_Create(new MyRectangle, State->ObjectBlockNum, 1, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 1, 
+		ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1,
+		&ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 1, Asset_GetTexture(3));
 
 	// Exit Button
 	ButtonPosition.y -= ButtonHeight;
-	Object_Create(new MyRectangle, State->ObjectBlockNum, 2, ButtonWidth, ButtonHeight, 0.0f);
-	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2, ButtonPosition);
+	Object_Create(new MyRectangle, State->ObjectBlockNum, 2, 
+		ButtonWidth, ButtonHeight, 0.0f);
+	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2, 
+		&ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 2, Asset_GetTexture(2));
 
 	// Exit Button (temp second one)
 	ButtonPosition.y -= ButtonHeight;
-	Entity_Create(State->EntityBlockNum, 3, State->ObjectBlockNum, 2, ButtonPosition);
+	Entity_Create(State->EntityBlockNum, 3, State->ObjectBlockNum, 2,
+		&ButtonPosition);
 }
 
 void Menu_Draw(ProgramState* State)

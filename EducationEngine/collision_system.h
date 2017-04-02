@@ -130,6 +130,7 @@ v2 GetOrthoMousePosition(); // Does this belong in Collision?
 
 bool Collision_OrthoMouseToRect(v3 &ObjectPosition, float ObjWidth, float ObjHeight);
 v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix);
+bool Collision_RayToObject(v3* Ray, CollisionObject* Object);
 
 // Entity Only Functions
 //v3 GetFurthestPoint(ObjectInstance *ObjA, v3 &Direction);

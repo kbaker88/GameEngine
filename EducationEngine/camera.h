@@ -6,7 +6,12 @@
 
 struct Camera
 {
-	Camera();
+	Camera() : Yaw(0.0f), Pitch(0.0f), Position(0.0f, 0.0f, 0.0f),
+		UpVector(0.0f, 1.0f, 0.0f), FacingVector(0.0f, 0.0f, -1.0f),
+		DirectionVector(0.0f, 0.0f, 0.0f) {}
+
+	~Camera() {}
+
 	void SetPosition(v3* NewPosition);
 	v3* GetPosition();
 	void SetFrontDirection(v3* Direction);
@@ -18,13 +23,13 @@ struct Camera
 	void SetProjectionMatrix(uint8 Type);
 	m4* GetProjectionMatrix();
 
-private:
-	v3 Position;
-	v3 UpDirection;
-	v3 FrontDirection;
+	float Yaw, Pitch;
+	v3 Position, UpVector, FacingVector, DirectionVector;
 	m4 ViewMatrix, ProjectionMatrix;
 	uint32 ID;
 
 };
+
+void Camera_LinkToEntity();
 
 #endif

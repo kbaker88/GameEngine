@@ -1,47 +1,46 @@
 #include "physics_system.h"
 
-void Phys_CalculatePosition(PhysicsObject* Object)
+void Phys_CalculatePosition(PhysicsObject* PhysObject)
 {
-	Object->Acceleration =
-		Object->Mass *
-		Object->MoveDirection *
-		Object->AccelerationRate;
-	
-	Object->Acceleration +=
-		Object->ForceSum;
+//	PhysObject->Acceleration = *PhysObject->MoveDirection *
+		//PhysObject->AccelerationRate;
+	PhysObject->Force = PhysObject->Mass  * *PhysObject->MoveDirection *
+		PhysObject->AccelerationRate;
+		//PhysObject->Mass * PhysObject->Acceleration;
+
+	PhysObject->Force += PhysObject->ForceSum;
 	
 	//TODO: Temporary Friction, Use Ordinary Differential Equations later
-	v3 AirFriction = -Object->Velocity;
-	Object->Acceleration += AirFriction;
+	v3 AirFriction = -PhysObject->Velocity;
+	PhysObject->Force += AirFriction;
 	
-	*Object->Position =
-		(0.5f * Object->Acceleration * Square(SecondsPerFrame)) +
-		(Object->Velocity * SecondsPerFrame) +
-		*Object->Position;
+	*PhysObject->Position =
+		(0.5f * PhysObject->Force * Square(SecondsPerFrame)) +
+		(PhysObject->Velocity * SecondsPerFrame) +
+		*PhysObject->Position;
 	
-	Object->Velocity =
-		Object->Acceleration *
+	PhysObject->Velocity =
+		PhysObject->Force *
 		SecondsPerFrame + 
-		Object->Velocity;
+		PhysObject->Velocity;
 }
 
-void Phys_AddForce(PhysicsObject* Object, v3 *Force)
+void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force)
 {
-	Object->ForceSum += Object->Mass * *Force;
+	PhysObject->ForceSum += PhysObject->Mass * *Force;
 }
 
-void Phys_RemoveForce(PhysicsObject* Object, v3 *Force)
+void Phys_RemoveForce(PhysicsObject* PhysObject, v3 *Force)
 {
-	Object->ForceSum -= Object->Mass * *Force;
+	PhysObject->ForceSum -= PhysObject->Mass * *Force;
 }
 
-
-void Phys_SetMoveDirection(PhysicsObject* Object, v3 &Direction)
+void Phys_SetMoveDirection(PhysicsObject* PhysObject, v3 *Direction)
 {
-	Object->MoveDirection = Direction;
+	*PhysObject->MoveDirection = *Direction;
 }
 
-void Pysc_SetAccelerationRate(PhysicsObject* Object, float MetersPerSec)
+void Phys_SetAccelerationRate(PhysicsObject* PhysObject, float MetersPerSec)
 {
-	Object->AccelerationRate = MetersPerSec * UnitsPerMeter * SecondsPerFrame;
+	PhysObject->AccelerationRate = MetersPerSec * UnitsPerMeter * SecondsPerFrame;
 }
