@@ -11,23 +11,6 @@
 #include "plane2d.h"
 #include "heightmap.h"
 
-struct ObjectInstance
-{
-	ObjectInstance() : ObjectPtr(NULL), Position(v3(0.0f, 0.0f, 0.0f))
-	{};
-
-	Object* ObjectPtr;
-	m4 ModelMatrix;
-	v3 Position;
-
-	ObjectInstance & operator=(ObjectInstance & NewInstance)
-	{
-		ObjectPtr = NewInstance.ObjectPtr;
-		ModelMatrix = NewInstance.ModelMatrix;
-		Position = NewInstance.Position;
-	}
-};
-
 void Object_CreateBlock(uint32 BlockID, uint32 Size);
 void Object_DeleteBlock(uint32 BlockID);
 void Object_Create(Object* NewObject, uint32 BlockID, uint32 ObjectID);

@@ -20,18 +20,19 @@ void Game_Initialize(ProgramState* State)
 	EntityCount++;
 
 	//NOTE: Terrain
-	Object_Create(new HeightMap, State->ObjectBlockNum, ObjectCount, Asset_GetTexture(7));
+	Object_Create(new HeightMap, State->ObjectBlockNum, ObjectCount, 
+		Asset_GetTexture(7));
+	Object_SetTexture(State->ObjectBlockNum, ObjectCount, Asset_GetTexture(4));
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(0.0f, 0.0f, 0.0f));
-	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(4));
 	ObjectCount++;
 	EntityCount++;
 
 	// Wood Floor
 	Object_Create(new Plane2D, State->ObjectBlockNum, ObjectCount, 10, 10);
+	Object_SetTexture(State->ObjectBlockNum, ObjectCount, Asset_GetTexture(6));
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(0.0f, -0.5f, 20.0f));
-	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(6));
 	ObjectCount++;
 	EntityCount++;
 
@@ -42,31 +43,25 @@ void Game_Initialize(ProgramState* State)
 	ObjectCount++;
 	EntityCount++;
 
-	// Wood Box
+	// Wood Box 1
 	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Object_SetTexture(State->ObjectBlockNum, ObjectCount, Asset_GetTexture(5));
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(3.0f, 0.0f, 15.0f));
-	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(5));
-	ObjectCount++;
 	EntityCount++;
 
-	// Wood Box
-	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	// Wood Box 2
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(0.0f, 0.0f, 10.0f));
-	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(5));
 	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, EntityCount),
-		&v3(1.0f, 0.0f, 0.0f));
-	ObjectCount++;
+		&v3(0.001f, 0.0f, 0.0f));
 	EntityCount++;
 
-	// Wood Box
-	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	// Wood Box 3
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(6.0f, 0.0f, 10.0f));
-	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(5));
 	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, EntityCount),
-		&v3(-1.0f, 0.0f, 0.0f));
+		&v3(-0.001f, 0.0f, 0.0f));
 	ObjectCount++;
 	EntityCount++;
 
@@ -106,6 +101,8 @@ void Game_Draw(ProgramState* State)
 	Entity_Ptr(State->EntityBlockNum, 6)->DirectionVector = v3(-1.0f, 0.0f, 0.0f);
 	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 5));
 	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 6));
+	Entity_UpdatePosition(State->EntityBlockNum, 5);
+	Entity_UpdatePosition(State->EntityBlockNum, 6);
 
 
 	// Bind New Shaders
@@ -181,20 +178,19 @@ void Game_Draw(ProgramState* State)
 			(Entity_GetDepth(State->EntityBlockNum, 1) - z)) * 3 * sizeof(float));
 
 		Render_UpdateColorVertice(
-			Entity_GetObjInstancePtr(State->EntityBlockNum, 1)->
-			ObjectPtr->ObjectDescription.VertexBufferObjectHandleIDs,
-			PlayerPosition,
+			Entity_GetObjectPtr(State->EntityBlockNum, 1)->
+			ObjectDescription.VertexBufferObjectHandleIDs, PlayerPosition,
 			v3(0.0f, 0.0f, 1.0f).Arr);
 		Render_UnmapShaderDataPtr();
 
 		if (Collision_HeightMap(
-			static_cast<HeightMap*>(Entity_GetObjInstancePtr(State->EntityBlockNum, 1)->ObjectPtr), Position))
+			static_cast<HeightMap*>(Entity_GetObjectPtr(State->EntityBlockNum, 1)), Position))
 		{
 			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 				&(-Gravity));
 			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 				&v3(0.0f,
-					-Entity_GetPhysObjPtr(State->EntityBlockNum, 0)->Acceleration.y, 
+					-Entity_GetPhysObjPtr(State->EntityBlockNum, 0)->Force.y, 
 					0.0f));
 			Entity_SetPosition(State->EntityBlockNum, 0, Position);
 		}
@@ -203,25 +199,15 @@ void Game_Draw(ProgramState* State)
 	v3 MouseArray = Collision_UpdateMousePickRay(
 		State->CameraArray[1].GetProjectionMatrix(),
 		State->CameraArray[1].GetViewMatrix());
-	//NOTE: Draw Objects below
-	//DrawWorldObjects(State->GPUShaderVarArray[0], State->GPUShaderVarArray[6]);
-	//for (uint32 i = 0; i < 4; i++)
-	//{
-	//	//if (GJK(GetObjectMapPtr(GetPlayer(0)->PlayerMapID), GetObjectMapPtr(ObjectMaps[i])))
-	//	//{
-	//	//	GetPlayer(100)->RemoveForce();
-	//	//	GetPlayer(100)->AddForce(&ReflectVector(GetPlayer(0)->GetDirectionVector(), v3(1.0f, 0.0f, 0.0f)));
-	//	//	GetPlayer(100)->ApplyForces();
-	//	//}
-	//	DrawObjectMap(ObjectMaps[i], ShaderVariableID);
-	//}
 
+	//NOTE: Draw Objects below
 	IsTextured = 1;
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], IsTextured);
 	for (uint32 Index = 2; Index < 7; Index++) 
 	{
 		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
 	}
+
 	//NOTE: Draw UI Below
 	window_properties WindowDimensions = Render_GetWindowProperties();
 	float WindowHalfHeight = 0.5f * (float)WindowDimensions.Height;
@@ -247,6 +233,15 @@ void Game_Draw(ProgramState* State)
 		44, (float*)State->CameraArray[1].GetProjectionMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[3],
 		(int32)0);
+
+	//TODO: Remove this, testing only
+	if (Collision_GJK(Entity_GetCollisionObjPtr(State->EntityBlockNum, 5),
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 6)))
+	{
+		Text_DrawCharLine(string("COLLISION \0"),
+			v3(Left + 20.0f, Top - 80.0f, 0.0f), 0.15f,
+			State->GPUShaderVarArray[0]);
+	}
 
 	// TODO: Remove, Test timer and clock features
 	Text_DrawCharLine(string("Elapsed Time: ") + 

@@ -6,7 +6,8 @@
 class Plane2D : public Object
 {
 public:
-	Plane2D() {};
+	Plane2D() {}
+
 	~Plane2D();
 
 	void Init(uint32 width, uint32 height);

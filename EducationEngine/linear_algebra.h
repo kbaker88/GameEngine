@@ -9,23 +9,19 @@
 
 union v2
 {
-	v2()
+	struct
 	{
-		x = 0.0f;
-		y = 0.0f;
-	}
+		float x, y;
+	};
+	float Arr[2];
+
+	v2() : x(0.0f), y(0.0f) {}
 
 	v2(float X, float Y)
 	{
 		x = X;
 		y = Y;
 	}
-
-	struct
-	{
-		float x, y;
-	};
-	float Arr[2];
 	
 	v2 & operator=(v2 & B)
 	{
@@ -34,6 +30,59 @@ union v2
 		return *this;
 	}
 
+};
+
+union v3
+{
+	struct
+	{
+		float x, y, z;
+	};
+	struct
+	{
+		float r, g, b;
+	};
+	float Arr[3];
+
+	v3() : x(0.0f), y(0.0f), z(0.0f) {}
+
+	v3(float X, float Y, float Z)
+	{
+		x = X;
+		y = Y;
+		z = Z;
+	}
+
+	v3 & operator=(v3& B)
+	{
+		x = B.x;
+		y = B.y;
+		z = B.z;
+		return *this;
+	}
+};
+
+union v4
+{
+	struct
+	{
+		float x, y, z, w;
+	};
+	struct
+	{
+		float r, g, b, a;
+	};
+	float Arr[4];
+
+	v4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
+
+	v4(float X, float Y, float Z, float W)
+	{
+		x = X;
+		y = Y;
+		z = Z;
+		w = W;
+	}
 };
 
 union m4
@@ -48,7 +97,8 @@ union m4
 	float Rc[4][4];
 	float Arr[16];
 
-	m4()
+	//TODO: Is there a better way to initialize to zero here?
+	m4() 
 	{
 		for (int i = 0; i < 4; i++)
 		{
@@ -161,39 +211,6 @@ inline v2 & operator*=(v2 &B, float A)
 
 	return(B);
 }
-
-union v3
-{
-	v3()
-	{
-		x = 0.0f;
-		y = 0.0f;
-		z = 0.0f;
-	}
-	v3(float X, float Y, float Z)
-	{
-		x = X;
-		y = Y;
-		z = Z;
-	}
-	struct
-	{
-		float x, y, z;
-	};
-	struct
-	{
-		float r, g, b;
-	};
-	float Arr[3];
-
-	v3 & operator=(v3& B)
-	{
-		x = B.x;
-		y = B.y;
-		z = B.z;
-		return *this;
-	}
-};
 
 inline bool operator==(v3 &A, v3 &B)
 {
@@ -325,34 +342,6 @@ inline v3 Normalize(v3 A)
 
 	return(Result);
 }
-
-
-union v4
-{
-	v4()
-	{
-		x = 0.0f;
-		y = 0.0f;
-		z = 0.0f;
-		w = 0.0f;
-	}
-	v4(float X, float Y, float Z, float W)
-	{
-		x = X;
-		y = Y;
-		z = Z;
-		w = W;
-	}
-	struct
-	{
-		float x, y, z, w;
-	};
-	struct
-	{
-		float r, g, b, a;
-	};
-	float Arr[4];
-};
 
 inline v4 operator*(float A, v4 B)
 {

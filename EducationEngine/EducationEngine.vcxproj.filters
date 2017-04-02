@@ -162,9 +162,6 @@
     <ClCompile Include="object_system.cpp">
       <Filter>Source Files\engine\entity</Filter>
     </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>Source Files\engine\entity</Filter>
-    </ClCompile>
     <ClCompile Include="state_system.cpp">
       <Filter>Source Files\engine\program_states</Filter>
     </ClCompile>
@@ -264,9 +261,6 @@
       <Filter>Header Files\engine\entity</Filter>
     </ClInclude>
     <ClInclude Include="physics_system.h">
-      <Filter>Header Files\engine\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="player.h">
       <Filter>Header Files\engine\entity</Filter>
     </ClInclude>
     <ClInclude Include="game_state.h">

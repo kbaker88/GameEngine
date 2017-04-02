@@ -12,6 +12,8 @@ struct VBODescription
 	VBODescription() : FloatData(NULL), Uint32Data(NULL),
 		Size(0), Offset(0) {}
 
+	~VBODescription() {}
+
 	float* FloatData;
 	uint32* Uint32Data;
 	uint32 Size;
@@ -23,6 +25,8 @@ struct PipelineObjectDescription
 	PipelineObjectDescription() : VertexArrayObjectID(0),
 		NumberOfVertexHandles(0), VertexBufferObjectHandleIDs(NULL),
 		VertexBufferDescriptions(NULL) {}
+
+	~PipelineObjectDescription() {}
 
 	uint32 VertexArrayObjectID;
 	uint32 NumberOfVertexHandles;

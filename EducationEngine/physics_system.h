@@ -1,8 +1,9 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
-//#include "utility.h"
 #include "memory_management.h"
+
+//TODO: Add Acceleration Vector
 
 struct PhysicsObject
 {
@@ -25,8 +26,5 @@ void Phys_CalculatePosition(PhysicsObject* PhysObject);
 void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force);
 void Phys_RemoveForce(PhysicsObject* PhysObject, v3 *Force);
 void Phys_SetAccelerationRate(PhysicsObject* PhysObject, float MetersPerSec);
-
-//TODO: Is this needed anymore now that movedirection is a ptr?
-void Phys_SetMoveDirection(PhysicsObject* PhysObject, v3 *Direction);
 
 #endif

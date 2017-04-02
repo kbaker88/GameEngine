@@ -10,7 +10,9 @@ struct ProgramState
 		Status(0), EntityBlockNum(0), ObjectBlockNum(0),
 		StateOfProgram(NULL) {}
 
-	//TODO: Make Camera and Player into entities.
+	~ProgramState() {}
+
+	//TODO: Make Cameras into entities.
 	Camera* CameraArray;
 	Timer* TimerArray;
 	int32* GPUShaderVarArray;

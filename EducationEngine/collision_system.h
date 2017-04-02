@@ -35,6 +35,11 @@ void FillCollisionObject(CollisionObject* Object, uint32 NumVertices,
 
 struct SupportPoint
 {
+	SupportPoint() : MinkowskiPoint(0.0f, 0.0f, 0.0f),
+		ObjAPoint(0.0f, 0.0f, 0.0f), ObjBPoint(0.0f, 0.0f, 0.0f) {}
+	
+	~SupportPoint() {}
+
 	v3 MinkowskiPoint;
 	v3 ObjAPoint;
 	v3 ObjBPoint;
@@ -78,10 +83,10 @@ struct SupportPoint
 
 struct Face
 {
-	Face()
-	{
-		OriginDistance = 0;
-	}
+	Face() : OriginDistance(0) {}
+
+	~Face() {}
+
 	Face(SupportPoint& X, SupportPoint& Y, SupportPoint& Z)
 	{
 		Vertices[0] = X;
@@ -107,6 +112,10 @@ struct Face
 
 struct Edge
 {
+	Edge() {}
+
+	~Edge() {}
+
 	Edge(SupportPoint a, SupportPoint b)
 	{
 		A = a;

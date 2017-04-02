@@ -2,6 +2,9 @@
 #define GAME_STATE_H
 
 #include "menu_state.h"
+
+//TODO: Prevent crashes from calling init,draw,etc without first setting up
+
 /* MovementSpeed * SecondsPerFrame * PixelsPerMeter
    1.4 meters/sec * 1/60 sec/frame * 0.25 pix/meter
 */

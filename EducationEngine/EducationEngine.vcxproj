@@ -141,7 +141,6 @@
     <ClCompile Include="plane2d.cpp" />
     <ClCompile Include="menu_state.cpp" />
     <ClCompile Include="opengl_layer.cpp" />
-    <ClCompile Include="player.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="rectangle.cpp" />
     <ClCompile Include="sphere.cpp" />
@@ -175,7 +174,6 @@
     <ClInclude Include="game_state.h" />
     <ClInclude Include="menu_state.h" />
     <ClInclude Include="platform_layer.h" />
-    <ClInclude Include="player.h" />
     <ClInclude Include="png.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="rectangle.h" />

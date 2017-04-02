@@ -27,25 +27,25 @@ void Title_Initialize(ProgramState* State)
 	// Start Button
 	Object_Create(new MyRectangle, State->ObjectBlockNum, 0, 
 		ButtonWidth, ButtonHeight, 0.0f);
+	Object_SetTexture(State->ObjectBlockNum, 0, Asset_GetTexture(0));
 	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, 
 		&ButtonPosition);
-	Entity_AddTexture(State->EntityBlockNum, 0, Asset_GetTexture(0));
 
 	// Menu Button
 	ButtonPosition.y -= ButtonHeight;
 	Object_Create(new MyRectangle, State->ObjectBlockNum, 1, 
 		ButtonWidth, ButtonHeight, 0.0f);
+	Object_SetTexture(State->ObjectBlockNum, 1, Asset_GetTexture(1));
 	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, 
 		&ButtonPosition);
-	Entity_AddTexture(State->EntityBlockNum, 1, Asset_GetTexture(1));
 
 	// Exit Button
 	ButtonPosition.y -= ButtonHeight;
 	Object_Create(new MyRectangle, State->ObjectBlockNum, 2,
 		ButtonWidth, ButtonHeight, 0.0f);
+	Object_SetTexture(State->ObjectBlockNum, 2, Asset_GetTexture(2));
 	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2,
 		&ButtonPosition);
-	Entity_AddTexture(State->EntityBlockNum, 2, Asset_GetTexture(2));
 }
 
 void Title_Draw(ProgramState* State)

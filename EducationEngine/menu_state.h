@@ -1,8 +1,9 @@
 #ifndef MENU_STATE_H
 #define MENU_STATE_H
 
-//#include "state_system.h"
 #include "input_state.h"
+
+//TODO: Prevent crashes from calling init,draw,etc without first setting up
 
 void Menu_Initialize(ProgramState* State);
 void Menu_Draw(ProgramState* State);

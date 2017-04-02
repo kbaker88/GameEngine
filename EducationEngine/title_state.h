@@ -4,7 +4,7 @@
 #include "game_state.h"
 
 //TODO: Use glsl uniform buffers
-//TODO: Prevent crashes from calling init,draw,etc without setup
+//TODO: Prevent crashes from calling init,draw,etc without first setting up
 
 void Title_Initialize(ProgramState* State);
 void Title_Draw(ProgramState* State);

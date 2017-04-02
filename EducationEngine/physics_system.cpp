@@ -2,15 +2,14 @@
 
 void Phys_CalculatePosition(PhysicsObject* PhysObject)
 {
-//	PhysObject->Acceleration = *PhysObject->MoveDirection *
-		//PhysObject->AccelerationRate;
-	PhysObject->Force = PhysObject->Mass  * *PhysObject->MoveDirection *
+	PhysObject->Acceleration = *PhysObject->MoveDirection *
 		PhysObject->AccelerationRate;
-		//PhysObject->Mass * PhysObject->Acceleration;
+
+	PhysObject->Force = PhysObject->Mass  * PhysObject->Acceleration; 
 
 	PhysObject->Force += PhysObject->ForceSum;
 	
-	//TODO: Temporary Friction, Use Ordinary Differential Equations later
+	//TODO: Temporary friction, use Ordinary Differential Equations later
 	v3 AirFriction = -PhysObject->Velocity;
 	PhysObject->Force += AirFriction;
 	
@@ -33,11 +32,6 @@ void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force)
 void Phys_RemoveForce(PhysicsObject* PhysObject, v3 *Force)
 {
 	PhysObject->ForceSum -= PhysObject->Mass * *Force;
-}
-
-void Phys_SetMoveDirection(PhysicsObject* PhysObject, v3 *Direction)
-{
-	*PhysObject->MoveDirection = *Direction;
 }
 
 void Phys_SetAccelerationRate(PhysicsObject* PhysObject, float MetersPerSec)

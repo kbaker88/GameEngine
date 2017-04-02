@@ -4,15 +4,12 @@
 #include "debug_system.h"
 #include "asset_system.h"
 
-//TODO: Is ObjectID actually needed?
-
 class Object
 {
 public:
-	Object() : FrontVector(0.0f, 0.0f, 0.0f),
-		UpVector(0.0f, 1.0f, 0.0f), VerticeFloatArrayPtr(NULL), Width(0.0f), 
-		Height(0.0f), Depth(0.0f), Yaw(-90.0f), Pitch(0.0f), ObjectID(0), 
-		TextureID(0) {}
+	Object() : FrontVector(0.0f, 0.0f, 0.0f), UpVector(0.0f, 1.0f, 0.0f),
+		VerticeFloatArrayPtr(NULL), Width(0.0f), Height(0.0f), Depth(0.0f), 
+		Yaw(-90.0f), Pitch(0.0f), ObjectID(0), TextureID(0) {}
 	
 	~Object();
 
