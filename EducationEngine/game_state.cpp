@@ -4,49 +4,73 @@ void Game_Initialize(ProgramState* State)
 {
 	Entity_CreateBlock(State->EntityBlockNum, 256);
 	Object_CreateBlock(State->ObjectBlockNum, 256);
+	uint32 ObjectCount = 0;
+	uint32 EntityCount = 0;
 
 	State->ShaderHandles[0] = Render_CompileShaders(VertShaderForTextureAndLight,
 		FragShaderForTextureAndLight);
 
 	//NOTE: Player's Model
-	Object_Create(new Box, State->EntityBlockNum, 0, 0.25f, 0.25f, 0.25f);
-	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum,
-		0, v3(0.0f, 6.0f, 20.0f));
-	Entity_CreatePlayer(State->EntityBlockNum, 0, new Player);
-
-	//TODO: What would be a better way to connect a camera to an object? Should a camera be an object?
-	State->CameraArray[0].SetPosition(&v3(0.0f, 6.0f, 20.0f));
-	State->CameraArray[0].SetFrontDirection(&v3(0.0f, 0.0f, -1.0f));
-	State->CameraArray[0].SetProjectionMatrix(1);
-
-	// Wood Box
-	Object_Create(new Box, State->ObjectBlockNum, 1, 0.25f, 0.25f, 0.25f);
-	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum,
-		1, v3(3.0f, 0.0f, 15.0f));
-	Entity_AddTexture(State->EntityBlockNum, 1, Asset_GetTexture(5));
-
-	// Light Box
-	Object_Create(new Box, State->ObjectBlockNum, 2, 0.25f, 0.25f, 0.25f);
-	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum,
-		2, v3(2.0f, 1.0f, 17.0f)); 
-
-	// Wood Floor
-	Object_Create(new Plane2D, State->ObjectBlockNum, 3, 10, 10);
-	Entity_Create(State->EntityBlockNum, 3, State->ObjectBlockNum,
-		3, v3(0.0f, -0.5f, 20.0f));
-	Entity_AddTexture(State->EntityBlockNum, 3, Asset_GetTexture(6));
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum, 
+		ObjectCount, &v3(0.0f, 6.0f, 20.0f));
+	Entity_AddCamera(State->ObjectBlockNum, ObjectCount, new Camera);
+	Phys_SetAccelerationRate(Entity_GetPhysObjPtr(State->ObjectBlockNum, ObjectCount), 1000.0f);
+	ObjectCount++;
+	EntityCount++;
 
 	//NOTE: Terrain
-	Object_Create(new HeightMap, State->ObjectBlockNum, 4, Asset_GetTexture(7));
-	Entity_Create(State->EntityBlockNum, 4, State->ObjectBlockNum,
-		4, v3(0.0f, 0.0f, 0.0f));
-	Entity_AddTexture(State->EntityBlockNum, 4, Asset_GetTexture(4));
+	Object_Create(new HeightMap, State->ObjectBlockNum, ObjectCount, Asset_GetTexture(7));
+	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
+		ObjectCount, &v3(0.0f, 0.0f, 0.0f));
+	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(4));
+	ObjectCount++;
+	EntityCount++;
 
-	Pysc_SetAccelerationRate(Entity_GetPhysObjPtr(State->EntityBlockNum,
-		0), 1000.0f);
+	// Wood Floor
+	Object_Create(new Plane2D, State->ObjectBlockNum, ObjectCount, 10, 10);
+	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
+		ObjectCount, &v3(0.0f, -0.5f, 20.0f));
+	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(6));
+	ObjectCount++;
+	EntityCount++;
+
+	// Light Box
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
+		ObjectCount, &v3(2.0f, 1.0f, 17.0f));
+	ObjectCount++;
+	EntityCount++;
+
+	// Wood Box
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
+		ObjectCount, &v3(3.0f, 0.0f, 15.0f));
+	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(5));
+	ObjectCount++;
+	EntityCount++;
+
+	// Wood Box
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
+		ObjectCount, &v3(0.0f, 0.0f, 10.0f));
+	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(5));
+	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, EntityCount),
+		&v3(1.0f, 0.0f, 0.0f));
+	ObjectCount++;
+	EntityCount++;
+
+	// Wood Box
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
+		ObjectCount, &v3(6.0f, 0.0f, 10.0f));
+	Entity_AddTexture(State->EntityBlockNum, EntityCount, Asset_GetTexture(5));
+	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, EntityCount),
+		&v3(-1.0f, 0.0f, 0.0f));
+	ObjectCount++;
+	EntityCount++;
 
 	//NOTE: User Inferface initialization below
-
 	window_properties WindowDimensions = Render_GetWindowProperties();
 	float WindowHalfHeight = 0.5f * (float)WindowDimensions.Height;
 	float WindowHalfWidth = 0.5f * (float)WindowDimensions.Width;
@@ -67,21 +91,22 @@ void Game_Draw(ProgramState* State)
 	v3 LightColor = { 1.0f, 1.0f, 1.0f };
 
 	Render_ClearScreen();
-
-	void* Player1 = Entity_GetPlayerPtr(State->EntityBlockNum, 0);
-	static_cast<Player*>(Player1)->UpdateRotation();
-	State->CameraArray[0].SetFrontDirection(
-		static_cast<Player*>(Player1)->GetFrontDirection());
-	static_cast<Player*>(Player1)->UpdateTranslation();
-
-	Phys_SetMoveDirection(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
-		*static_cast<Player*>(Player1)->GetDirection());
+	Input_UpdateMouseState(State);
+	Input_UpdateKeyStates(State);
+	
 	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 0));
-	State->CameraArray[0].SetPosition(
-		&Entity_GetPosition(State->EntityBlockNum, 0));
+	Entity_GetCamera(State->EntityBlockNum, 0)->
+		SetPosition(&Entity_GetPosition(State->EntityBlockNum, 0));
 
 	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 		&Gravity);
+
+	//TODO: Remove, test code.
+	Entity_Ptr(State->EntityBlockNum, 5)->DirectionVector = v3(1.0f, 0.0f, 0.0f);
+	Entity_Ptr(State->EntityBlockNum, 6)->DirectionVector = v3(-1.0f, 0.0f, 0.0f);
+	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 5));
+	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 6));
+
 
 	// Bind New Shaders
 	Render_BindShaders(State->ShaderHandles[0]);
@@ -102,9 +127,9 @@ void Game_Draw(ProgramState* State)
 
 	// Update Shader Variables for Player 1
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
-		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
+		(float*)Entity_GetCamera(State->EntityBlockNum, 0)->GetViewMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
-		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
+		(float*)Entity_GetCamera(State->EntityBlockNum, 0)->GetProjectionMatrix(), 1, 0);
 
 	// Update Shader Variables for World
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[3],
@@ -116,20 +141,20 @@ void Game_Draw(ProgramState* State)
 	// NOTE: Draw terrain below
 	m4 ModelMatrix = IdentityMatrix();
 
-	bool Choice = 0;
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
-
+	bool IsTextured = 0;
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], IsTextured);
+		
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		(float*)&ModelMatrix, 1, 0);
-	Entity_DrawPolyGonMode(State->EntityBlockNum, 4,
+	Entity_DrawPolyGonMode(State->EntityBlockNum, 1,
 		State->GPUShaderVarArray[0]);
 
 	v3 Position = Entity_GetPosition(State->EntityBlockNum, 0);
 
 	if ((Position.x < 1.0f) ||
-		(Position.x > Entity_GetWidth(State->EntityBlockNum, 4) - 1) ||
+		(Position.x > Entity_GetWidth(State->EntityBlockNum, 1) - 1) ||
 		(Position.z > -1.0f) ||
-		(Position.z < -Entity_GetDepth(State->EntityBlockNum, 4) + 1))
+		(Position.z < -Entity_GetDepth(State->EntityBlockNum, 1) + 1))
 	{
 		// outside of terrain map
 		if (Position.y < 0)
@@ -139,7 +164,7 @@ void Game_Draw(ProgramState* State)
 				&(-Gravity));
 			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), 
 				&v3(0.0f,
-					-Entity_GetPhysObjPtr(State->EntityBlockNum, 0)->Acceleration.y,
+					-Entity_GetPhysObjPtr(State->EntityBlockNum, 0)->Force.y,
 					0.0f));
 			Entity_SetPosition(State->EntityBlockNum, 0, Position);
 		}
@@ -152,17 +177,18 @@ void Game_Draw(ProgramState* State)
 
 		// Test Code
 		uint32 PlayerPosition =
-			static_cast<uint32>(((x * Entity_GetWidth(State->EntityBlockNum, 4)) +
-			(Entity_GetDepth(State->EntityBlockNum, 4) - z)) * 3 * sizeof(float));
+			static_cast<uint32>(((x * Entity_GetWidth(State->EntityBlockNum, 1)) +
+			(Entity_GetDepth(State->EntityBlockNum, 1) - z)) * 3 * sizeof(float));
 
 		Render_UpdateColorVertice(
-			Entity_GetObjInstancePtr(State->EntityBlockNum, 4)->
+			Entity_GetObjInstancePtr(State->EntityBlockNum, 1)->
 			ObjectPtr->ObjectDescription.VertexBufferObjectHandleIDs,
 			PlayerPosition,
 			v3(0.0f, 0.0f, 1.0f).Arr);
 		Render_UnmapShaderDataPtr();
 
-		if (Collision_HeightMap(static_cast<HeightMap*>(Entity_GetObjInstancePtr(State->EntityBlockNum, 4)->ObjectPtr), Position))
+		if (Collision_HeightMap(
+			static_cast<HeightMap*>(Entity_GetObjInstancePtr(State->EntityBlockNum, 1)->ObjectPtr), Position))
 		{
 			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 				&(-Gravity));
@@ -174,6 +200,9 @@ void Game_Draw(ProgramState* State)
 		}
 	}
 
+	v3 MouseArray = Collision_UpdateMousePickRay(
+		State->CameraArray[1].GetProjectionMatrix(),
+		State->CameraArray[1].GetViewMatrix());
 	//NOTE: Draw Objects below
 	//DrawWorldObjects(State->GPUShaderVarArray[0], State->GPUShaderVarArray[6]);
 	//for (uint32 i = 0; i < 4; i++)
@@ -186,12 +215,12 @@ void Game_Draw(ProgramState* State)
 	//	//}
 	//	DrawObjectMap(ObjectMaps[i], ShaderVariableID);
 	//}
-	Choice = 1;
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], Choice);
-	for (uint32 Index = 1; Index < 4; Index++) 
+
+	IsTextured = 1;
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], IsTextured);
+	for (uint32 Index = 2; Index < 7; Index++) 
 	{
-		Entity_Draw(State->EntityBlockNum,
-			Index, State->GPUShaderVarArray[0]);
+		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
 	}
 	//NOTE: Draw UI Below
 	window_properties WindowDimensions = Render_GetWindowProperties();
@@ -248,7 +277,6 @@ void Game_Draw(ProgramState* State)
 		v3(Left + 20.0f, Top - 40.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
 
-	v3 MouseArray = Collision_UpdateMousePickRay(State->CameraArray[1].GetProjectionMatrix(), State->CameraArray[1].GetViewMatrix());
 	Text_DrawCharLine(string("Cursor World Array: \0") +
 		string(Platform_FloatToChar(MouseArray.x)) + string(" ") +
 		string(Platform_FloatToChar(MouseArray.y)) + string(" ") + 

@@ -77,6 +77,20 @@ v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix)
 	return ray_world;
 }
 
+bool Collision_RayToObject(v3* Ray, CollisionObject* Object)
+{
+	if ((Ray->x < (Object->Position->x + (Object->Width * 0.5f))) && 
+		(Ray->x > (Object->Position->x - (Object->Width * 0.5f))))
+	{
+		if ((Ray->y < (Object->Position->y + (Object->Height * 0.5f))) &&
+			(Ray->y >(Object->Position->y - (Object->Height * 0.5f))))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 v3 GetFurthestPoint(CollisionObject* Object, v3 &Direction)
 {
 	v3 FurthestPoint = { 0.0f, 0.0f, 0.0f };

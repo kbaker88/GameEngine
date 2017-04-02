@@ -147,32 +147,33 @@ m4 ScaleMatrix(m4 &Matrix, v3 &Vector)
 m4 GetMatrixInverse(m4 *Matrix)
 {
 	m4 A = *Matrix;
-	float inverseDeterminant = 1 / (A.Rc[0][0] * A.Rc[1][1] * A.Rc[2][2] + A.Rc[1][0] * A.Rc[2][1] * A.Rc[0][2]
+	float Determinant = 1 / (A.Rc[0][0] * A.Rc[1][1] * A.Rc[2][2] + A.Rc[1][0] * A.Rc[2][1] * A.Rc[0][2]
 		+ A.Rc[0][1] * A.Rc[1][2] * A.Rc[2][0] - A.Rc[2][0] * A.Rc[1][1] * A.Rc[0][2]
 		- A.Rc[0][0] * A.Rc[2][1] * A.Rc[1][2] - A.Rc[1][0] * A.Rc[0][1] * A.Rc[2][2]);
+	
 	m4 Result;
-	Result.Rc[0][0] = inverseDeterminant*(A.Rc[1][1] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][1] * A.Rc[1][2] * A.Rc[3][3]);
-	Result.Rc[0][1] = -1 * inverseDeterminant*(A.Rc[0][1] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][1] * A.Rc[0][2] * A.Rc[3][3]);
-	Result.Rc[0][2] = inverseDeterminant*(A.Rc[0][1] * A.Rc[1][2] * A.Rc[3][3] - A.Rc[1][1] * A.Rc[0][2] * A.Rc[3][3]);
+	Result.Rc[0][0] = Determinant *(A.Rc[1][1] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][1] * A.Rc[1][2] * A.Rc[3][3]);
+	Result.Rc[0][1] = -1 * Determinant *(A.Rc[0][1] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][1] * A.Rc[0][2] * A.Rc[3][3]);
+	Result.Rc[0][2] = Determinant *(A.Rc[0][1] * A.Rc[1][2] * A.Rc[3][3] - A.Rc[1][1] * A.Rc[0][2] * A.Rc[3][3]);
 	Result.Rc[0][3] = 0;
-	Result.Rc[1][0] = -1 * inverseDeterminant * (A.Rc[1][0] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][0] * A.Rc[1][2] * A.Rc[3][3]);
-	Result.Rc[1][1] = inverseDeterminant * (A.Rc[0][0] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][0] * A.Rc[0][2] * A.Rc[3][3]);
-	Result.Rc[1][2] = -1 * inverseDeterminant * (A.Rc[0][0] * A.Rc[1][2] * A.Rc[3][3] - A.Rc[1][0] * A.Rc[0][2] * A.Rc[3][3]);
+	Result.Rc[1][0] = -1 * Determinant * (A.Rc[1][0] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][0] * A.Rc[1][2] * A.Rc[3][3]);
+	Result.Rc[1][1] = Determinant * (A.Rc[0][0] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][0] * A.Rc[0][2] * A.Rc[3][3]);
+	Result.Rc[1][2] = -1 * Determinant * (A.Rc[0][0] * A.Rc[1][2] * A.Rc[3][3] - A.Rc[1][0] * A.Rc[0][2] * A.Rc[3][3]);
 	Result.Rc[1][3] = 0;
-	Result.Rc[2][0] = inverseDeterminant * (A.Rc[1][0] * A.Rc[2][1] * A.Rc[3][3] - A.Rc[1][1] * A.Rc[2][0] * A.Rc[3][3]);
-	Result.Rc[2][1] = -1 * inverseDeterminant * (A.Rc[0][0] * A.Rc[2][1] * A.Rc[3][3] - A.Rc[2][0] * A.Rc[0][1] * A.Rc[3][3]);
-	Result.Rc[2][2] = inverseDeterminant * (A.Rc[0][0] * A.Rc[1][1] * A.Rc[3][3] - A.Rc[1][0] * A.Rc[0][1] * A.Rc[3][3]);
+	Result.Rc[2][0] = Determinant * (A.Rc[1][0] * A.Rc[2][1] * A.Rc[3][3] - A.Rc[1][1] * A.Rc[2][0] * A.Rc[3][3]);
+	Result.Rc[2][1] = -1 * Determinant * (A.Rc[0][0] * A.Rc[2][1] * A.Rc[3][3] - A.Rc[2][0] * A.Rc[0][1] * A.Rc[3][3]);
+	Result.Rc[2][2] = Determinant * (A.Rc[0][0] * A.Rc[1][1] * A.Rc[3][3] - A.Rc[1][0] * A.Rc[0][1] * A.Rc[3][3]);
 	Result.Rc[2][3] = 0;
-	Result.Rc[3][0] = -1 * inverseDeterminant * (A.Rc[1][0] * A.Rc[2][1] * A.Rc[3][2] + A.Rc[2][0] * A.Rc[3][1] * A.Rc[1][2]
+	Result.Rc[3][0] = -1 * Determinant * (A.Rc[1][0] * A.Rc[2][1] * A.Rc[3][2] + A.Rc[2][0] * A.Rc[3][1] * A.Rc[1][2]
 		+ A.Rc[3][0] * A.Rc[1][1] * A.Rc[2][2] - A.Rc[1][0] * A.Rc[3][1] * A.Rc[2][2] - A.Rc[2][0] * A.Rc[1][1] * A.Rc[3][2]
 		- A.Rc[3][0] * A.Rc[2][1] * A.Rc[1][2]);
-	Result.Rc[3][1] = inverseDeterminant * (A.Rc[0][0] * A.Rc[2][1] * A.Rc[3][2] + A.Rc[2][0] * A.Rc[3][1] * A.Rc[0][2]
+	Result.Rc[3][1] = Determinant * (A.Rc[0][0] * A.Rc[2][1] * A.Rc[3][2] + A.Rc[2][0] * A.Rc[3][1] * A.Rc[0][2]
 		+ A.Rc[3][0] * A.Rc[0][1] * A.Rc[2][2] - A.Rc[0][0] * A.Rc[3][1] * A.Rc[2][2] - A.Rc[2][0] * A.Rc[0][1] * A.Rc[3][2]
 		- A.Rc[3][0] * A.Rc[2][1] * A.Rc[0][2]);
-	Result.Rc[3][2] = -1 * inverseDeterminant * (A.Rc[0][0] * A.Rc[1][1] * A.Rc[3][2] + A.Rc[1][0] * A.Rc[3][1] * A.Rc[0][2]
+	Result.Rc[3][2] = -1 * Determinant * (A.Rc[0][0] * A.Rc[1][1] * A.Rc[3][2] + A.Rc[1][0] * A.Rc[3][1] * A.Rc[0][2]
 		+ A.Rc[3][0] * A.Rc[0][1] * A.Rc[1][2] - A.Rc[0][0] * A.Rc[3][1] * A.Rc[1][2] - A.Rc[1][0] * A.Rc[0][1] * A.Rc[3][2]
 		- A.Rc[3][0] * A.Rc[1][1] * A.Rc[0][2]);
-	Result.Rc[3][3] = inverseDeterminant * (A.Rc[0][0] * A.Rc[1][1] * A.Rc[2][2] + A.Rc[1][0] * A.Rc[2][1] * A.Rc[0][2]
+	Result.Rc[3][3] = Determinant * (A.Rc[0][0] * A.Rc[1][1] * A.Rc[2][2] + A.Rc[1][0] * A.Rc[2][1] * A.Rc[0][2]
 		+ A.Rc[2][0] * A.Rc[0][1] * A.Rc[1][2] - A.Rc[0][0] * A.Rc[2][1] * A.Rc[1][2] - A.Rc[1][0] * A.Rc[0][1] * A.Rc[2][2]
 		- A.Rc[2][0] * A.Rc[1][1] * A.Rc[0][2]);
 

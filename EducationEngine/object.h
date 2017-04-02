@@ -9,7 +9,11 @@
 class Object
 {
 public:
-	Object();
+	Object() : FrontVector(0.0f, 0.0f, 0.0f),
+		UpVector(0.0f, 1.0f, 0.0f), VerticeFloatArrayPtr(NULL), Width(0.0f), 
+		Height(0.0f), Depth(0.0f), Yaw(-90.0f), Pitch(0.0f), ObjectID(0), 
+		TextureID(0) {}
+	
 	~Object();
 
 	void Init();
@@ -21,9 +25,11 @@ public:
 	virtual void Draw(uint8 Choice);
 	void Delete();
 
+	//TODO: Do objects have up and front vectors?
 	PipelineObjectDescription ObjectDescription;
+	v3 FrontVector, UpVector;
 	float* VerticeFloatArrayPtr;
-	float Width, Height, Depth;
+	float Width, Height, Depth, Yaw, Pitch;
 	uint32 ObjectID, TextureID, NumberOfVertices, NumberOfIndices;
 };
 

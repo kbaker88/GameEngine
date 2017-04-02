@@ -1,9 +1,5 @@
 #include "object.h"
 
-Object::Object() : VerticeFloatArrayPtr(NULL), ObjectID(0), 
-TextureID(0), NumberOfVertices(0), NumberOfIndices(0), Width(0.0f), 
-Height(0.0f), Depth(0.0f) {}
-
 Object::~Object()
 {
 	if (VerticeFloatArrayPtr)

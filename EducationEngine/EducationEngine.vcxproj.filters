@@ -177,6 +177,9 @@
     <ClCompile Include="title_state.cpp">
       <Filter>Source Files\engine\program_states</Filter>
     </ClCompile>
+    <ClCompile Include="input_state.cpp">
+      <Filter>Source Files\engine\program_states</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="box.h">
@@ -277,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="shaders.h">
       <Filter>Header Files\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="input_state.h">
+      <Filter>Header Files\engine\program_states</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

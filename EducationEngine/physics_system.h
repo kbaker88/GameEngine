@@ -7,28 +7,26 @@
 struct PhysicsObject
 {
 	PhysicsObject() : AccelerationRate(1.0f), Mass(1.0f),
-		Acceleration(v3(0.0f, 0.0f, 0.0f)), Velocity(v3(0.0f, 0.0f, 0.0f)),
-		ForceSum(v3(0.0f, 0.0f, 0.0f)), MoveDirection(v3(0.0f, 0.0f, 0.0f))
-	{}
+		Force(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f),
+		Acceleration(0.0f, 0.0f, 0.0f), ForceSum(0.0f, 0.0f, 0.0f), 
+		MoveDirection(NULL), Position(NULL) {}
 	
 	~PhysicsObject() {}
 
-	v3 *Position;
-	v3 Velocity;
-	v3 Acceleration;
-	v3 ForceSum;
-	v3 MoveDirection;
+	v3 *Position, *MoveDirection;
+	v3 Velocity, Force, ForceSum, Acceleration;
 	float AccelerationRate;
 	float Mass;
 };
 
 static v3 Gravity = { 0.0f, -9.807f  * 0.5f * SecondsPerFrame, 0.0f };
 
-void Phys_CalculatePosition(PhysicsObject* Object);
-void Phys_AddForce(PhysicsObject* Object, v3 *Force);
-void Phys_RemoveForce(PhysicsObject* Object, v3 *Force);
+void Phys_CalculatePosition(PhysicsObject* PhysObject);
+void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force);
+void Phys_RemoveForce(PhysicsObject* PhysObject, v3 *Force);
+void Phys_SetAccelerationRate(PhysicsObject* PhysObject, float MetersPerSec);
 
-void Phys_SetMoveDirection(PhysicsObject* Object, v3 &Direction);
-void Pysc_SetAccelerationRate(PhysicsObject* Object, float MetersPerSec);
+//TODO: Is this needed anymore now that movedirection is a ptr?
+void Phys_SetMoveDirection(PhysicsObject* PhysObject, v3 *Direction);
 
 #endif

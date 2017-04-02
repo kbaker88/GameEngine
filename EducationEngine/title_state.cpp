@@ -28,7 +28,7 @@ void Title_Initialize(ProgramState* State)
 	Object_Create(new MyRectangle, State->ObjectBlockNum, 0, 
 		ButtonWidth, ButtonHeight, 0.0f);
 	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, 
-		ButtonPosition);
+		&ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 0, Asset_GetTexture(0));
 
 	// Menu Button
@@ -36,7 +36,7 @@ void Title_Initialize(ProgramState* State)
 	Object_Create(new MyRectangle, State->ObjectBlockNum, 1, 
 		ButtonWidth, ButtonHeight, 0.0f);
 	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1, 
-		ButtonPosition);
+		&ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 1, Asset_GetTexture(1));
 
 	// Exit Button
@@ -44,7 +44,7 @@ void Title_Initialize(ProgramState* State)
 	Object_Create(new MyRectangle, State->ObjectBlockNum, 2,
 		ButtonWidth, ButtonHeight, 0.0f);
 	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2,
-		ButtonPosition);
+		&ButtonPosition);
 	Entity_AddTexture(State->EntityBlockNum, 2, Asset_GetTexture(2));
 }
 

@@ -1,7 +1,8 @@
 #ifndef MENU_STATE_H
 #define MENU_STATE_H
 
-#include "state_system.h"
+//#include "state_system.h"
+#include "input_state.h"
 
 void Menu_Initialize(ProgramState* State);
 void Menu_Draw(ProgramState* State);
