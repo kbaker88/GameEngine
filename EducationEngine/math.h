@@ -6,44 +6,18 @@
 #define Maximum(A, B) ((A > B) ? (A) : (B))
 const float PI = 3.141592653589793f;
 
-inline double FloorFloatToInt64(float Value)
+// Conversions
+inline float Math_ConverToRadians(float Degrees)
 {
-	double Result;
-	Result = (double)floor(Value);
-	return Result;
+	return Degrees * 0.01745329251994329576923690768489f;
 }
 
-inline int Floor32(int Value)
+inline float Math_ConvertToDegrees(float Radians)
 {
-	return (int)floor(Value);
+	return Radians * 57.2958f;
 }
 
-inline float Square(float A)
-{
-	float Result = A*A;
-
-	return(Result);
-}
-
-inline float SquareRoot(float Value) 
-{
-	float Result = sqrtf(Value);
-	return(Result);
-}
-
-inline float Sin(float Angle)
-{
-	float Result = sinf(Angle);
-	return(Result);
-}
-
-inline float Cos(float Angle)
-{
-	float Result = cosf(Angle);
-	return(Result);
-}
-
-inline int AbsVal(int Value)
+inline int Math_AbsVal(int Value)
 {
 	if (Value < 0)
 	{
@@ -53,6 +27,41 @@ inline int AbsVal(int Value)
 	{
 		return Value;
 	}
+}
+
+float Math_Floor(float Value);
+
+inline float Math_Square(float A)
+{
+	float Result = A*A;
+
+	return(Result);
+}
+
+inline int Math_Square(int A)
+{
+	int Result = A*A;
+
+	return(Result);
+}
+
+inline float Math_SquareRoot(float Value) 
+{
+	float Result = sqrtf(Value);
+	return(Result);
+}
+
+// Trigonometry
+inline float Math_Sin(float Angle)
+{
+	float Result = sinf(Angle);
+	return(Result);
+}
+
+inline float Math_Cos(float Angle)
+{
+	float Result = cosf(Angle);
+	return(Result);
 }
 
 // Linear Blend

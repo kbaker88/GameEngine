@@ -14,7 +14,7 @@ void Phys_CalculatePosition(PhysicsObject* PhysObject)
 	PhysObject->Force += AirFriction;
 	
 	*PhysObject->Position =
-		(0.5f * PhysObject->Force * Square(SecondsPerFrame)) +
+		(0.5f * PhysObject->Force * Math_Square(SecondsPerFrame)) +
 		(PhysObject->Velocity * SecondsPerFrame) +
 		*PhysObject->Position;
 	

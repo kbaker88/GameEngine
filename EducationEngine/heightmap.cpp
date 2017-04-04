@@ -95,7 +95,7 @@ void HeightMap::Init(TextureStorage* ImageData)
 			v3 Line2 = Vertices[((Rows + 1) * ConvertedDepth + (Columns))] -
 				Vertices[((Rows)* ConvertedDepth + (Columns))];
 
-			v3 Normal = CrossProduct(Line1, Line2);
+			v3 Normal = Math_CrossProduct(Line1, Line2);
 			NormalData[3 * (Rows + 1) * ConvertedDepth + 3 * Columns + 0] = Normal.x;
 			NormalData[3 * (Rows + 1) * ConvertedDepth + 3 * Columns + 1] = Normal.y;
 			NormalData[3 * (Rows + 1) * ConvertedDepth + 3 * Columns + 2] = Normal.z;
@@ -110,7 +110,7 @@ void HeightMap::Init(TextureStorage* ImageData)
 		v3 Line2 = Vertices[Columns + 1] -
 			Vertices[ConvertedDepth + Columns + 1];
 
-		v3 Normal = CrossProduct(Line1, Line2);
+		v3 Normal = Math_CrossProduct(Line1, Line2);
 		NormalData[3 * (Columns + 1) + 0] = Normal.x;
 		NormalData[3 * (Columns + 1) + 1] = Normal.y;
 		NormalData[3 * (Columns + 1) + 2] = Normal.z;
@@ -129,7 +129,7 @@ void HeightMap::Init(TextureStorage* ImageData)
 		v3 Line2 = Vertices[Rows * ConvertedDepth - 1] -
 			Vertices[(Rows + 1) * ConvertedDepth - 1];
 
-		v3 Normal = CrossProduct(Line1, Line2);
+		v3 Normal = Math_CrossProduct(Line1, Line2);
 		NormalData[Rows * ConvertedDepth - 3 + 0] = Normal.x;
 		NormalData[Rows * ConvertedDepth - 3 + 1] = Normal.y;
 		NormalData[Rows * ConvertedDepth - 3 + 2] = Normal.z;

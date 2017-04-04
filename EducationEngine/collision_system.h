@@ -29,10 +29,6 @@ struct CollisionObject
 	}
 };
 
-void FillCollisionObject(CollisionObject* Object, uint32 NumVertices,
-	float* VerticesPtr, v3 &ObjPosition, float Width, float Height,
-	float Depth);
-
 struct SupportPoint
 {
 	SupportPoint() : MinkowskiPoint(0.0f, 0.0f, 0.0f),
@@ -134,26 +130,20 @@ struct Edge
 };
 
 // Global Functions
-uint8 GetClickState(); // Does this belong in Collision?
-v2 GetOrthoMousePosition(); // Does this belong in Collision?
+v2 GetOrthoMousePosition(); //TODO: Does this belong in Collision?
 
 bool Collision_OrthoMouseToRect(v3 &ObjectPosition, float ObjWidth, float ObjHeight);
 v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix);
 bool Collision_RayToObject(v3* Ray, CollisionObject* Object);
 
-// Entity Only Functions
-//v3 GetFurthestPoint(ObjectInstance *ObjA, v3 &Direction);
-v3 GetFurthestPoint(CollisionObject* Object, v3 &Direction); // Move this to ObjInstance?
+v3 GetFurthestPoint(CollisionObject* Object, v3 &Direction); 
 
-//v3 GJKSupport(ObjectInstance *ObjA, ObjectInstance *ObjB, v3 &Direction);
-//SupportPoint MinkowskiSupport(ObjectInstance *ObjA, ObjectInstance *ObjB, v3 &Direction);
 SupportPoint MinkowskiSupport(CollisionObject* ObjectA,
 	CollisionObject* ObjectB, v3 &Direction);
 
 bool LineSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);
 bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);
 bool TetrahedronSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);
-//bool GJK(ObjectInstance *ObjA, ObjectInstance *ObjB);
 bool Collision_GJK(CollisionObject* ObjectA, CollisionObject* ObjectB);
 
 Face AddFaceEPA(SupportPoint &v0, SupportPoint &v1, SupportPoint &v2);

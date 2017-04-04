@@ -109,9 +109,9 @@ void Text_GetFromStream()
 
 void Text_DrawStream(v3 &Position, float Scale, uint32 ShaderID)
 {
-	m4 ModelMatrix = IdentityMatrix();
-	ModelMatrix = ScaleMatrix(ModelMatrix, v3(Scale, Scale, 1.0f));
-	ModelMatrix = TranslateMatrix(ModelMatrix, Position);
+	m4 ModelMatrix = Math_IdentityMatrix();
+	ModelMatrix = Math_ScaleMatrix(ModelMatrix, v3(Scale, Scale, 1.0f));
+	ModelMatrix = Math_TranslateMatrix(ModelMatrix, Position);
 
 	float NextWidth = 0;
 	float Width = 0;
@@ -132,16 +132,16 @@ void Text_DrawStream(v3 &Position, float Scale, uint32 ShaderID)
 
 		Font[0].Glyph[TextStream[i]].Draw();
 
-		ModelMatrix = TranslateMatrix(ModelMatrix,
+		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
 			v3((Width * Scale / 2) + (NextWidth * Scale / 2), 0.0f, 0.0f));
 	}
 }
 
 void Text_DrawCharLine(string &Text, v3 &Position, float Scale, uint32 ShaderID)
 {
-	m4 ModelMatrix = IdentityMatrix();
-	ModelMatrix = ScaleMatrix(ModelMatrix, v3(Scale, Scale, 1.0f));
-	ModelMatrix = TranslateMatrix(ModelMatrix, Position);
+	m4 ModelMatrix = Math_IdentityMatrix();
+	ModelMatrix = Math_ScaleMatrix(ModelMatrix, v3(Scale, Scale, 1.0f));
+	ModelMatrix = Math_TranslateMatrix(ModelMatrix, Position);
 
 	float NextWidth = 0;
 	float Width = 0;
@@ -162,7 +162,7 @@ void Text_DrawCharLine(string &Text, v3 &Position, float Scale, uint32 ShaderID)
 
 		Font[0].Glyph[Text.CharStr[i]].Draw();
 
-		ModelMatrix = TranslateMatrix(ModelMatrix,
+		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
 			v3((Width * Scale / 2) + (NextWidth * Scale / 2), 0.0f, 0.0f) );
 	}
 }
@@ -172,11 +172,11 @@ uint32 Text_CreateMarker(v3 &Position, float Scale, uint32 ShaderID)
 	TextMarkers[TextMarkerCount].StartPos = Position;
 	TextMarkers[TextMarkerCount].ShaderID = ShaderID;
 	TextMarkers[TextMarkerCount].Scale = Scale;
-	TextMarkers[TextMarkerCount].ModelMatrix = IdentityMatrix();
+	TextMarkers[TextMarkerCount].ModelMatrix = Math_IdentityMatrix();
 	TextMarkers[TextMarkerCount].ModelMatrix =
-		ScaleMatrix(TextMarkers[TextMarkerCount].ModelMatrix, v3(Scale, Scale, 1.0f));
+		Math_ScaleMatrix(TextMarkers[TextMarkerCount].ModelMatrix, v3(Scale, Scale, 1.0f));
 	TextMarkers[TextMarkerCount].ModelMatrix = 
-		TranslateMatrix(TextMarkers[TextMarkerCount].ModelMatrix, Position);
+		Math_TranslateMatrix(TextMarkers[TextMarkerCount].ModelMatrix, Position);
 	TextMarkerCount++;
 
 	return (TextMarkerCount - 1);
@@ -184,7 +184,7 @@ uint32 Text_CreateMarker(v3 &Position, float Scale, uint32 ShaderID)
 
 void Text_NewLine(uint32 TextID)
 {
-	TextMarkers[TextID].ModelMatrix = TranslateMatrix(TextMarkers[TextID].ModelMatrix,
+	TextMarkers[TextID].ModelMatrix = Math_TranslateMatrix(TextMarkers[TextID].ModelMatrix,
 		v3(0.0f, -40.0f, 0.0f));
 }
 

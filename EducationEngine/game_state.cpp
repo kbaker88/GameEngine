@@ -136,7 +136,7 @@ void Game_Draw(ProgramState* State)
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[5], (int32)0);
 
 	// NOTE: Draw terrain below
-	m4 ModelMatrix = IdentityMatrix();
+	m4 ModelMatrix = Math_IdentityMatrix();
 
 	bool IsTextured = 0;
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], IsTextured);

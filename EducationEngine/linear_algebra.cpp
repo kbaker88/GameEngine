@@ -26,7 +26,7 @@ m4 operator*(m4 &A, m4 &B)
 	return Result;
 }
 
-v3 CrossProduct(v3 &A, v3 &B)
+v3 Math_CrossProduct(v3 &A, v3 &B)
 {
 	v3 Result = {};
 	Result.x = (A.y * B.z) - (A.z * B.y);
@@ -36,16 +36,16 @@ v3 CrossProduct(v3 &A, v3 &B)
 	return Result;
 }
 
-v3 ReflectVector(v3 &IncomingVect, v3 &Normal)
+v3 Math_ReflectVector(v3 &IncomingVect, v3 &Normal)
 {
 	v3 Result;
-	Result = IncomingVect - 2.0f * InnerProduct(IncomingVect, Normal) * Normal;
+	Result = IncomingVect - 2.0f * Math_InnerProduct(IncomingVect, Normal) * Normal;
 
 	return Result;
 }
 
 
-m4 IdentityMatrix()
+m4 Math_IdentityMatrix()
 {
 	m4 Result;
 	
@@ -57,11 +57,11 @@ m4 IdentityMatrix()
 	return Result;
 }
 
-m4 LookAtMatrix(v3 &Eye, v3 &Center, v3 &Up)
+m4 Math_LookAtMatrix(v3 &Eye, v3 &Center, v3 &Up)
 {
-	v3 f = Normalize(Center - Eye);
-	v3 s = Normalize(CrossProduct(f, Up));
-	v3 u = CrossProduct(s, f);
+	v3 f = Math_Normalize(Center - Eye);
+	v3 s = Math_Normalize(Math_CrossProduct(f, Up));
+	v3 u = Math_CrossProduct(s, f);
 
 	m4 Result;
 	Result.Rc[0][0] = s.x;
@@ -73,13 +73,13 @@ m4 LookAtMatrix(v3 &Eye, v3 &Center, v3 &Up)
 	Result.Rc[0][2] = -f.x;
 	Result.Rc[1][2] = -f.y;
 	Result.Rc[2][2] = -f.z;
-	Result.Rc[3][0] = -InnerProduct(s, Eye);
-	Result.Rc[3][1] = -InnerProduct(u, Eye);
-	Result.Rc[3][2] = InnerProduct(f, Eye);
+	Result.Rc[3][0] = -Math_InnerProduct(s, Eye);
+	Result.Rc[3][1] = -Math_InnerProduct(u, Eye);
+	Result.Rc[3][2] = Math_InnerProduct(f, Eye);
 	return Result;
 }
 
-m4 PerspectiveMatrix(float FieldOfView, float AspectRatio, float NearPlane, float FarPlane)
+m4 Math_PerspectiveMatrix(float FieldOfView, float AspectRatio, float NearPlane, float FarPlane)
 {
 	m4 Matrix;
 	float HalfVal = (float)tan(FieldOfView / 2.0f);
@@ -107,7 +107,7 @@ m4 PerspectiveMatrix(float FieldOfView, float AspectRatio, float NearPlane, floa
 	return Matrix;
 }
 
-m4 OrthographicMarix(float Left, float Right, float Bottom, float Top,
+m4 Math_OrthographicMarix(float Left, float Right, float Bottom, float Top,
 	float Near, float Far)
 {
 	m4 Matrix;
@@ -122,7 +122,7 @@ m4 OrthographicMarix(float Left, float Right, float Bottom, float Top,
 	return Matrix;
 }
 
-m4 TranslateMatrix(m4 &Matrix, v3 &Vector)
+m4 Math_TranslateMatrix(m4 &Matrix, v3 &Vector)
 {
 	m4 Result = Matrix;
 
@@ -133,7 +133,7 @@ m4 TranslateMatrix(m4 &Matrix, v3 &Vector)
 	return Result;
 }
 
-m4 ScaleMatrix(m4 &Matrix, v3 &Vector)
+m4 Math_ScaleMatrix(m4 &Matrix, v3 &Vector)
 {
 	m4 Result;
 
@@ -144,7 +144,7 @@ m4 ScaleMatrix(m4 &Matrix, v3 &Vector)
 	return Result;
 }
 
-m4 GetMatrixInverse(m4 *Matrix)
+m4 Math_InvertMatrix(m4 *Matrix)
 {
 	m4 A = *Matrix;
 	float Determinant = 1 / (A.Rc[0][0] * A.Rc[1][1] * A.Rc[2][2] + A.Rc[1][0] * A.Rc[2][1] * A.Rc[0][2]
@@ -180,99 +180,99 @@ m4 GetMatrixInverse(m4 *Matrix)
 	return Result;
 }
 
-float Determinant(m4 &Mat)
-{
-	m4 Matrix = Mat;
-	float Left =
-		Matrix.Rc[0][0] * Matrix.Rc[1][1] * Matrix.Rc[2][2] * Matrix.Rc[3][3] +
-		Matrix.Rc[0][0] * Matrix.Rc[1][2] * Matrix.Rc[2][3] * Matrix.Rc[3][1] +
-		Matrix.Rc[0][0] * Matrix.Rc[1][3] * Matrix.Rc[2][1] * Matrix.Rc[3][2] +
-
-		Matrix.Rc[0][1] * Matrix.Rc[1][0] * Matrix.Rc[2][3] * Matrix.Rc[3][2] +
-		Matrix.Rc[0][1] * Matrix.Rc[1][2] * Matrix.Rc[2][0] * Matrix.Rc[3][3] +
-		Matrix.Rc[0][1] * Matrix.Rc[1][3] * Matrix.Rc[2][2] * Matrix.Rc[3][0] +
-
-		Matrix.Rc[0][2] * Matrix.Rc[1][0] * Matrix.Rc[2][1] * Matrix.Rc[3][3] +
-		Matrix.Rc[0][2] * Matrix.Rc[1][1] * Matrix.Rc[2][3] * Matrix.Rc[3][0] +
-		Matrix.Rc[0][2] * Matrix.Rc[1][3] * Matrix.Rc[2][0] * Matrix.Rc[3][1] +
-
-		Matrix.Rc[0][3] * Matrix.Rc[1][0] * Matrix.Rc[2][2] * Matrix.Rc[3][1] +
-		Matrix.Rc[0][3] * Matrix.Rc[1][1] * Matrix.Rc[2][0] * Matrix.Rc[3][2] +
-		Matrix.Rc[0][3] * Matrix.Rc[1][2] * Matrix.Rc[2][1] * Matrix.Rc[3][0];
-
-	float Right = 
-		-Matrix.Rc[0][0] * Matrix.Rc[1][1] * Matrix.Rc[2][3] * Matrix.Rc[3][2] -
-		Matrix.Rc[0][0] * Matrix.Rc[1][2] * Matrix.Rc[2][1] * Matrix.Rc[3][3] -
-		Matrix.Rc[0][0] * Matrix.Rc[1][3] * Matrix.Rc[2][2] * Matrix.Rc[3][1] -
-																			  
-		Matrix.Rc[0][1] * Matrix.Rc[1][0] * Matrix.Rc[2][2] * Matrix.Rc[3][3] -
-		Matrix.Rc[0][1] * Matrix.Rc[1][2] * Matrix.Rc[2][3] * Matrix.Rc[3][0] -
-		Matrix.Rc[0][1] * Matrix.Rc[1][3] * Matrix.Rc[2][0] * Matrix.Rc[3][2] -
-																			  
-		Matrix.Rc[0][2] * Matrix.Rc[1][0] * Matrix.Rc[2][3] * Matrix.Rc[3][1] -
-		Matrix.Rc[0][2] * Matrix.Rc[1][1] * Matrix.Rc[2][0] * Matrix.Rc[3][3] -
-		Matrix.Rc[0][2] * Matrix.Rc[1][3] * Matrix.Rc[2][1] * Matrix.Rc[3][0] -
-																			  
-		Matrix.Rc[0][3] * Matrix.Rc[1][0] * Matrix.Rc[2][1] * Matrix.Rc[3][2] -
-		Matrix.Rc[0][3] * Matrix.Rc[1][1] * Matrix.Rc[2][2] * Matrix.Rc[3][0] -
-		Matrix.Rc[0][3] * Matrix.Rc[1][2] * Matrix.Rc[2][0] * Matrix.Rc[3][1];
-
-	float Result = Left + Right;
-	/*unsigned int Lead = 0;
-	unsigned int RowCount = 4;
-	unsigned int ColumnCount = 4;
-	for (unsigned int Row = 0; Row <= RowCount; Row++)
-	{
-		if (ColumnCount <= Lead)
-		{
-			// stop
-		}
-		unsigned int i = Row;
-		while (Matrix.Rc[i][Lead] == 0)
-		{
-			i = i + 1;
-			if (RowCount == i)
-			{
-				i = Row;
-				Lead = Lead + 1;
-				if (ColumnCount == Lead)
-				{
-					// stop
-				}
-			}
-		}
-		swap rows i and r;
-		if (Matrix.Rc[Row, Lead] != 0)
-		{
-			Matrix.Rc[Row, 0] = Matrix.Rc[Row, 0] / Matrix.Rc[Row, Lead];
-			Matrix.Rc[Row, 1] = Matrix.Rc[Row, 1] / Matrix.Rc[Row, Lead];
-			Matrix.Rc[Row, 2] = Matrix.Rc[Row, 2] / Matrix.Rc[Row, Lead];
-			Matrix.Rc[Row, 3] = Matrix.Rc[Row, 3] / Matrix.Rc[Row, Lead];
-		}
-		for (i; i < RowCount; i++)
-		{
-			if (i != Row)
-			{
-				Matrix.Rc[i, 0] = Matrix.Rc[i, 0] - Matrix.Rc[i, Lead] * Matrix.Rc[Row, 0];
-				Matrix.Rc[i, 1] = Matrix.Rc[i, 1] - Matrix.Rc[i, Lead] * Matrix.Rc[Row, 1];
-				Matrix.Rc[i, 2] = Matrix.Rc[i, 2] - Matrix.Rc[i, Lead] * Matrix.Rc[Row, 2];
-				Matrix.Rc[i, 3] = Matrix.Rc[i, 3] - Matrix.Rc[i, Lead] * Matrix.Rc[Row, 3];
-			}
-		}
-		Lead = Lead + 1;
-	}
-	*/
-	return Result;
-}
-
-m4 MatrixInverse(m4 &Matrix)
-{
-	m4 Result;
-
-	//Result = (1 / Determinant(Matrix)) * Matrix;
-
-	return Result;
-}
+//float Determinant(m4 &Mat)
+//{
+//	m4 Matrix = Mat;
+//	float Left =
+//		Matrix.Rc[0][0] * Matrix.Rc[1][1] * Matrix.Rc[2][2] * Matrix.Rc[3][3] +
+//		Matrix.Rc[0][0] * Matrix.Rc[1][2] * Matrix.Rc[2][3] * Matrix.Rc[3][1] +
+//		Matrix.Rc[0][0] * Matrix.Rc[1][3] * Matrix.Rc[2][1] * Matrix.Rc[3][2] +
+//
+//		Matrix.Rc[0][1] * Matrix.Rc[1][0] * Matrix.Rc[2][3] * Matrix.Rc[3][2] +
+//		Matrix.Rc[0][1] * Matrix.Rc[1][2] * Matrix.Rc[2][0] * Matrix.Rc[3][3] +
+//		Matrix.Rc[0][1] * Matrix.Rc[1][3] * Matrix.Rc[2][2] * Matrix.Rc[3][0] +
+//
+//		Matrix.Rc[0][2] * Matrix.Rc[1][0] * Matrix.Rc[2][1] * Matrix.Rc[3][3] +
+//		Matrix.Rc[0][2] * Matrix.Rc[1][1] * Matrix.Rc[2][3] * Matrix.Rc[3][0] +
+//		Matrix.Rc[0][2] * Matrix.Rc[1][3] * Matrix.Rc[2][0] * Matrix.Rc[3][1] +
+//
+//		Matrix.Rc[0][3] * Matrix.Rc[1][0] * Matrix.Rc[2][2] * Matrix.Rc[3][1] +
+//		Matrix.Rc[0][3] * Matrix.Rc[1][1] * Matrix.Rc[2][0] * Matrix.Rc[3][2] +
+//		Matrix.Rc[0][3] * Matrix.Rc[1][2] * Matrix.Rc[2][1] * Matrix.Rc[3][0];
+//
+//	float Right = 
+//		-Matrix.Rc[0][0] * Matrix.Rc[1][1] * Matrix.Rc[2][3] * Matrix.Rc[3][2] -
+//		Matrix.Rc[0][0] * Matrix.Rc[1][2] * Matrix.Rc[2][1] * Matrix.Rc[3][3] -
+//		Matrix.Rc[0][0] * Matrix.Rc[1][3] * Matrix.Rc[2][2] * Matrix.Rc[3][1] -
+//																			  
+//		Matrix.Rc[0][1] * Matrix.Rc[1][0] * Matrix.Rc[2][2] * Matrix.Rc[3][3] -
+//		Matrix.Rc[0][1] * Matrix.Rc[1][2] * Matrix.Rc[2][3] * Matrix.Rc[3][0] -
+//		Matrix.Rc[0][1] * Matrix.Rc[1][3] * Matrix.Rc[2][0] * Matrix.Rc[3][2] -
+//																			  
+//		Matrix.Rc[0][2] * Matrix.Rc[1][0] * Matrix.Rc[2][3] * Matrix.Rc[3][1] -
+//		Matrix.Rc[0][2] * Matrix.Rc[1][1] * Matrix.Rc[2][0] * Matrix.Rc[3][3] -
+//		Matrix.Rc[0][2] * Matrix.Rc[1][3] * Matrix.Rc[2][1] * Matrix.Rc[3][0] -
+//																			  
+//		Matrix.Rc[0][3] * Matrix.Rc[1][0] * Matrix.Rc[2][1] * Matrix.Rc[3][2] -
+//		Matrix.Rc[0][3] * Matrix.Rc[1][1] * Matrix.Rc[2][2] * Matrix.Rc[3][0] -
+//		Matrix.Rc[0][3] * Matrix.Rc[1][2] * Matrix.Rc[2][0] * Matrix.Rc[3][1];
+//
+//	float Result = Left + Right;
+//	/*unsigned int Lead = 0;
+//	unsigned int RowCount = 4;
+//	unsigned int ColumnCount = 4;
+//	for (unsigned int Row = 0; Row <= RowCount; Row++)
+//	{
+//		if (ColumnCount <= Lead)
+//		{
+//			// stop
+//		}
+//		unsigned int i = Row;
+//		while (Matrix.Rc[i][Lead] == 0)
+//		{
+//			i = i + 1;
+//			if (RowCount == i)
+//			{
+//				i = Row;
+//				Lead = Lead + 1;
+//				if (ColumnCount == Lead)
+//				{
+//					// stop
+//				}
+//			}
+//		}
+//		swap rows i and r;
+//		if (Matrix.Rc[Row, Lead] != 0)
+//		{
+//			Matrix.Rc[Row, 0] = Matrix.Rc[Row, 0] / Matrix.Rc[Row, Lead];
+//			Matrix.Rc[Row, 1] = Matrix.Rc[Row, 1] / Matrix.Rc[Row, Lead];
+//			Matrix.Rc[Row, 2] = Matrix.Rc[Row, 2] / Matrix.Rc[Row, Lead];
+//			Matrix.Rc[Row, 3] = Matrix.Rc[Row, 3] / Matrix.Rc[Row, Lead];
+//		}
+//		for (i; i < RowCount; i++)
+//		{
+//			if (i != Row)
+//			{
+//				Matrix.Rc[i, 0] = Matrix.Rc[i, 0] - Matrix.Rc[i, Lead] * Matrix.Rc[Row, 0];
+//				Matrix.Rc[i, 1] = Matrix.Rc[i, 1] - Matrix.Rc[i, Lead] * Matrix.Rc[Row, 1];
+//				Matrix.Rc[i, 2] = Matrix.Rc[i, 2] - Matrix.Rc[i, Lead] * Matrix.Rc[Row, 2];
+//				Matrix.Rc[i, 3] = Matrix.Rc[i, 3] - Matrix.Rc[i, Lead] * Matrix.Rc[Row, 3];
+//			}
+//		}
+//		Lead = Lead + 1;
+//	}
+//	*/
+//	return Result;
+//}
+//
+//m4 MatrixInverse(m4 &Matrix)
+//{
+//	m4 Result;
+//
+//	//Result = (1 / Determinant(Matrix)) * Matrix;
+//
+//	return Result;
+//}
 
 /*
 GLM_FUNC_QUALIFIER void sse_inverse_ps(__m128 const in[4], __m128 out[4])

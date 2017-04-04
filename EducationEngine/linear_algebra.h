@@ -7,6 +7,7 @@
 	- Rotate 4x4 matrix
 */
 
+// Data Types
 union v2
 {
 	struct
@@ -126,21 +127,14 @@ union m4
 	}
 };
 
-inline v2
-V2(float X, float Y)
+// Vector Operations (+, -, +=, -=, *, *=, ==)
+inline v2 operator+(v2 A, v2 B)
 {
 	v2 Result;
 
-	Result.x = X;
-	Result.y = Y;
+	Result.x = A.x + B.x;
+	Result.y = A.y + B.y;
 
-	return(Result);
-}
-
-inline v2
-Orthogonal(v2 A)
-{
-	v2 Result = { -A.y, A.x };
 	return(Result);
 }
 
@@ -154,12 +148,12 @@ inline v2 operator-(v2 A)
 	return(Result);
 }
 
-inline v2 operator+(v2 A, v2 B)
+inline v2 operator-(v2 A, v2 B)
 {
 	v2 Result;
 
-	Result.x = A.x + B.x;
-	Result.y = A.y + B.y;
+	Result.x = A.x - B.x;
+	Result.y = A.y - B.y;
 
 	return(Result);
 }
@@ -169,16 +163,6 @@ inline v2 & operator+=(v2 &A, v2 B)
 	A = A + B;
 
 	return(A);
-}
-
-inline v2 operator-(v2 A, v2 B)
-{
-	v2 Result;
-
-	Result.x = A.x - B.x;
-	Result.y = A.y - B.y;
-
-	return(Result);
 }
 
 inline v2 & operator-=(v2 &A, v2 B)
@@ -212,24 +196,69 @@ inline v2 & operator*=(v2 &B, float A)
 	return(B);
 }
 
-inline bool operator==(v3 &A, v3 &B)
+inline bool operator==(v2 &A, v2 &B)
 {
 	if (A.x == B.x)
 		if (A.y == B.y)
-			if (A.z == B.z)
-				return true;
+			return true;
 
 	return false;
 }
 
-inline bool operator==(v3 &A, const v3 &B)
+inline bool operator==(v2 &A, const v2 &B)
 {
 	if (A.x == B.x)
 		if (A.y == B.y)
-			if (A.z == B.z)
-				return true;
+			return true;
 
 	return false;
+}
+
+inline v3 operator+(v3 A, v3 B)
+{
+	v3 Result;
+
+	Result.x = A.x + B.x;
+	Result.y = A.y + B.y;
+	Result.z = A.z + B.z;
+
+	return(Result);
+}
+
+inline v3 operator-(v3 A)
+{
+	v3 Result;
+
+	Result.x = -A.x;
+	Result.y = -A.y;
+	Result.z = -A.z;
+
+	return(Result);
+}
+
+inline v3 operator-(v3 A, v3 B)
+{
+	v3 Result;
+
+	Result.x = A.x - B.x;
+	Result.y = A.y - B.y;
+	Result.z = A.z - B.z;
+
+	return(Result);
+}
+
+inline v3 & operator+=(v3 &A, v3 B)
+{
+	A = A + B;
+
+	return(A);
+}
+
+inline v3 & operator-=(v3 &A, v3 B)
+{
+	A = A - B;
+
+	return(A);
 }
 
 inline v3 operator*(float A, v3 B)
@@ -268,77 +297,46 @@ inline v3 & operator*=(v3 &B, float A)
 	return(B);
 }
 
-inline v3 operator-(v3 A)
+inline bool operator==(v3 &A, v3 &B)
 {
-	v3 Result;
+	if (A.x == B.x)
+		if (A.y == B.y)
+			if (A.z == B.z)
+				return true;
 
-	Result.x = -A.x;
-	Result.y = -A.y;
-	Result.z = -A.z;
-
-	return(Result);
+	return false;
 }
 
-inline v3 operator+(v3 A, v3 B)
+inline bool operator==(v3 &A, const v3 &B)
 {
-	v3 Result;
+	if (A.x == B.x)
+		if (A.y == B.y)
+			if (A.z == B.z)
+				return true;
+
+	return false;
+}
+
+inline v4 operator+(v4 A, v4 B)
+{
+	v4 Result;
 
 	Result.x = A.x + B.x;
 	Result.y = A.y + B.y;
 	Result.z = A.z + B.z;
+	Result.w = A.w + B.w;
 
 	return(Result);
 }
 
-inline v3 & operator+=(v3 &A, v3 B)
+inline v4 operator-(v4 A, v4 B)
 {
-	A = A + B;
-
-	return(A);
-}
-
-inline v3 operator-(v3 A, v3 B)
-{
-	v3 Result;
+	v4 Result;
 
 	Result.x = A.x - B.x;
 	Result.y = A.y - B.y;
 	Result.z = A.z - B.z;
-
-	return(Result);
-}
-
-inline v3 & operator-=(v3 &A, v3 B)
-{
-	A = A - B;
-
-	return(A);
-}
-
-inline float InnerProduct(v3 A, v3 B)
-{
-	float Result = A.x*B.x + A.y*B.y + A.z*B.z;
-
-	return(Result);
-}
-
-inline float LengthSq(v3 A)
-{
-	float Result = InnerProduct(A, A);
-
-	return(Result);
-}
-
-inline float Length(v3 A)
-{
-	float Result = SquareRoot(LengthSq(A));
-	return(Result);
-}
-
-
-inline v3 Normalize(v3 A)
-{
-	v3 Result = A * (1.0f / Length(A));
+	Result.w = A.w - B.w;
 
 	return(Result);
 }
@@ -389,50 +387,25 @@ inline v4 operator*(m4& Matrix, v4& Vec)
 	return(Result);
 }
 
-inline v4 operator+(v4 A, v4 B)
-{
-	v4 Result;
-
-	Result.x = A.x + B.x;
-	Result.y = A.y + B.y;
-	Result.z = A.z + B.z;
-	Result.w = A.w + B.w;
-
-	return(Result);
-}
-
-inline v4 operator-(v4 A, v4 B)
-{
-	v4 Result;
-
-	Result.x = A.x - B.x;
-	Result.y = A.y - B.y;
-	Result.z = A.z - B.z;
-	Result.w = A.w - B.w;
-
-	return(Result);
-}
-
-m4 operator*(m4 &A, m4 &B);
-
-inline v3 operator*(m4& Matrix, v3& Vec)
+// Matrix Operations
+inline v3 operator*(m4& Matrix, v3& Vec) //TODO: Get Rid of this, can cause bad results if people don't know implementation.
 {
 	v3 Result;
 
 	Result.x = { (Matrix.Rc[0][0] * Vec.x) +
-				 (Matrix.Rc[0][1] * Vec.y) +
-				 (Matrix.Rc[0][2] * Vec.z) +
-				 (Matrix.Rc[0][3] * 0.0f)};
+		(Matrix.Rc[0][1] * Vec.y) +
+		(Matrix.Rc[0][2] * Vec.z) +
+		(Matrix.Rc[0][3] * 0.0f) };
 
 	Result.y = { (Matrix.Rc[1][0] * Vec.x) +
-				 (Matrix.Rc[1][1] * Vec.y) +
-				 (Matrix.Rc[1][2] * Vec.z) +
-				 (Matrix.Rc[1][3] * 0.0f) };
+		(Matrix.Rc[1][1] * Vec.y) +
+		(Matrix.Rc[1][2] * Vec.z) +
+		(Matrix.Rc[1][3] * 0.0f) };
 
 	Result.z = { (Matrix.Rc[2][0] * Vec.x) +
-				 (Matrix.Rc[2][1] * Vec.y) +
-				 (Matrix.Rc[2][2] * Vec.z) +
-				 (Matrix.Rc[2][3] * 0.0f) };
+		(Matrix.Rc[2][1] * Vec.y) +
+		(Matrix.Rc[2][2] * Vec.z) +
+		(Matrix.Rc[2][3] * 0.0f) };
 
 	return(Result);
 }
@@ -442,37 +415,56 @@ inline v3 operator*(v3 Vec, m4 Matrix)
 	return(Matrix * Vec);
 }
 
-// Conversions
-inline float Radians(float Degrees)
-{
-	return Degrees * 0.01745329251994329576923690768489f;
-}
-
-inline float Degrees(float Radians)
-{
-	return Radians * 57.2958f;
-}
+m4 operator*(m4 &A, m4 &B);
 
 // Vector Math
-inline float Magnitude(v3 &A)
+inline v2 Math_Orthogonal(v2 A)
 {
-	return Square((A.x * A.x + A.y * A.y + A.z * A.z));
+	v2 Result = { -A.y, A.x };
+	return(Result);
 }
 
-v3 CrossProduct(v3 &A, v3 &B);
-v3 ReflectVector(v3 &IncomingVect, v3 &Normal);
+inline float Math_InnerProduct(v3 A, v3 B)
+{
+	float Result = A.x*B.x + A.y*B.y + A.z*B.z;
+
+	return(Result);
+}
+
+inline float Math_Length(v3 A)
+{
+	float Result = Math_InnerProduct(A, A);
+	Result = Math_SquareRoot(Result);
+	return(Result);
+}
+
+
+inline v3 Math_Normalize(v3 A)
+{
+	v3 Result = A * (1.0f / Math_Length(A));
+
+	return(Result);
+}
+
+inline float Math_Magnitude(v3 &A)
+{
+	return Math_Square((A.x * A.x + A.y * A.y + A.z * A.z));
+}
+
+v3 Math_CrossProduct(v3 &A, v3 &B);
+v3 Math_ReflectVector(v3 &IncomingVect, v3 &Normal);
 
 // Matrix Math
-m4 IdentityMatrix();
-m4 LookAtMatrix(v3 &Eye, v3 &Center, v3 &Up);
-m4 PerspectiveMatrix(float FieldOfView, float AspectRatio, 
+m4 Math_IdentityMatrix();
+m4 Math_LookAtMatrix(v3 &Eye, v3 &Center, v3 &Up);
+m4 Math_PerspectiveMatrix(float FieldOfView, float AspectRatio, 
 	float NearPlane, float FarPlane);
-m4 OrthographicMarix(float Left, float Right, float Bottom,
+m4 Math_OrthographicMarix(float Left, float Right, float Bottom,
 	float Top, float Near, float Far);
-m4 TranslateMatrix(m4 &Matrix, v3 &Vector);
-m4 ScaleMatrix(m4 &Matrix, v3 &Vector);
-m4 GetMatrixInverse(m4 *Matrix);
-m4 MatrixInverse(m4 &Matrix); // expensive
-float Determinant(m4 &Mat); // expensive
+m4 Math_TranslateMatrix(m4 &Matrix, v3 &Vector);
+m4 Math_ScaleMatrix(m4 &Matrix, v3 &Vector);
+m4 Math_InvertMatrix(m4 *Matrix);
+//m4 MatrixInverse(m4 &Matrix); // expensive
+//float Determinant(m4 &Mat); // expensive
 
 #endif

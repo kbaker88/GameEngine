@@ -57,7 +57,52 @@ int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, uint32 ObjectBloc
 			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectPtr =
 				Object_GetObjectPtr(ObjectBlockNumber, ObjectID);
 			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ModelMatrix =
-				TranslateMatrix(IdentityMatrix(), *Position);
+				Math_TranslateMatrix(Math_IdentityMatrix(), *Position);
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].Position =
+				*Position;
+
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].PhysicsObj.Position =
+				&EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].Position;
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].PhysicsObj.MoveDirection =
+				&EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].DirectionVector;
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].CollisionObj.Position =
+				&EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].Position;
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].CollisionObj.NumVertices =
+				EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectPtr->NumberOfVertices;
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].CollisionObj.VerticesPtr =
+				EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectPtr->VerticeFloatArrayPtr;
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].CollisionObj.Width =
+				EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectPtr->Width;
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].CollisionObj.Height =
+				EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectPtr->Height;
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].CollisionObj.Depth =
+				EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ObjectPtr->Depth;
+
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].Active = 1;
+
+			return 1;
+		}
+		else
+		{
+			//TODO: Error, already active entity
+			return 0;
+		}
+	}
+	else
+	{
+		//TODO: Error, Size out of bounds
+		return -1;
+	}
+}
+
+int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, v3 *Position)
+{
+	if (IDNumber < EntityBlocks[EntityBlockNumber].BlockSize)
+	{
+		if (EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].Active == 0)
+		{
+			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].ModelMatrix =
+				Math_TranslateMatrix(Math_IdentityMatrix(), *Position);
 			EntityBlocks[EntityBlockNumber].BlockEntities[IDNumber].Position =
 				*Position;
 

@@ -16,9 +16,9 @@ struct PNGProperties
 static int32 PaethPredictor(int32 Previous, int32 Above, int32 AbovePrev)
 {
 	int32 p = Previous + Above - AbovePrev;
-	int32 pa = AbsVal(p - Previous);
-	int32 pb = AbsVal(p - Above);
-	int32 pc = AbsVal(p - AbovePrev);
+	int32 pa = Math_AbsVal(p - Previous);
+	int32 pb = Math_AbsVal(p - Above);
+	int32 pc = Math_AbsVal(p - AbovePrev);
 	if ((pa <= pb) && (pa <= pc))
 	{
 		return Previous;
@@ -134,10 +134,12 @@ static unsigned char* GetPNGData(unsigned char* Data, PNGProperties& Properties)
 							Index++;
 							for (int32 LinePosition = 0; LinePosition < (Width - 1); LinePosition++)
 							{
-								ImageData[ImgIndex] = Data[Index] + ImageData[ImgIndex - 2];
+								ImageData[ImgIndex] = 
+									Data[Index] + ImageData[ImgIndex - 2];
 								ImgIndex++;
 								Index++;
-								ImageData[ImgIndex] = Data[Index] + ImageData[ImgIndex - 2];
+								ImageData[ImgIndex] = 
+									Data[Index] + ImageData[ImgIndex - 2];
 								ImgIndex++;
 								Index++;
 							}
@@ -147,10 +149,12 @@ static unsigned char* GetPNGData(unsigned char* Data, PNGProperties& Properties)
 							Index++;
 							for (int32 LinePosition = 0; LinePosition < (Width); LinePosition++)
 							{
-								ImageData[ImgIndex] = Data[Index] + ImageData[ImgIndex - (Width * 2)];
+								ImageData[ImgIndex] = 
+									Data[Index] + ImageData[ImgIndex - (Width * 2)];
 								ImgIndex++;
 								Index++;
-								ImageData[ImgIndex] = Data[Index] + ImageData[ImgIndex - (Width * 2)];
+								ImageData[ImgIndex] = 
+									Data[Index] + ImageData[ImgIndex - (Width * 2)];
 								ImgIndex++;
 								Index++;
 							}
@@ -161,18 +165,22 @@ static unsigned char* GetPNGData(unsigned char* Data, PNGProperties& Properties)
 							if (Scanline > 0)
 							{
 								Index++;
-								ImageData[ImgIndex] = Data[Index] + Floor32((0 + ImageData[ImgIndex - (Width * 2)]) / 2);
+								ImageData[ImgIndex] = 
+									Data[Index] + (int)Math_Floor((0 + ImageData[ImgIndex - (Width * 2)]) * 0.5f);
 								ImgIndex++;
 								Index++;
-								ImageData[ImgIndex] = Data[Index] + Floor32((0 + ImageData[ImgIndex - (Width * 2)]) / 2);
+								ImageData[ImgIndex] = 
+									Data[Index] + (int)Math_Floor((0 + ImageData[ImgIndex - (Width * 2)]) * 0.5f);
 								ImgIndex++;
 								Index++;
 								for (int32 LinePosition = 0; LinePosition < (Width - 1); LinePosition++)
 								{
-									ImageData[ImgIndex] = Data[Index] + Floor32((ImageData[ImgIndex - 2] + ImageData[ImgIndex - (Width * 2)]) / 2);
+									ImageData[ImgIndex] = 
+										Data[Index] + (int)Math_Floor((ImageData[ImgIndex - 2] + ImageData[ImgIndex - (Width * 2)]) * 0.5f);
 									ImgIndex++;
 									Index++;
-									ImageData[ImgIndex] = Data[Index] + Floor32((ImageData[ImgIndex - 2] + ImageData[ImgIndex - (Width * 2)]) / 2);
+									ImageData[ImgIndex] =
+										Data[Index] + (int)Math_Floor((ImageData[ImgIndex - 2] + ImageData[ImgIndex - (Width * 2)]) * 0.5f);
 									ImgIndex++;
 									Index++;
 								}
@@ -188,10 +196,12 @@ static unsigned char* GetPNGData(unsigned char* Data, PNGProperties& Properties)
 								Index++;
 								for (int32 LinePosition = 0; LinePosition < (Width - 1); LinePosition++)
 								{
-									ImageData[ImgIndex] = Data[Index] + Floor32((ImageData[ImgIndex - 2] + 0) / 2);
+									ImageData[ImgIndex] = 
+										Data[Index] + (int)Math_Floor((ImageData[ImgIndex - 2] + 0) * 0.5f);
 									ImgIndex++;
 									Index++;
-									ImageData[ImgIndex] = Data[Index] + Floor32((ImageData[ImgIndex - 2] + 0) / 2);
+									ImageData[ImgIndex] = 
+										Data[Index] + (int)Math_Floor((ImageData[ImgIndex - 2] + 0) * 0.5f);
 									ImgIndex++;
 									Index++;
 								}

@@ -6,9 +6,6 @@
 #include "camera.h" // TODO: Move this later. 
 #include "shaders.h" //TODO: Remove this later.
 
-//TODO: Allow creation of entities without an object
-//TODO: Should entities be allowed to add textures? Object Specific?
-
 struct Entity
 {
 	Entity() : EntityID(0), Active(0), CameraObj(NULL),
@@ -31,6 +28,7 @@ struct Entity
 void Entity_CreateBlock(uint32 BlockNumber, uint32 Size);
 void Entity_DeleteBlock(uint32 BlockNumber);
 
+int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, v3 *Position);
 int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, 
 	uint32 ObjectBlockNumber, uint32 ObjectID, v3 *Position);
 
@@ -61,6 +59,7 @@ v3 Entity_GetPosition(uint32 BlockNumber, uint32 IDNumber);
 // Entity Set Values
 void Entity_SetPosition(uint32 BlockNumber, uint32 IDNumber, 
 	v3& Position);
-void Entity_UpdatePosition(uint32 BlockNumber, uint32 IDNumber); //TODO: Must be used with matrix transformations, fix later
+//TODO: UpdatePosition must be used with matrix transformations, fix later
+void Entity_UpdatePosition(uint32 BlockNumber, uint32 IDNumber);
 
 #endif

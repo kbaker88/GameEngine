@@ -46,12 +46,12 @@ void Input_UpdateMouseState(ProgramState* State)
 	if (*PitchPtr < -89.0f)
 		*PitchPtr = -89.0f;
 
-	v3 PlayerFront = v3(cos(Radians
-		(*YawPtr)) * cos(Radians(*PitchPtr)),
-		sin(Radians(*PitchPtr)),
-		sin(Radians(*YawPtr)) * cos(Radians(*PitchPtr)));
+	v3 PlayerFront = v3(Math_Cos(Math_ConverToRadians
+		(*YawPtr)) * Math_Cos(Math_ConverToRadians(*PitchPtr)),
+		Math_Sin(Math_ConverToRadians(*PitchPtr)),
+		Math_Sin(Math_ConverToRadians(*YawPtr)) * Math_Cos(Math_ConverToRadians(*PitchPtr)));
 	Entity_GetCamera(State->EntityBlockNum, 0)->FacingVector =
-		Normalize(PlayerFront);
+		Math_Normalize(PlayerFront);
 }
 
 void Input_UpdateKeyStates(ProgramState* State)
@@ -78,38 +78,38 @@ void Input_UpdateKeyStates(ProgramState* State)
 	}
 
 	v3 UserFacingVector = 
-		v3(cos(Radians(*YawPtr)) * cos(Radians(*PitchPtr)),
-		sin(Radians(*PitchPtr)),
-		sin(Radians(*YawPtr)) * cos(Radians(*PitchPtr)));
-	*FacingVector = Normalize(UserFacingVector);
+		v3(Math_Cos(Math_ConverToRadians(*YawPtr)) * Math_Cos(Math_ConverToRadians(*PitchPtr)),
+			Math_Sin(Math_ConverToRadians(*PitchPtr)),
+			Math_Sin(Math_ConverToRadians(*YawPtr)) * Math_Cos(Math_ConverToRadians(*PitchPtr)));
+	*FacingVector = Math_Normalize(UserFacingVector);
 
 	if ((Platform_GetStateOfKey('W') == 1) && 
 		(Platform_GetStateOfKey('A') == 1))
 	{
-		*DirectionVector = -Normalize(CrossProduct(*FacingVector,
+		*DirectionVector = -Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector)) + *FacingVector;
 	}
 	else if ((Platform_GetStateOfKey('W') == 1) && 
 		(Platform_GetStateOfKey('D') == 1))
 	{
-		*DirectionVector = Normalize(CrossProduct(*FacingVector,
+		*DirectionVector = Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector)) + *FacingVector;
 	}
 	else if ((Platform_GetStateOfKey('S') == 1) && 
 		(Platform_GetStateOfKey('A') == 1))
 	{
-		*DirectionVector = -Normalize(CrossProduct(*FacingVector,
+		*DirectionVector = -Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector)) - *FacingVector;
 	}
 	else if ((Platform_GetStateOfKey('S') == 1) && 
 		(Platform_GetStateOfKey('D') == 1))
 	{
-		*DirectionVector = Normalize(CrossProduct(*FacingVector,
+		*DirectionVector = Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector)) - *FacingVector;
 	}
 	else if (Platform_GetStateOfKey('A') == 1)
 	{
-		*DirectionVector = -Normalize(CrossProduct(*FacingVector,
+		*DirectionVector = -Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector));
 	}
 	else if (Platform_GetStateOfKey('W') == 1)
@@ -122,7 +122,7 @@ void Input_UpdateKeyStates(ProgramState* State)
 	}
 	else if (Platform_GetStateOfKey('D') == 1)
 	{
-		*DirectionVector = Normalize(CrossProduct(*FacingVector,
+		*DirectionVector = Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector));
 	}
 	else

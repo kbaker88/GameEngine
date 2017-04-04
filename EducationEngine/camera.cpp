@@ -4,7 +4,7 @@ void Camera::SetPosition(v3* NewPosition) //TODO: Make sure this is only called 
 {
 	Position = *NewPosition;
 
-	ViewMatrix = LookAtMatrix(Position,
+	ViewMatrix = Math_LookAtMatrix(Position,
 		Position + FacingVector,
 		UpVector);
 }
@@ -46,14 +46,14 @@ void Camera::SetProjectionMatrix(uint8 Type)
 	{
 	case 0:
 	{
-		ProjectionMatrix = OrthographicMarix(0.0f, (float)WindowProperties.Width,
+		ProjectionMatrix = Math_OrthographicMarix(0.0f, (float)WindowProperties.Width,
 			0.0f, (float)WindowProperties.Height,
 			0.1f, 100.0f);
 	} break;
 
 	case 1:
 	{
-		ProjectionMatrix = PerspectiveMatrix(45.0f,
+		ProjectionMatrix = Math_PerspectiveMatrix(45.0f,
 			(float)WindowProperties.Width / (float)WindowProperties.Height, // TODO: calculate the ratio once only on screen size changes and save value.
 			0.01f, 1000.0f);
 	} break;
