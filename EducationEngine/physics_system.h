@@ -10,7 +10,7 @@ struct PhysicsObject
 	PhysicsObject() : AccelerationRate(1.0f), Mass(1.0f),
 		Force(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f),
 		Acceleration(0.0f, 0.0f, 0.0f), ForceSum(0.0f, 0.0f, 0.0f), 
-		MoveDirection(NULL), Position(NULL) {}
+		MoveDirection(0), Position(0) {}
 	
 	~PhysicsObject() {}
 

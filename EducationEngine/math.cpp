@@ -1,5 +1,6 @@
 #include "math.h"
 
+//NOTE: Math_Floor() is only for 32-bit floats on Little-Endian Machines
 float Math_Floor(float Value)
 {
 	float Result = 0.0f;
@@ -44,4 +45,162 @@ float Math_Floor(float Value)
 	}
 
 	return Result;
+}
+
+float Math_Power(float Base, int Exponent)
+{
+	float Result = 1.0f;
+	while (Exponent)
+	{
+		if (Exponent & 1)
+			Result *= Base;
+		Exponent >>= 1;
+		Base *= Base;
+	}
+
+	return Result;
+}
+
+int Math_Power(int Base, int Exponent)
+{
+	int Result = 1;
+	while (Exponent)
+	{
+		if (Exponent & 1)
+			Result *= Base;
+		Exponent >>= 1;
+		Base *= Base;
+	}
+
+	return Result;
+}
+//NOTE: Uses Newton's Method (NewGuess = OldGuess - f(OldGuess) / f'(OldGuess)) 
+//      with f(Guess) = Guess^2 - Radicand
+//TODO: Look for performance improvements
+float Math_SquareRoot(float Value)
+{
+	if (Value == 1.0f)
+	{
+		return 1.0f;
+	}
+	else if (Value == 0.0f)
+	{
+		return 0.0f;
+	}
+	else if (Value < 0.0f)
+	{
+		return -1.0f; // Error
+	}
+
+	float Result = Value * 0.5f; //TODO: Find a better initial guess.
+	float HalfValue = Result;
+	float Precision = 0.0000001f;
+
+	for (unsigned int i = 0; i < 100; i++)
+	{
+		Result -= (Result * 0.5f) - (HalfValue / Result);
+		if (Math_AbsVal(Result) <= Precision)
+			break;
+	}
+
+	return Result;
+}
+
+//NOTE: Uses Newton's Method (NewGuess = OldGuess - f(OldGuess) / f'(OldGuess))
+//      f(Guess) = Guess^Degree - Radicand
+float Math_Root(float Value, unsigned int Degree)
+{
+	if (Value == 1.0f)
+	{
+		return 1.0f;
+	}
+	else if (Value == 0.0f)
+	{
+		return 0.0f;
+	}
+	else if (Value < 0.0f)
+	{
+		return -1.0f; // Error
+	}
+	if (Degree == 1)
+	{
+		return Value;
+	}
+	else if (Degree < 1)
+	{
+		return -1.0f; // Error
+	}
+
+	float Result = Value * 0.5f; //TODO: Find a better initial guess.
+	float Precision = 0.0000001f;
+
+	float DegreeReciprocal = 1.0f / static_cast<float>(Degree);
+	float RadicandMulInverseDegree = Value * DegreeReciprocal;
+
+	for (unsigned int i = 0; i < 100; i++)
+	{
+		Result -= (Result * DegreeReciprocal) -
+			(RadicandMulInverseDegree / Math_Power(Result, Degree - 1));
+		if (Math_AbsVal(Result) <= Precision)
+			break;
+	}
+
+	return Result;
+}
+
+int Math_Factorial(int Value)
+{
+	int Result = Value;
+
+	for (int i = 1; i < Value; i++)
+	{
+		Result *= (Value - i);
+	}
+
+	return Result;
+}
+
+float Math_Sine(float Radians)
+{
+	double Result = Radians;
+	bool FlipSign = false;
+	for (unsigned int i = 3; i < 9; i = i + 2)
+	{
+		if (FlipSign)
+		{
+			Result += Math_Power(Radians, i) / (double)Math_Factorial(i);
+			FlipSign = 0;
+		}
+		else
+		{
+			Result -= Math_Power(Radians, i) / (double)Math_Factorial(i);
+			FlipSign = 1;
+		}
+	}
+	return (float)Result;
+}
+
+float Math_Cosine(float Radians)
+{
+	double Result = 1;
+	bool FlipSign = false;
+	for (unsigned int i = 2; i < 9; i = i + 2)
+	{
+		if (FlipSign)
+		{
+			Result += Math_Power(Radians, i) / (double)Math_Factorial(i);
+			FlipSign = 0;
+		}
+		else
+		{
+			Result -= Math_Power(Radians, i) / (double)Math_Factorial(i);
+			FlipSign = 1;
+		}
+	}
+	return (float)Result;
+}
+
+float Math_Tangent(float Radians)
+{
+	return (Math_Sine(Radians) / Math_Cosine(Radians));
 }

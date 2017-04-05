@@ -23,5 +23,5 @@ uint8 Memory_Delete(uint32 DataID)
 
 void* Memory_Search(uint32 DataID)
 {
-	return NULL;
+	return 0;
 }

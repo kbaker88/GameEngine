@@ -17,7 +17,7 @@ void Asset_LoadTextures()
 void Asset_LoadBMP(char* FileName)
 {
 	BmpDimensions TextureDimensions;
-	unsigned char* BMPData = NULL;
+	unsigned char* BMPData = 0;
 	BMPData = Platform_ReadFile(FileName);
 	BMPData = GetBmpData(BMPData, TextureDimensions);
 	Textures[TextureCount].data = BMPData; 
@@ -55,7 +55,7 @@ void Asset_DeleteAll()
 	for (uint32 Index = 0; Index < TextureCount; Index++)
 	{
 		delete[] Textures[Index].data;
-		Textures[Index].data = NULL;
+		Textures[Index].data = 0;
 		Textures[Index].Height = 0;
 		Textures[Index].Width = 0;
 		Textures[Index].NumPixelComps = 0;

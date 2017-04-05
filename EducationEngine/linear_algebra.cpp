@@ -82,7 +82,7 @@ m4 Math_LookAtMatrix(v3 &Eye, v3 &Center, v3 &Up)
 m4 Math_PerspectiveMatrix(float FieldOfView, float AspectRatio, float NearPlane, float FarPlane)
 {
 	m4 Matrix;
-	float HalfVal = (float)tan(FieldOfView / 2.0f);
+	float HalfVal = (float)Math_Tangent(FieldOfView * 0.5f);
 
 	Matrix.Arr[0] = 1.0f / (AspectRatio * HalfVal);
 	Matrix.Arr[1] = 0;

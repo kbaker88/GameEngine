@@ -46,10 +46,11 @@ void Input_UpdateMouseState(ProgramState* State)
 	if (*PitchPtr < -89.0f)
 		*PitchPtr = -89.0f;
 
-	v3 PlayerFront = v3(Math_Cos(Math_ConverToRadians
-		(*YawPtr)) * Math_Cos(Math_ConverToRadians(*PitchPtr)),
-		Math_Sin(Math_ConverToRadians(*PitchPtr)),
-		Math_Sin(Math_ConverToRadians(*YawPtr)) * Math_Cos(Math_ConverToRadians(*PitchPtr)));
+	//TODO: Remove conversion to radians. Make Cos automatically give radians.
+	v3 PlayerFront = v3(Math_Cosine(Math_ConvertToRadians
+		(*YawPtr)) * Math_Cosine(Math_ConvertToRadians(*PitchPtr)),
+		Math_Sine(Math_ConvertToRadians(*PitchPtr)),
+		Math_Sine(Math_ConvertToRadians(*YawPtr)) * Math_Cosine(Math_ConvertToRadians(*PitchPtr)));
 	Entity_GetCamera(State->EntityBlockNum, 0)->FacingVector =
 		Math_Normalize(PlayerFront);
 }
@@ -78,9 +79,9 @@ void Input_UpdateKeyStates(ProgramState* State)
 	}
 
 	v3 UserFacingVector = 
-		v3(Math_Cos(Math_ConverToRadians(*YawPtr)) * Math_Cos(Math_ConverToRadians(*PitchPtr)),
-			Math_Sin(Math_ConverToRadians(*PitchPtr)),
-			Math_Sin(Math_ConverToRadians(*YawPtr)) * Math_Cos(Math_ConverToRadians(*PitchPtr)));
+		v3(Math_Cosine(Math_ConvertToRadians(*YawPtr)) * Math_Cosine(Math_ConvertToRadians(*PitchPtr)),
+			Math_Sine(Math_ConvertToRadians(*PitchPtr)),
+			Math_Sine(Math_ConvertToRadians(*YawPtr)) * Math_Cosine(Math_ConvertToRadians(*PitchPtr)));
 	*FacingVector = Math_Normalize(UserFacingVector);
 
 	if ((Platform_GetStateOfKey('W') == 1) && 
