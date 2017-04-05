@@ -162,6 +162,16 @@ int Math_Factorial(int Value)
 
 float Math_Sine(float Radians)
 {
+	while (Radians < -PI)
+	{
+		Radians += 2.0f * PI;
+	}
+
+	while (Radians > PI)
+	{
+		Radians -= 2.0f * PI;
+	}
+
 	double Result = Radians;
 	bool FlipSign = false;
 
@@ -184,6 +194,16 @@ float Math_Sine(float Radians)
 
 float Math_Cosine(float Radians)
 {
+	while (Radians < -PI)
+	{
+		Radians += 2.0f * PI;
+	}
+
+	while (Radians > PI)
+	{
+		Radians -= 2.0f * PI;
+	}
+
 	double Result = 1;
 	bool FlipSign = false;
 
