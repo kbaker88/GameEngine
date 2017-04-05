@@ -424,16 +424,16 @@ inline v2 Math_Orthogonal(v2 A)
 	return(Result);
 }
 
-inline float Math_InnerProduct(v3 A, v3 B)
+inline float Math_InnerProduct(v3* A, v3* B)
 {
-	float Result = A.x*B.x + A.y*B.y + A.z*B.z;
+	float Result = A->x*B->x + A->y*B->y + A->z*B->z;
 
 	return(Result);
 }
 
 inline float Math_Length(v3 A)
 {
-	float Result = Math_InnerProduct(A, A);
+	float Result = Math_InnerProduct(&A, &A);
 	Result = Math_SquareRoot(Result);
 	return(Result);
 }

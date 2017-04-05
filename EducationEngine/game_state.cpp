@@ -96,6 +96,10 @@ void Game_Draw(ProgramState* State)
 	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 		&Gravity);
 
+	v3 MouseRay = Collision_UpdateMousePickRay(
+		&Entity_GetCamera(State->EntityBlockNum, 0)->ProjectionMatrix,
+		&Entity_GetCamera(State->EntityBlockNum, 0)->ViewMatrix);
+
 	//TODO: Remove, test code.
 	Entity_Ptr(State->EntityBlockNum, 5)->DirectionVector = v3(1.0f, 0.0f, 0.0f);
 	Entity_Ptr(State->EntityBlockNum, 6)->DirectionVector = v3(-1.0f, 0.0f, 0.0f);
@@ -196,9 +200,9 @@ void Game_Draw(ProgramState* State)
 		}
 	}
 
-	v3 MouseArray = Collision_UpdateMousePickRay(
-		State->CameraArray[1].GetProjectionMatrix(),
-		State->CameraArray[1].GetViewMatrix());
+	//v3 MouseArray = Collision_UpdateMousePickRay(
+	//	State->CameraArray[1].GetProjectionMatrix(),
+	//	State->CameraArray[1].GetViewMatrix());
 
 	//NOTE: Draw Objects below
 	IsTextured = 1;
@@ -207,6 +211,9 @@ void Game_Draw(ProgramState* State)
 	{
 		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
 	}
+	//testing code, remove later
+	bool collide = Collision_RayToObject(&Entity_GetPosition(State->EntityBlockNum, 0), &MouseRay, Entity_GetCollisionObjPtr(State->EntityBlockNum, 4));
+
 
 	//NOTE: Draw UI Below
 	window_properties WindowDimensions = Render_GetWindowProperties();
@@ -243,6 +250,13 @@ void Game_Draw(ProgramState* State)
 			State->GPUShaderVarArray[0]);
 	}
 
+	if (collide)
+	{
+		Text_DrawCharLine(string("COLLISION MOUSE\0"),
+			v3(Left + 20.0f, Top - 100.0f, 0.0f), 0.15f,
+			State->GPUShaderVarArray[0]);
+	}
+
 	// TODO: Remove, Test timer and clock features
 	Text_DrawCharLine(string("Elapsed Time: ") + 
 		string(Platform_FloatToChar(State->TimerArray[0].GetTime(), 1)),
@@ -273,9 +287,9 @@ void Game_Draw(ProgramState* State)
 		State->GPUShaderVarArray[0]);
 
 	Text_DrawCharLine(string("Cursor World Array: \0") +
-		string(Platform_FloatToChar(MouseArray.x)) + string(" ") +
-		string(Platform_FloatToChar(MouseArray.y)) + string(" ") + 
-		string(Platform_FloatToChar(MouseArray.z)),
+		string(Platform_FloatToChar(MouseRay.x)) + string(" ") +
+		string(Platform_FloatToChar(MouseRay.y)) + string(" ") + 
+		string(Platform_FloatToChar(MouseRay.z)),
 		v3(Left + 20.0f, Top - 60.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
 	

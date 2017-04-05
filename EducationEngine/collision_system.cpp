@@ -8,7 +8,7 @@ v2 GetOrthoMousePosition() // TODO: RENAME
 
 	int Width = Render_GetWindowProperties().Width;
 	int Height = Render_GetWindowProperties().Height;
-
+	
 	Result.x = Result.x - ((float)Width / 2);
 	Result.y = ((float)Height / 2) - Result.y;
 
@@ -36,13 +36,16 @@ bool Collision_OrthoMouseToRect(v3 &ObjectPosition,
 v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix)
 {
 	window_properties WindowDimensions = Render_GetWindowProperties();
-	v2 MousePosition = GetOrthoMousePosition();
+	v2 MousePosition = {};
+	Platform_GetCursorPosition(&MousePosition.x, &MousePosition.y);
 
 	// TODO: Fix mouse coords.
 	// Convert to Normalized Device Coordinates
 	//MousePosition.x = (2.0f * MousePosition.x) / WindowDimensions.Width - 1.0f;
 	//MousePosition.y = (2.0f * MousePosition.y) / WindowDimensions.Height - 1.0f;
 	//v2 NormalizedMouseCoords = MousePosition;
+	MousePosition.x = (2.0f * MousePosition.x) / WindowDimensions.Width - 1.0f;
+	MousePosition.y = 1.0f - (2.0f * MousePosition.y) / WindowDimensions.Height;
 
 	// Convert to Clip Space 
 	v4 ClipSpaceVector = v4(MousePosition.x, MousePosition.y, -1.0f, 0.0f);
@@ -59,21 +62,49 @@ v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix)
 	return WorldMouseRay;
 }
 
-bool Collision_RayToObject(v3* Ray, CollisionObject* Object)
+bool Collision_PlaneRayIntersect(v3* PlaneNormal, v3* PlaneOrigin,
+	v3* RayOrigin, v3* RayDirection, float* Distance)
 {
-	if ((Ray->x < (Object->Position->x + (Object->Width * 0.5f))) && 
-		(Ray->x > (Object->Position->x - (Object->Width * 0.5f))))
-	{
-		if ((Ray->y < (Object->Position->y + (Object->Height * 0.5f))) &&
-			(Ray->y >(Object->Position->y - (Object->Height * 0.5f))))
-		{
-			return true;
-		}
+	// assuming vectors are all normalized
+	float denom = Math_InnerProduct(PlaneNormal, RayDirection);
+	if (denom > 1e-6) {
+		v3 p0l0 = *PlaneOrigin - *RayOrigin;
+		*Distance = Math_InnerProduct(&p0l0, PlaneNormal) / denom;
+		return (*Distance >= 0);
 	}
+
 	return false;
 }
 
-v3 GetFurthestPoint(CollisionObject* Object, v3 &Direction)
+bool Collision_RayToObject(v3* RayOrigin, v3* RayDirection, CollisionObject* Object)
+{
+	float Distance = 0.0f;
+	return Collision_PlaneRayIntersect(&v3(0.0f, 0.0f, -1.0f),
+		Object->Position, RayOrigin, RayDirection, &Distance);
+
+	double tmin = -INFINITY, tmax = INFINITY;
+
+	if (RayDirection->x != 0.0) {
+		double tx1 = ((Object->Position->x - (Object->Width * 0.5f))- RayOrigin->x) / RayDirection->x;
+		double tx2 = ((Object->Position->x + (Object->Width * 0.5f)) - RayOrigin->x) / RayDirection->x;
+
+		tmin = max(tmin, min(tx1, tx2));
+		tmax = min(tmax, max(tx1, tx2));
+	}
+
+	if (ray.n.y != 0.0) {
+		double ty1 = (b.min.y - r.x0.y) / r.n.y;
+		double ty2 = (b.max.y - r.x0.y) / r.n.y;
+
+		tmin = max(tmin, min(ty1, ty2));
+		tmax = min(tmax, max(ty1, ty2));
+	}
+
+	return tmax >= tmin;
+	
+}
+
+v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction)
 {
 	v3 FurthestPoint = { 0.0f, 0.0f, 0.0f };
 	float MaxDot = -100000.0f;
@@ -85,7 +116,7 @@ v3 GetFurthestPoint(CollisionObject* Object, v3 &Direction)
 			Object->VerticesPtr[i * 3 + 1],
 			Object->VerticesPtr[i * 3 + 2] };
 		Vertex += *Object->Position;
-		float Dot = Math_InnerProduct(Vertex, Direction);
+		float Dot = Math_InnerProduct(&Vertex, Direction);
 
 		if (Dot > MaxDot)
 		{
@@ -97,11 +128,11 @@ v3 GetFurthestPoint(CollisionObject* Object, v3 &Direction)
 	return FurthestPoint;
 }
 
-SupportPoint MinkowskiSupport(CollisionObject* ObjectA, CollisionObject* ObjectB, v3 &Direction) // Finds the furtherst point within a shape in a given direction
+SupportPoint MinkowskiSupport(CollisionObject* ObjectA, CollisionObject* ObjectB, v3 *Direction) // Finds the furtherst point within a shape in a given direction
 {
 	SupportPoint Result;
 	Result.ObjAPoint = GetFurthestPoint(ObjectA, Direction);
-	Result.ObjBPoint = GetFurthestPoint(ObjectB, -Direction);
+	Result.ObjBPoint = GetFurthestPoint(ObjectB, &(-*Direction));
 	Result.MinkowskiPoint = Result.ObjAPoint - Result.ObjBPoint;
 
 	return Result;// max point in direction
@@ -114,7 +145,7 @@ bool LineSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
 	v3 AB = B.MinkowskiPoint - A.MinkowskiPoint;
 	v3 AO = -A.MinkowskiPoint;
 
-	if (Math_InnerProduct(AB, AO) > 0)
+	if (Math_InnerProduct(&AB, &AO) > 0)
 	{
 		*Direction = Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
 		*PointCount = 2;
@@ -139,9 +170,9 @@ bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
 	v3 AO = -A.MinkowskiPoint;
 	v3 ABC = Math_CrossProduct(AB, AC);
 	
-	if (Math_InnerProduct(Math_CrossProduct(ABC, AC), AO) > 0 )
+	if (Math_InnerProduct(&Math_CrossProduct(ABC, AC), &AO) > 0 )
 	{
-		if (Math_InnerProduct(AC, AO) > 0)
+		if (Math_InnerProduct(&AC, &AO) > 0)
 		{
 			*Direction = Math_CrossProduct(Math_CrossProduct(AC, AO), AC);
 			PList[0] = C;
@@ -151,7 +182,7 @@ bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
 		}
 		else
 		{
-			if (Math_InnerProduct(AB, AO) > 0)
+			if (Math_InnerProduct(&AB, &AO) > 0)
 			{
 				*Direction = Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
 				PList[0] = B;
@@ -170,9 +201,9 @@ bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
 	}
 	else
 	{
-		if (Math_InnerProduct(Math_CrossProduct(AB, ABC), AO) > 0)
+		if (Math_InnerProduct(&Math_CrossProduct(AB, ABC), &AO) > 0)
 		{
-			if (Math_InnerProduct(AB, AO) > 0)
+			if (Math_InnerProduct(&AB, &AO) > 0)
 			{
 				*Direction = Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
 				PList[0] = B;
@@ -190,7 +221,7 @@ bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
 		}
 		else
 		{
-			if (Math_InnerProduct(ABC, AO) > 0)
+			if (Math_InnerProduct(&ABC, &AO) > 0)
 			{
 				*Direction = ABC; 
 				*PointCount = 3;
@@ -223,9 +254,9 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 	v3 ADB = Math_CrossProduct(AD, AB);
 
 
-	if (Math_InnerProduct(ABC, AO) > 0)
+	if (Math_InnerProduct(&ABC, &AO) > 0)
 	{
-		if (Math_InnerProduct(AB, AO) > 0)
+		if (Math_InnerProduct(&AB, &AO) > 0)
 		{
 			*Direction = Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
 			PList[0] = B;
@@ -234,7 +265,7 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 		//	PlaneSimplex(PList, Direction, PointCount);
 			return false;
 		}
-		else if (Math_InnerProduct(AC, AO) > 0)
+		else if (Math_InnerProduct(&AC, &AO) > 0)
 		{
 			*Direction = Math_CrossProduct(Math_CrossProduct(AC, AO), AC);
 			PList[0] = C;
@@ -254,9 +285,9 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			return false;
 		}
 	}
-	else if (Math_InnerProduct(ACD, AO) > 0)
+	else if (Math_InnerProduct(&ACD, &AO) > 0)
 	{
-		if (Math_InnerProduct(AC, AO) > 0)
+		if (Math_InnerProduct(&AC, &AO) > 0)
 		{
 			*Direction = Math_CrossProduct(Math_CrossProduct(AC, AO), AC);
 			PList[0] = C;
@@ -265,7 +296,7 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			//PlaneSimplex(PList, Direction, PointCount);
 			return false;
 		}
-		else if (Math_InnerProduct(AD, AO) > 0)
+		else if (Math_InnerProduct(&AD, &AO) > 0)
 		{
 			*Direction = Math_CrossProduct(Math_CrossProduct(AD, AO), AD);
 			PList[0] = D;
@@ -285,9 +316,9 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			return false;
 		}
 	}
-	else if (Math_InnerProduct(ADB, AO) > 0)
+	else if (Math_InnerProduct(&ADB, &AO) > 0)
 	{
-		if (Math_InnerProduct(AB, AO) > 0)
+		if (Math_InnerProduct(&AB, &AO) > 0)
 		{
 			*Direction = Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
 			PList[0] = B;
@@ -296,7 +327,7 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 		//	PlaneSimplex(PList, Direction, PointCount);
 			return false;
 		}
-		else if (Math_InnerProduct(AD, AO) > 0)
+		else if (Math_InnerProduct(&AD, &AO) > 0)
 		{
 			*Direction = Math_CrossProduct(Math_CrossProduct(AC, AO), AC);
 			PList[0] = C;
@@ -330,7 +361,7 @@ bool Collision_GJK(CollisionObject* ObjectA, CollisionObject* ObjectB)
 	uint32 PointCount = 1;
 
 	v3 RandomDirection = { 0.0f, 1.0f, 0.0f };
-	SupportPoint StartingPoint = MinkowskiSupport(ObjectA, ObjectB, RandomDirection);
+	SupportPoint StartingPoint = MinkowskiSupport(ObjectA, ObjectB, &RandomDirection);
 
 	PointList[0] = StartingPoint;
 	v3 Direction = -StartingPoint.MinkowskiPoint; // Origin - StartPoint.
@@ -339,9 +370,9 @@ bool Collision_GJK(CollisionObject* ObjectA, CollisionObject* ObjectB)
 
 	while (1)
 	{
-		A = MinkowskiSupport(ObjectA, ObjectB, Direction);
+		A = MinkowskiSupport(ObjectA, ObjectB, &Direction);
 
-		if (Math_InnerProduct(A.MinkowskiPoint, Direction) < 0) // No Intersection
+		if (Math_InnerProduct(&A.MinkowskiPoint, &Direction) < 0) // No Intersection
 		{
 			return 0;
 		}
@@ -394,8 +425,8 @@ Face AddFaceEPA(SupportPoint &v0, SupportPoint &v1, SupportPoint &v2)
 	Result.Vertices[2] = v2;
 	Result.Normal = Math_CrossProduct(Result.Vertices[1].MinkowskiPoint - Result.Vertices[0].MinkowskiPoint,
 		Result.Vertices[2].MinkowskiPoint - Result.Vertices[1].MinkowskiPoint);
-	Result.OriginDistance = Math_InnerProduct(Result.Normal,
-		-Result.Vertices[0].MinkowskiPoint) / Math_Magnitude(Result.Normal);
+	Result.OriginDistance = Math_InnerProduct(&Result.Normal,
+		&(-Result.Vertices[0].MinkowskiPoint)) / Math_Magnitude(Result.Normal);
 
 	if (Result.OriginDistance < 0) // To fix errors in wrapping order
 	{							 
@@ -552,8 +583,8 @@ Face Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB)
 		for (std::list<Face>::iterator it = Triangles.begin();
 			it != Triangles.end(); it++) 
 		{
-			float dst = fabs(Math_InnerProduct(it->Normal,
-				it->Vertices[0].MinkowskiPoint));
+			float dst = fabs(Math_InnerProduct(&it->Normal,
+				&it->Vertices[0].MinkowskiPoint));
 			if (dst < FurthestDistance) 
 			{
 				FurthestDistance = dst;
@@ -566,10 +597,10 @@ Face Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB)
 			return *entry_cur_triangle_it;
 		}
 
- 		SupportPoint entry_cur_support = MinkowskiSupport(ObjectA, ObjectB, -entry_cur_triangle_it->Normal);
+ 		SupportPoint entry_cur_support = MinkowskiSupport(ObjectA, ObjectB, &(-entry_cur_triangle_it->Normal));
 
-		if ((Math_InnerProduct(entry_cur_triangle_it->Normal,
-			entry_cur_support.MinkowskiPoint) - FurthestDistance < Threshold))
+		if ((Math_InnerProduct(&entry_cur_triangle_it->Normal,
+			&entry_cur_support.MinkowskiPoint) - FurthestDistance < Threshold))
 		{
 			// GENERATE CONTACT INFO AND RETURN
 			return *entry_cur_triangle_it;
@@ -581,8 +612,8 @@ Face Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB)
 			it != Triangles.end(); it++)
 		{
 			// can this face be 'seen' by entry_cur_support?
-			if (Math_InnerProduct(it->Normal,
-				(entry_cur_support.MinkowskiPoint - it->Vertices[0].MinkowskiPoint)) > 0) 
+			if (Math_InnerProduct(&it->Normal,
+				&(entry_cur_support.MinkowskiPoint - it->Vertices[0].MinkowskiPoint)) > 0) 
 			{
 				AddEdge(&it->Vertices[0], &it->Vertices[1], &Edges);
 				AddEdge(&it->Vertices[1], &it->Vertices[2], &Edges);
@@ -858,7 +889,7 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 		v3 Line2 = (TerrainVertice3 - TerrainVertice);
 		v3 Norm = Math_Normalize(Math_CrossProduct(Line2, Line1));
 		v3 PointLine = ObjectPosition - TerrainVertice;
-		float test = -Math_InnerProduct(PointLine, Norm);
+		float test = -Math_InnerProduct(&PointLine, &Norm);
 		v3 point = test * Norm;
 
 		ObjectPosition.y = ObjectPosition.y + point.y + 0.7f;

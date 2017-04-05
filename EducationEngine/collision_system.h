@@ -134,12 +134,14 @@ v2 GetOrthoMousePosition(); //TODO: Does this belong in Collision?
 
 bool Collision_OrthoMouseToRect(v3 &ObjectPosition, float ObjWidth, float ObjHeight);
 v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix);
-bool Collision_RayToObject(v3* Ray, CollisionObject* Object);
+bool Collision_RayToObject(v3* RayOrigin, v3* RayDirection, CollisionObject* Object);
+bool Collision_PlaneRayIntersect(v3* PlaneNormal, v3* PlaneOrigin,
+	v3* RayOrigin, v3* RayDirection, float* Distance);
 
-v3 GetFurthestPoint(CollisionObject* Object, v3 &Direction); 
+v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction); 
 
 SupportPoint MinkowskiSupport(CollisionObject* ObjectA,
-	CollisionObject* ObjectB, v3 &Direction);
+	CollisionObject* ObjectB, v3 *Direction);
 
 bool LineSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);
 bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);

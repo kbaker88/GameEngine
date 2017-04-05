@@ -3,6 +3,14 @@
 //NOTE: Math_Floor() is only for 32-bit floats on Little-Endian Machines
 float Math_Floor(float Value)
 {
+	/* Short Method
+	int Result = (int)Value;
+	if (Value < 0)
+	{
+		Result -= 1;
+	}
+	return Result;
+	*/
 	float Result = 0.0f;
 
 	union
