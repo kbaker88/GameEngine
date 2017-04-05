@@ -164,7 +164,9 @@ float Math_Sine(float Radians)
 {
 	double Result = Radians;
 	bool FlipSign = false;
-	for (unsigned int i = 3; i < 9; i = i + 2)
+
+	//TODO: Pre-compute the factorials on startup.
+	for (unsigned int i = 3; i < 11; i = i + 2)
 	{
 		if (FlipSign)
 		{
@@ -184,7 +186,9 @@ float Math_Cosine(float Radians)
 {
 	double Result = 1;
 	bool FlipSign = false;
-	for (unsigned int i = 2; i < 9; i = i + 2)
+
+	//TODO: Pre-compute the factorials on startup.
+	for (unsigned int i = 2; i < 11; i = i + 2)
 	{
 		if (FlipSign)
 		{
