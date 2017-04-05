@@ -81,27 +81,6 @@ bool Collision_RayToObject(v3* RayOrigin, v3* RayDirection, CollisionObject* Obj
 	float Distance = 0.0f;
 	return Collision_PlaneRayIntersect(&v3(0.0f, 0.0f, -1.0f),
 		Object->Position, RayOrigin, RayDirection, &Distance);
-
-	double tmin = -INFINITY, tmax = INFINITY;
-
-	if (RayDirection->x != 0.0) {
-		double tx1 = ((Object->Position->x - (Object->Width * 0.5f))- RayOrigin->x) / RayDirection->x;
-		double tx2 = ((Object->Position->x + (Object->Width * 0.5f)) - RayOrigin->x) / RayDirection->x;
-
-		tmin = max(tmin, min(tx1, tx2));
-		tmax = min(tmax, max(tx1, tx2));
-	}
-
-	if (ray.n.y != 0.0) {
-		double ty1 = (b.min.y - r.x0.y) / r.n.y;
-		double ty2 = (b.max.y - r.x0.y) / r.n.y;
-
-		tmin = max(tmin, min(ty1, ty2));
-		tmax = min(tmax, max(ty1, ty2));
-	}
-
-	return tmax >= tmin;
-	
 }
 
 v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction)
