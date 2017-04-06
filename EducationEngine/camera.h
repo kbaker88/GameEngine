@@ -6,7 +6,7 @@
 
 struct Camera
 {
-	Camera() : Yaw(0.0f), Pitch(0.0f), Position(0.0f, 0.0f, 0.0f),
+	Camera() : Yaw(-90.0f), Pitch(0.0f), Position(0.0f, 0.0f, 0.0f),
 		UpVector(0.0f, 1.0f, 0.0f), FacingVector(0.0f, 0.0f, -1.0f),
 		DirectionVector(0.0f, 0.0f, 0.0f) {}
 

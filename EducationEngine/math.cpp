@@ -174,15 +174,15 @@ float Math_Sine(float Radians)
 	{
 		Radians += 2.0f * PI;
 	}
-
+	
 	while (Radians > PI)
 	{
 		Radians -= 2.0f * PI;
 	}
-
+	
 	double Result = Radians;
 	bool FlipSign = false;
-
+	
 	//TODO: Pre-compute the factorials on startup.
 	for (unsigned int i = 3; i < 11; i = i + 2)
 	{
@@ -206,15 +206,15 @@ float Math_Cosine(float Radians)
 	{
 		Radians += 2.0f * PI;
 	}
-
+	
 	while (Radians > PI)
 	{
 		Radians -= 2.0f * PI;
 	}
-
+	
 	double Result = 1;
 	bool FlipSign = false;
-
+	
 	//TODO: Pre-compute the factorials on startup.
 	for (unsigned int i = 2; i < 11; i = i + 2)
 	{

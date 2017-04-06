@@ -8,9 +8,9 @@
 
 struct Entity
 {
-	Entity() : EntityID(0), Active(0), CameraObj(NULL),
+	Entity() : EntityID(0), Active(0), CameraObj(0),
 		DirectionVector(0.0f, 0.0f, 0.0f), Position(0.0f, 0.0f, 0.0f),
-		ObjectPtr(NULL) {}
+		ObjectPtr(0) {}
 	
 	~Entity() {}
 

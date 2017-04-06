@@ -65,13 +65,7 @@ v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix)
 bool Collision_PlaneRayIntersect(v3* PlaneNormal, v3* PlaneOrigin,
 	v3* RayOrigin, v3* RayDirection, float* Distance)
 {
-	// assuming vectors are all normalized
-	float denom = Math_InnerProduct(PlaneNormal, RayDirection);
-	if (denom > 1e-6) {
-		v3 p0l0 = *PlaneOrigin - *RayOrigin;
-		*Distance = Math_InnerProduct(&p0l0, PlaneNormal) / denom;
-		return (*Distance >= 0);
-	}
+
 
 	return false;
 }
@@ -231,7 +225,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 	v3 ABC = Math_CrossProduct(AB, AC);
 	v3 ACD = Math_CrossProduct(AC, AD);
 	v3 ADB = Math_CrossProduct(AD, AB);
-
 
 	if (Math_InnerProduct(&ABC, &AO) > 0)
 	{

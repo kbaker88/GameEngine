@@ -7,15 +7,18 @@ void Game_Initialize(ProgramState* State)
 	uint32 ObjectCount = 0;
 	uint32 EntityCount = 0;
 
-	State->ShaderHandles[0] = Render_CompileShaders(VertShaderForTextureAndLight,
+	State->ShaderHandles[0] = 
+		Render_CompileShaders(VertShaderForTextureAndLight,
 		FragShaderForTextureAndLight);
 
 	//NOTE: Player's Model
-	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount,
+		0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum, 
 		ObjectCount, &v3(0.0f, 6.0f, 20.0f));
 	Entity_AddCamera(State->ObjectBlockNum, ObjectCount, new Camera);
-	Phys_SetAccelerationRate(Entity_GetPhysObjPtr(State->ObjectBlockNum, ObjectCount), 1000.0f);
+	Phys_SetAccelerationRate(Entity_GetPhysObjPtr(State->ObjectBlockNum,
+		ObjectCount), 1000.0f);
 	ObjectCount++;
 	EntityCount++;
 
@@ -37,14 +40,16 @@ void Game_Initialize(ProgramState* State)
 	EntityCount++;
 
 	// Light Box
-	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount,
+		0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(2.0f, 1.0f, 17.0f));
 	ObjectCount++;
 	EntityCount++;
 
 	// Wood Box 1
-	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount,
+		0.25f, 0.25f, 0.25f);
 	Object_SetTexture(State->ObjectBlockNum, ObjectCount, Asset_GetTexture(5));
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(3.0f, 0.0f, 15.0f));

@@ -7,8 +7,8 @@
 
 struct CollisionObject
 {
-	CollisionObject(): NumVertices(0), VerticesPtr(NULL),
-		Position(NULL), Width(0), Height(0), Depth(0) {}
+	CollisionObject(): NumVertices(0), VerticesPtr(0),
+		Position(0), Width(0), Height(0), Depth(0) {}
 	
 	~CollisionObject() {}
 
@@ -50,9 +50,7 @@ struct SupportPoint
 
 	bool operator==(SupportPoint& B)
 	{
-		if (MinkowskiPoint == B.MinkowskiPoint) //&&
-			//(ObjAPoint == B.ObjAPoint) &&
-			//(ObjBPoint == B.ObjBPoint))
+		if (MinkowskiPoint == B.MinkowskiPoint) 
 		{
 			return true;
 		}
@@ -64,9 +62,7 @@ struct SupportPoint
 
 	bool operator==(const SupportPoint& B)
 	{
-		if (MinkowskiPoint == B.MinkowskiPoint) //&&
-			//(ObjAPoint == B.ObjAPoint) &&
-			//(ObjBPoint == B.ObjBPoint))
+		if (MinkowskiPoint == B.MinkowskiPoint) 
 		{
 			return true;
 		}
