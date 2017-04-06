@@ -456,7 +456,7 @@ v3 Math_ReflectVector(v3 &IncomingVect, v3 &Normal);
 
 // Matrix Math
 m4 Math_IdentityMatrix();
-m4 Math_LookAtMatrix(v3 &Eye, v3 &Center, v3 &Up);
+m4 Math_LookAtMatrix(v3 &Eye, v3 &Target, v3 &Up);
 m4 Math_PerspectiveMatrix(float FieldOfView, float AspectRatio, 
 	float NearPlane, float FarPlane);
 m4 Math_OrthographicMarix(float Left, float Right, float Bottom,

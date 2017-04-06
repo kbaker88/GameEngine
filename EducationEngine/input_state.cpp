@@ -4,10 +4,13 @@ static Cursor_State CursorState;
 
 void Input_UpdateMouseState(ProgramState* State)
 {
-	CursorState.Position = GetOrthoMousePosition();
+	//TODO: This MousePosition might be the cause of error in mouse picking
+	//TODO: Maybe only do the mouse position calculation once.
 	window_properties WindowDimensions = Render_GetWindowProperties();
 	float WindowHalfWidth = (float)WindowDimensions.Width * 0.5f;
 	float WindowHalfHeight = (float)WindowDimensions.Height * 0.5f;
+	CursorState.Position.x = State->CursorPosition.x - WindowHalfWidth;
+	CursorState.Position.y = WindowHalfHeight - State->CursorPosition.y;
 
 	if (CursorState.Position.x > WindowHalfWidth)
 	{

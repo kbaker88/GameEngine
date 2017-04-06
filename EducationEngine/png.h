@@ -4,6 +4,8 @@
 #include "platform_layer.h"
 #include "math.h"
 
+//TODO: Make more robust
+
 struct PNGProperties
 {
 	int32 Width;

@@ -57,25 +57,26 @@ m4 Math_IdentityMatrix()
 	return Result;
 }
 
-m4 Math_LookAtMatrix(v3 &Eye, v3 &Center, v3 &Up)
+m4 Math_LookAtMatrix(v3 &Eye, v3 &Target, v3 &Up)
 {
-	v3 f = Math_Normalize(Center - Eye);
-	v3 s = Math_Normalize(Math_CrossProduct(f, Up));
-	v3 u = Math_CrossProduct(s, f);
+	v3 ZAxis = Math_Normalize(Target - Eye);
+	v3 XAxis = Math_Normalize(Math_CrossProduct(ZAxis, Up));
+	v3 YAxis = Math_CrossProduct(XAxis, ZAxis);
 
 	m4 Result;
-	Result.Rc[0][0] = s.x;
-	Result.Rc[1][0] = s.y;
-	Result.Rc[2][0] = s.z;
-	Result.Rc[0][1] = u.x;
-	Result.Rc[1][1] = u.y;
-	Result.Rc[2][1] = u.z;
-	Result.Rc[0][2] = -f.x;
-	Result.Rc[1][2] = -f.y;
-	Result.Rc[2][2] = -f.z;
-	Result.Rc[3][0] = -Math_InnerProduct(&s, &Eye);
-	Result.Rc[3][1] = -Math_InnerProduct(&u, &Eye);
-	Result.Rc[3][2] = Math_InnerProduct(&f, &Eye);
+	Result.Rc[0][0] = XAxis.x;
+	Result.Rc[1][0] = XAxis.y;
+	Result.Rc[2][0] = XAxis.z;
+	Result.Rc[0][1] = YAxis.x;
+	Result.Rc[1][1] = YAxis.y;
+	Result.Rc[2][1] = YAxis.z;
+	Result.Rc[0][2] = -ZAxis.x;
+	Result.Rc[1][2] = -ZAxis.y;
+	Result.Rc[2][2] = -ZAxis.z;
+	Result.Rc[3][0] = -Math_InnerProduct(&XAxis, &Eye);
+	Result.Rc[3][1] = -Math_InnerProduct(&YAxis, &Eye);
+	Result.Rc[3][2] = Math_InnerProduct(&ZAxis, &Eye);
+	Result.Rc[3][3] = 1.0f;
 	return Result;
 }
 
@@ -237,38 +238,7 @@ v4 applyPermutation(int P[4], v4 I) {
 m4 Math_InvertMatrix(m4 *Matrix)
 {
 	m4 matrix = *Matrix;
-	/*m4 A = *Matrix;
-	float Determinant = 1 / (A.Rc[0][0] * A.Rc[1][1] * A.Rc[2][2] + A.Rc[1][0] * A.Rc[2][1] * A.Rc[0][2]
-		+ A.Rc[0][1] * A.Rc[1][2] * A.Rc[2][0] - A.Rc[2][0] * A.Rc[1][1] * A.Rc[0][2]
-		- A.Rc[0][0] * A.Rc[2][1] * A.Rc[1][2] - A.Rc[1][0] * A.Rc[0][1] * A.Rc[2][2]);
-	
-	m4 Result;
-	Result.Rc[0][0] = Determinant *(A.Rc[1][1] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][1] * A.Rc[1][2] * A.Rc[3][3]);
-	Result.Rc[0][1] = -1 * Determinant *(A.Rc[0][1] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][1] * A.Rc[0][2] * A.Rc[3][3]);
-	Result.Rc[0][2] = Determinant *(A.Rc[0][1] * A.Rc[1][2] * A.Rc[3][3] - A.Rc[1][1] * A.Rc[0][2] * A.Rc[3][3]);
-	Result.Rc[0][3] = 0;
-	Result.Rc[1][0] = -1 * Determinant * (A.Rc[1][0] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][0] * A.Rc[1][2] * A.Rc[3][3]);
-	Result.Rc[1][1] = Determinant * (A.Rc[0][0] * A.Rc[2][2] * A.Rc[3][3] - A.Rc[2][0] * A.Rc[0][2] * A.Rc[3][3]);
-	Result.Rc[1][2] = -1 * Determinant * (A.Rc[0][0] * A.Rc[1][2] * A.Rc[3][3] - A.Rc[1][0] * A.Rc[0][2] * A.Rc[3][3]);
-	Result.Rc[1][3] = 0;
-	Result.Rc[2][0] = Determinant * (A.Rc[1][0] * A.Rc[2][1] * A.Rc[3][3] - A.Rc[1][1] * A.Rc[2][0] * A.Rc[3][3]);
-	Result.Rc[2][1] = -1 * Determinant * (A.Rc[0][0] * A.Rc[2][1] * A.Rc[3][3] - A.Rc[2][0] * A.Rc[0][1] * A.Rc[3][3]);
-	Result.Rc[2][2] = Determinant * (A.Rc[0][0] * A.Rc[1][1] * A.Rc[3][3] - A.Rc[1][0] * A.Rc[0][1] * A.Rc[3][3]);
-	Result.Rc[2][3] = 0;
-	Result.Rc[3][0] = -1 * Determinant * (A.Rc[1][0] * A.Rc[2][1] * A.Rc[3][2] + A.Rc[2][0] * A.Rc[3][1] * A.Rc[1][2]
-		+ A.Rc[3][0] * A.Rc[1][1] * A.Rc[2][2] - A.Rc[1][0] * A.Rc[3][1] * A.Rc[2][2] - A.Rc[2][0] * A.Rc[1][1] * A.Rc[3][2]
-		- A.Rc[3][0] * A.Rc[2][1] * A.Rc[1][2]);
-	Result.Rc[3][1] = Determinant * (A.Rc[0][0] * A.Rc[2][1] * A.Rc[3][2] + A.Rc[2][0] * A.Rc[3][1] * A.Rc[0][2]
-		+ A.Rc[3][0] * A.Rc[0][1] * A.Rc[2][2] - A.Rc[0][0] * A.Rc[3][1] * A.Rc[2][2] - A.Rc[2][0] * A.Rc[0][1] * A.Rc[3][2]
-		- A.Rc[3][0] * A.Rc[2][1] * A.Rc[0][2]);
-	Result.Rc[3][2] = -1 * Determinant * (A.Rc[0][0] * A.Rc[1][1] * A.Rc[3][2] + A.Rc[1][0] * A.Rc[3][1] * A.Rc[0][2]
-		+ A.Rc[3][0] * A.Rc[0][1] * A.Rc[1][2] - A.Rc[0][0] * A.Rc[3][1] * A.Rc[1][2] - A.Rc[1][0] * A.Rc[0][1] * A.Rc[3][2]
-		- A.Rc[3][0] * A.Rc[1][1] * A.Rc[0][2]);
-	Result.Rc[3][3] = Determinant * (A.Rc[0][0] * A.Rc[1][1] * A.Rc[2][2] + A.Rc[1][0] * A.Rc[2][1] * A.Rc[0][2]
-		+ A.Rc[2][0] * A.Rc[0][1] * A.Rc[1][2] - A.Rc[0][0] * A.Rc[2][1] * A.Rc[1][2] - A.Rc[1][0] * A.Rc[0][1] * A.Rc[2][2]
-		- A.Rc[2][0] * A.Rc[1][1] * A.Rc[0][2]);
 
-	return Result;*/
 	m4 U = *Matrix;
 
 	// the L matrix will be zeroed out initially and then populated as a strictly lower

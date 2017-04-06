@@ -28,8 +28,8 @@ struct Entity
 void Entity_CreateBlock(uint32 BlockNumber, uint32 Size);
 void Entity_DeleteBlock(uint32 BlockNumber);
 
-int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, v3 *Position);
-int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, 
+int32 Entity_Create(uint32 BlockNumber, uint32 IDNumber, v3 *Position);
+int32 Entity_Create(uint32 BlockNumber, uint32 IDNumber,
 	uint32 ObjectBlockNumber, uint32 ObjectID, v3 *Position);
 
 // Entity Add-Ons

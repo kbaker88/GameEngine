@@ -8,7 +8,7 @@ struct ProgramState
 	ProgramState() : CameraArray(NULL), TimerArray(NULL),
 		GPUShaderVarArray(NULL), ShaderHandles(NULL),
 		Status(0), EntityBlockNum(0), ObjectBlockNum(0),
-		StateOfProgram(NULL) {}
+		StateOfProgram(NULL), CursorPosition(0.0f, 0.0f) {}
 
 	~ProgramState() {}
 
@@ -20,6 +20,7 @@ struct ProgramState
 	int32 Status;
 	uint32 EntityBlockNum, ObjectBlockNum;
 	uint8* StateOfProgram;
+	v2 CursorPosition;
 };
 
 void State_CreateCameras(ProgramState* State, uint32 NumberOfCameras);

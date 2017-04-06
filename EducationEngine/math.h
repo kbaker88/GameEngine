@@ -1,6 +1,7 @@
 #ifndef MATH_H
 #define MATH_H
 
+#include <cmath>
 //TODO: Add lookup tables later
 
 #define Maximum(A, B) ((A > B) ? (A) : (B))

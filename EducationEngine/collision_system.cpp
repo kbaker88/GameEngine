@@ -1,30 +1,19 @@
 #include "collision_system.h"
 
-v2 GetOrthoMousePosition() // TODO: RENAME
+bool Collision_OrthoMouseToRect(v2* MousePosition, CollisionObject* Object)
 {
-	v2 Result = {};
+	window_properties WindowDimensions = Render_GetWindowProperties();
+	v2 NewMousePosition;
+	NewMousePosition.x =
+		MousePosition->x - ((float)WindowDimensions.Width * 0.5f);
+	NewMousePosition.y =
+		((float)WindowDimensions.Height * 0.5f) - MousePosition->y;
 
-	Platform_GetCursorPosition(&Result.x, &Result.y);
-
-	int Width = Render_GetWindowProperties().Width;
-	int Height = Render_GetWindowProperties().Height;
-	
-	Result.x = Result.x - ((float)Width / 2);
-	Result.y = ((float)Height / 2) - Result.y;
-
-	return Result;
-}
-
-bool Collision_OrthoMouseToRect(v3 &ObjectPosition,
-	float ObjWidth, float ObjHeight)
-{
-	v2 MousePosition = GetOrthoMousePosition();
-
-	if ((MousePosition.x > (ObjectPosition.x - (ObjWidth / 2))) &&
-		(MousePosition.x < (ObjectPosition.x + (ObjWidth / 2))))
+	if ((NewMousePosition.x > (Object->Position->x - (Object->HalfWidth))) &&
+		(NewMousePosition.x < (Object->Position->x + (Object->HalfWidth))))
 	{
-		if ((MousePosition.y >(ObjectPosition.y - (ObjHeight / 2))) &&
-			(MousePosition.y < (ObjectPosition.y + (ObjHeight / 2))))
+		if ((NewMousePosition.y >(Object->Position->y - (Object->HalfHeight))) &&
+			(NewMousePosition.y < (Object->Position->y + (Object->HalfHeight))))
 		{
 			return true;
 		}
@@ -39,13 +28,9 @@ v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix)
 	v2 MousePosition = {};
 	Platform_GetCursorPosition(&MousePosition.x, &MousePosition.y);
 
-	// TODO: Fix mouse coords.
-	// Convert to Normalized Device Coordinates
-	//MousePosition.x = (2.0f * MousePosition.x) / WindowDimensions.Width - 1.0f;
-	//MousePosition.y = (2.0f * MousePosition.y) / WindowDimensions.Height - 1.0f;
-	//v2 NormalizedMouseCoords = MousePosition;
-	MousePosition.x = (2.0f * MousePosition.x) / WindowDimensions.Width - 1.0f;
-	MousePosition.y = 1.0f - (2.0f * MousePosition.y) / WindowDimensions.Height;
+	// TODO: Fix mouse coords, X wrong direction? somewhere in view matrix?.
+	MousePosition.x = 1.0f - ((2.0f * MousePosition.x) / WindowDimensions.Width);
+	MousePosition.y = 1.0f - ((2.0f * MousePosition.y) / WindowDimensions.Height);
 
 	// Convert to Clip Space 
 	v4 ClipSpaceVector = v4(MousePosition.x, MousePosition.y, -1.0f, 0.0f);
@@ -56,7 +41,7 @@ v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix)
 
 	// Convert to View Space
 	v4 ViewSpaceVector = Math_InvertMatrix(ViewMatrix) * EyeSpaceVector;
-	v3 WorldMouseRay = v3(ViewSpaceVector.x, ViewSpaceVector.y, ViewSpaceVector.z);
+	v3 WorldMouseRay = v3(-ViewSpaceVector.x, ViewSpaceVector.y, ViewSpaceVector.z);
 	WorldMouseRay = Math_Normalize(WorldMouseRay);
 
 	return WorldMouseRay;

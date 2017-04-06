@@ -5,17 +5,20 @@
 #include "text_system.h"
 #include <list>
 
+//TODO: GetMousePosition once per frame and store it for use in state?
+
 struct CollisionObject
 {
 	CollisionObject(): NumVertices(0), VerticesPtr(0),
-		Position(0), Width(0), Height(0), Depth(0) {}
+		Position(0), Width(0), Height(0), Depth(0),
+		HalfWidth(0), HalfHeight(0), HalfDepth(0) {}
 	
 	~CollisionObject() {}
 
 	uint32 NumVertices;
 	float* VerticesPtr;
 	v3 *Position;
-	float Width, Height, Depth;
+	float Width, Height, Depth, HalfWidth, HalfHeight, HalfDepth;
 
 	CollisionObject & operator=(CollisionObject& NewObj)
 	{
@@ -125,10 +128,7 @@ struct Edge
 	}
 };
 
-// Global Functions
-v2 GetOrthoMousePosition(); //TODO: Does this belong in Collision?
-
-bool Collision_OrthoMouseToRect(v3 &ObjectPosition, float ObjWidth, float ObjHeight);
+bool Collision_OrthoMouseToRect(v2* MousePosition, CollisionObject* Object);
 v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix);
 bool Collision_RayToObject(v3* RayOrigin, v3* RayDirection, CollisionObject* Object);
 bool Collision_PlaneRayIntersect(v3* PlaneNormal, v3* PlaneOrigin,
