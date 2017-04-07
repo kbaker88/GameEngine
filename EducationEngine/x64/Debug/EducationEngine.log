@@ -1,33 +1,24 @@
-﻿  win32_layer.cpp
-  utility.cpp
+﻿  asset_system.cpp
+  Generating Code...
+  Compiling...
+  win32_layer.cpp
   title_state.cpp
   text_system.cpp
   state_system.cpp
   sphere.cpp
   rectangle.cpp
   point.cpp
-  opengl_layer.cpp
-  menu_state.cpp
   plane2d.cpp
-  physics_system.cpp
   object_system.cpp
   object.cpp
-  math.cpp
-  linear_algebra.cpp
+  menu_state.cpp
   line.cpp
+  input_state.cpp
   heightmap.cpp
   game_state.cpp
   game_loop.cpp
-  Generating Code...
-  Compiling...
-  memory_management.cpp
-  input_state.cpp
   entity_system.cpp
-  debug_system.cpp
   collision_system.cpp
-  clock.cpp
-  camera.cpp
   box.cpp
-  asset_system.cpp
   Generating Code...
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.exe

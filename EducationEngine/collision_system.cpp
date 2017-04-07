@@ -47,19 +47,17 @@ v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix)
 	return WorldMouseRay;
 }
 
-bool Collision_PlaneRayIntersect(v3* PlaneNormal, v3* PlaneOrigin,
-	v3* RayOrigin, v3* RayDirection, float* Distance)
+bool Collision_PlaneRayIntersect(v3* RayOrigin, v3* RayDirection, 
+	CollisionObject* CollideObject, float* Distance)
 {
-
 
 	return false;
 }
 
-bool Collision_RayToObject(v3* RayOrigin, v3* RayDirection, CollisionObject* Object)
+bool Collision_RayToOBB(v3* RayOrigin, v3* RayDirection,
+	CollisionObject* Object, float* Distance)
 {
-	float Distance = 0.0f;
-	return Collision_PlaneRayIntersect(&v3(0.0f, 0.0f, -1.0f),
-		Object->Position, RayOrigin, RayDirection, &Distance);
+	return false;
 }
 
 v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction)

@@ -10,8 +10,11 @@ struct PNGProperties
 {
 	int32 Width;
 	int32 Height;
-	uint32 NumPixelComps;
-	uint32 PixelCompSize;
+	unsigned char BitDepth;
+	unsigned char ColorType;
+	unsigned char CompressionMethod;
+	unsigned char FilterMethod;
+	unsigned char InterlaceMethod;
 };
 
 
@@ -35,252 +38,364 @@ static int32 PaethPredictor(int32 Previous, int32 Above, int32 AbovePrev)
 	}
 }
 
-static unsigned char* GetPNGData(unsigned char* Data, PNGProperties& Properties)
+static void NoFilter(uint32* Index, uint8* Data, uint32* ImgIndex, 
+	uint8* ImageData, uint32 ScanLineWidth)
+{
+	*Index = *Index + 1;
+	for (uint32 LinePosition = 0; LinePosition <
+		(ScanLineWidth); LinePosition++)
+	{
+		ImageData[*ImgIndex] = Data[*Index];
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		ImageData[*ImgIndex] = Data[*Index];
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+	}
+}
+
+static void SubFilter(uint32* Index, uint8* Data, uint32* ImgIndex, 
+	uint8* ImageData, uint32 ScanLineWidth)
+{
+	*Index = *Index + 1;
+	ImageData[*ImgIndex] = Data[*Index];
+	*ImgIndex = *ImgIndex + 1;
+	*Index = *Index + 1;
+
+	ImageData[*ImgIndex] = Data[*Index];
+	*ImgIndex = *ImgIndex + 1;
+	*Index = *Index + 1;
+	for (uint32 LinePosition = 0; LinePosition < 
+		(ScanLineWidth - 1); LinePosition++)
+	{
+		ImageData[*ImgIndex] =
+			Data[*Index] + ImageData[*ImgIndex - 2];
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		ImageData[*ImgIndex] =
+			Data[*Index] + ImageData[*ImgIndex - 2];
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+	}
+}
+
+static void UpFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+	uint8* ImageData, uint32 ScanLineWidth)
+{
+	*Index = *Index + 1;
+	for (uint32 LinePosition = 0;
+		LinePosition < ScanLineWidth; 
+		LinePosition++)
+	{
+		ImageData[*ImgIndex] = Data[*Index] + 
+			ImageData[*ImgIndex - (ScanLineWidth * 2)];
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		ImageData[*ImgIndex] = Data[*Index] + 
+			ImageData[*ImgIndex - (ScanLineWidth * 2)];
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+	}
+}
+
+static void AverageFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+	uint8* ImageData, uint32 ScanLineWidth, uint32 ScanLine)
+{
+	*Index = *Index + 1;
+	if (ScanLine > 0)
+	{
+		ImageData[*ImgIndex] = Data[*Index] + 
+			(int)Math_Floor(ImageData[*ImgIndex - 
+			(ScanLineWidth * 2)] * 0.5f);
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		ImageData[*ImgIndex] = Data[*Index] + 
+			(int)Math_Floor(ImageData[*ImgIndex -
+			(ScanLineWidth * 2)] * 0.5f);
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		for (uint32 LinePosition = 0; 
+			LinePosition < (ScanLineWidth - 1);
+			LinePosition++)
+		{
+			ImageData[*ImgIndex] = Data[*Index] + 
+				(int)Math_Floor((ImageData[*ImgIndex - 2] +
+				ImageData[*ImgIndex - (ScanLineWidth * 2)]) * 0.5f);
+			*ImgIndex = *ImgIndex + 1;
+			*Index = *Index + 1;
+
+			ImageData[*ImgIndex] = Data[*Index] + 
+				(int)Math_Floor((ImageData[*ImgIndex - 2] +
+				ImageData[*ImgIndex - (ScanLineWidth * 2)]) * 0.5f);
+			*ImgIndex = *ImgIndex + 1;
+			*Index = *Index + 1;
+		}
+	}
+	else
+	{
+		ImageData[*ImgIndex] = Data[*Index];
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		ImageData[*ImgIndex] = Data[*Index];
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		for (uint32 LinePosition = 0; 
+			LinePosition < (ScanLineWidth - 1); 
+			LinePosition++)
+		{
+			ImageData[*ImgIndex] = Data[*Index] + 
+				(int)Math_Floor((ImageData[*ImgIndex - 2] + 0) * 0.5f);
+			*ImgIndex = *ImgIndex + 1;
+			*Index = *Index + 1;
+
+			ImageData[*ImgIndex] = Data[*Index] + 
+				(int)Math_Floor((ImageData[*ImgIndex - 2] + 0) * 0.5f);
+			*ImgIndex = *ImgIndex + 1;
+			*Index = *Index + 1;
+		}
+	}
+}
+
+static void PaethFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+	uint8* ImageData, uint32 ScanLineWidth, uint32 ScanLine)
+{
+	*Index = *Index + 1;
+	if (ScanLine > 0)
+	{
+		ImageData[*ImgIndex] = Data[*Index] + PaethPredictor(0,
+			ImageData[*ImgIndex - (ScanLineWidth * 2)], 0);
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		ImageData[*ImgIndex] = Data[*Index] + PaethPredictor(0,
+			ImageData[*ImgIndex - (ScanLineWidth * 2)], 0);
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		for (uint32 LinePosition = 0;
+			LinePosition < (ScanLineWidth - 1);
+			LinePosition++)
+		{
+			ImageData[*ImgIndex] = Data[*Index] +
+				PaethPredictor(ImageData[*ImgIndex - 2],
+				ImageData[*ImgIndex - (ScanLineWidth * 2)],
+				ImageData[*ImgIndex - (ScanLineWidth * 2) - 2]);
+			*ImgIndex = *ImgIndex + 1;
+			*Index = *Index + 1;
+
+			ImageData[*ImgIndex] = Data[*Index] + 
+				PaethPredictor(ImageData[*ImgIndex - 2],
+				ImageData[*ImgIndex - (ScanLineWidth * 2)],
+				ImageData[*ImgIndex - (ScanLineWidth * 2) - 2]);
+			*ImgIndex = *ImgIndex + 1;
+			*Index = *Index + 1;
+		}
+	}
+	else
+	{
+		ImageData[*ImgIndex] = Data[*Index] + 
+			PaethPredictor(0, 0, 0);
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		ImageData[*ImgIndex] = Data[*Index] +
+			PaethPredictor(0, 0, 0);
+		*ImgIndex = *ImgIndex + 1;
+		*Index = *Index + 1;
+
+		for (uint32 LinePosition = 0;
+			LinePosition < (ScanLineWidth - 1);
+			LinePosition++)
+		{
+			ImageData[*ImgIndex] = Data[*Index] + 
+				PaethPredictor(ImageData[*ImgIndex - 2], 0, 0);
+			*ImgIndex = *ImgIndex + 1;
+			*Index = *Index + 1;
+
+			ImageData[*ImgIndex] = Data[*Index] +
+				PaethPredictor(ImageData[*ImgIndex - 2], 0, 0);
+			*ImgIndex = *ImgIndex + 1;
+			*Index = *Index + 1;
+		}
+	}
+}
+
+static unsigned char* GetPNGData(unsigned char* Data, 
+	PNGProperties& Properties)
 {
 	unsigned char* ImageData = 0;
 
-	// Check if PNG signature is true
-	if ((Data[0] != 137) || (Data[1] != 80) ||
-		(Data[2] != 78 ) || (Data[3] != 71))
-	{
-		return 0;
+	//NOTE: Known and required PNG names.
+	unsigned long long TrueSignature = 727905341920923785;
+	int32 IHDR = 1229472850;
+	int32 IEND = 1229278788;
+	int32 IDAT = 1229209940;
+
+	//NOTE: Confirm that the data is from a PNG file.
+	unsigned long long* Signature = (unsigned long long*)Data;
+	if (*Signature != TrueSignature)
+	{ 
+		return 0; //TODO: Debug
 	}
-	if ((Data[4] != 13) || (Data[5] != 10) ||
-		(Data[6] != 26) || (Data[7] != 10))
+
+	//NOTE: Read the IHDR chunk.
+	/*
+		Width:              4 bytes
+		Height:             4 bytes
+		Bit depth:          1 byte
+		Color type:         1 byte
+		Compression method: 1 byte
+		Filter method:      1 byte
+		Interlace method:   1 byte
+	*/
+	int32 ChunkLength = Data[11] | (Data[10] << 8) | (Data[9] << 16) |
+		(Data[8] << 24);
+	int32 ChunkName = Data[15] | (Data[14] << 8) | (Data[13] << 16) |
+		(Data[12] << 24);
+
+	if (ChunkName == IHDR)
 	{
-		return 0;
+		int32 Width = (Data[19]) | (Data[18] << 8) | (Data[17] << 16) |
+			(Data[16] << 24);
+		Properties.Width = Width;
+		int32 Height = (Data[23]) | (Data[22] << 8) | (Data[21] << 16) |
+			(Data[20] << 24);
+		Properties.Height = Height;
+		Properties.BitDepth = Data[24];
+		Properties.ColorType = Data[25];
+		Properties.CompressionMethod = Data[26];
+		Properties.FilterMethod = Data[27];
+		Properties.InterlaceMethod = Data[28];
 	}
-	 // Length 4-byte
-	 // IHDR 4-byte
-	int32 Legnth = (Data[11]) | (Data[10] << 8) |
-			(Data[9] << 16) | (Data[8] << 24);
+	else
+	{
+		return 0; //TODO: Debug
+	}
+	int32 ChunkCRC = Data[32] | (Data[31] << 8) | (Data[30] << 16) | (Data[29] << 24);
 
-	int32 Width = (Data[19]) | (Data[18] << 8) |
-		(Data[17] << 16) | (Data[16] << 24);
+	if (Properties.Width && Properties.Height)
+	{
+		ImageData = new unsigned char[Properties.Width * Properties.Height * 2];
+	}
+	else
+	{
+		return 0; //TODO: Debug, Technically not an error.
+	}
 
-	int32 Height = (Data[23]) | (Data[22] << 8) |
-		(Data[21] << 16) | (Data[20] << 24);
-	 // CRC 4-byte
-
-	Properties.Width = Width;
-	Properties.Height = Height;
-	Properties.NumPixelComps = 1;  // Remove hard coding later (16-bit greyscale)
-	Properties.PixelCompSize = 16; // Remove hard coding later (16-bit greyscale)
-
-	ImageData = new unsigned char[Properties.Width * Properties.Height * 2];
-
-	int32 BitDepth = Data[24];
-	int32 ColorType = Data[25];
-	int32 Compression = Data[26];
-	int32 Filter = Data[27];
-	int32 Interlace = Data[28];
-	// 29 30 31 32
-	
 	uint32 i = 33;
 	uint32 ImgIndex = 0;
+
+	//NOTE: Loop through all chunks
 	while (1)
 	{
-		int32 Length = (Data[i + 3]) | (Data[i + 2] << 8) |
+		ChunkLength = (Data[i + 3]) | (Data[i + 2] << 8) |
 			(Data[i + 1] << 16) | (Data[i] << 24);
+		ChunkName = Data[i + 7] | (Data[i + 6] << 8) |
+			(Data[i + 5] << 16) | (Data[i + 4] << 24);
 
-		unsigned char Name[4] = { Data[i + 4] , Data[i + 5] ,
-			Data[i + 6] , Data[i + 7] };
-		i = i + 7;
+		i = i + 8;
 
-		if ((Name[0] == 'I') && (Name[1] == 'E') &&
-			(Name[2] == 'N') && (Name[3] == 'D'))
+		if (ChunkName == IEND)
 		{
 			delete[] Data;
 			return ImageData;
 		}
-		else if ((Name[0] == 'I') && (Name[1] == 'D') &&
-			(Name[2] == 'A') && (Name[3] == 'T'))
+		else if (ChunkName == IDAT)
 		{
-			// zlib compression info + 2 bytes
-			i = i + 3;
+			//NOTE: ZLib Deflate/Inflate Compression information.
+			//TODO: Handle more options from just 78 01 (like 78 9C or 78 DA).
+			uint8 CompressionMethod = Data[i];
+			uint8 AdditionalFlags = Data[i + 1];
 
-			for (uint32 Index = i; Index < (i + Length - 6); Index++) 
-			{// for whole data chunk minux z - lib (6 bytes)
-				int32 LastBlock = Data[Index];
-				if (LastBlock == 0)
+			//TODO: Handle the possibility of a DICTID?
+
+			//NOTE: Loop through the image data (Deflate compress algorithm)
+			for (uint32 Index = (i + 2); Index < (i + ChunkLength); Index++)
+			{
+			//NOTE: Block Header
+			/*
+			bit 1: Last block boolean.
+			bits 2-3:  00 - Raw data between 0 and 65,535 bytes in length.
+			           01 - Static Huffman compressed block, pree-agreed tree.
+					   10 - Compressed block with the Huffman table supplied.
+					   11 - Reserved.
+			*/
+				int8 BlockHeader = Data[Index]; 
+				Index++;
+
+				if ((BlockHeader << 7) == 0x00)
 				{
-					Index++;
-					int32 BlockLength = (Data[Index]) | (Data[Index + 1] << 8);
+					int32 BlockLength = 
+						(Data[Index]) | (Data[Index + 1] << 8);
 					Index = Index + 2;
-					int32 BlockScanlineCount = BlockLength / (Width * 2 + 1);
-					Index = Index + 2; // To Ignore the Length's one complement
-					for (int32 Scanline = 0; Scanline < BlockScanlineCount; Scanline++)
+
+					int32 BlockScanlineCount =
+						BlockLength / (Properties.Width * 2 + 1);
+					Index = Index + 2;// Ignore one's compliment?
+			
+					for (int32 ScanLine = 0;
+						ScanLine < BlockScanlineCount;
+						ScanLine++)
 					{
-						if (Data[Index] == 0) // No Filter
+						if (Data[Index] == 0) 
 						{
-							Index++;
-							for (int32 LinePosition = 0; LinePosition < (Width); LinePosition++)
-							{
-								//copy as is
-								ImageData[ImgIndex] = Data[Index];
-								ImgIndex++;
-								Index++;
-								ImageData[ImgIndex] = Data[Index];
-								ImgIndex++;
-								Index++;
-							}
+							NoFilter(&Index, Data, &ImgIndex, 
+								ImageData, Properties.Width);
 						}
-						else if (Data[Index] == 1) // Sub
+						else if (Data[Index] == 1) 
 						{
-							Index++;
-							ImageData[ImgIndex] = Data[Index];
-							ImgIndex++;
-							Index++;
-							ImageData[ImgIndex] = Data[Index];
-							ImgIndex++;
-							Index++;
-							for (int32 LinePosition = 0; LinePosition < (Width - 1); LinePosition++)
-							{
-								ImageData[ImgIndex] = 
-									Data[Index] + ImageData[ImgIndex - 2];
-								ImgIndex++;
-								Index++;
-								ImageData[ImgIndex] = 
-									Data[Index] + ImageData[ImgIndex - 2];
-								ImgIndex++;
-								Index++;
-							}
+							SubFilter(&Index, Data, &ImgIndex, 
+								ImageData, Properties.Width);
 						}
-						else if (Data[Index] == 2) // Above
+						else if (Data[Index] == 2) 
 						{
-							Index++;
-							for (int32 LinePosition = 0; LinePosition < (Width); LinePosition++)
-							{
-								ImageData[ImgIndex] = 
-									Data[Index] + ImageData[ImgIndex - (Width * 2)];
-								ImgIndex++;
-								Index++;
-								ImageData[ImgIndex] = 
-									Data[Index] + ImageData[ImgIndex - (Width * 2)];
-								ImgIndex++;
-								Index++;
-							}
+							UpFilter(&Index, Data, &ImgIndex,
+								ImageData, Properties.Width);
 						}
-						else if (Data[Index] == 3) // Average
+						else if (Data[Index] == 3)
 						{
-							Index++;
-							if (Scanline > 0)
-							{
-								Index++;
-								ImageData[ImgIndex] = 
-									Data[Index] + (int)Math_Floor((0 + ImageData[ImgIndex - (Width * 2)]) * 0.5f);
-								ImgIndex++;
-								Index++;
-								ImageData[ImgIndex] = 
-									Data[Index] + (int)Math_Floor((0 + ImageData[ImgIndex - (Width * 2)]) * 0.5f);
-								ImgIndex++;
-								Index++;
-								for (int32 LinePosition = 0; LinePosition < (Width - 1); LinePosition++)
-								{
-									ImageData[ImgIndex] = 
-										Data[Index] + (int)Math_Floor((ImageData[ImgIndex - 2] + ImageData[ImgIndex - (Width * 2)]) * 0.5f);
-									ImgIndex++;
-									Index++;
-									ImageData[ImgIndex] =
-										Data[Index] + (int)Math_Floor((ImageData[ImgIndex - 2] + ImageData[ImgIndex - (Width * 2)]) * 0.5f);
-									ImgIndex++;
-									Index++;
-								}
-							}
-							else
-							{
-								Index++;
-								ImageData[ImgIndex] = Data[Index];
-								ImgIndex++;
-								Index++;
-								ImageData[ImgIndex] = Data[Index];
-								ImgIndex++;
-								Index++;
-								for (int32 LinePosition = 0; LinePosition < (Width - 1); LinePosition++)
-								{
-									ImageData[ImgIndex] = 
-										Data[Index] + (int)Math_Floor((ImageData[ImgIndex - 2] + 0) * 0.5f);
-									ImgIndex++;
-									Index++;
-									ImageData[ImgIndex] = 
-										Data[Index] + (int)Math_Floor((ImageData[ImgIndex - 2] + 0) * 0.5f);
-									ImgIndex++;
-									Index++;
-								}
-							}
+							AverageFilter(&Index, Data, &ImgIndex,
+								ImageData, Properties.Width, ScanLine);
+		
 						}
-						else if (Data[Index] == 4) // Paeth
+						else if (Data[Index] == 4) 
 						{
-							Index++;
-							if (Scanline > 0)
-							{
-								ImageData[ImgIndex] = Data[Index] + PaethPredictor(0,
-									ImageData[ImgIndex - (Width * 2)], 0);
-								ImgIndex++;
-								Index++;
-								ImageData[ImgIndex] = Data[Index] + PaethPredictor(0,
-									ImageData[ImgIndex - (Width * 2)], 0);
-								ImgIndex++;
-								Index++;
-								for (int32 LinePosition = 0; LinePosition < (Width - 1); LinePosition++)
-								{
-									ImageData[ImgIndex] = Data[Index] + PaethPredictor(ImageData[ImgIndex - 2],
-										ImageData[ImgIndex - (Width * 2)],
-										ImageData[ImgIndex - (Width * 2) - 2]);
-									ImgIndex++;
-									Index++;
-									ImageData[ImgIndex] = Data[Index] + PaethPredictor(ImageData[ImgIndex - 2],
-										ImageData[ImgIndex - (Width * 2)],
-										ImageData[ImgIndex - (Width * 2) - 2]);
-									ImgIndex++;
-									Index++;
-								}
-							}
-							else
-							{
-								ImageData[ImgIndex] = Data[Index] + PaethPredictor(0, 0, 0);
-								ImgIndex++;
-								Index++;
-								ImageData[ImgIndex] = Data[Index] + PaethPredictor(0, 0, 0);
-								ImgIndex++;
-								Index++;
-								for (int32 LinePosition = 0; LinePosition < (Width - 1); LinePosition++)
-								{
-									//copy above
-									ImageData[ImgIndex] = Data[Index] + PaethPredictor(ImageData[ImgIndex - 2], 0, 0);
-									ImgIndex++;
-									Index++;
-									ImageData[ImgIndex] = Data[Index] + PaethPredictor(ImageData[ImgIndex - 2], 0, 0);
-									ImgIndex++;
-									Index++;
-								}
-							}
+							PaethFilter(&Index, Data, &ImgIndex,
+								ImageData, Properties.Width, ScanLine);
 						}
 					}
 					Index--;
 				}
-				else if (LastBlock == 1)
+				else if ((BlockHeader << 7 ) == 0x80)
 				{
-					Index++;
-					int32 BlockLength = (Data[Index]) | (Data[Index + 1] << 8);
+					int32 BlockLength = (Data[Index]) | 
+						(Data[Index + 1] << 8);
 					Index = Index + 2;
+
 					Index = Index + 2; // Length ones compliment
-					//i = Index + 4;
-					// Do Nothing?
+					Index = Index + 4;
 				}
 			}
-			i = i - 3; // to remove from the start of this if
+			//TODO: Handle the possibility of an ADLER32?
 		}
 		else if (i == 900000)
 		{
-			break; // error
+			break; //TODO: Debug
 		}
 
+		//NOTE: Increment the index past the chunk data.
+		i = i + ChunkLength;
 
-		i = i + Length;
+		ChunkCRC = Data[i + 3] | (Data[i + 2] << 8) | 
+			(Data[i + 1] << 16) | (Data[i] << 24);;
 		i = i + 4;
-		i++;
-
 	}
 
 	return 0;

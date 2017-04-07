@@ -218,9 +218,6 @@ void Game_Draw(ProgramState* State)
 	{
 		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
 	}
-	//testing code, remove later
-	bool collide = Collision_RayToObject(&Entity_GetPosition(State->EntityBlockNum, 0), &MouseRay, Entity_GetCollisionObjPtr(State->EntityBlockNum, 4));
-
 
 	//NOTE: Draw UI Below
 	window_properties WindowDimensions = Render_GetWindowProperties();
@@ -254,26 +251,18 @@ void Game_Draw(ProgramState* State)
 	{
 		Text_DrawCharLine(string("COLLISION \0"),
 			v3(Left + 20.0f, Top - 80.0f, 0.0f), 0.15f,
-			State->GPUShaderVarArray[0]);
+			State->GPUShaderVarArray[0]);                                                                       
 	}
 
-	v3 ViewDirection = Entity_GetCamera(State->EntityBlockNum, 0)->FacingVector;
-	Text_DrawCharLine(string("View Direction: \0") +
-		string(Platform_FloatToChar(ViewDirection.x)) + string(" ") +
-		string(Platform_FloatToChar(ViewDirection.y)) + string(" ") +
-		string(Platform_FloatToChar(ViewDirection.z)),
-		v3(Left + 20.0f, Top - 100.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0]);
-
-	m4 *MatrixViewDirection = Entity_GetCamera(State->EntityBlockNum, 0)->GetViewMatrix();
-	Text_DrawCharLine(string("Matrix View Direction: \0") +
-		string(Platform_FloatToChar(MatrixViewDirection->Rc[2][0])) + string(" ") +
-		string(Platform_FloatToChar(MatrixViewDirection->Rc[2][1])) + string(" ") +
-		string(Platform_FloatToChar(MatrixViewDirection->Rc[2][2])),
-		v3(Left + 20.0f, Top - 120.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0]);
-	
-
+	float Distance = 0.0f;
+	if (Collision_RayToOBB(&Entity_GetPosition(State->EntityBlockNum, 0),
+		&MouseRay, Entity_GetCollisionObjPtr(State->EntityBlockNum, 4),
+		&Distance))
+	{
+		Text_DrawCharLine(string("MOUSE COLLISION \0"),
+			v3(Left + 20.0f, Top - 100.0f, 0.0f), 0.15f,
+			State->GPUShaderVarArray[0]);
+	}
 	// TODO: Remove, Test timer and clock features
 	Text_DrawCharLine(string("Elapsed Time: ") + 
 		string(Platform_FloatToChar(State->TimerArray[0].GetTime(), 1)),

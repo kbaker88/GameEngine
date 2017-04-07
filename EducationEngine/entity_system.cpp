@@ -69,6 +69,8 @@ int32 Entity_Create(uint32 BlockNumber, uint32 IDNumber,
 
 			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Position =
 				&EntityBlocks[BlockNumber].Entities[IDNumber].Position;
+			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.ModelMatrix =
+				&EntityBlocks[BlockNumber].Entities[IDNumber].ModelMatrix;
 			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.NumVertices =
 				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->NumberOfVertices;
 			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.VerticesPtr =

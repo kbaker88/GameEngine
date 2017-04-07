@@ -35,8 +35,12 @@ void Asset_LoadPNG(char* FileName)
 	Textures[TextureCount].data = PNGData;
 	Textures[TextureCount].Width = ImageProperties.Width;
 	Textures[TextureCount].Height = ImageProperties.Height;
-	Textures[TextureCount].NumPixelComps = ImageProperties.NumPixelComps;
-	Textures[TextureCount].PixelCompSize = ImageProperties.PixelCompSize;
+	Textures[TextureCount].BitDepth = ImageProperties.BitDepth;
+	Textures[TextureCount].ColorType = ImageProperties.ColorType;
+	Textures[TextureCount].CompressionMethod = ImageProperties.CompressionMethod;
+	Textures[TextureCount].FilterMethod = ImageProperties.FilterMethod;
+	Textures[TextureCount].InterlaceMethod = ImageProperties.InterlaceMethod;
+
 	TextureCount++;
 }
 
@@ -58,8 +62,11 @@ void Asset_DeleteAll()
 		Textures[Index].data = 0;
 		Textures[Index].Height = 0;
 		Textures[Index].Width = 0;
-		Textures[Index].NumPixelComps = 0;
-		Textures[Index].PixelCompSize = 0;
+		Textures[Index].BitDepth = 0;
+		Textures[Index].ColorType = 0;
+		Textures[Index].CompressionMethod = 0;
+		Textures[Index].FilterMethod = 0;
+		Textures[Index].InterlaceMethod = 0;
 	}
 	TextureCount = 0;
 }

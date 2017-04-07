@@ -15,10 +15,11 @@ struct CollisionObject
 	
 	~CollisionObject() {}
 
-	uint32 NumVertices;
-	float* VerticesPtr;
+	m4 *ModelMatrix;
 	v3 *Position;
+	float* VerticesPtr;
 	float Width, Height, Depth, HalfWidth, HalfHeight, HalfDepth;
+	uint32 NumVertices;
 
 	CollisionObject & operator=(CollisionObject& NewObj)
 	{
@@ -130,9 +131,10 @@ struct Edge
 
 bool Collision_OrthoMouseToRect(v2* MousePosition, CollisionObject* Object);
 v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix);
-bool Collision_RayToObject(v3* RayOrigin, v3* RayDirection, CollisionObject* Object);
-bool Collision_PlaneRayIntersect(v3* PlaneNormal, v3* PlaneOrigin,
-	v3* RayOrigin, v3* RayDirection, float* Distance);
+bool Collision_RayToOBB(v3* RayOrigin, v3* RayDirection, 
+	CollisionObject* Object, float* Distance);
+bool Collision_PlaneRayIntersect(v3* RayOrigin, v3* RayDirection,
+	CollisionObject* CollideObject, float* Distance);
 
 v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction); 
 
