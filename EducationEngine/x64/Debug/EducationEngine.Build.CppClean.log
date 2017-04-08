@@ -1,6 +1,5 @@
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\vc140.pdb
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\vc140.idb
-c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\game_loop.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\game_state.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\heightmap.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\line.obj
@@ -12,6 +11,7 @@ c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\physics_sys
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\plane2d.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\menu_state.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\opengl_layer.obj
+c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\png.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\point.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\rectangle.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\sphere.obj
@@ -29,6 +29,7 @@ c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\debug_syste
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\entity_system.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\input_state.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\memory_management.obj
+c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\game_loop.obj
 c:\users\kevin\documents\github\gameengine\x64\debug\educationengine.ilk
 c:\users\kevin\documents\github\gameengine\x64\debug\educationengine.exe
 c:\users\kevin\documents\github\gameengine\x64\debug\educationengine.pdb

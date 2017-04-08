@@ -31,7 +31,7 @@ void Asset_LoadPNG(char* FileName)
 	PNGProperties ImageProperties;
 	unsigned char* PNGData;
 	PNGData = Platform_ReadFile(FileName);
-	PNGData = GetPNGData(PNGData, ImageProperties);
+	PNGData = PNG_Extract(PNGData, ImageProperties);
 	Textures[TextureCount].data = PNGData;
 	Textures[TextureCount].Width = ImageProperties.Width;
 	Textures[TextureCount].Height = ImageProperties.Height;

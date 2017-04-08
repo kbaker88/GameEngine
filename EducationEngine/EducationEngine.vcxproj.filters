@@ -88,6 +88,9 @@
     <Filter Include="Header Files\engine\entity">
       <UniqueIdentifier>{9d408852-5fd1-47b0-8ca5-3a5a696c1d90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\loaders">
+      <UniqueIdentifier>{43ce1e24-abe8-4e6b-8116-17b8a86c02db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="box.cpp">
@@ -176,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="input_state.cpp">
       <Filter>Source Files\engine\program_states</Filter>
+    </ClCompile>
+    <ClCompile Include="png.cpp">
+      <Filter>Source Files\loaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

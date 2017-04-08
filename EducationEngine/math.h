@@ -5,7 +5,7 @@
 //TODO: Add lookup tables later
 
 #define Maximum(A, B) ((A > B) ? (A) : (B))
-const float PI = 3.141592653589793f;
+#define PI 3.141592653589793f
 
 // Conversions
 inline float Math_ConvertToRadians(float Degrees)
