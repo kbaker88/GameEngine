@@ -41,7 +41,7 @@ static int32 PaethPredictor(int32 Previous, int32 Above, int32 AbovePrev)
 static void NoFilter(uint32* Index, uint8* Data, uint32* ImgIndex, 
 	uint8* ImageData, uint32 ScanLineWidth)
 {
-	*Index = *Index + 1;
+	//*Index = *Index + 1;
 	for (uint32 LinePosition = 0; LinePosition <
 		(ScanLineWidth); LinePosition++)
 	{
@@ -58,7 +58,7 @@ static void NoFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 static void SubFilter(uint32* Index, uint8* Data, uint32* ImgIndex, 
 	uint8* ImageData, uint32 ScanLineWidth)
 {
-	*Index = *Index + 1;
+	//*Index = *Index + 1;
 	ImageData[*ImgIndex] = Data[*Index];
 	*ImgIndex = *ImgIndex + 1;
 	*Index = *Index + 1;
@@ -84,7 +84,7 @@ static void SubFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 static void UpFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	uint8* ImageData, uint32 ScanLineWidth)
 {
-	*Index = *Index + 1;
+	//*Index = *Index + 1;
 	for (uint32 LinePosition = 0;
 		LinePosition < ScanLineWidth; 
 		LinePosition++)
@@ -104,7 +104,7 @@ static void UpFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 static void AverageFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	uint8* ImageData, uint32 ScanLineWidth, uint32 ScanLine)
 {
-	*Index = *Index + 1;
+	//*Index = *Index + 1;
 	if (ScanLine > 0)
 	{
 		ImageData[*ImgIndex] = Data[*Index] + 
@@ -166,7 +166,7 @@ static void AverageFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 static void PaethFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	uint8* ImageData, uint32 ScanLineWidth, uint32 ScanLine)
 {
-	*Index = *Index + 1;
+	//*Index = *Index + 1;
 	if (ScanLine > 0)
 	{
 		ImageData[*ImgIndex] = Data[*Index] + PaethPredictor(0,
@@ -312,13 +312,19 @@ static unsigned char* GetPNGData(unsigned char* Data,
 			//NOTE: ZLib Deflate/Inflate Compression information.
 			//TODO: Handle more options from just 78 01 (like 78 9C or 78 DA).
 			uint8 CompressionMethod = Data[i];
+			i++;
+
 			uint8 AdditionalFlags = Data[i + 1];
+			i++;
 
 			//TODO: Handle the possibility of a DICTID?
 
+			//NOTE: Index + ChunkLength - Two Flag Bytes - 4 ADLER32 Bytes
+			uint32 ZlibDataLength = i + ChunkLength - 6;
+
 			//NOTE: Loop through the image data (Deflate compress algorithm)
-			for (uint32 Index = (i + 2); Index < (i + ChunkLength); Index++)
-			{
+			while (i < ZlibDataLength)
+			{ 
 			//NOTE: Block Header
 			/*
 			bit 1: Last block boolean.
@@ -327,72 +333,84 @@ static unsigned char* GetPNGData(unsigned char* Data,
 					   10 - Compressed block with the Huffman table supplied.
 					   11 - Reserved.
 			*/
-				int8 BlockHeader = Data[Index]; 
-				Index++;
+				int8 BlockHeader = Data[i]; 
+				i++;
 
 				if ((BlockHeader << 7) == 0x00)
 				{
-					int32 BlockLength = 
-						(Data[Index]) | (Data[Index + 1] << 8);
-					Index = Index + 2;
+					int16 BlockLength = (Data[i]) |
+						(Data[i + 1] << 8);
+					i = i + 2;
 
+					int16 BlockLength1sComplement = (Data[i]) |
+						(Data[i + 1] << 8);
+					i = i + 2;
+	
 					int32 BlockScanlineCount =
 						BlockLength / (Properties.Width * 2 + 1);
-					Index = Index + 2;// Ignore one's compliment?
 			
 					for (int32 ScanLine = 0;
 						ScanLine < BlockScanlineCount;
 						ScanLine++)
 					{
-						if (Data[Index] == 0) 
+						if (Data[i] == 0) 
 						{
-							NoFilter(&Index, Data, &ImgIndex, 
+							i++;
+							NoFilter(&i, Data, &ImgIndex, 
 								ImageData, Properties.Width);
 						}
-						else if (Data[Index] == 1) 
+						else if (Data[i] == 1) 
 						{
-							SubFilter(&Index, Data, &ImgIndex, 
+							i++;
+							SubFilter(&i, Data, &ImgIndex, 
 								ImageData, Properties.Width);
 						}
-						else if (Data[Index] == 2) 
+						else if (Data[i] == 2) 
 						{
-							UpFilter(&Index, Data, &ImgIndex,
+							i++;
+							UpFilter(&i, Data, &ImgIndex,
 								ImageData, Properties.Width);
 						}
-						else if (Data[Index] == 3)
+						else if (Data[i] == 3)
 						{
-							AverageFilter(&Index, Data, &ImgIndex,
+							i++;
+							AverageFilter(&i, Data, &ImgIndex,
 								ImageData, Properties.Width, ScanLine);
 		
 						}
-						else if (Data[Index] == 4) 
+						else if (Data[i] == 4) 
 						{
-							PaethFilter(&Index, Data, &ImgIndex,
+							i++;
+							PaethFilter(&i, Data, &ImgIndex,
 								ImageData, Properties.Width, ScanLine);
 						}
 					}
-					Index--;
 				}
 				else if ((BlockHeader << 7 ) == 0x80)
 				{
-					int32 BlockLength = (Data[Index]) | 
-						(Data[Index + 1] << 8);
-					Index = Index + 2;
+					int16 BlockLength = (Data[i]) | 
+						(Data[i + 1] << 8);
+					i = i + 2;
 
-					Index = Index + 2; // Length ones compliment
-					Index = Index + 4;
+					int16 BlockLength1sComplement = (Data[i]) |
+						(Data[i + 1] << 8);
+					i = i + 2;
 				}
 			}
-			//TODO: Handle the possibility of an ADLER32?
+
+			int32 ADLER32Checksum = (Data[i + 3]) | (Data[i + 2] << 8) |
+				(Data[i + 1] << 16) | (Data[i] << 24);
+			i = i + 4;
 		}
 		else if (i == 900000)
 		{
 			break; //TODO: Debug
 		}
-
-		//NOTE: Increment the index past the chunk data.
-		i = i + ChunkLength;
-
+		else
+		{
+			//NOTE: Increment the index past the chunk data.
+			i = i + ChunkLength;
+		}
 		ChunkCRC = Data[i + 3] | (Data[i + 2] << 8) | 
 			(Data[i + 1] << 16) | (Data[i] << 24);;
 		i = i + 4;
