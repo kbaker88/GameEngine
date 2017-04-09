@@ -147,10 +147,6 @@ static void PaethFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 				PaethPredictor(ImageData[*ImgIndex -
 					BlockState->BytesPerPixel], 0, 0);
 			*ImgIndex = *ImgIndex + 1;
-
-			ImageData[*ImgIndex] = Data[*Index] +
-				PaethPredictor(0, 0, 0);
-			*ImgIndex = *ImgIndex + 1;
 		}
 		else
 		{
@@ -216,7 +212,7 @@ unsigned char* PNG_Extract(unsigned char* Data,
 	{
 		//TODO: Fix this height calculation.
 		ImageData = new unsigned char[Properties.WidthInBytes *
-			(Properties.Height + 100)];
+			Properties.Height];
 	}
 	else
 	{
