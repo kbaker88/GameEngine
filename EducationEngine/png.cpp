@@ -6,6 +6,16 @@
 #define IEND 1229278788
 #define IDAT 1229209940
 
+struct DeflateBlock
+{
+	uint32 Length;
+	uint32 BytesPerPixel;
+	uint32 EndIndexPos;
+	uint32 ScanLinePos;
+	uint32 ScanLineWidth;
+	uint8 CurrentFilter;
+};
+
 static int32 PaethPredictor(int32 Previous, int32 Above, int32 AbovePrev)
 {
 	int32 p = Previous + Above - AbovePrev;
@@ -27,190 +37,126 @@ static int32 PaethPredictor(int32 Previous, int32 Above, int32 AbovePrev)
 }
 
 static void NoFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
-	uint8* ImageData, uint32 ScanLineWidth)
+	uint8* ImageData, DeflateBlock* BlockState)
 {
-	//*Index = *Index + 1;
-	for (uint32 LinePosition = 0; LinePosition <
-		(ScanLineWidth); LinePosition++)
-	{
-		ImageData[*ImgIndex] = Data[*Index];
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-
-		ImageData[*ImgIndex] = Data[*Index];
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-	}
+	ImageData[*ImgIndex] = Data[*Index];
+	*ImgIndex = *ImgIndex + 1;
 }
 
 static void SubFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
-	uint8* ImageData, uint32 ScanLineWidth)
+	uint8* ImageData, DeflateBlock* BlockState) 
 {
-	//*Index = *Index + 1;
-	ImageData[*ImgIndex] = Data[*Index];
-	*ImgIndex = *ImgIndex + 1;
-	*Index = *Index + 1;
-
-	ImageData[*ImgIndex] = Data[*Index];
-	*ImgIndex = *ImgIndex + 1;
-	*Index = *Index + 1;
-	for (uint32 LinePosition = 0; LinePosition <
-		(ScanLineWidth - 1); LinePosition++)
-	{
-		ImageData[*ImgIndex] =
-			Data[*Index] + ImageData[*ImgIndex - 2];
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-
-		ImageData[*ImgIndex] =
-			Data[*Index] + ImageData[*ImgIndex - 2];
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-	}
-}
-
-static void UpFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
-	uint8* ImageData, uint32 ScanLineWidth)
-{
-	//*Index = *Index + 1;
-	for (uint32 LinePosition = 0;
-		LinePosition < ScanLineWidth;
-		LinePosition++)
+	if (BlockState->ScanLinePos > 2)
 	{
 		ImageData[*ImgIndex] = Data[*Index] +
-			ImageData[*ImgIndex - (ScanLineWidth * 2)];
+			ImageData[*ImgIndex - BlockState->BytesPerPixel];
 		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-
-		ImageData[*ImgIndex] = Data[*Index] +
-			ImageData[*ImgIndex - (ScanLineWidth * 2)];
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-	}
-}
-
-static void AverageFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
-	uint8* ImageData, uint32 ScanLineWidth, uint32 ScanLine)
-{
-	//*Index = *Index + 1;
-	if (ScanLine > 0)
-	{
-		ImageData[*ImgIndex] = Data[*Index] +
-			(int)Math_Floor(ImageData[*ImgIndex -
-			(ScanLineWidth * 2)] * 0.5f);
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-
-		ImageData[*ImgIndex] = Data[*Index] +
-			(int)Math_Floor(ImageData[*ImgIndex -
-			(ScanLineWidth * 2)] * 0.5f);
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-
-		for (uint32 LinePosition = 0;
-			LinePosition < (ScanLineWidth - 1);
-			LinePosition++)
-		{
-			ImageData[*ImgIndex] = Data[*Index] +
-				(int)Math_Floor((ImageData[*ImgIndex - 2] +
-					ImageData[*ImgIndex - (ScanLineWidth * 2)]) * 0.5f);
-			*ImgIndex = *ImgIndex + 1;
-			*Index = *Index + 1;
-
-			ImageData[*ImgIndex] = Data[*Index] +
-				(int)Math_Floor((ImageData[*ImgIndex - 2] +
-					ImageData[*ImgIndex - (ScanLineWidth * 2)]) * 0.5f);
-			*ImgIndex = *ImgIndex + 1;
-			*Index = *Index + 1;
-		}
 	}
 	else
 	{
 		ImageData[*ImgIndex] = Data[*Index];
 		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
+	}
+}
 
+static void UpFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+	uint8* ImageData, DeflateBlock* BlockState) 
+{
+	if (*Index > (BlockState->EndIndexPos -
+		BlockState->Length + BlockState->ScanLineWidth))
+	{
+		ImageData[*ImgIndex] = Data[*Index] +
+			ImageData[*ImgIndex - BlockState->ScanLineWidth];
+		*ImgIndex = *ImgIndex + 1;
+	}
+	else
+	{
 		ImageData[*ImgIndex] = Data[*Index];
 		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
+	}
 
-		for (uint32 LinePosition = 0;
-			LinePosition < (ScanLineWidth - 1);
-			LinePosition++)
+}
+
+static void AverageFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+	uint8* ImageData, DeflateBlock* BlockState)
+{
+	if (*Index > (BlockState->EndIndexPos - 
+		BlockState->Length + BlockState->ScanLineWidth))
+	{
+		if (BlockState->ScanLinePos > 2)
 		{
 			ImageData[*ImgIndex] = Data[*Index] +
-				(int)Math_Floor((ImageData[*ImgIndex - 2] + 0) * 0.5f);
+				(int)Math_Floor((ImageData[*ImgIndex -
+				BlockState->BytesPerPixel] +
+				ImageData[*ImgIndex - BlockState->ScanLineWidth]) * 0.5f);
 			*ImgIndex = *ImgIndex + 1;
-			*Index = *Index + 1;
-
+		}
+		else
+		{
 			ImageData[*ImgIndex] = Data[*Index] +
-				(int)Math_Floor((ImageData[*ImgIndex - 2] + 0) * 0.5f);
+				(int)Math_Floor(ImageData[*ImgIndex -
+					BlockState->ScanLineWidth] * 0.5f);
 			*ImgIndex = *ImgIndex + 1;
-			*Index = *Index + 1;
+		}
+	}
+	else
+	{
+		if (BlockState->ScanLinePos > 2)
+		{
+			ImageData[*ImgIndex] = Data[*Index] +
+				(int)Math_Floor((ImageData[*ImgIndex -
+					BlockState->BytesPerPixel] + 0) * 0.5f);
+			*ImgIndex = *ImgIndex + 1;
+		}
+		else
+		{
+			ImageData[*ImgIndex] = Data[*Index];
+			*ImgIndex = *ImgIndex + 1;
 		}
 	}
 }
 
 static void PaethFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
-	uint8* ImageData, uint32 ScanLineWidth, uint32 ScanLine)
+	uint8* ImageData, DeflateBlock* BlockState)
 {
-	//*Index = *Index + 1;
-	if (ScanLine > 0)
+	if (*Index > (BlockState->EndIndexPos -
+		BlockState->Length + BlockState->ScanLineWidth))
 	{
-		ImageData[*ImgIndex] = Data[*Index] + PaethPredictor(0,
-			ImageData[*ImgIndex - (ScanLineWidth * 2)], 0);
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-
-		ImageData[*ImgIndex] = Data[*Index] + PaethPredictor(0,
-			ImageData[*ImgIndex - (ScanLineWidth * 2)], 0);
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-
-		for (uint32 LinePosition = 0;
-			LinePosition < (ScanLineWidth - 1);
-			LinePosition++)
+		if (BlockState->ScanLinePos > 2)
 		{
 			ImageData[*ImgIndex] = Data[*Index] +
-				PaethPredictor(ImageData[*ImgIndex - 2],
-					ImageData[*ImgIndex - (ScanLineWidth * 2)],
-					ImageData[*ImgIndex - (ScanLineWidth * 2) - 2]);
+				PaethPredictor(ImageData[*ImgIndex -
+					BlockState->BytesPerPixel],
+					ImageData[*ImgIndex - BlockState->ScanLineWidth],
+					ImageData[*ImgIndex - BlockState->ScanLineWidth -
+					BlockState->BytesPerPixel]);
 			*ImgIndex = *ImgIndex + 1;
-			*Index = *Index + 1;
-
-			ImageData[*ImgIndex] = Data[*Index] +
-				PaethPredictor(ImageData[*ImgIndex - 2],
-					ImageData[*ImgIndex - (ScanLineWidth * 2)],
-					ImageData[*ImgIndex - (ScanLineWidth * 2) - 2]);
+		}
+		else
+		{
+			ImageData[*ImgIndex] = Data[*Index] + PaethPredictor(0,
+				ImageData[*ImgIndex - BlockState->ScanLineWidth], 0);
 			*ImgIndex = *ImgIndex + 1;
-			*Index = *Index + 1;
 		}
 	}
 	else
 	{
-		ImageData[*ImgIndex] = Data[*Index] +
-			PaethPredictor(0, 0, 0);
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-
-		ImageData[*ImgIndex] = Data[*Index] +
-			PaethPredictor(0, 0, 0);
-		*ImgIndex = *ImgIndex + 1;
-		*Index = *Index + 1;
-
-		for (uint32 LinePosition = 0;
-			LinePosition < (ScanLineWidth - 1);
-			LinePosition++)
+		if (BlockState->ScanLinePos > 2)
 		{
 			ImageData[*ImgIndex] = Data[*Index] +
-				PaethPredictor(ImageData[*ImgIndex - 2], 0, 0);
+				PaethPredictor(ImageData[*ImgIndex -
+					BlockState->BytesPerPixel], 0, 0);
 			*ImgIndex = *ImgIndex + 1;
-			*Index = *Index + 1;
 
 			ImageData[*ImgIndex] = Data[*Index] +
-				PaethPredictor(ImageData[*ImgIndex - 2], 0, 0);
+				PaethPredictor(0, 0, 0);
 			*ImgIndex = *ImgIndex + 1;
-			*Index = *Index + 1;
+		}
+		else
+		{
+			ImageData[*ImgIndex] = Data[*Index] +
+				PaethPredictor(0, 0, 0);
+			*ImgIndex = *ImgIndex + 1;
 		}
 	}
 }
@@ -219,12 +165,6 @@ unsigned char* PNG_Extract(unsigned char* Data,
 	PNGProperties& Properties)
 {
 	unsigned char* ImageData = 0;
-
-	//NOTE: Known and required PNG names.
-	//unsigned long long TrueSignature = 727905341920923785;
-	//int32 IHDR = 1229472850;
-	//int32 IEND = 1229278788;
-	//int32 IDAT = 1229209940;
 
 	//NOTE: Confirm that the data is from a PNG file.
 	unsigned long long* Signature = (unsigned long long*)Data;
@@ -261,16 +201,22 @@ unsigned char* PNG_Extract(unsigned char* Data,
 		Properties.CompressionMethod = Data[26];
 		Properties.FilterMethod = Data[27];
 		Properties.InterlaceMethod = Data[28];
+		Properties.BytesPerPixel = Properties.BitDepth / 8;
+		Properties.WidthInBytes = Properties.Width *
+			Properties.BytesPerPixel;
 	}
 	else
 	{
 		return 0; //TODO: Debug
 	}
-	int32 ChunkCRC = Data[32] | (Data[31] << 8) | (Data[30] << 16) | (Data[29] << 24);
+	int32 ChunkCRC = Data[32] | (Data[31] << 8) | (Data[30] << 16) |
+		(Data[29] << 24);
 
 	if (Properties.Width && Properties.Height)
 	{
-		ImageData = new unsigned char[Properties.Width * Properties.Height * 2];
+		//TODO: Fix this height calculation.
+		ImageData = new unsigned char[Properties.WidthInBytes *
+			(Properties.Height + 100)];
 	}
 	else
 	{
@@ -293,6 +239,7 @@ unsigned char* PNG_Extract(unsigned char* Data,
 		if (ChunkName == IEND)
 		{
 			delete[] Data;
+			Data = 0;
 			return ImageData;
 		}
 		else if (ChunkName == IDAT)
@@ -302,7 +249,7 @@ unsigned char* PNG_Extract(unsigned char* Data,
 			uint8 CompressionMethod = Data[i];
 			i++;
 
-			uint8 AdditionalFlags = Data[i + 1];
+			uint8 AdditionalFlags = Data[i];
 			i++;
 
 			//TODO: Handle the possibility of a DICTID?
@@ -310,67 +257,82 @@ unsigned char* PNG_Extract(unsigned char* Data,
 			//NOTE: Index + ChunkLength - Two Flag Bytes - 4 ADLER32 Bytes
 			uint32 ZlibDataLength = i + ChunkLength - 6;
 
+			DeflateBlock BlockState;
+			BlockState.BytesPerPixel = Properties.BytesPerPixel;
+			BlockState.ScanLinePos = Properties.WidthInBytes;// Forcing a line reset
+			BlockState.ScanLineWidth = Properties.WidthInBytes;
+
 			//NOTE: Loop through the image data (Deflate compress algorithm)
 			while (i < ZlibDataLength)
 			{
 				//NOTE: Block Header
-				/*
+				/* 
 				bit 1: Last block boolean.
 				bits 2-3:  00 - Raw data between 0 and 65,535 bytes in length.
 				01 - Static Huffman compressed block, pree-agreed tree.
 				10 - Compressed block with the Huffman table supplied.
 				11 - Reserved.
 				*/
-				int8 BlockHeader = Data[i];
+				uint8 BlockHeader = Data[i];
 				i++;
 
 				if ((BlockHeader << 7) == 0x00)
 				{
-					int16 BlockLength = (Data[i]) |
+					uint16 BlockLength = (Data[i]) |
 						(Data[i + 1] << 8);
 					i = i + 2;
 
-					int16 BlockLength1sComplement = (Data[i]) |
+					uint16 BlockLength1sComplement = (Data[i]) |
 						(Data[i + 1] << 8);
 					i = i + 2;
 
-					int32 BlockScanlineCount =
-						BlockLength / (Properties.Width * 2 + 1);
+					BlockState.Length = BlockLength;
+					BlockState.EndIndexPos = BlockLength + i;
 
-					for (int32 ScanLine = 0;
-						ScanLine < BlockScanlineCount;
-						ScanLine++)
+					while (i < BlockState.EndIndexPos)
 					{
-						if (Data[i] == 0)
+						if (BlockState.ScanLinePos < BlockState.ScanLineWidth)
 						{
+							switch (BlockState.CurrentFilter)
+							{
+							case 0:
+							{
+								NoFilter(&i, Data, &ImgIndex, ImageData,
+									&BlockState);
+							} break;
+							case 1:
+							{
+								SubFilter(&i, Data, &ImgIndex,
+									ImageData, &BlockState);
+							} break;
+							case 2:
+							{
+								UpFilter(&i, Data, &ImgIndex,
+									ImageData, &BlockState);
+							} break;
+							case 3:
+							{
+								AverageFilter(&i, Data, &ImgIndex,
+									ImageData, &BlockState);
+							} break;
+							case 4:
+							{
+								PaethFilter(&i, Data, &ImgIndex,
+									ImageData, &BlockState);
+							} break;
+							default:
+							{
+								//TODO: Error Handle
+							} break;
+							}
+							BlockState.ScanLinePos++;
 							i++;
-							NoFilter(&i, Data, &ImgIndex,
-								ImageData, Properties.Width);
 						}
-						else if (Data[i] == 1)
+						else // NOTE: New scanline
 						{
+							BlockState.CurrentFilter = Data[i];
+							BlockState.ScanLinePos = 0;
 							i++;
-							SubFilter(&i, Data, &ImgIndex,
-								ImageData, Properties.Width);
-						}
-						else if (Data[i] == 2)
-						{
-							i++;
-							UpFilter(&i, Data, &ImgIndex,
-								ImageData, Properties.Width);
-						}
-						else if (Data[i] == 3)
-						{
-							i++;
-							AverageFilter(&i, Data, &ImgIndex,
-								ImageData, Properties.Width, ScanLine);
-
-						}
-						else if (Data[i] == 4)
-						{
-							i++;
-							PaethFilter(&i, Data, &ImgIndex,
-								ImageData, Properties.Width, ScanLine);
 						}
 					}
 				}
