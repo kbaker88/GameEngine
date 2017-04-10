@@ -4,13 +4,17 @@
 #include "bmp.h"
 #include "png.h"
 
+//TODO: Add a type indicator to TextureStorage (PNG, BMP, etc)
 struct TextureStorage
 {
 	uint8* data;
 	uint32 Width;
 	uint32 Height;
-	uint32 NumPixelComps;
-	uint32 PixelCompSize;
+	unsigned char BitDepth;
+	unsigned char ColorType;
+	unsigned char CompressionMethod;
+	unsigned char FilterMethod;
+	unsigned char InterlaceMethod;
 };
 
 static TextureStorage Textures[512];

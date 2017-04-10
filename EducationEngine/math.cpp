@@ -3,6 +3,14 @@
 //NOTE: Math_Floor() is only for 32-bit floats on Little-Endian Machines
 float Math_Floor(float Value)
 {
+	/* Short Method
+	int Result = (int)Value;
+	if (Value < 0)
+	{
+		Result -= 1;
+	}
+	return Result;
+	*/
 	float Result = 0.0f;
 
 	union
@@ -162,49 +170,72 @@ int Math_Factorial(int Value)
 
 float Math_Sine(float Radians)
 {
-	double Result = Radians;
-	bool FlipSign = false;
-
-	//TODO: Pre-compute the factorials on startup.
-	for (unsigned int i = 3; i < 11; i = i + 2)
-	{
-		if (FlipSign)
-		{
-			Result += Math_Power(Radians, i) / (double)Math_Factorial(i);
-			FlipSign = 0;
-		}
-		else
-		{
-			Result -= Math_Power(Radians, i) / (double)Math_Factorial(i);
-			FlipSign = 1;
-		}
-	}
-	return (float)Result;
+	//while (Radians < -PI)
+	//{
+	//	Radians += 2.0f * PI;
+	//}
+	//
+	//while (Radians > PI)
+	//{
+	//	Radians -= 2.0f * PI;
+	//}
+	//
+	//double Result = Radians;
+	//bool FlipSign = false;
+	//
+	////TODO: Pre-compute the factorials on startup.
+	//for (unsigned int i = 3; i < 11; i = i + 2)
+	//{
+	//	if (FlipSign)
+	//	{
+	//		Result += Math_Power(Radians, i) / (double)Math_Factorial(i);
+	//		FlipSign = 0;
+	//	}
+	//	else
+	//	{
+	//		Result -= Math_Power(Radians, i) / (double)Math_Factorial(i);
+	//		FlipSign = 1;
+	//	}
+	//}
+	//return (float)Result;
+	return sinf(Radians);
 }
 
 float Math_Cosine(float Radians)
 {
-	double Result = 1;
-	bool FlipSign = false;
-
-	//TODO: Pre-compute the factorials on startup.
-	for (unsigned int i = 2; i < 11; i = i + 2)
-	{
-		if (FlipSign)
-		{
-			Result += Math_Power(Radians, i) / (double)Math_Factorial(i);
-			FlipSign = 0;
-		}
-		else
-		{
-			Result -= Math_Power(Radians, i) / (double)Math_Factorial(i);
-			FlipSign = 1;
-		}
-	}
-	return (float)Result;
+	//while (Radians < -PI)
+	//{
+	//	Radians += 2.0f * PI;
+	//}
+	//
+	//while (Radians > PI)
+	//{
+	//	Radians -= 2.0f * PI;
+	//}
+	//
+	//double Result = 1;
+	//bool FlipSign = false;
+	//
+	////TODO: Pre-compute the factorials on startup.
+	//for (unsigned int i = 2; i < 11; i = i + 2)
+	//{
+	//	if (FlipSign)
+	//	{
+	//		Result += Math_Power(Radians, i) / (double)Math_Factorial(i);
+	//		FlipSign = 0;
+	//	}
+	//	else
+	//	{
+	//		Result -= Math_Power(Radians, i) / (double)Math_Factorial(i);
+	//		FlipSign = 1;
+	//	}
+	//}
+	//return (float)Result;
+	return cosf(Radians);
 }
 
 float Math_Tangent(float Radians)
 {
-	return (Math_Sine(Radians) / Math_Cosine(Radians));
+	//return (Math_Sine(Radians) / Math_Cosine(Radians));
+	return tanf(Radians);
 }

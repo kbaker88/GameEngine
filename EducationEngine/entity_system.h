@@ -8,9 +8,9 @@
 
 struct Entity
 {
-	Entity() : EntityID(0), Active(0), CameraObj(NULL),
+	Entity() : EntityID(0), Active(0), CameraObj(0),
 		DirectionVector(0.0f, 0.0f, 0.0f), Position(0.0f, 0.0f, 0.0f),
-		ObjectPtr(NULL) {}
+		ObjectPtr(0) {}
 	
 	~Entity() {}
 
@@ -28,8 +28,8 @@ struct Entity
 void Entity_CreateBlock(uint32 BlockNumber, uint32 Size);
 void Entity_DeleteBlock(uint32 BlockNumber);
 
-int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, v3 *Position);
-int32 Entity_Create(uint32 EntityBlockNumber, uint32 IDNumber, 
+int32 Entity_Create(uint32 BlockNumber, uint32 IDNumber, v3 *Position);
+int32 Entity_Create(uint32 BlockNumber, uint32 IDNumber,
 	uint32 ObjectBlockNumber, uint32 ObjectID, v3 *Position);
 
 // Entity Add-Ons

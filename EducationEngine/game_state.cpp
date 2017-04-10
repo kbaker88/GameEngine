@@ -7,15 +7,18 @@ void Game_Initialize(ProgramState* State)
 	uint32 ObjectCount = 0;
 	uint32 EntityCount = 0;
 
-	State->ShaderHandles[0] = Render_CompileShaders(VertShaderForTextureAndLight,
+	State->ShaderHandles[0] = 
+		Render_CompileShaders(VertShaderForTextureAndLight,
 		FragShaderForTextureAndLight);
 
 	//NOTE: Player's Model
-	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount,
+		0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum, 
 		ObjectCount, &v3(0.0f, 6.0f, 20.0f));
 	Entity_AddCamera(State->ObjectBlockNum, ObjectCount, new Camera);
-	Phys_SetAccelerationRate(Entity_GetPhysObjPtr(State->ObjectBlockNum, ObjectCount), 1000.0f);
+	Phys_SetAccelerationRate(Entity_GetPhysObjPtr(State->ObjectBlockNum,
+		ObjectCount), 1000.0f);
 	ObjectCount++;
 	EntityCount++;
 
@@ -37,14 +40,16 @@ void Game_Initialize(ProgramState* State)
 	EntityCount++;
 
 	// Light Box
-	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount,
+		0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(2.0f, 1.0f, 17.0f));
 	ObjectCount++;
 	EntityCount++;
 
 	// Wood Box 1
-	Object_Create(new Box, State->ObjectBlockNum, ObjectCount, 0.25f, 0.25f, 0.25f);
+	Object_Create(new Box, State->ObjectBlockNum, ObjectCount,
+		0.25f, 0.25f, 0.25f);
 	Object_SetTexture(State->ObjectBlockNum, ObjectCount, Asset_GetTexture(5));
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(3.0f, 0.0f, 15.0f));
@@ -86,15 +91,21 @@ void Game_Draw(ProgramState* State)
 	v3 LightColor = { 1.0f, 1.0f, 1.0f };
 
 	Render_ClearScreen();
+	Platform_GetCursorPosition(&State->CursorPosition.x,
+		&State->CursorPosition.y);
 	Input_UpdateMouseState(State);
 	Input_UpdateKeyStates(State);
-	
+
 	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 0));
 	Entity_GetCamera(State->EntityBlockNum, 0)->
 		SetPosition(&Entity_GetPosition(State->EntityBlockNum, 0));
 
 	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 		&Gravity);
+
+	v3 MouseRay = Collision_UpdateMousePickRay(
+		&Entity_GetCamera(State->EntityBlockNum, 0)->ProjectionMatrix,
+		&Entity_GetCamera(State->EntityBlockNum, 0)->ViewMatrix);
 
 	//TODO: Remove, test code.
 	Entity_Ptr(State->EntityBlockNum, 5)->DirectionVector = v3(1.0f, 0.0f, 0.0f);
@@ -196,9 +207,9 @@ void Game_Draw(ProgramState* State)
 		}
 	}
 
-	v3 MouseArray = Collision_UpdateMousePickRay(
-		State->CameraArray[1].GetProjectionMatrix(),
-		State->CameraArray[1].GetViewMatrix());
+	//v3 MouseArray = Collision_UpdateMousePickRay(
+	//	State->CameraArray[1].GetProjectionMatrix(),
+	//	State->CameraArray[1].GetViewMatrix());
 
 	//NOTE: Draw Objects below
 	IsTextured = 1;
@@ -240,9 +251,18 @@ void Game_Draw(ProgramState* State)
 	{
 		Text_DrawCharLine(string("COLLISION \0"),
 			v3(Left + 20.0f, Top - 80.0f, 0.0f), 0.15f,
-			State->GPUShaderVarArray[0]);
+			State->GPUShaderVarArray[0]);                                                                       
 	}
 
+	float Distance = 0.0f;
+	if (Collision_RayToOBB(&Entity_GetPosition(State->EntityBlockNum, 0),
+		&MouseRay, Entity_GetCollisionObjPtr(State->EntityBlockNum, 4),
+		&Distance))
+	{
+		Text_DrawCharLine(string("MOUSE COLLISION \0"),
+			v3(Left + 20.0f, Top - 100.0f, 0.0f), 0.15f,
+			State->GPUShaderVarArray[0]);
+	}
 	// TODO: Remove, Test timer and clock features
 	Text_DrawCharLine(string("Elapsed Time: ") + 
 		string(Platform_FloatToChar(State->TimerArray[0].GetTime(), 1)),
@@ -264,7 +284,11 @@ void Game_Draw(ProgramState* State)
 		v3(Left + 20.0f, Top - 20.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
 
-	v2 CursorPosition = GetOrthoMousePosition();
+	v2 CursorPosition;
+	CursorPosition.x =
+		State->CursorPosition.x - ((float)WindowDimensions.Width * 0.5f);
+	CursorPosition.y =
+		((float)WindowDimensions.Height * 0.5f) - State->CursorPosition.y;
 
 	Text_DrawCharLine(string("Cursor Position: \0") +
 		string(Platform_FloatToChar(CursorPosition.x)) + string(" ") +
@@ -273,9 +297,9 @@ void Game_Draw(ProgramState* State)
 		State->GPUShaderVarArray[0]);
 
 	Text_DrawCharLine(string("Cursor World Array: \0") +
-		string(Platform_FloatToChar(MouseArray.x)) + string(" ") +
-		string(Platform_FloatToChar(MouseArray.y)) + string(" ") + 
-		string(Platform_FloatToChar(MouseArray.z)),
+		string(Platform_FloatToChar(MouseRay.x)) + string(" ") +
+		string(Platform_FloatToChar(MouseRay.y)) + string(" ") + 
+		string(Platform_FloatToChar(MouseRay.z)),
 		v3(Left + 20.0f, Top - 60.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
 	

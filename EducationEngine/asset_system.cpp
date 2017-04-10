@@ -12,6 +12,7 @@ void Asset_LoadTextures()
 	Asset_LoadBMP("Images/container.bmp"); // 5
 	Asset_LoadBMP("Images/woodfloor.bmp"); // 6
 	Asset_LoadPNG("Images/StartHeightMap.png"); // 7
+	//Asset_LoadPNG("Images/png800.png"); // 7
 }
 
 void Asset_LoadBMP(char* FileName)
@@ -31,12 +32,16 @@ void Asset_LoadPNG(char* FileName)
 	PNGProperties ImageProperties;
 	unsigned char* PNGData;
 	PNGData = Platform_ReadFile(FileName);
-	PNGData = GetPNGData(PNGData, ImageProperties);
+	PNGData = PNG_Extract(PNGData, ImageProperties);
 	Textures[TextureCount].data = PNGData;
 	Textures[TextureCount].Width = ImageProperties.Width;
 	Textures[TextureCount].Height = ImageProperties.Height;
-	Textures[TextureCount].NumPixelComps = ImageProperties.NumPixelComps;
-	Textures[TextureCount].PixelCompSize = ImageProperties.PixelCompSize;
+	Textures[TextureCount].BitDepth = ImageProperties.BitDepth;
+	Textures[TextureCount].ColorType = ImageProperties.ColorType;
+	Textures[TextureCount].CompressionMethod = ImageProperties.CompressionMethod;
+	Textures[TextureCount].FilterMethod = ImageProperties.FilterMethod;
+	Textures[TextureCount].InterlaceMethod = ImageProperties.InterlaceMethod;
+
 	TextureCount++;
 }
 
@@ -58,8 +63,11 @@ void Asset_DeleteAll()
 		Textures[Index].data = 0;
 		Textures[Index].Height = 0;
 		Textures[Index].Width = 0;
-		Textures[Index].NumPixelComps = 0;
-		Textures[Index].PixelCompSize = 0;
+		Textures[Index].BitDepth = 0;
+		Textures[Index].ColorType = 0;
+		Textures[Index].CompressionMethod = 0;
+		Textures[Index].FilterMethod = 0;
+		Textures[Index].InterlaceMethod = 0;
 	}
 	TextureCount = 0;
 }

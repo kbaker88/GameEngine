@@ -25,7 +25,7 @@ void HeightMap::Init(TextureStorage* ImageData)
 	Depth = static_cast<float>(ConvertedDepth);
 	NumberOfIndices = 6 * ConvertedWidth * ConvertedDepth;
 
-	uint32 BytesPerPixel = (ImageData->NumPixelComps * ImageData->PixelCompSize) / 8;
+	//uint32 BytesPerPixel = (ImageData->NumPixelComps * ImageData->PixelCompSize) / 8;
 	uint32 Pixel;
 	uint32 TotalVertices = ConvertedWidth * ConvertedDepth;
 

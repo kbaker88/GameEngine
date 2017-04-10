@@ -5,17 +5,21 @@
 #include "text_system.h"
 #include <list>
 
+//TODO: GetMousePosition once per frame and store it for use in state?
+
 struct CollisionObject
 {
-	CollisionObject(): NumVertices(0), VerticesPtr(NULL),
-		Position(NULL), Width(0), Height(0), Depth(0) {}
+	CollisionObject(): NumVertices(0), VerticesPtr(0),
+		Position(0), Width(0), Height(0), Depth(0),
+		HalfWidth(0), HalfHeight(0), HalfDepth(0) {}
 	
 	~CollisionObject() {}
 
-	uint32 NumVertices;
-	float* VerticesPtr;
+	m4 *ModelMatrix;
 	v3 *Position;
-	float Width, Height, Depth;
+	float* VerticesPtr;
+	float Width, Height, Depth, HalfWidth, HalfHeight, HalfDepth;
+	uint32 NumVertices;
 
 	CollisionObject & operator=(CollisionObject& NewObj)
 	{
@@ -50,9 +54,7 @@ struct SupportPoint
 
 	bool operator==(SupportPoint& B)
 	{
-		if (MinkowskiPoint == B.MinkowskiPoint) //&&
-			//(ObjAPoint == B.ObjAPoint) &&
-			//(ObjBPoint == B.ObjBPoint))
+		if (MinkowskiPoint == B.MinkowskiPoint) 
 		{
 			return true;
 		}
@@ -64,9 +66,7 @@ struct SupportPoint
 
 	bool operator==(const SupportPoint& B)
 	{
-		if (MinkowskiPoint == B.MinkowskiPoint) //&&
-			//(ObjAPoint == B.ObjAPoint) &&
-			//(ObjBPoint == B.ObjBPoint))
+		if (MinkowskiPoint == B.MinkowskiPoint) 
 		{
 			return true;
 		}
@@ -129,17 +129,17 @@ struct Edge
 	}
 };
 
-// Global Functions
-v2 GetOrthoMousePosition(); //TODO: Does this belong in Collision?
-
-bool Collision_OrthoMouseToRect(v3 &ObjectPosition, float ObjWidth, float ObjHeight);
+bool Collision_OrthoMouseToRect(v2* MousePosition, CollisionObject* Object);
 v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix);
-bool Collision_RayToObject(v3* Ray, CollisionObject* Object);
+bool Collision_RayToOBB(v3* RayOrigin, v3* RayDirection, 
+	CollisionObject* Object, float* Distance);
+bool Collision_PlaneRayIntersect(v3* RayOrigin, v3* RayDirection,
+	CollisionObject* CollideObject, float* Distance);
 
-v3 GetFurthestPoint(CollisionObject* Object, v3 &Direction); 
+v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction); 
 
 SupportPoint MinkowskiSupport(CollisionObject* ObjectA,
-	CollisionObject* ObjectB, v3 &Direction);
+	CollisionObject* ObjectB, v3 *Direction);
 
 bool LineSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);
 bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);

@@ -15,14 +15,18 @@ void Menu_Initialize(ProgramState* State)
 
 
 	State->ShaderHandles[0] = 
-		Render_CompileShaders(MenuVertexShaderSource, MenuFragmentShaderSource);
+		Render_CompileShaders(MenuVertexShaderSource,
+			MenuFragmentShaderSource);
 	State->ShaderHandles[1] = 
-		Render_CompileShaders(TextVertexShaderSource, TextFragmentShaderSource);
+		Render_CompileShaders(TextVertexShaderSource,
+			TextFragmentShaderSource);
 
 	float ButtonWidth = 160.0f;
 	float ButtonHeight = 40.0f;
-	float MenuButtonsXPos = HalfScreenWidth - (ButtonWidth * 0.5f) - 100.0f;
-	float MenuButtonsYPos = HalfScreenHeight - (ButtonHeight * 0.5f) - 100.0f;
+	float MenuButtonsXPos = HalfScreenWidth -
+		(ButtonWidth * 0.5f) - 100.0f;
+	float MenuButtonsYPos = HalfScreenHeight -
+		(ButtonHeight * 0.5f) - 100.0f;
 	v3 ButtonPosition = { MenuButtonsXPos, MenuButtonsYPos, 0.0f };
 
 	// Start Button
@@ -76,11 +80,13 @@ void Menu_Draw(ProgramState* State)
 		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], (int32)0);
 
+	Platform_GetCursorPosition(&State->CursorPosition.x,
+		&State->CursorPosition.y);
+
 	int MouseOver = 0;
 
-	if (Collision_OrthoMouseToRect(Entity_GetPosition(State->EntityBlockNum, 0),
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 0)->Width,
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 0)->Height))
+	if (Collision_OrthoMouseToRect(&State->CursorPosition,
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 0)))
 	{
 		if (Platform_GetMouseState())
 		{
@@ -96,9 +102,8 @@ void Menu_Draw(ProgramState* State)
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[4], MouseOver);
 	Entity_Draw(State->EntityBlockNum, 0, State->GPUShaderVarArray[0]);
 
-	if (Collision_OrthoMouseToRect(Entity_GetPosition(State->EntityBlockNum, 1),
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 1)->Width,
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 1)->Height))
+	if (Collision_OrthoMouseToRect(&State->CursorPosition,
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 1)))
 	{
 		if (Platform_GetMouseState())
 		{
@@ -114,9 +119,8 @@ void Menu_Draw(ProgramState* State)
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[4], MouseOver);
 	Entity_Draw(State->EntityBlockNum, 1, State->GPUShaderVarArray[0]);
 
-	if (Collision_OrthoMouseToRect(Entity_GetPosition(State->EntityBlockNum, 2),
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 2)->Width,
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 2)->Height))
+	if (Collision_OrthoMouseToRect(&State->CursorPosition,
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 2)))
 	{
 		if (Platform_GetMouseState())
 		{
@@ -132,9 +136,8 @@ void Menu_Draw(ProgramState* State)
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[4], MouseOver);
 	Entity_Draw(State->EntityBlockNum, 2, State->GPUShaderVarArray[0]);
 
-	if (Collision_OrthoMouseToRect(Entity_GetPosition(State->EntityBlockNum, 3),
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 3)->Width,
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 3)->Height))
+	if (Collision_OrthoMouseToRect(&State->CursorPosition,
+		Entity_GetCollisionObjPtr(State->EntityBlockNum, 3)))
 	{
 		if (Platform_GetMouseState())
 		{
