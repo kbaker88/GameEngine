@@ -29,12 +29,9 @@ void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force)
 	PhysObject->ForceSum += PhysObject->Mass * *Force;
 }
 
-void Phys_RemoveForce(PhysicsObject* PhysObject, v3 *Force)
+void Phys_SetAccelerationRate(PhysicsObject* PhysObject, 
+	float MetersPerSec)
 {
-	PhysObject->ForceSum -= PhysObject->Mass * *Force;
-}
-
-void Phys_SetAccelerationRate(PhysicsObject* PhysObject, float MetersPerSec)
-{
-	PhysObject->AccelerationRate = MetersPerSec * UnitsPerMeter * SecondsPerFrame;
+	PhysObject->AccelerationRate = MetersPerSec * 
+		UnitsPerMeter * SecondsPerFrame;
 }

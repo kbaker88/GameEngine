@@ -33,7 +33,7 @@ void Entity_DeleteBlock(uint32 BlockNumber)
 		{
 			if (EntityBlocks[BlockNumber].Entities->CameraObj)
 			{
-				delete[] EntityBlocks[BlockNumber].Entities->CameraObj;
+				delete EntityBlocks[BlockNumber].Entities->CameraObj;
 				EntityBlocks[BlockNumber].Entities->CameraObj = 0;
 			}
 		}

@@ -59,14 +59,14 @@ void Game_Initialize(ProgramState* State)
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(0.0f, 0.0f, 10.0f));
 	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, EntityCount),
-		&v3(0.001f, 0.0f, 0.0f));
+		&v3(1.0f, 0.0f, 0.0f));
 	EntityCount++;
 
 	// Wood Box 3
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(6.0f, 0.0f, 10.0f));
 	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, EntityCount),
-		&v3(-0.001f, 0.0f, 0.0f));
+		&v3(-1.0f, 0.0f, 0.0f));
 	ObjectCount++;
 	EntityCount++;
 
@@ -75,9 +75,9 @@ void Game_Initialize(ProgramState* State)
 	float WindowHalfHeight = 0.5f * (float)WindowDimensions.Height;
 	float WindowHalfWidth = 0.5f * (float)WindowDimensions.Width;
 
-	State->CameraArray[1].SetPosition(&v3(-WindowHalfWidth,
+	State->CameraArray[0].SetPosition(&v3(-WindowHalfWidth,
 		-WindowHalfHeight, 1.0f));
-	State->CameraArray[1].SetProjectionMatrix(0);
+	State->CameraArray[0].SetProjectionMatrix(0);
 
 	State->ShaderHandles[1] = Render_CompileShaders(TextVertexShaderSource, 
 			TextFragmentShaderSource);
@@ -108,13 +108,12 @@ void Game_Draw(ProgramState* State)
 		&Entity_GetCamera(State->EntityBlockNum, 0)->ViewMatrix);
 
 	//TODO: Remove, test code.
-	Entity_Ptr(State->EntityBlockNum, 5)->DirectionVector = v3(1.0f, 0.0f, 0.0f);
-	Entity_Ptr(State->EntityBlockNum, 6)->DirectionVector = v3(-1.0f, 0.0f, 0.0f);
+	//Entity_Ptr(State->EntityBlockNum, 5)->DirectionVector = v3(1.0f, 0.0f, 0.0f);
+	//Entity_Ptr(State->EntityBlockNum, 6)->DirectionVector = v3(-1.0f, 0.0f, 0.0f);
 	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 5));
 	Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 6));
 	Entity_UpdatePosition(State->EntityBlockNum, 5);
 	Entity_UpdatePosition(State->EntityBlockNum, 6);
-
 
 	// Bind New Shaders
 	Render_BindShaders(State->ShaderHandles[0]);
@@ -195,7 +194,8 @@ void Game_Draw(ProgramState* State)
 		Render_UnmapShaderDataPtr();
 
 		if (Collision_HeightMap(
-			static_cast<HeightMap*>(Entity_GetObjectPtr(State->EntityBlockNum, 1)), Position))
+			static_cast<HeightMap*>(Entity_GetObjectPtr(State->EntityBlockNum, 1)),
+			Position))
 		{
 			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 				&(-Gravity));
@@ -239,9 +239,9 @@ void Game_Draw(ProgramState* State)
 		Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
 
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1],
-		44, (float*)State->CameraArray[1].GetViewMatrix(), 1, 0); // TODO: clean this up
+		44, (float*)State->CameraArray[0].GetViewMatrix(), 1, 0); // TODO: clean this up
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[2],
-		44, (float*)State->CameraArray[1].GetProjectionMatrix(), 1, 0);
+		44, (float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[3],
 		(int32)0);
 
@@ -251,8 +251,23 @@ void Game_Draw(ProgramState* State)
 	{
 		Text_DrawCharLine(string("COLLISION \0"),
 			v3(Left + 20.0f, Top - 80.0f, 0.0f), 0.15f,
-			State->GPUShaderVarArray[0]);                                                                       
+			State->GPUShaderVarArray[0]);  
+		Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 5), 
+			&v3(-1.0f, 0.0f, 0.0f));
+		Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 6),
+			&v3(1.0f, 0.0f, 0.0f));
+		Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 5));
+		Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 6));
 	}
+	Text_DrawCharLine(string("Box 6 Force: \0") +
+		string(Platform_FloatToChar(Entity_GetPhysObjPtr(State->EntityBlockNum, 
+			6)->ForceSum.x)) + string(" ") +
+		string(Platform_FloatToChar(Entity_GetPhysObjPtr(State->EntityBlockNum, 
+			6)->ForceSum.y)) + string(" ") +
+		string(Platform_FloatToChar(Entity_GetPhysObjPtr(State->EntityBlockNum, 
+			6)->ForceSum.z)),
+		v3(Left + 20.0f, Top - 100.0f, 0.0f), 0.15f,
+		State->GPUShaderVarArray[0]);
 
 	float Distance = 0.0f;
 	if (Collision_RayToOBB(&Entity_GetPosition(State->EntityBlockNum, 0),

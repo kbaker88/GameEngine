@@ -52,7 +52,7 @@ void Game_Loop()
 	{
 		if (States[1].Status == 0)
 		{
-			State_CreateCameras(&States[1], 2);
+			State_CreateCameras(&States[1], 1);
 			State_CreateTimers(&States[1], 1);
 			State_CreateShaderVariables(&States[1], 7);
 			State_CreateShaderHandles(&States[1], 2);
