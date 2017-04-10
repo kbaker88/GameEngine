@@ -11,8 +11,7 @@ void Asset_LoadTextures()
 	Asset_LoadBMP("Images/grass2.bmp"); // 4
 	Asset_LoadBMP("Images/container.bmp"); // 5
 	Asset_LoadBMP("Images/woodfloor.bmp"); // 6
-	//Asset_LoadPNG("Images/StartHeightMap.png"); // 7
-	Asset_LoadPNG("Images/png800.png"); // 7
+	Asset_LoadPNG("Images/TestHeightmapPNG02.png"); // 7
 }
 
 void Asset_LoadBMP(char* FileName)
