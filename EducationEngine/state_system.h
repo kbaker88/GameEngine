@@ -5,10 +5,10 @@
 
 struct ProgramState
 {
-	ProgramState() : CameraArray(NULL), TimerArray(NULL),
-		GPUShaderVarArray(NULL), ShaderHandles(NULL),
+	ProgramState() : CameraArray(0), TimerArray(0),
+		GPUShaderVarArray(0), ShaderHandles(0),
 		Status(0), EntityBlockNum(0), ObjectBlockNum(0),
-		StateOfProgram(NULL), CursorPosition(0.0f, 0.0f) {}
+		StateOfProgram(0), CursorPosition(0.0f, 0.0f) {}
 
 	~ProgramState() {}
 

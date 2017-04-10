@@ -24,7 +24,7 @@ static v3 Gravity = { 0.0f, -9.807f  * 0.5f * SecondsPerFrame, 0.0f };
 
 void Phys_CalculatePosition(PhysicsObject* PhysObject);
 void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force);
-void Phys_RemoveForce(PhysicsObject* PhysObject, v3 *Force);
-void Phys_SetAccelerationRate(PhysicsObject* PhysObject, float MetersPerSec);
+void Phys_SetAccelerationRate(PhysicsObject* PhysObject,
+	float MetersPerSec);
 
 #endif
