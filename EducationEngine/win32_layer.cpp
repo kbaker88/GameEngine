@@ -1,10 +1,10 @@
+#include "game_loop.h"
 #include <Windows.h>
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "game_loop.h"
 
 // Accepted values for attribute names for the OpenGL Context(WGL)
 #define WGL_CONTEXT_MAJOR_VERSION_ARB				0x2091
@@ -27,7 +27,7 @@ struct platform_handel
 	HWND Window;
 };
 
-// Variables for general Windows properties.
+//NOTE: Variables for general Windows properties.
 struct platform_properties
 {
 	HINSTANCE Instance;
@@ -39,11 +39,10 @@ struct platform_properties
 static platform_handel PlatformWindow = {};
 static platform_properties PlatformProperties = {};
 
-// For creating an OpenGL Context.
+//NOTE: For creating an OpenGL Context.
 typedef HGLRC __stdcall wgl_create_context_attribs_arb(HDC hDC,
 							HGLRC hShareContext, const int *attribList);
 
-// Windows Message handler. 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // TEMPORARY: Throws these in a struct later?
@@ -59,7 +58,6 @@ void Platform_UpdateWindowSize(uint32 Width, uint32 Height)
 		Width, Height, SWP_SHOWWINDOW);
 }
 
-// To output errors in the compiler output until an error system is made.
 void Platform_TemporaryError(char* Text)
 {
 	char Buffer[256];

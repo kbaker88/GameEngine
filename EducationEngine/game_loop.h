@@ -3,6 +3,9 @@
 
 #include "title_state.h"
 
+//TODO: Remove this to somewhere else, temporary testing
+#include "network_layer.h"
+
 void Game_Loop();
 
 #endif

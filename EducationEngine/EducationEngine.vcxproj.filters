@@ -183,6 +183,9 @@
     <ClCompile Include="png.cpp">
       <Filter>Source Files\loaders</Filter>
     </ClCompile>
+    <ClCompile Include="winsock_layer.cpp">
+      <Filter>Source Files\layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="box.h">
@@ -283,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="input_state.h">
       <Filter>Header Files\engine\program_states</Filter>
+    </ClInclude>
+    <ClInclude Include="network_layer.h">
+      <Filter>Header Files\layers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

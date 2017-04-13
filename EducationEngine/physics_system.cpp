@@ -18,10 +18,8 @@ void Phys_CalculatePosition(PhysicsObject* PhysObject)
 		(PhysObject->Velocity * SecondsPerFrame) +
 		*PhysObject->Position;
 	
-	PhysObject->Velocity =
-		PhysObject->Force *
-		SecondsPerFrame + 
-		PhysObject->Velocity;
+	PhysObject->Velocity = PhysObject->Force *
+		SecondsPerFrame + PhysObject->Velocity;
 }
 
 void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force)

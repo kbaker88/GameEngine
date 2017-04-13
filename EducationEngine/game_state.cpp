@@ -167,6 +167,7 @@ void Game_Draw(ProgramState* State)
 		if (Position.y < 0)
 		{
 			Position.y = 0;
+			//TODO: Fix this.
 			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 				&(-Gravity));
 			Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0), 

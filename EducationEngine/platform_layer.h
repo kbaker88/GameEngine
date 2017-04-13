@@ -1,6 +1,11 @@
 #ifndef PLATFORM_LAYER_H
 #define PLATFORM_LAYER_H
 
+//TODO: Remove this later, find a better solution.
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #define Assert(Expression) / if (!(Expression)) {*(int *)0 = 0;}
 #define Kilobytes(value) ((value) * 1024)
 #define Megabytes(value) (Kilobytes(value) * 1024)

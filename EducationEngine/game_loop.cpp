@@ -14,6 +14,7 @@ void Game_Loop()
 		DEBUG_Initialize();
 		Asset_LoadTextures(); // Too general, need to make multiple loads
 		Text_BuildFont("arial\0");
+		Network_Init();
 		StateOfProgram = 1;
 	} break;
 

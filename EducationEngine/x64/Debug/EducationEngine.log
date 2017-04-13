@@ -1,13 +1,7 @@
-﻿  collision_system.cpp
+﻿  winsock_layer.cpp
   Generating Code...
   Compiling...
   win32_layer.cpp
-  title_state.cpp
-  state_system.cpp
-  menu_state.cpp
-  input_state.cpp
-  game_state.cpp
   game_loop.cpp
-  entity_system.cpp
   Generating Code...
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.exe
