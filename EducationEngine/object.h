@@ -7,9 +7,8 @@
 class Object
 {
 public:
-	Object() : FrontVector(0.0f, 0.0f, 0.0f), UpVector(0.0f, 1.0f, 0.0f),
-		VerticeFloatArrayPtr(0), Width(0.0f), Height(0.0f), Depth(0.0f), 
-		Yaw(-90.0f), Pitch(0.0f), ObjectID(0), TextureID(0) {}
+	Object() :  VerticeFloatArrayPtr(0), Width(0.0f), Height(0.0f), Depth(0.0f), 
+	ObjectID(0), TextureID(0) {}
 	
 	~Object();
 
@@ -24,9 +23,8 @@ public:
 
 	//TODO: Do objects have up and front vectors?
 	PipelineObjectDescription ObjectDescription;
-	v3 FrontVector, UpVector;
 	float* VerticeFloatArrayPtr;
-	float Width, Height, Depth, Yaw, Pitch;
+	float Width, Height, Depth;
 	uint32 ObjectID, TextureID, NumberOfVertices, NumberOfIndices;
 };
 

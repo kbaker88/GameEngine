@@ -6,6 +6,7 @@
 #include <list>
 
 //TODO: GetMousePosition once per frame and store it for use in state?
+//TODO: Add collision maximum distance
 
 struct CollisionObject
 {

@@ -1,6 +1,6 @@
 #include "png.h"
 
-//NOTE: Known and required static PNG names.
+//NOTE: Known static PNG names.
 #define SIGNATURE 727905341920923785
 #define IHDR 1229472850
 #define IEND 1229278788
@@ -210,7 +210,6 @@ unsigned char* PNG_Extract(unsigned char* Data,
 
 	if (Properties.Width && Properties.Height)
 	{
-		//TODO: Fix this height calculation.
 		ImageData = new unsigned char[Properties.WidthInBytes *
 			Properties.Height];
 	}

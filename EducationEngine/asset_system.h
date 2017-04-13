@@ -22,15 +22,10 @@ static uint32 TextureCount;
 
 void Asset_LoadTextures();
 void Asset_LoadBMP(char* FileName);
-
 void Asset_LoadPNG(char* FileName);
 uint32 Asset_GetTextureCount();
 TextureStorage* Asset_GetTexture(uint32 TextureNumber);
 
 void Asset_DeleteAll();
-/* TO DO
-- Clean up textures glDeleteTextures(1, &Texture); and delete[] TextureData;
-
-*/
 
 #endif
