@@ -64,7 +64,7 @@ bool Network_Init()
 	if (ConnectSocket == INVALID_SOCKET)
 	{
 		WSACleanup();
-		MessageBox(0, "Break", 0, 0);
+		//MessageBox(0, "Break", 0, 0);
 		return 1;
 	}
 	// success connect
@@ -83,7 +83,7 @@ bool Network_Init()
 	// Send an initial buffer
 	iResult = send(ConnectSocket, sendbuf, StringLength, 0);
 	if (iResult == SOCKET_ERROR) {
-		MessageBox(0, "Break", 0, 0);
+		//MessageBox(0, "Break", 0, 0);
 		closesocket(ConnectSocket);
 		WSACleanup();
 		return 1;
@@ -96,7 +96,7 @@ bool Network_Init()
 	// the client can still use the ConnectSocket for receiving data
 	iResult = shutdown(ConnectSocket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
-		MessageBox(0, "Break", 0, 0);
+		//MessageBox(0, "Break", 0, 0);
 		closesocket(ConnectSocket);
 		WSACleanup();
 		return 1;
@@ -113,21 +113,13 @@ bool Network_Init()
 			Platform_TemporaryError("recv failed: %d\n");
 	} while (iResult > 0);
 
-
-
-
-
-
-
-
-
 	// Cleanup
 	Result = shutdown(ConnectSocket, SD_SEND);
 	if (Result == SOCKET_ERROR)
 	{
 		closesocket(ConnectSocket);
 		WSACleanup();
-		MessageBox(0, "Break", 0, 0);
+		//MessageBox(0, "Break", 0, 0);
 		return 1;
 	}
 
