@@ -38,7 +38,7 @@ struct PipelineObjectDescription
 void Render_Init(window_properties Window);
 void Render_UpdateWindow(window_properties Window);
 void Render_UpdateWindow(uint32 Width, uint32 Height);
-void Render_ClearScreen();
+void Render_ClearScreen(v4* Color);
 window_properties Render_GetWindowProperties(); // Should this be here?
 
 // Shader Functions

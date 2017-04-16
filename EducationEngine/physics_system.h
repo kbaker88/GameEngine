@@ -18,7 +18,7 @@ struct PhysicsObject
 	float Mass;
 };
 
-static v3 Gravity = { 0.0f, -9.807f  * 0.5f * SecondsPerFrame, 0.0f };
+static v3 Gravity = { 0.0f, -9.807f  /* * 0.5f * SecondsPerFrame*/, 0.0f };
 
 void Phys_CalculatePosition(PhysicsObject* PhysObject);
 void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force);

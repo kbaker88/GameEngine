@@ -1,5 +1,30 @@
 #include "collision_system.h"
 
+int Collision_ButtonClick(v2* MousePosition, CollisionObject* Object)
+{
+	window_properties WindowDimensions = Render_GetWindowProperties();
+	v2 NewMousePosition;
+	NewMousePosition.x =
+		MousePosition->x - ((float)WindowDimensions.Width * 0.5f);
+	NewMousePosition.y =
+		((float)WindowDimensions.Height * 0.5f) - MousePosition->y;
+
+	if ((NewMousePosition.x > (Object->Position->x - (Object->HalfWidth))) &&
+		(NewMousePosition.x < (Object->Position->x + (Object->HalfWidth))))
+	{
+		if ((NewMousePosition.y >(Object->Position->y - (Object->HalfHeight))) &&
+			(NewMousePosition.y < (Object->Position->y + (Object->HalfHeight))))
+		{
+			if (Platform_GetMouseState())
+			{
+				return Object->CollisionCode + 2;
+			}
+			return Object->CollisionCode + 1;
+		}
+	}
+	return Object->CollisionCode;
+}
+
 bool Collision_OrthoMouseToRect(v2* MousePosition, CollisionObject* Object)
 {
 	window_properties WindowDimensions = Render_GetWindowProperties();

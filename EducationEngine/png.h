@@ -4,7 +4,8 @@
 #include "platform_layer.h"
 #include "math.h"
 
-//TODO: Make more robust
+//TODO: Make more robust. 
+//NOTE: Only handles 16-bit greyscale right now.
 
 struct PNGProperties
 {

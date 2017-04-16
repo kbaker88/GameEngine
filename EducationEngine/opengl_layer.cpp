@@ -158,9 +158,9 @@ void Render_UpdateWindow(uint32 Width, uint32 Height)
 	Platform_UpdateWindowSize(Width, Height);
 }
 
-void Render_ClearScreen()
+void Render_ClearScreen(v4* Color)
 {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(Color->x, Color->y, Color->z, Color->w);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

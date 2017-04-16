@@ -60,7 +60,7 @@ void Menu_Initialize(ProgramState* State)
 
 void Menu_Draw(ProgramState* State)
 {
-	Render_ClearScreen();
+	Render_ClearScreen(&v4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	Render_BindShaders(State->ShaderHandles[0]);
 	State->GPUShaderVarArray[0] =

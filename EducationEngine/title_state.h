@@ -8,6 +8,7 @@
 
 void Title_Initialize(ProgramState* State);
 void Title_Draw(ProgramState* State);
+void Title_CollisionResolve(ProgramState* State, int CollisionResult);
 void Title_Clean(ProgramState* State);
 
 #endif

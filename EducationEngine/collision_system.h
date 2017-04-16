@@ -12,7 +12,8 @@ struct CollisionObject
 {
 	CollisionObject(): NumVertices(0), VerticesPtr(0),
 		Position(0), Width(0), Height(0), Depth(0),
-		HalfWidth(0), HalfHeight(0), HalfDepth(0) {}
+		HalfWidth(0), HalfHeight(0), HalfDepth(0),
+		CollisionCode(0) {}
 	
 	~CollisionObject() {}
 
@@ -21,6 +22,7 @@ struct CollisionObject
 	float* VerticesPtr;
 	float Width, Height, Depth, HalfWidth, HalfHeight, HalfDepth;
 	uint32 NumVertices;
+	int32 CollisionCode;
 
 	CollisionObject & operator=(CollisionObject& NewObj)
 	{
@@ -125,10 +127,12 @@ struct Edge
 	Edge & operator=(Edge& b)
 	{
 		A = b.A;
-		B= b.B;
+		B = b.B;
 		return *this;
 	}
 };
+
+int Collision_ButtonClick(v2* MousePosition, CollisionObject* Object);
 
 bool Collision_OrthoMouseToRect(v2* MousePosition, CollisionObject* Object);
 v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix);
