@@ -63,7 +63,7 @@ static const char* TextFragmentShaderSource = "#version 430 core\n"
 "{\n"
 "discard;\n"
 "}\n"
-"FragColor = texture2D(myTexture, TexCoord) * vec4(0.0, 1.0, 0.0, 1.0);\n" //* vec4(Color, 1.0);\n"
+"FragColor = texture2D(myTexture, TexCoord) * vec4(0.0, 0.0, 0.0, 1.0);\n" //* vec4(Color, 1.0);\n"
 "}\0";
 
 static const char* VertexShaderSource1 = "#version 430 core\n"

@@ -1,7 +1,7 @@
 #ifndef NETWORK_LAYER_H
 #define NETWORK_LAYER_H
 
-#include "platform_layer.h"
+#include "utility.h"
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 

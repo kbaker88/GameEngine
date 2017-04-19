@@ -30,6 +30,18 @@ inline int Math_AbsVal(int Value)
 	}
 }
 
+inline long long Math_AbsVal(long long Value)
+{
+	if (Value < 0)
+	{
+		return -Value;
+	}
+	else
+	{
+		return Value;
+	}
+}
+
 inline float Math_AbsVal(float Value)
 {
 	if (Value < 0.0f)

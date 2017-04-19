@@ -91,6 +91,12 @@
     <Filter Include="Source Files\loaders">
       <UniqueIdentifier>{43ce1e24-abe8-4e6b-8116-17b8a86c02db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine\utility">
+      <UniqueIdentifier>{75df3add-6a94-4db4-80d7-b913cd6bd081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\utility">
+      <UniqueIdentifier>{417c4920-40c6-48ec-9945-a9b25cbeed19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="box.cpp">
@@ -125,9 +131,6 @@
     </ClCompile>
     <ClCompile Include="debug_system.cpp">
       <Filter>Source Files\engine\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="utility.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="heightmap.cpp">
       <Filter>Source Files\engine\objects</Filter>
@@ -186,6 +189,12 @@
     <ClCompile Include="winsock_layer.cpp">
       <Filter>Source Files\layers</Filter>
     </ClCompile>
+    <ClCompile Include="utility.cpp">
+      <Filter>Source Files\engine\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="entity_utility.cpp">
+      <Filter>Source Files\engine\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="box.h">
@@ -232,9 +241,6 @@
     </ClInclude>
     <ClInclude Include="opengl.h">
       <Filter>Header Files\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="utility.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="heightmap.h">
       <Filter>Header Files\engine\objects</Filter>
@@ -289,6 +295,12 @@
     </ClInclude>
     <ClInclude Include="network_layer.h">
       <Filter>Header Files\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>Header Files\engine\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_utility.h">
+      <Filter>Header Files\engine\utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

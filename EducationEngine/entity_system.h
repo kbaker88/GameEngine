@@ -10,7 +10,7 @@ struct Entity
 {
 	Entity() : EntityID(0), Active(0), CameraObj(0),
 		DirectionVector(0.0f, 0.0f, 0.0f), Position(0.0f, 0.0f, 0.0f),
-		ObjectPtr(0) {}
+		ObjectPtr(0), State(0) {}
 	
 	~Entity() {}
 
@@ -20,7 +20,7 @@ struct Entity
 	Camera *CameraObj;
 	m4 ModelMatrix;
 	v3 DirectionVector, Position;
-	uint32 EntityID, ObjectID;
+	uint32 EntityID, ObjectID, State;
 	bool Active;
 };
 

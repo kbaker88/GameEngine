@@ -90,7 +90,9 @@ bool Network_Init()
 	}
 
 	//printf("Bytes Sent: %ld\n", iResult);
-	Platform_TemporaryError(Platform_IntToChar(iResult));
+	char CharBuffer[16];
+	Utility_IntToChar(iResult, CharBuffer);
+	Platform_TemporaryError(CharBuffer);
 
 	// shutdown the connection for sending since no more data will be sent
 	// the client can still use the ConnectSocket for receiving data
@@ -106,7 +108,12 @@ bool Network_Init()
 	do {
 		iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
 		if (iResult > 0)
-			Platform_TemporaryError(Platform_IntToChar(iResult)); //printf("Bytes received: %d\n", iResult);
+		{
+			char CharBuffer2[16];
+			Utility_IntToChar(iResult, CharBuffer2);
+			Platform_TemporaryError(CharBuffer2);
+		 //printf("Bytes received: %d\n", iResult);
+		}
 		else if (iResult == 0)
 			Platform_TemporaryError("Connection closed\n");
 		else

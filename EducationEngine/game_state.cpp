@@ -11,7 +11,7 @@ void Game_Initialize(ProgramState* State)
 		Render_CompileShaders(VertShaderForTextureAndLight,
 		FragShaderForTextureAndLight);
 
-	//NOTE: Player's Model
+	// NOTE: Player's Model
 	Object_Create(new Box, State->ObjectBlockNum, ObjectCount,
 		0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum, 
@@ -22,7 +22,7 @@ void Game_Initialize(ProgramState* State)
 	ObjectCount++;
 	EntityCount++;
 
-	//NOTE: Terrain
+	// NOTE: Terrain
 	Object_Create(new HeightMap, State->ObjectBlockNum, ObjectCount, 
 		Asset_GetTexture(7));
 	Object_SetTexture(State->ObjectBlockNum, ObjectCount, Asset_GetTexture(4));
@@ -31,7 +31,7 @@ void Game_Initialize(ProgramState* State)
 	ObjectCount++;
 	EntityCount++;
 
-	// Wood Floor
+	// NOTE: Wood Floor
 	Object_Create(new Plane2D, State->ObjectBlockNum, ObjectCount, 10, 10);
 	Object_SetTexture(State->ObjectBlockNum, ObjectCount, Asset_GetTexture(6));
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
@@ -39,7 +39,7 @@ void Game_Initialize(ProgramState* State)
 	ObjectCount++;
 	EntityCount++;
 
-	// Light Box
+	// NOTE: Light Box
 	Object_Create(new Box, State->ObjectBlockNum, ObjectCount,
 		0.25f, 0.25f, 0.25f);
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
@@ -47,7 +47,7 @@ void Game_Initialize(ProgramState* State)
 	ObjectCount++;
 	EntityCount++;
 
-	// Wood Box 1
+	// NOTE: Wood Box 1
 	Object_Create(new Box, State->ObjectBlockNum, ObjectCount,
 		0.25f, 0.25f, 0.25f);
 	Object_SetTexture(State->ObjectBlockNum, ObjectCount, Asset_GetTexture(5));
@@ -55,14 +55,14 @@ void Game_Initialize(ProgramState* State)
 		ObjectCount, &v3(3.0f, 0.0f, 15.0f));
 	EntityCount++;
 
-	// Wood Box 2
+	// NOTE: Wood Box 2
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(0.0f, 0.0f, 10.0f));
 	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, EntityCount),
 		&v3(1.0f, 0.0f, 0.0f));
 	EntityCount++;
 
-	// Wood Box 3
+	// NOTE: Wood Box 3
 	Entity_Create(State->EntityBlockNum, EntityCount, State->ObjectBlockNum,
 		ObjectCount, &v3(6.0f, 0.0f, 10.0f));
 	Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, EntityCount),
@@ -117,7 +117,7 @@ void Game_Draw(ProgramState* State)
 	Entity_UpdatePosition(State->EntityBlockNum, 5);
 	Entity_UpdatePosition(State->EntityBlockNum, 6);
 
-	// Bind New Shaders
+	// NOTE: Bind New Shaders
 	Render_BindShaders(State->ShaderHandles[0]);
 	State->GPUShaderVarArray[0] =
 		Render_GetShaderVariable(State->ShaderHandles[0], "model");
@@ -134,13 +134,13 @@ void Game_Draw(ProgramState* State)
 	State->GPUShaderVarArray[6] = 
 		Render_GetShaderVariable(State->ShaderHandles[0], "isTextured");
 
-	// Update Shader Variables for Player 1
+	// NOTE: Update Shader Variables for Player 1
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
 		(float*)Entity_GetCamera(State->EntityBlockNum, 0)->GetViewMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
 		(float*)Entity_GetCamera(State->EntityBlockNum, 0)->GetProjectionMatrix(), 1, 0);
 
-	// Update Shader Variables for World
+	// NOTE: Update Shader Variables for World
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[3],
 		LightColor.x, LightColor.y, LightColor.z);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[4],
@@ -165,7 +165,7 @@ void Game_Draw(ProgramState* State)
 		(Position.z > -1.0f) ||
 		(Position.z < -Entity_GetDepth(State->EntityBlockNum, 1) + 1))
 	{
-		// outside of terrain map
+		// NOTE: Outside of terrain map
 		if (Position.y < 0)
 		{
 			Position.y = 0;
@@ -198,7 +198,7 @@ void Game_Draw(ProgramState* State)
 		x = (int32)round(Position.x) - 1; // because negative is backwards?
 		z = (int32)round(Position.z);
 
-		// Test Code
+		// NOTE: Test Code
 		uint32 PlayerPosition =
 			static_cast<uint32>(((x * Entity_GetWidth(State->EntityBlockNum, 1)) +
 			(Entity_GetDepth(State->EntityBlockNum, 1) - z)) * 3 * sizeof(float));
@@ -287,13 +287,21 @@ void Game_Draw(ProgramState* State)
 		Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 5));
 		Phys_CalculatePosition(Entity_GetPhysObjPtr(State->EntityBlockNum, 6));
 	}
+
+	char BufferX[16] = {};
+	char BufferY[16] = {};
+	char BufferZ[16] = {};
+	Utility_FloatToChar(Entity_GetPhysObjPtr(State->EntityBlockNum,
+		6)->ForceSum.x, 3, BufferX);
+	Utility_FloatToChar(Entity_GetPhysObjPtr(State->EntityBlockNum,
+		6)->ForceSum.y, 3, BufferY);
+	Utility_FloatToChar(Entity_GetPhysObjPtr(State->EntityBlockNum,
+		6)->ForceSum.z, 3, BufferZ);
+
 	Text_DrawCharLine(string("Box 6 Force: \0") +
-		string(Platform_FloatToChar(Entity_GetPhysObjPtr(State->EntityBlockNum, 
-			6)->ForceSum.x)) + string(" ") +
-		string(Platform_FloatToChar(Entity_GetPhysObjPtr(State->EntityBlockNum, 
-			6)->ForceSum.y)) + string(" ") +
-		string(Platform_FloatToChar(Entity_GetPhysObjPtr(State->EntityBlockNum, 
-			6)->ForceSum.z)),
+		string(BufferX) + string(" ") + 
+		string(BufferY) + string(" ") +
+		string(BufferZ), 
 		v3(Left + 20.0f, Top - 100.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
 
@@ -307,23 +315,33 @@ void Game_Draw(ProgramState* State)
 			State->GPUShaderVarArray[0]);
 	}
 	// TODO: Remove, Test timer and clock features
+	char Buffer[16] = {};
+	Utility_FloatToChar(State->TimerArray[0].GetTime(), 1, Buffer);
 	Text_DrawCharLine(string("Elapsed Time: ") + 
-		string(Platform_FloatToChar(State->TimerArray[0].GetTime(), 1)),
+		string(Buffer),
 		v3(Right - 200.0f, Top - 40.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
 
-	// Display FPS
+	// NOTE: Display FPS
+	char FPSBuffer[16] = {};
+	Utility_FloatToChar(DEBUG_GetFPS(), 1, FPSBuffer);
 	Text_DrawCharLine(string("Frames Per Second: ") +
-		string(Platform_FloatToChar(DEBUG_GetFPS(), 1)),
+		string(FPSBuffer),
 		v3(Right - 200.0f, Top - 20.0f,
 			0.0f), 0.15f, State->GPUShaderVarArray[0]);
 
 	v3 PlayerPosition = Entity_GetPosition(State->EntityBlockNum, 0);
 
+	char BufferX2[16] = {};
+	char BufferY2[16] = {};
+	char BufferZ2[16] = {};
+	Utility_FloatToChar(PlayerPosition.x, 3, BufferX2);
+	Utility_FloatToChar(PlayerPosition.y, 3, BufferY2);
+	Utility_FloatToChar(PlayerPosition.z, 3, BufferZ2);
 	Text_DrawCharLine(string("Player Position: \0") +
-		string(Platform_FloatToChar(PlayerPosition.x)) + string(" ") +
-		string(Platform_FloatToChar(PlayerPosition.y)) + string(" ") +
-		string(Platform_FloatToChar(PlayerPosition.z)),
+		string(BufferX2) + string(" ") +
+		string(BufferY2) + string(" ") +
+		string(BufferZ2),
 		v3(Left + 20.0f, Top - 20.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
 
@@ -333,16 +351,26 @@ void Game_Draw(ProgramState* State)
 	CursorPosition.y =
 		((float)WindowDimensions.Height * 0.5f) - State->CursorPosition.y;
 
+	char BufferX3[16] = {};
+	char BufferY3[16] = {};
+	Utility_FloatToChar(CursorPosition.x, 3, BufferX3);
+	Utility_FloatToChar(CursorPosition.y, 3, BufferY3);
 	Text_DrawCharLine(string("Cursor Position: \0") +
-		string(Platform_FloatToChar(CursorPosition.x)) + string(" ") +
-		string(Platform_FloatToChar(CursorPosition.y)),
+		string(BufferX3) + string(" ") +
+		string(BufferY3),
 		v3(Left + 20.0f, Top - 40.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
 
+	char BufferX4[16] = {};
+	char BufferY4[16] = {};
+	char BufferZ4[16] = {};
+	Utility_FloatToChar(MouseRay.x, 3, BufferX4);
+	Utility_FloatToChar(MouseRay.y, 3, BufferY4);
+	Utility_FloatToChar(MouseRay.z, 3, BufferZ4);
 	Text_DrawCharLine(string("Cursor World Array: \0") +
-		string(Platform_FloatToChar(MouseRay.x)) + string(" ") +
-		string(Platform_FloatToChar(MouseRay.y)) + string(" ") + 
-		string(Platform_FloatToChar(MouseRay.z)),
+		string(BufferX4) + string(" ") +
+		string(BufferY4) + string(" ") +
+		string(BufferZ4),
 		v3(Left + 20.0f, Top - 60.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
 	
