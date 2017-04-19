@@ -33,12 +33,8 @@ struct window_properties
 };
 
 // ERROR SYSTEM
-void Platform_TemporaryError(char* Text); // TODO : REPLACE WITH INGAME TEXT ERROR SYSTEM
-char* Platform_FloatToChar(float Value, unsigned int Percision);
-char* Platform_FloatToChar(float Value);
-char* Platform_IntToChar(int32 Value); //TODO: can any of these be moved to utility?
-char* Platform_IntToChar(int64 Value);
-char* Platform_UIntToChar(uint32 Value);
+// TODO : REPLACE WITH INGAME TEXT ERROR SYSTEM
+void Platform_TemporaryError(char* Text); 
 
 // FILE SYSTEM
 struct loaded_bitmap
@@ -62,15 +58,18 @@ int64 Platform_GetCPUCounter();
 int64 Platform_GetTimeFrequency();
 
 // INPUT DEVICES
-void Platform_GetCursorPosition(float *X, float *Y); // TODO: Should this be Long?
+// TODO: Should this be Long?
+void Platform_GetCursorPosition(float *X, float *Y);
 int8 Platform_GetStateOfKey(int key);
 
 void Platform_UpdateMouseState(uint32 State);
 uint32 Platform_GetMouseState();
 
 // CORE FUNCTIONALITY
-void Platform_Initialize(); // TODO: Remember to check for already initialized
-void Platform_InitRenderer(); // TODO: Put as much of this in renderer file as possible
+// TODO: Remember to check for already initialized
+void Platform_Initialize(); 
+// TODO: Put as much of this in renderer file as possible
+void Platform_InitRenderer(); 
 void Platform_UpdateWindowSize(uint32 Width, uint32 Height);
 void Platform_EndProgram();
 void Platform_Cleanup(); 

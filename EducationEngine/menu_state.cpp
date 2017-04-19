@@ -30,27 +30,18 @@ void Menu_Initialize(ProgramState* State)
 	v3 ButtonPosition = { MenuButtonsXPos, MenuButtonsYPos, 0.0f };
 
 	// Start Button
-	Object_Create(new MyRectangle, State->ObjectBlockNum, 0, 
-		ButtonWidth, ButtonHeight, 0.0f);
-	Object_SetTexture(State->ObjectBlockNum, 0, Asset_GetTexture(0));
-	Entity_Create(State->EntityBlockNum, 0, State->ObjectBlockNum, 0, 
-		&ButtonPosition);
+	Utility_CreateButton(State, ButtonWidth, ButtonHeight,
+		&ButtonPosition, Asset_GetTexture(0));
 
 	// Title Button
 	ButtonPosition.y -= ButtonHeight;
-	Object_Create(new MyRectangle, State->ObjectBlockNum, 1, 
-		ButtonWidth, ButtonHeight, 0.0f);
-	Object_SetTexture(State->ObjectBlockNum, 1, Asset_GetTexture(3));
-	Entity_Create(State->EntityBlockNum, 1, State->ObjectBlockNum, 1,
-		&ButtonPosition);
+	Utility_CreateButton(State, ButtonWidth, ButtonHeight,
+		&ButtonPosition, Asset_GetTexture(3));
 
 	// Exit Button
 	ButtonPosition.y -= ButtonHeight;
-	Object_Create(new MyRectangle, State->ObjectBlockNum, 2, 
-		ButtonWidth, ButtonHeight, 0.0f);
-	Object_SetTexture(State->ObjectBlockNum, 2, Asset_GetTexture(2));
-	Entity_Create(State->EntityBlockNum, 2, State->ObjectBlockNum, 2, 
-		&ButtonPosition);
+	Utility_CreateButton(State, ButtonWidth, ButtonHeight,
+		&ButtonPosition, Asset_GetTexture(2));
 
 	// Exit Button (temp second one)
 	ButtonPosition.y -= ButtonHeight;
@@ -83,88 +74,94 @@ void Menu_Draw(ProgramState* State)
 	Platform_GetCursorPosition(&State->CursorPosition.x,
 		&State->CursorPosition.y);
 
-	int MouseOver = 0;
+	int32 CollisionResult = 0;
+	for (uint32 Index = 0; Index < State->EntityCount; Index++)
+	{
+		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
+			Entity_GetCollisionObjPtr(State->EntityBlockNum, Index));
+		Menu_CollisionResolve(State, CollisionResult);
 
-	if (Collision_OrthoMouseToRect(&State->CursorPosition,
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 0)))
-	{
-		if (Platform_GetMouseState())
-		{
-			State->Status = -1;
-			*State->StateOfProgram = 2;
-		}
-		MouseOver = 1;
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[4],
+			Entity_Ptr(State->EntityBlockNum, Index)->State);
+		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
 	}
-	else
-	{
-		MouseOver = 0;
-	}
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[4], MouseOver);
-	Entity_Draw(State->EntityBlockNum, 0, State->GPUShaderVarArray[0]);
-
-	if (Collision_OrthoMouseToRect(&State->CursorPosition,
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 1)))
-	{
-		if (Platform_GetMouseState())
-		{
-			State->Status = -1;
-			*State->StateOfProgram = 1;
-		}
-		MouseOver = 1;
-	}
-	else
-	{
-		MouseOver = 0;
-	}
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[4], MouseOver);
-	Entity_Draw(State->EntityBlockNum, 1, State->GPUShaderVarArray[0]);
-
-	if (Collision_OrthoMouseToRect(&State->CursorPosition,
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 2)))
-	{
-		if (Platform_GetMouseState())
-		{
-			State->Status = -1;
-			*State->StateOfProgram = 4;
-		}
-		MouseOver = 1;
-	}
-	else
-	{
-		MouseOver = 0;
-	}
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[4], MouseOver);
-	Entity_Draw(State->EntityBlockNum, 2, State->GPUShaderVarArray[0]);
-
-	if (Collision_OrthoMouseToRect(&State->CursorPosition,
-		Entity_GetCollisionObjPtr(State->EntityBlockNum, 3)))
-	{
-		if (Platform_GetMouseState())
-		{
-			State->Status = -1;
-			Render_UpdateWindow(800, 600);
-		}
-		MouseOver = 1;
-	}
-	else
-	{
-		MouseOver = 0;
-	}
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[4], MouseOver);
-	Entity_Draw(State->EntityBlockNum, 3, State->GPUShaderVarArray[0]);
-
-	Platform_UpdateMouseState(0);
 
 	if (State->Status == -1)
 	{
 		Menu_Clean(State);
 	}
+	else
+	{
+		Platform_UpdateMouseState(0);
+	}
+}
+
+void Menu_CollisionResolve(ProgramState* State, int32 CollisionResult)
+{
+	switch (CollisionResult)
+	{
+	case 0:
+	{
+		Entity_Ptr(State->EntityBlockNum, 0)->State = 0;
+	} break;
+	case 1:
+	{
+		Entity_Ptr(State->EntityBlockNum, 0)->State = 1;
+	} break;
+	case 2:
+	{
+		State->Status = -1;
+		*State->StateOfProgram = 2;
+	} break;
+	case 10:
+	{
+		Entity_Ptr(State->EntityBlockNum, 1)->State = 0;
+	} break;
+	case 11:
+	{
+		Entity_Ptr(State->EntityBlockNum, 1)->State = 1;
+	} break;
+	case 12:
+	{
+		State->Status = -1;
+		*State->StateOfProgram = 1;
+	} break;
+	case 20:
+	{
+		Entity_Ptr(State->EntityBlockNum, 2)->State = 0;
+	} break;
+	case 21:
+	{
+		Entity_Ptr(State->EntityBlockNum, 2)->State = 1;
+	} break;
+	case 22:
+	{
+		State->Status = -1;
+		*State->StateOfProgram = 4;
+	} break;
+	case 30:
+	{
+
+	} break;
+	case 31:
+	{
+
+	} break;
+	case 32:
+	{
+
+	} break;
+	default: {} break;
+	}
 }
 
 void Menu_Clean(ProgramState* State)
 {
+	Platform_UpdateMouseState(0);
 	Entity_DeleteBlock(State->EntityBlockNum);
 	Object_DeleteBlock(State->ObjectBlockNum);
+	State->ObjectCount = 0;
+	State->EntityCount = 0;
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);

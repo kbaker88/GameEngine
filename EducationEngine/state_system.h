@@ -8,7 +8,8 @@ struct ProgramState
 	ProgramState() : CameraArray(0), TimerArray(0),
 		GPUShaderVarArray(0), ShaderHandles(0),
 		Status(0), EntityBlockNum(0), ObjectBlockNum(0),
-		StateOfProgram(0), CursorPosition(0.0f, 0.0f) {}
+		StateOfProgram(0), CursorPosition(0.0f, 0.0f),
+		ObjectCount(0), EntityCount(0){}
 
 	~ProgramState() {}
 
@@ -18,7 +19,8 @@ struct ProgramState
 	int32* GPUShaderVarArray;
 	uint32* ShaderHandles;
 	int32 Status;
-	uint32 EntityBlockNum, ObjectBlockNum;
+	uint32 EntityBlockNum, ObjectBlockNum, ObjectCount,
+		EntityCount;
 	uint8* StateOfProgram;
 	v2 CursorPosition;
 };

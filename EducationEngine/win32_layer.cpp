@@ -1,10 +1,8 @@
 #include "game_loop.h"
 #include <Windows.h>
 
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
 
 // Accepted values for attribute names for the OpenGL Context(WGL)
 #define WGL_CONTEXT_MAJOR_VERSION_ARB				0x2091
@@ -27,7 +25,6 @@ struct platform_handel
 	HWND Window;
 };
 
-//NOTE: Variables for general Windows properties.
 struct platform_properties
 {
 	HINSTANCE Instance;
@@ -39,13 +36,14 @@ struct platform_properties
 static platform_handel PlatformWindow = {};
 static platform_properties PlatformProperties = {};
 
-//NOTE: For creating an OpenGL Context.
+//NOTE: Setting up a function pointer's return and parameter
+//      types for creating an OpenGL Context.
 typedef HGLRC __stdcall wgl_create_context_attribs_arb(HDC hDC,
 							HGLRC hShareContext, const int *attribList);
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-// TEMPORARY: Throws these in a struct later?
+// TEMPORARY: Throws these in a struct later? Or get rid of them
 uint32 MouseState;
 uint8 MouseLeftClickToggle = 0;
 
@@ -63,63 +61,6 @@ void Platform_TemporaryError(char* Text)
 	char Buffer[256];
 	wsprintf(Buffer, Text);
 	OutputDebugStringA(Buffer);
-}
-
-// TODO: Fix
-char FloatToCharBuffer[16];
-char* Platform_FloatToChar(float Value, unsigned int Percision)
-{
-	switch (Percision)
-	{
-	case 1:
-	{
-		_snprintf_s(FloatToCharBuffer, sizeof(FloatToCharBuffer),
-			"%0.01f", Value); // ms/f
-	} break;
-	default:
-	{
-		_snprintf_s(FloatToCharBuffer, sizeof(FloatToCharBuffer),
-			"%0.03f", Value); // ms/f
-	} break;
-	}
-
-	return FloatToCharBuffer;
-}
-
-char* Platform_FloatToChar(float Value)
-{
-	_snprintf_s(FloatToCharBuffer, sizeof(FloatToCharBuffer),
-		"%0.03f", Value); // ms/f
-
-	return FloatToCharBuffer;
-}
-
-// TODO: Fix
-char IntToCharBuffer[16];
-char* Platform_IntToChar(int32 Value)
-{
-	_snprintf_s(IntToCharBuffer, sizeof(IntToCharBuffer),
-		"%d\n", Value); // ms/f
-
-	return IntToCharBuffer;
-}
-
-char* Platform_IntToChar(int64 Value)
-{
-	_snprintf_s(IntToCharBuffer, sizeof(IntToCharBuffer),
-		"%I64d\n", Value);
-
-	return IntToCharBuffer;
-}
-
-// TODO: Fix
-char UIntToCharBuffer[16];
-char* Platform_UIntToChar(uint32 Value)
-{
-	_snprintf_s(UIntToCharBuffer, sizeof(UIntToCharBuffer),
-		"%u\n", Value); // ms/f
-
-	return UIntToCharBuffer;
 }
 
 int8 Platform_DoesFileExist(char* FileName)
