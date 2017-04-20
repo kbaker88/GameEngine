@@ -6,16 +6,14 @@
 
 static window_properties WindowProperties;
 
-//TODO: Fix Render_ObjectPipelineInit, if handles are out of order textures don't render.
+//TODO: Fix Render_ObjectPipelineInit, if handles are out 
+//		of order textures don't render.
 struct VBODescription
 {
-	VBODescription() : FloatData(NULL), Uint32Data(NULL),
-		Size(0), Offset(0) {}
-
+	VBODescription() : Data(0), Size(0), Offset(0) {}
 	~VBODescription() {}
 
-	float* FloatData;
-	uint32* Uint32Data;
+	void* Data;
 	uint32 Size;
 	uint32 Offset;
 };
@@ -23,25 +21,28 @@ struct VBODescription
 struct PipelineObjectDescription
 {
 	PipelineObjectDescription() : VertexArrayObjectID(0),
-		NumberOfVertexHandles(0), VertexBufferObjectHandleIDs(NULL),
-		VertexBufferDescriptions(NULL) {}
+		NumberOfVertexHandles(0), VertexBufferObjectHandleIDs(0),
+		VertexBufferDescriptions(0) {}
 
 	~PipelineObjectDescription() {}
 
 	uint32 VertexArrayObjectID;
 	uint32 NumberOfVertexHandles;
 	uint32* VertexBufferObjectHandleIDs; 
+	VBODescription IndiceDescription;
 	VBODescription* VertexBufferDescriptions; 
 };
 
-// General Functions
+// NOTE: General Functions
 void Render_Init(window_properties Window);
 void Render_UpdateWindow(window_properties Window);
 void Render_UpdateWindow(uint32 Width, uint32 Height);
 void Render_ClearScreen(v4* Color);
-window_properties Render_GetWindowProperties(); // Should this be here?
 
-// Shader Functions
+// Should this be here?
+window_properties Render_GetWindowProperties();
+
+// NOTE: Shader Functions
 uint32 Render_CompileShaders(const char* VertexShaderSource,
 	const char* FragmentShaderSource);
 void Render_BindShaders(uint32 ShaderProgramHandle);
@@ -50,24 +51,31 @@ void Render_DeleteShaderProgram(uint32 ShaderProgramHandle);
 int32 Render_GetShaderVariable(uint32 ShaderProgramHandle, char* name);
 
 void Render_UpdateShaderVariable(int32 Location, int32 Integer);
-void Render_UpdateShaderVariable(int32 Location, int32 IntegerX, int32 IntegerY);
+void Render_UpdateShaderVariable(int32 Location, int32 IntegerX, 
+	int32 IntegerY);
 void Render_UpdateShaderVariable(int32 Location, int32 IntegerX,
 	int32 IntegerY, int32 IntegerZ);
 void Render_UpdateShaderVariable(int32 Location, int32 IntegerX,
 	int32 IntegerY, int32 IntegerZ, int32 IntegerW);
 void Render_UpdateShaderVariable(int32 Location, int32 VectorSize,
 	int32* IntegerArray, int32 ArraySize);
-void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedInteger);
-void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedIntegerX, 
+void Render_UpdateShaderVariable(int32 Location, 
+	uint32 UnsignedInteger);
+void Render_UpdateShaderVariable(int32 Location, 
+	uint32 UnsignedIntegerX, 
 	uint32 UnsignedIntegerY);
-void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedIntegerX,
+void Render_UpdateShaderVariable(int32 Location,
+	uint32 UnsignedIntegerX,
 	uint32 UnsignedIntegerY, uint32 UnsignedIntegerZ);
-void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedIntegerX,
-	uint32 UnsignedIntegerY, uint32 UnsignedIntegerZ, uint32 UnsignedIntegerW);
+void Render_UpdateShaderVariable(int32 Location,
+	uint32 UnsignedIntegerX,
+	uint32 UnsignedIntegerY, uint32 UnsignedIntegerZ, 
+	uint32 UnsignedIntegerW);
 void Render_UpdateShaderVariable(int32 Location, int32 VectorSize,
 	uint32* UnsignedIntegerArray, int32 ArraySize);
 void Render_UpdateShaderVariable(int32 Location, float Float);
-void Render_UpdateShaderVariable(int32 Location, float FloatX, float FloatY);
+void Render_UpdateShaderVariable(int32 Location, float FloatX, 
+	float FloatY);
 void Render_UpdateShaderVariable(int32 Location, float FloatX,
 	float FloatY, float FloatZ);
 void Render_UpdateShaderVariable(int32 Location, float FloatX,
@@ -77,7 +85,7 @@ void Render_UpdateShaderVariable(int32 Location, int32 VectorSize,
 void Render_UpdateShaderVariable(int32 Location, int32 MatrixSize,
 	float* NewData, int32 MatrixArraySize, bool Transpose);
 
-// Object Rendering Functions
+// NOTE: Object Rendering Functions
 void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription);
 void Render_SetTexture(unsigned char* ImageData, int32 Width,
 				int32 Height, uint32 *TextureID);
@@ -95,10 +103,11 @@ void Render_UpdateColorVertice(uint32* VertexObjectHandleIDArray,
 void* Render_GetObjectShaderDataPtr(uint32* VertexObjectHandleIDArray,
 	int32 Offset, uint32 Length);
 
-// Cleanup Functions
+// NOTE: Cleanup Functions
 void Render_UnmapShaderDataPtr();
 void Render_DeleteTexture(uint32 NumberOfTextures, uint32 *TextureID);
-void Render_DeleteVertexArrays(uint32 NumberOfVertexArrayObjects, uint32 *VAO);
+void Render_DeleteVertexArrays(uint32 NumberOfVertexArrayObjects,
+	uint32 *VAO);
 //TODO: Will this one ever be used?
 void Render_DeleteBuffers(uint32 NumberOfBuffers, uint32 *Buffers); 
 void Render_DeleteBuffers(uint32 NumberOfBuffers, 

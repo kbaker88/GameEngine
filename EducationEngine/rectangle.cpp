@@ -49,24 +49,24 @@ void MyRectangle::Init()
 		0.0f, 0.0f, 1.0f,
 	};
 
-	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
-	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(VerticePositions);
+	ObjectDescription.IndiceDescription.Data = Indices;
+	ObjectDescription.IndiceDescription.Size = sizeof(Indices);
+
+	ObjectDescription.VertexBufferDescriptions[0].Data = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[0].Offset = 3;
+
+	ObjectDescription.VertexBufferDescriptions[1].Data = ColorData;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
-	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(Indices);
+	ObjectDescription.VertexBufferDescriptions[2].Data = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 2;
 
-	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
-	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(ColorData);
-	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
-
-	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
-	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
-	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
-
-	ObjectDescription.VertexBufferDescriptions[4].FloatData = NormalData;
-	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
-	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[3].Data = NormalData;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 3;
 
 	Render_ObjectPipelineInit(&ObjectDescription);
 }
@@ -118,24 +118,24 @@ void MyRectangle::Init(float size)
 		0.0f, 0.0f, 1.0f,
 	};
 
-	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
-	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(VerticePositions);
+	ObjectDescription.IndiceDescription.Data = Indices;
+	ObjectDescription.IndiceDescription.Size = sizeof(Indices);
+
+	ObjectDescription.VertexBufferDescriptions[0].Data = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[0].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[1].Data = ColorData;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 					  
-	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
-	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(Indices);
+	ObjectDescription.VertexBufferDescriptions[2].Data = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 2;
 					  
-	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
-	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(ColorData);
-	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
-					  
-	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
-	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
-	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
-					  
-	ObjectDescription.VertexBufferDescriptions[4].FloatData = NormalData;
-	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
-	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[3].Data = NormalData;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 3;
 
 	Render_ObjectPipelineInit(&ObjectDescription);
 }
@@ -187,24 +187,24 @@ void MyRectangle::Init(float width, float height)
 		0.0f, 0.0f, 1.0f,
 	};
 
-	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
-	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(VerticePositions);
+	ObjectDescription.IndiceDescription.Data = Indices;
+	ObjectDescription.IndiceDescription.Size = sizeof(Indices);
+
+	ObjectDescription.VertexBufferDescriptions[0].Data = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[0].Offset = 3;
+							  
+	ObjectDescription.VertexBufferDescriptions[1].Data = ColorData;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 					  
-	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
-	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(Indices);
+	ObjectDescription.VertexBufferDescriptions[2].Data = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 2;
 					  
-	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
-	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(ColorData);
-	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
-					  
-	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
-	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
-	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
-					  
-	ObjectDescription.VertexBufferDescriptions[4].FloatData = NormalData;
-	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
-	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[3].Data = NormalData;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 3;
 
 	Render_ObjectPipelineInit(&ObjectDescription);
 }
@@ -257,24 +257,24 @@ void MyRectangle::Init(float width, float height, float depth)
 		0.0f, 0.0f, 1.0f,
 	};
 
-	ObjectDescription.VertexBufferDescriptions[1].FloatData = VerticePositions;
-	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(VerticePositions);
+	ObjectDescription.IndiceDescription.Data = Indices;
+	ObjectDescription.IndiceDescription.Size = sizeof(Indices);
+
+	ObjectDescription.VertexBufferDescriptions[0].Data = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(VerticePositions);
+	ObjectDescription.VertexBufferDescriptions[0].Offset = 3;
+					  
+	ObjectDescription.VertexBufferDescriptions[1].Data = ColorData;
+	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 					  
-	ObjectDescription.VertexBufferDescriptions[0].Uint32Data = Indices;
-	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(Indices);
+	ObjectDescription.VertexBufferDescriptions[2].Data = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(TextureCoords);
+	ObjectDescription.VertexBufferDescriptions[2].Offset = 2;
 					  
-	ObjectDescription.VertexBufferDescriptions[2].FloatData = ColorData;
-	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(ColorData);
-	ObjectDescription.VertexBufferDescriptions[2].Offset = 3;
-					  
-	ObjectDescription.VertexBufferDescriptions[3].FloatData = TextureCoords;
-	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(TextureCoords);
-	ObjectDescription.VertexBufferDescriptions[3].Offset = 2;
-					  
-	ObjectDescription.VertexBufferDescriptions[4].FloatData = NormalData;
-	ObjectDescription.VertexBufferDescriptions[4].Size = sizeof(NormalData);
-	ObjectDescription.VertexBufferDescriptions[4].Offset = 3;
+	ObjectDescription.VertexBufferDescriptions[3].Data = NormalData;
+	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(NormalData);
+	ObjectDescription.VertexBufferDescriptions[3].Offset = 3;
 
 	Render_ObjectPipelineInit(&ObjectDescription);
 }

@@ -2,9 +2,6 @@
 
 void Title_Initialize(ProgramState* State)
 {
-	Entity_CreateBlock(State->EntityBlockNum, 32);
-	Object_CreateBlock(State->ObjectBlockNum, 32);
-
 	window_properties WindowDimensions = Render_GetWindowProperties();
 	float HalfScreenWidth = (float)WindowDimensions.Width * 0.5f;
 	float HalfScreenHeight = (float)WindowDimensions.Height * 0.5f;
@@ -21,15 +18,15 @@ void Title_Initialize(ProgramState* State)
 	float ButtonWidth = 160.0f;
 	float ButtonHeight = 40.0f;
 
-	// Start Button
+	// NOTE: Start Button
 	Utility_CreateButton(State, ButtonWidth, ButtonHeight,
 		&v3(0.0f, -120.0f, 0.0f), Asset_GetTexture(0));
 
-	// Menu Button
+	// NOTE: Menu Button
 	Utility_CreateButton(State, ButtonWidth, ButtonHeight,
 		&v3(0.0f, -165.0f, 0.0f), Asset_GetTexture(1));
 
-	// Exit Button
+	// NOTE: Exit Button
 	Utility_CreateButton(State, ButtonWidth, ButtonHeight,
 		&v3(HalfScreenWidth - (160.0f * 0.5f), -HalfScreenHeight +
 		(50.0f * 0.5f), 0.0f), Asset_GetTexture(2));
@@ -67,12 +64,12 @@ void Title_Draw(ProgramState* State)
 	for (uint32 Index = 0; Index < State->EntityCount; Index++)
 	{
 		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
-			Entity_GetCollisionObjPtr(State->EntityBlockNum, Index));
+			Entity_GetCollisionObjPtr(&State->EntityBlocks, Index));
 		Title_CollisionResolve(State, CollisionResult);
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 
-			Entity_Ptr(State->EntityBlockNum, Index)->State);
-		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
+			Entity_Ptr(&State->EntityBlocks, Index)->State);
+		Entity_Draw(&State->EntityBlocks, Index, State->GPUShaderVarArray[0]);
 	}
 
 	if (State->Status == -1)
@@ -88,14 +85,14 @@ void Title_Draw(ProgramState* State)
 			Render_GetShaderVariable(State->ShaderHandles[1], "view");
 		State->GPUShaderVarArray[2] =
 			Render_GetShaderVariable(State->ShaderHandles[1], "projection");
-		State->GPUShaderVarArray[3] =
-			Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
+		//State->GPUShaderVarArray[3] =
+		//	Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
 			(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
 			(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
-		Render_UpdateShaderVariable(1, State->GPUShaderVarArray[3], 0);
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[3], 0);
 
 		v3 TextStartPosition = { (float)(-0.5f * WindowProperties.Width) + 20.0f,
 			(float)(-0.5f * WindowProperties.Height) + 100.0f, 0.0f };
@@ -121,11 +118,11 @@ void Title_CollisionResolve(ProgramState* State, int32 CollisionResult)
 	{
 	case 0:
 	{
-		Entity_Ptr(State->EntityBlockNum, 0)->State = 0;
+		Entity_Ptr(&State->EntityBlocks, 0)->State = 0;
 	} break;
 	case 1:
 	{
-		Entity_Ptr(State->EntityBlockNum, 0)->State = 1;
+		Entity_Ptr(&State->EntityBlocks, 0)->State = 1;
 	} break;
 	case 2:
 	{
@@ -134,11 +131,11 @@ void Title_CollisionResolve(ProgramState* State, int32 CollisionResult)
 	} break;
 	case 10:
 	{
-		Entity_Ptr(State->EntityBlockNum, 1)->State = 0;
+		Entity_Ptr(&State->EntityBlocks, 1)->State = 0;
 	} break;
 	case 11:
 	{
-		Entity_Ptr(State->EntityBlockNum, 1)->State = 1;
+		Entity_Ptr(&State->EntityBlocks, 1)->State = 1;
 	} break;
 	case 12:
 	{
@@ -147,11 +144,11 @@ void Title_CollisionResolve(ProgramState* State, int32 CollisionResult)
 	} break;
 	case 20:
 	{
-		Entity_Ptr(State->EntityBlockNum, 2)->State = 0;
+		Entity_Ptr(&State->EntityBlocks, 2)->State = 0;
 	} break;
 	case 21:
 	{
-		Entity_Ptr(State->EntityBlockNum, 2)->State = 1;
+		Entity_Ptr(&State->EntityBlocks, 2)->State = 1;
 	} break;
 	case 22:
 	{
@@ -177,8 +174,8 @@ void Title_CollisionResolve(ProgramState* State, int32 CollisionResult)
 void Title_Clean(ProgramState* State)
 {
 	Platform_UpdateMouseState(0);
-	Entity_DeleteBlock(State->EntityBlockNum);
-	Object_DeleteBlock(State->ObjectBlockNum);
+	Entity_DeleteBlock(&State->EntityBlocks);
+	Object_DeleteBlock(&State->ObjectBlocks);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
 	Render_ClearCurrentShaderProgram();

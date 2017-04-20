@@ -22,11 +22,11 @@ void Line::Init(float* Point1, float* Point2, float lineSize)
 		1.0f, 1.0f, 1.0f
 	};
 
-	ObjectDescription.VertexBufferDescriptions[0].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[0].Data = VerticePositions;
 	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(VerticePositions);
 	ObjectDescription.VertexBufferDescriptions[0].Offset = 3;
 
-	ObjectDescription.VertexBufferDescriptions[1].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[1].Data = ColorData;
 	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 

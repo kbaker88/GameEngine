@@ -192,6 +192,9 @@
     <ClInclude Include="title_state.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="OpenGL.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -234,22 +234,22 @@ void Plane2D::Init(uint32 width, uint32 height)
 		}
 	} 
 
-	ObjectDescription.VertexBufferDescriptions[0].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[0].Data = VerticePositions;
 	ObjectDescription.VertexBufferDescriptions[0].Size = 
 		floatsPerSquare * NumberOfSquares * sizeof(float);
 	ObjectDescription.VertexBufferDescriptions[0].Offset = 3;
 
-	ObjectDescription.VertexBufferDescriptions[1].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[1].Data = ColorData;
 	ObjectDescription.VertexBufferDescriptions[1].Size = 
 		floatsPerSquare * NumberOfSquares * sizeof(float);;
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	ObjectDescription.VertexBufferDescriptions[2].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[2].Data = TextureCoords;
 	ObjectDescription.VertexBufferDescriptions[2].Size =
 		12 * NumberOfSquares * sizeof(float);
 	ObjectDescription.VertexBufferDescriptions[2].Offset = 2;
 
-	ObjectDescription.VertexBufferDescriptions[3].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[3].Data = NormalData;
 	ObjectDescription.VertexBufferDescriptions[3].Size = 
 		floatsPerSquare * NumberOfSquares * sizeof(float);
 	ObjectDescription.VertexBufferDescriptions[3].Offset = 3;

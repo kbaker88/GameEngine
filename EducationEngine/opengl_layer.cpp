@@ -269,7 +269,8 @@ void Render_UpdateShaderVariable(int32 Location, int32 Integer)
 	glUniform1i(Location, Integer);
 }
 
-void Render_UpdateShaderVariable(int32 Location, int32 IntegerX, int32 IntegerY)
+void Render_UpdateShaderVariable(int32 Location, int32 IntegerX, 
+	int32 IntegerY)
 {
 	glUniform2i(Location, IntegerX, IntegerY);
 }
@@ -328,11 +329,13 @@ void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedIntegerX,
 void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedIntegerX,
 	uint32 UnsignedIntegerY, uint32 UnsignedIntegerZ)
 {
-	glUniform3i(Location, UnsignedIntegerX, UnsignedIntegerY, UnsignedIntegerZ);
+	glUniform3i(Location, UnsignedIntegerX, UnsignedIntegerY,
+		UnsignedIntegerZ);
 }
 
 void Render_UpdateShaderVariable(int32 Location, uint32 UnsignedIntegerX,
-	uint32 UnsignedIntegerY, uint32 UnsignedIntegerZ, uint32 UnsignedIntegerW)
+	uint32 UnsignedIntegerY, uint32 UnsignedIntegerZ,
+	uint32 UnsignedIntegerW)
 {
 	glUniform4i(Location, UnsignedIntegerX, UnsignedIntegerY, 
 		UnsignedIntegerZ, UnsignedIntegerW);
@@ -371,7 +374,8 @@ void Render_UpdateShaderVariable(int32 Location, float Float)
 	glUniform1f(Location, Float);
 }
 
-void Render_UpdateShaderVariable(int32 Location, float FloatX, float FloatY)
+void Render_UpdateShaderVariable(int32 Location, float FloatX, 
+	float FloatY)
 {
 	glUniform2f(Location, FloatX, FloatY);
 }
@@ -464,7 +468,6 @@ void Render_UpdateShaderVariable(int32 Location, int32 MatrixSize,
 	}
 }
 
-//TODO: Fix this for textures
 void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 {
 	glGenBuffers(ObjectDescription->NumberOfVertexHandles,
@@ -476,47 +479,41 @@ void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 
 	for (Index; Index < ObjectDescription->NumberOfVertexHandles; Index++)
 	{
-		if (ObjectDescription->VertexBufferDescriptions[0].Uint32Data == 0)
-		{
-			//TODO: Naming scheme may be too long here.
-			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferObjectHandleIDs[Index]);
-			glBufferData(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferDescriptions[Index].Size,
-				ObjectDescription->VertexBufferDescriptions[Index].FloatData, GL_STATIC_DRAW);
-			
-			glEnableVertexAttribArray(Index);
-			glBindVertexBuffer(Index, ObjectDescription->VertexBufferObjectHandleIDs[Index],
-				0, sizeof(GLfloat) * ObjectDescription->VertexBufferDescriptions[Index].Offset);
-			glVertexAttribFormat(Index, ObjectDescription->VertexBufferDescriptions[Index].Offset,
-				GL_FLOAT, GL_FALSE, 0);
-			glVertexAttribBinding(Index, Index);
-		}
-		else  //TODO: Within heightmap, clean
-		{
-			if (Index == 0)
-			{
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription->VertexBufferObjectHandleIDs[Index]);
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, ObjectDescription->VertexBufferDescriptions[Index].Size,
-					ObjectDescription->VertexBufferDescriptions[Index].Uint32Data, GL_STATIC_DRAW);
-				Index++;
-			}
-
-			glBindBuffer(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferObjectHandleIDs[Index]);
-			glBufferData(GL_ARRAY_BUFFER, ObjectDescription->VertexBufferDescriptions[Index].Size,
-				ObjectDescription->VertexBufferDescriptions[Index].FloatData, GL_STATIC_DRAW);
-
-			glEnableVertexAttribArray(Index - 1);
-			glBindVertexBuffer(Index - 1, ObjectDescription->VertexBufferObjectHandleIDs[Index],
-				0, sizeof(GLfloat) * ObjectDescription->VertexBufferDescriptions[Index].Offset);
-			glVertexAttribFormat(Index - 1, ObjectDescription->VertexBufferDescriptions[Index].Offset, GL_FLOAT, GL_FALSE, 0);
-			glVertexAttribBinding(Index - 1, Index - 1);
-		}
+		glBindBuffer(GL_ARRAY_BUFFER,
+			ObjectDescription->VertexBufferObjectHandleIDs[Index]);
+		glBufferData(GL_ARRAY_BUFFER, 
+			ObjectDescription->VertexBufferDescriptions[Index].Size,
+			ObjectDescription->VertexBufferDescriptions[Index].Data,
+			GL_STATIC_DRAW);
+		
+		glEnableVertexAttribArray(Index);
+		glBindVertexBuffer(Index, 
+			ObjectDescription->VertexBufferObjectHandleIDs[Index],
+			0, sizeof(GLfloat) * 
+			ObjectDescription->VertexBufferDescriptions[Index].Offset);
+		glVertexAttribFormat(Index,
+			ObjectDescription->VertexBufferDescriptions[Index].Offset,
+			GL_FLOAT, GL_FALSE, 0);
+		glVertexAttribBinding(Index, Index);
 	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
-	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
+	if (ObjectDescription->IndiceDescription.Data)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
+			ObjectDescription->VertexBufferObjectHandleIDs[Index]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			ObjectDescription->IndiceDescription.Size,
+			ObjectDescription->IndiceDescription.Data,
+			GL_STATIC_DRAW);
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0); 
+	// NOTE: Do not unbind the EBO, keep it bound to this VAO
+	glBindVertexArray(0); 
 }
 
-void* Render_GetObjectShaderDataPtr(uint32* VertexObjectHandleIDArray, int32 Offset, uint32 Length)
+void* Render_GetObjectShaderDataPtr(uint32* VertexObjectHandleIDArray,
+	int32 Offset, uint32 Length)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, VertexObjectHandleIDArray[2]);
 	GLsizeiptr NewDataSize;
@@ -585,7 +582,8 @@ void Render_DrawObjectIndices(uint32 VertexArrayObjectID,
 {
 	glBindVertexArray(VertexArrayObjectID);
 	glBindTexture(GL_TEXTURE_2D, Texture);
-	glDrawElements(GL_TRIANGLES, NumberOfIndices, GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, NumberOfIndices, GL_UNSIGNED_INT, 
+		(void*)0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 }
@@ -608,7 +606,8 @@ void Render_DeleteTexture(uint32 NumberOfTextures, uint32 *TextureID)
 	glDeleteTextures(NumberOfTextures, TextureID);
 }
 
-void Render_DeleteVertexArrays(uint32 NumberOfVertexArrayObjects, uint32 *VAO)
+void Render_DeleteVertexArrays(uint32 NumberOfVertexArrayObjects,
+	uint32 *VAO)
 {
 	glBindVertexArray(0);
 	glDeleteVertexArrays(NumberOfVertexArrayObjects, VAO);
@@ -619,7 +618,8 @@ void Render_DeleteBuffers(uint32 NumberOfBuffers, uint32 *Buffers)
 	glDeleteBuffers(NumberOfBuffers, Buffers);
 }
 
-void Render_DeleteBuffers(uint32 NumberOfBuffers, uint32 VertexArrayObjectID, uint32 *Buffers)
+void Render_DeleteBuffers(uint32 NumberOfBuffers, 
+	uint32 VertexArrayObjectID, uint32 *Buffers)
 {
 	glBindVertexArray(VertexArrayObjectID);
 	glDeleteBuffers(NumberOfBuffers, Buffers);

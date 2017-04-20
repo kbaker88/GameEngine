@@ -1,0 +1,31 @@
+
+////////////////////////////////////////////////////////
+//////////////// NOTES ON OPENGL //////////////////////
+//////////////////////////////////////////////////////
+
+General Observations:
+	- Changing OpenGL Object states generally require that the object is first
+	  bound to the OpenGL Context. 
+	- Unbinding Objects is important to avoid errors.
+
+Buffer Object (BO):
+	Store an array of unformatted memory allocated by the OpenGL context. Usage
+	is for storing vertex data, pixel data, etc.
+	- Created with glGenBuffers()
+	- Bind to the OpenGL context with glBindBuffer()
+	- Deleted with glDeleteBuffers()
+	NOTE: Buffer can be allocated as mutable or immutable
+
+Vertex Array Object (VAO):
+	Stores the state needed to supply vertex data to the pipeline. Stores the
+	format of the vertex data and the Buffer Objects
+	- Enable array access by glEnableVertexAttribArray()
+	NOTE: VAO's do not copy, freeze, or store the contents of references buffers.
+	NOTE: Array access is disabled until the enable function is called
+	NOTE: GL_ARRAY_BUFFER is not a part of VAO's state
+
+Vertex Buffer Object (VBO):
+	Buffer Object used as a source for vertex array data. Need to setup
+	the vertex format for an attribute array and the source data for 
+	that array. 
+	NOTE: Two ways to use a VBO, one combines two processes into one function

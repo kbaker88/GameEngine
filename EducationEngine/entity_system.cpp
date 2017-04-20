@@ -1,45 +1,39 @@
 #include "entity_system.h"
 
-struct EntityBlock
+void Entity_CreateBlock(EntityBlock* Block, uint32 Size)
 {
-	EntityBlock() : Entities(0), BlockSize(0) {}
-
-	Entity* Entities;
-	uint32 BlockSize;
-};
-
-//TODO: Find a better spot for this
-EntityBlock EntityBlocks[3];
-
-void Entity_CreateBlock(uint32 BlockNumber, uint32 Size)
-{
-
-	if (EntityBlocks[BlockNumber].Entities == 0)
+	if (!Block)
 	{
-		EntityBlocks[BlockNumber].Entities = new Entity[Size];
-		EntityBlocks[BlockNumber].BlockSize = Size;
+		//TODO: Error
 	}
 	else
 	{
-		//TODO: Error, block already exists
+		if (!Block->Entities)
+		{
+			Block->Entities = new Entity[Size];
+			Block->BlockSize = Size;
+		}
+		{
+			//TODO: Error, block already exists
+		}
 	}
 }
 
-void Entity_DeleteBlock(uint32 BlockNumber)
+void Entity_DeleteBlock(EntityBlock* Block)
 {
-	if (EntityBlocks[BlockNumber].Entities != 0)
+	if (Block->Entities != 0)
 	{
-		for (uint32 i = 0; i < EntityBlocks[BlockNumber].BlockSize; i++)
+		for (uint32 i = 0; i < Block->BlockSize; i++)
 		{
-			if (EntityBlocks[BlockNumber].Entities->CameraObj)
+			if (Block->Entities->CameraObj)
 			{
-				delete EntityBlocks[BlockNumber].Entities->CameraObj;
-				EntityBlocks[BlockNumber].Entities->CameraObj = 0;
+				delete Block->Entities->CameraObj;
+				Block->Entities->CameraObj = 0;
 			}
 		}
-		delete[] EntityBlocks[BlockNumber].Entities;
-		EntityBlocks[BlockNumber].Entities = 0;
-		EntityBlocks[BlockNumber].BlockSize = 0;
+		delete[] Block->Entities;
+		Block->Entities = 0;
+		Block->BlockSize = 0;
 	}
 	else
 	{
@@ -47,48 +41,48 @@ void Entity_DeleteBlock(uint32 BlockNumber)
 	}
 }
 
-int32 Entity_Create(uint32 BlockNumber, uint32 IDNumber, 
-	uint32 ObjectBlockNumber, uint32 ObjectID, v3 *Position)
+int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
+	ObjectBlock* ObjBlock, uint32 ObjectID, v3 *Position)
 {
-	if (IDNumber < EntityBlocks[BlockNumber].BlockSize)
+	if (IDNumber < Block->BlockSize)
 	{
-		if (EntityBlocks[BlockNumber].Entities[IDNumber].Active == 0)
+		if (Block->Entities[IDNumber].Active == 0)
 		{
-			EntityBlocks[BlockNumber].Entities[IDNumber].ObjectID = ObjectID;
-			EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr =
-				Object_GetObjectPtr(ObjectBlockNumber, ObjectID);
-			EntityBlocks[BlockNumber].Entities[IDNumber].ModelMatrix =
+			Block->Entities[IDNumber].ObjectID = ObjectID;
+			Block->Entities[IDNumber].ObjectPtr =
+				Object_GetObjectPtr(ObjBlock, ObjectID);
+			Block->Entities[IDNumber].ModelMatrix =
 				Math_TranslateMatrix(Math_IdentityMatrix(), *Position);
-			EntityBlocks[BlockNumber].Entities[IDNumber].Position =
+			Block->Entities[IDNumber].Position =
 				*Position;
 
-			EntityBlocks[BlockNumber].Entities[IDNumber].PhysicsObj.Position =
-				&EntityBlocks[BlockNumber].Entities[IDNumber].Position;
-			EntityBlocks[BlockNumber].Entities[IDNumber].PhysicsObj.MoveDirection =
-				&EntityBlocks[BlockNumber].Entities[IDNumber].DirectionVector;
+			Block->Entities[IDNumber].PhysicsObj.Position =
+				&Block->Entities[IDNumber].Position;
+			Block->Entities[IDNumber].PhysicsObj.MoveDirection =
+				&Block->Entities[IDNumber].DirectionVector;
 
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Position =
-				&EntityBlocks[BlockNumber].Entities[IDNumber].Position;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.ModelMatrix =
-				&EntityBlocks[BlockNumber].Entities[IDNumber].ModelMatrix;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.NumVertices =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->NumberOfVertices;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.VerticesPtr =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->VerticeFloatArrayPtr;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Width =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Width;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Height =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Height;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Depth =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Depth;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.HalfWidth =
-				EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Width * 0.5f;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.HalfHeight =
-				EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Height * 0.5f;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.HalfDepth =
-				EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Depth * 0.5f;
+			Block->Entities[IDNumber].CollisionObj.Position =
+				&Block->Entities[IDNumber].Position;
+			Block->Entities[IDNumber].CollisionObj.ModelMatrix =
+				&Block->Entities[IDNumber].ModelMatrix;
+			Block->Entities[IDNumber].CollisionObj.NumVertices =
+				Block->Entities[IDNumber].ObjectPtr->NumberOfVertices;
+			Block->Entities[IDNumber].CollisionObj.VerticesPtr =
+				Block->Entities[IDNumber].ObjectPtr->VerticeFloatArrayPtr;
+			Block->Entities[IDNumber].CollisionObj.Width =
+				Block->Entities[IDNumber].ObjectPtr->Width;
+			Block->Entities[IDNumber].CollisionObj.Height =
+				Block->Entities[IDNumber].ObjectPtr->Height;
+			Block->Entities[IDNumber].CollisionObj.Depth =
+				Block->Entities[IDNumber].ObjectPtr->Depth;
+			Block->Entities[IDNumber].CollisionObj.HalfWidth =
+				Block->Entities[IDNumber].CollisionObj.Width * 0.5f;
+			Block->Entities[IDNumber].CollisionObj.HalfHeight =
+				Block->Entities[IDNumber].CollisionObj.Height * 0.5f;
+			Block->Entities[IDNumber].CollisionObj.HalfDepth =
+				Block->Entities[IDNumber].CollisionObj.Depth * 0.5f;
 
-			EntityBlocks[BlockNumber].Entities[IDNumber].Active = 1;
+			Block->Entities[IDNumber].Active = 1;
 
 			return 1;
 		}
@@ -105,35 +99,35 @@ int32 Entity_Create(uint32 BlockNumber, uint32 IDNumber,
 	}
 }
 
-int32 Entity_Create(uint32 BlockNumber, uint32 IDNumber, v3 *Position)
+int32 Entity_Create(EntityBlock* Block, uint32 IDNumber, v3 *Position)
 {
-	if (IDNumber < EntityBlocks[BlockNumber].BlockSize)
+	if (IDNumber < Block->BlockSize)
 	{
-		if (EntityBlocks[BlockNumber].Entities[IDNumber].Active == 0)
+		if (Block->Entities[IDNumber].Active == 0)
 		{
-			EntityBlocks[BlockNumber].Entities[IDNumber].ModelMatrix =
+			Block->Entities[IDNumber].ModelMatrix =
 				Math_TranslateMatrix(Math_IdentityMatrix(), *Position);
-			EntityBlocks[BlockNumber].Entities[IDNumber].Position =
+			Block->Entities[IDNumber].Position =
 				*Position;
 
-			EntityBlocks[BlockNumber].Entities[IDNumber].PhysicsObj.Position =
-				&EntityBlocks[BlockNumber].Entities[IDNumber].Position;
-			EntityBlocks[BlockNumber].Entities[IDNumber].PhysicsObj.MoveDirection =
-				&EntityBlocks[BlockNumber].Entities[IDNumber].DirectionVector;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Position =
-				&EntityBlocks[BlockNumber].Entities[IDNumber].Position;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.NumVertices =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->NumberOfVertices;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.VerticesPtr =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->VerticeFloatArrayPtr;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Width =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Width;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Height =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Height;
-			EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj.Depth =
-				EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Depth;
+			Block->Entities[IDNumber].PhysicsObj.Position =
+				&Block->Entities[IDNumber].Position;
+			Block->Entities[IDNumber].PhysicsObj.MoveDirection =
+				&Block->Entities[IDNumber].DirectionVector;
+			Block->Entities[IDNumber].CollisionObj.Position =
+				&Block->Entities[IDNumber].Position;
+			Block->Entities[IDNumber].CollisionObj.NumVertices =
+				Block->Entities[IDNumber].ObjectPtr->NumberOfVertices;
+			Block->Entities[IDNumber].CollisionObj.VerticesPtr =
+				Block->Entities[IDNumber].ObjectPtr->VerticeFloatArrayPtr;
+			Block->Entities[IDNumber].CollisionObj.Width =
+				Block->Entities[IDNumber].ObjectPtr->Width;
+			Block->Entities[IDNumber].CollisionObj.Height =
+				Block->Entities[IDNumber].ObjectPtr->Height;
+			Block->Entities[IDNumber].CollisionObj.Depth =
+				Block->Entities[IDNumber].ObjectPtr->Depth;
 
-			EntityBlocks[BlockNumber].Entities[IDNumber].Active = 1;
+			Block->Entities[IDNumber].Active = 1;
 
 			return 1;
 		}
@@ -150,97 +144,102 @@ int32 Entity_Create(uint32 BlockNumber, uint32 IDNumber, v3 *Position)
 	}
 }
 
-void Entity_AddCamera(uint32 BlockNumber, uint32 IDNumber, Camera* NewCamera)
+void Entity_AddCamera(EntityBlock* Block, uint32 IDNumber, 
+	Camera* NewCamera)
 {
-	EntityBlocks[BlockNumber].Entities[IDNumber].CameraObj = 
+	Block->Entities[IDNumber].CameraObj = 
 		NewCamera;
-	EntityBlocks[BlockNumber].Entities[IDNumber].CameraObj->
-		SetPosition(&EntityBlocks[BlockNumber].Entities[IDNumber].Position);
-	EntityBlocks[BlockNumber].Entities[IDNumber].CameraObj->
+	Block->Entities[IDNumber].CameraObj->
+		SetPosition(&Block->Entities[IDNumber].Position);
+	Block->Entities[IDNumber].CameraObj->
 		SetProjectionMatrix(1);
 }
 
-Camera* Entity_GetCamera(uint32 BlockNumber, uint32 IDNumber)
+Camera* Entity_GetCamera(EntityBlock* Block, uint32 IDNumber)
 {
-	return EntityBlocks[BlockNumber].Entities[IDNumber].CameraObj;
+	return Block->Entities[IDNumber].CameraObj;
 }
 
-void Entity_Draw(uint32 BlockNumber, uint32 IDNumber, uint32 ShaderVariableID)
+void Entity_Draw(EntityBlock* Block, uint32 IDNumber, 
+	uint32 ShaderVariableID)
 {
-	if (EntityBlocks[BlockNumber].Entities[IDNumber].Active == 1)
+	if (Block->Entities[IDNumber].Active == 1)
 	{
 		Render_UpdateShaderVariable(ShaderVariableID, 44,
-			(float*)&EntityBlocks[BlockNumber].Entities[IDNumber].ModelMatrix, 1, 0);
-		EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Draw();
+			(float*)&Block->Entities[IDNumber].ModelMatrix, 1, 0);
+		Block->Entities[IDNumber].ObjectPtr->Draw();
 	}
 }
 
-void Entity_DrawPolyGonMode(uint32 BlockNumber, uint32 IDNumber, uint32 ShaderVariableID)
+void Entity_DrawPolyGonMode(EntityBlock* Block, uint32 IDNumber, 
+	uint32 ShaderVariableID)
 {
-	if (EntityBlocks[BlockNumber].Entities[IDNumber].Active == 1)
+	if (Block->Entities[IDNumber].Active == 1)
 	{
 		Render_UpdateShaderVariable(ShaderVariableID, 44,
-			(float*)&EntityBlocks[BlockNumber].Entities[IDNumber].ModelMatrix, 1, 0);
-		EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Draw(1);
+			(float*)&Block->Entities[IDNumber].ModelMatrix, 1, 0);
+		Block->Entities[IDNumber].ObjectPtr->Draw(1);
 	}
 }
 
-Entity* Entity_Ptr(uint32 BlockNumber, uint32 IDNumber)
+Entity* Entity_Ptr(EntityBlock* Block, uint32 IDNumber)
 {
-	return &EntityBlocks[BlockNumber].Entities[IDNumber];
+	return &Block->Entities[IDNumber];
 }
 
-uint32 Entity_GetObjectID(uint32 BlockNumber, uint32 IDNumber)
+uint32 Entity_GetObjectID(EntityBlock* Block, uint32 IDNumber)
 {
-	return EntityBlocks[BlockNumber].Entities[IDNumber].ObjectID;
+	return Block->Entities[IDNumber].ObjectID;
 }
 
-CollisionObject* Entity_GetCollisionObjPtr(uint32 BlockNumber, uint32 IDNumber)
+CollisionObject* Entity_GetCollisionObjPtr(EntityBlock* Block,
+	uint32 IDNumber)
 {
-	return &EntityBlocks[BlockNumber].Entities[IDNumber].CollisionObj;
+	return &Block->Entities[IDNumber].CollisionObj;
 }
 
-PhysicsObject* Entity_GetPhysObjPtr(uint32 BlockNumber, uint32 IDNumber)
+PhysicsObject* Entity_GetPhysObjPtr(EntityBlock* Block, uint32 IDNumber)
 {
-	return &EntityBlocks[BlockNumber].Entities[IDNumber].PhysicsObj;
+	return &Block->Entities[IDNumber].PhysicsObj;
 }
 
-Object* Entity_GetObjectPtr(uint32 BlockNumber, uint32 IDNumber)
+Object* Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber)
 {
-	return EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr;
+	return Block->Entities[IDNumber].ObjectPtr;
 }
 
-float Entity_GetWidth(uint32 BlockNumber, uint32 IDNumber)
+float Entity_GetWidth(EntityBlock* Block, uint32 IDNumber)
 {
-	return EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Width;
+	return Block->Entities[IDNumber].ObjectPtr->Width;
 }
 
-float Entity_GetHeight(uint32 BlockNumber, uint32 IDNumber)
+float Entity_GetHeight(EntityBlock* Block, uint32 IDNumber)
 {
-	return EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Height;
+	return Block->Entities[IDNumber].ObjectPtr->Height;
 }
 
-float Entity_GetDepth(uint32 BlockNumber, uint32 IDNumber)
+float Entity_GetDepth(EntityBlock* Block, uint32 IDNumber)
 {
-	return EntityBlocks[BlockNumber].Entities[IDNumber].ObjectPtr->Depth;
+	return Block->Entities[IDNumber].ObjectPtr->Depth;
 }
 
-v3 Entity_GetPosition(uint32 BlockNumber, uint32 IDNumber)
+v3 Entity_GetPosition(EntityBlock* Block, uint32 IDNumber)
 {
-	return EntityBlocks[BlockNumber].Entities[IDNumber].Position;
+	return Block->Entities[IDNumber].Position;
 }
 
-void Entity_SetPosition(uint32 BlockNumber, uint32 IDNumber, v3& Position)
+void Entity_SetPosition(EntityBlock* Block, uint32 IDNumber,
+	v3& Position)
 {
-	EntityBlocks[BlockNumber].Entities[IDNumber].Position = Position;
+	Block->Entities[IDNumber].Position = Position;
 }
 
-void Entity_UpdatePosition(uint32 BlockNumber, uint32 IDNumber)
+void Entity_UpdatePosition(EntityBlock* Block, uint32 IDNumber)
 {
-	EntityBlocks[BlockNumber].Entities[IDNumber].ModelMatrix.Rc[3][0] =
-		EntityBlocks[BlockNumber].Entities[IDNumber].Position.x;
-	EntityBlocks[BlockNumber].Entities[IDNumber].ModelMatrix.Rc[3][1] =
-		EntityBlocks[BlockNumber].Entities[IDNumber].Position.y;
-	EntityBlocks[BlockNumber].Entities[IDNumber].ModelMatrix.Rc[3][2] = 
-		EntityBlocks[BlockNumber].Entities[IDNumber].Position.z;
+	Block->Entities[IDNumber].ModelMatrix.Rc[3][0] =
+		Block->Entities[IDNumber].Position.x;
+	Block->Entities[IDNumber].ModelMatrix.Rc[3][1] =
+		Block->Entities[IDNumber].Position.y;
+	Block->Entities[IDNumber].ModelMatrix.Rc[3][2] = 
+		Block->Entities[IDNumber].Position.z;
 }

@@ -187,7 +187,3 @@ void Text_NewLine(uint32 TextID)
 	TextMarkers[TextID].ModelMatrix = Math_TranslateMatrix(TextMarkers[TextID].ModelMatrix,
 		v3(0.0f, -40.0f, 0.0f));
 }
-
-
-
-

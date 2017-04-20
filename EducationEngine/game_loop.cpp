@@ -9,16 +9,16 @@ void Game_Loop()
 
 	switch (StateOfProgram)
 	{
-	case 0: // Loading
+	case 0: // NOTE: Loading
 	{
 		DEBUG_Initialize();
-		Asset_LoadTextures(); // Too general, need to make multiple loads
+		Asset_LoadTextures(); // TODO: Too general, need to make multiple loads
 		Text_BuildFont("arial\0");
 		//Network_Init();
 		StateOfProgram = 1;
 	} break;
 
-	case 1: // Title Screen
+	case 1: // NOTE: Title Screen
 	{
 		if (States[0].Status == 0)
 		{
@@ -27,8 +27,10 @@ void Game_Loop()
 			State_CreateShaderHandles(&States[0], 2);
 			State_LinkToProgram(&States[0], &StateOfProgram);
 
-			States[0].EntityBlockNum = 0;
-			States[0].ObjectBlockNum = 0;
+			Entity_CreateBlock(&States[0].EntityBlocks, 256);
+			Object_CreateBlock(&States[0].ObjectBlocks, 256);
+			States[0].NumEntityBlocks = 1;
+			States[0].NumObjectBlocks = 1;
 			States[0].Status = 1;
 
 			Title_Initialize(&States[0]);
@@ -36,7 +38,8 @@ void Game_Loop()
 		else
 		{
 			Title_Draw(&States[0]);
-			if (Platform_GetStateOfKey(0x27) == 1) // SPACE BAR (VK_SPACE) REPLACE WITH SELF MADE KEY CODES
+			// NOTE: SPACE BAR (VK_SPACE) REPLACE WITH SELF MADE KEY CODES
+			if (Platform_GetStateOfKey(0x27) == 1) 
 			{
 				StateOfProgram = 2;
 				Title_Clean(&States[0]);
@@ -49,7 +52,7 @@ void Game_Loop()
 		}
 	} break;
 
-	case 2: // Game
+	case 2: // NOTE: Game
 	{
 		if (States[1].Status == 0)
 		{
@@ -59,8 +62,10 @@ void Game_Loop()
 			State_CreateShaderHandles(&States[1], 2);
 			State_LinkToProgram(&States[1], &StateOfProgram);
 
-			States[1].EntityBlockNum = 0;
-			States[1].ObjectBlockNum = 0;
+			Entity_CreateBlock(&States[1].EntityBlocks, 256);
+			Object_CreateBlock(&States[1].ObjectBlocks, 256);
+			States[1].NumEntityBlocks = 1;
+			States[1].NumObjectBlocks = 1;
 			States[1].Status = 1;
 
 			Game_Initialize(&States[1]);
@@ -68,7 +73,8 @@ void Game_Loop()
 		else
 		{
 			Game_Draw(&States[1]);
-			if (Platform_GetStateOfKey(0x25) == 1) // Left Arrow, replace later.
+			// NOTE: Left Arrow, replace later.
+			if (Platform_GetStateOfKey(0x25) == 1) 
 			{
 				StateOfProgram = 1;
 				Game_Clean(&States[1]);
@@ -81,7 +87,7 @@ void Game_Loop()
 		}
 	} break;
 
-	case 3: // Menu Screen
+	case 3: // NOTE: Menu Screen
 	{
 		if (States[2].Status == 0)
 		{
@@ -90,8 +96,10 @@ void Game_Loop()
 			State_CreateShaderHandles(&States[2], 2);
 			State_LinkToProgram(&States[2], &StateOfProgram);
 
-			States[2].EntityBlockNum = 0;
-			States[2].ObjectBlockNum = 0;
+			Entity_CreateBlock(&States[2].EntityBlocks, 256);
+			Object_CreateBlock(&States[2].ObjectBlocks, 256);
+			States[2].NumEntityBlocks = 1;
+			States[2].NumObjectBlocks = 1;
 			States[2].Status = 1;
 
 			Menu_Initialize(&States[2]);
@@ -99,7 +107,8 @@ void Game_Loop()
 		else
 		{
 			Menu_Draw(&States[2]);
-			if (Platform_GetStateOfKey(0x25) == 1) // Left Arrow, replace later.
+			// NOTE: Left Arrow, replace later.
+			if (Platform_GetStateOfKey(0x25) == 1) 
 			{
 				StateOfProgram = 1;
 				Menu_Clean(&States[2]);
@@ -123,7 +132,7 @@ void Game_Loop()
 	} break;
 	}
 
-	// Cap at 60FPS
+	// NOTE: Cap at 60FPS
 	int64 CounterElapsed = Platform_GetCPUCounter() - LastCounter;
 	float SecondsElapsedForFrame = ((float)CounterElapsed /
 		(float)Platform_GetTimeFrequency());

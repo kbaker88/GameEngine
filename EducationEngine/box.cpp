@@ -204,25 +204,26 @@ void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 		0.0f, 1.0f, 0.0f
 	};
 
-	ObjectDescription.VertexBufferDescriptions[0].FloatData = VerticePositions;
+	ObjectDescription.VertexBufferDescriptions[0].Data = VerticePositions;
 	ObjectDescription.VertexBufferDescriptions[0].Size = sizeof(VerticePositions);
 	ObjectDescription.VertexBufferDescriptions[0].Offset = 3;
 
-	ObjectDescription.VertexBufferDescriptions[1].FloatData = ColorData;
+	ObjectDescription.VertexBufferDescriptions[1].Data = ColorData;
 	ObjectDescription.VertexBufferDescriptions[1].Size = sizeof(ColorData);
 	ObjectDescription.VertexBufferDescriptions[1].Offset = 3;
 
-	ObjectDescription.VertexBufferDescriptions[2].FloatData = TextureCoords;
+	ObjectDescription.VertexBufferDescriptions[2].Data = TextureCoords;
 	ObjectDescription.VertexBufferDescriptions[2].Size = sizeof(TextureCoords);
 	ObjectDescription.VertexBufferDescriptions[2].Offset = 2;
 
-	ObjectDescription.VertexBufferDescriptions[3].FloatData = NormalData;
+	ObjectDescription.VertexBufferDescriptions[3].Data = NormalData;
 	ObjectDescription.VertexBufferDescriptions[3].Size = sizeof(NormalData);
 	ObjectDescription.VertexBufferDescriptions[3].Offset = 3;
 
 	Render_ObjectPipelineInit(&ObjectDescription);
 
-	// Below is indice implementation of a box
+	// NOTE: Below is indice implementation of a box
+
 /*	ObjectDescription.NumberOfVertexHandles = 5;
 	ObjectDescription.VertexBufferDescriptions =
 		new VBODescription[ObjectDescription.NumberOfVertexHandles];

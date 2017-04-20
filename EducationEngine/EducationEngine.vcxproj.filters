@@ -97,6 +97,9 @@
     <Filter Include="Source Files\engine\utility">
       <UniqueIdentifier>{417c4920-40c6-48ec-9945-a9b25cbeed19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\notes">
+      <UniqueIdentifier>{be35cebe-80b7-4b8d-b7f3-496cf5fb34c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="box.cpp">
@@ -302,5 +305,10 @@
     <ClInclude Include="entity_utility.h">
       <Filter>Header Files\engine\utility</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="OpenGL.txt">
+      <Filter>Header Files\notes</Filter>
+    </Text>
   </ItemGroup>
 </Project>

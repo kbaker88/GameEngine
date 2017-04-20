@@ -2,8 +2,8 @@
 
 void Menu_Initialize(ProgramState* State)
 {
-	Entity_CreateBlock(State->EntityBlockNum, 32);
-	Object_CreateBlock(State->ObjectBlockNum, 32);
+	//Entity_CreateBlock(State->EntityBlockNum, 32);
+	//Object_CreateBlock(State->ObjectBlockNum, 32);
 
 	window_properties WindowSize = Render_GetWindowProperties();
 	float HalfScreenWidth = 0.5f * (float)WindowSize.Width;
@@ -45,7 +45,7 @@ void Menu_Initialize(ProgramState* State)
 
 	// Exit Button (temp second one)
 	ButtonPosition.y -= ButtonHeight;
-	Entity_Create(State->EntityBlockNum, 3, State->ObjectBlockNum, 2,
+	Entity_Create(&State->EntityBlocks, 3, &State->ObjectBlocks, 2,
 		&ButtonPosition);
 }
 
@@ -78,12 +78,12 @@ void Menu_Draw(ProgramState* State)
 	for (uint32 Index = 0; Index < State->EntityCount; Index++)
 	{
 		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
-			Entity_GetCollisionObjPtr(State->EntityBlockNum, Index));
+			Entity_GetCollisionObjPtr(&State->EntityBlocks, Index));
 		Menu_CollisionResolve(State, CollisionResult);
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[4],
-			Entity_Ptr(State->EntityBlockNum, Index)->State);
-		Entity_Draw(State->EntityBlockNum, Index, State->GPUShaderVarArray[0]);
+			Entity_Ptr(&State->EntityBlocks, Index)->State);
+		Entity_Draw(&State->EntityBlocks, Index, State->GPUShaderVarArray[0]);
 	}
 
 	if (State->Status == -1)
@@ -102,11 +102,11 @@ void Menu_CollisionResolve(ProgramState* State, int32 CollisionResult)
 	{
 	case 0:
 	{
-		Entity_Ptr(State->EntityBlockNum, 0)->State = 0;
+		Entity_Ptr(&State->EntityBlocks, 0)->State = 0;
 	} break;
 	case 1:
 	{
-		Entity_Ptr(State->EntityBlockNum, 0)->State = 1;
+		Entity_Ptr(&State->EntityBlocks, 0)->State = 1;
 	} break;
 	case 2:
 	{
@@ -115,11 +115,11 @@ void Menu_CollisionResolve(ProgramState* State, int32 CollisionResult)
 	} break;
 	case 10:
 	{
-		Entity_Ptr(State->EntityBlockNum, 1)->State = 0;
+		Entity_Ptr(&State->EntityBlocks, 1)->State = 0;
 	} break;
 	case 11:
 	{
-		Entity_Ptr(State->EntityBlockNum, 1)->State = 1;
+		Entity_Ptr(&State->EntityBlocks, 1)->State = 1;
 	} break;
 	case 12:
 	{
@@ -128,11 +128,11 @@ void Menu_CollisionResolve(ProgramState* State, int32 CollisionResult)
 	} break;
 	case 20:
 	{
-		Entity_Ptr(State->EntityBlockNum, 2)->State = 0;
+		Entity_Ptr(&State->EntityBlocks, 2)->State = 0;
 	} break;
 	case 21:
 	{
-		Entity_Ptr(State->EntityBlockNum, 2)->State = 1;
+		Entity_Ptr(&State->EntityBlocks, 2)->State = 1;
 	} break;
 	case 22:
 	{
@@ -158,8 +158,8 @@ void Menu_CollisionResolve(ProgramState* State, int32 CollisionResult)
 void Menu_Clean(ProgramState* State)
 {
 	Platform_UpdateMouseState(0);
-	Entity_DeleteBlock(State->EntityBlockNum);
-	Object_DeleteBlock(State->ObjectBlockNum);
+	Entity_DeleteBlock(&State->EntityBlocks);
+	Object_DeleteBlock(&State->ObjectBlocks);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
 	Render_ClearCurrentShaderProgram();
