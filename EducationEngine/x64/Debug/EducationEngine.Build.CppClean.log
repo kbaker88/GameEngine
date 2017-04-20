@@ -27,11 +27,11 @@ c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\clock.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\collision_system.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\debug_system.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\entity_system.obj
-c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\entity_utility.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\input_state.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\memory_management.obj
-c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\game_loop.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\game_state.obj
+c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\game_loop.obj
+c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\entity_utility.obj
 c:\users\kevin\documents\github\gameengine\x64\debug\educationengine.ilk
 c:\users\kevin\documents\github\gameengine\x64\debug\educationengine.exe
 c:\users\kevin\documents\github\gameengine\x64\debug\educationengine.pdb

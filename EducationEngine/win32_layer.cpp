@@ -39,9 +39,10 @@ static platform_properties PlatformProperties = {};
 //NOTE: Setting up a function pointer's return and parameter
 //      types for creating an OpenGL Context.
 typedef HGLRC __stdcall wgl_create_context_attribs_arb(HDC hDC,
-							HGLRC hShareContext, const int *attribList);
+					HGLRC hShareContext, const int *attribList);
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, 
+	LPARAM lParam);
 
 // TEMPORARY: Throws these in a struct later? Or get rid of them
 uint32 MouseState;
@@ -88,8 +89,8 @@ unsigned char* Platform_ReadFile(char* FileName)
 
 	if (OpenFile != 0)
 	{
-		size_t NumberOfElementsRead = fread(ReturnValues, sizeof(uint8), 
-			buffer.st_size, OpenFile);
+		size_t NumberOfElementsRead = fread(ReturnValues, 
+			sizeof(uint8), buffer.st_size, OpenFile);
 
 		fclose(OpenFile);
 	}
@@ -223,8 +224,10 @@ loaded_bitmap Platform_LoadGlyph(void* Bits, uint32 CodePoint)
 		Result.Memory = malloc(Result.Height*Result.Pitch);
 		Result.Free = Result.Memory;
 
-		uint8 *DestRow = (uint8 *)Result.Memory + (Result.Height - 1)*Result.Pitch;
-		uint32 *SourceRow = (uint32 *)Bits + (MaxHeight - 1 - MinY) * MaxWidth;
+		uint8 *DestRow = (uint8 *)Result.Memory + (Result.Height - 1) * 
+			Result.Pitch;
+		uint32 *SourceRow = (uint32 *)Bits + (MaxHeight - 1 - MinY) * 
+			MaxWidth;
 		for (int32 Y = MinY; Y <= MaxY; ++Y)
 		{
 			uint32 *Source = (uint32 *)SourceRow + MinX;
@@ -270,7 +273,8 @@ int64 Platform_GetTimeFrequency()
 		if (!QueryPerformanceFrequency(&Frequency))
 		{
 			// TODO: Error
-			MessageBox(NULL, "Obtaining Timer Frequency Failed!", "Error!",
+			MessageBox(NULL, "Obtaining Timer Frequency Failed!", 
+				"Error!",
 				MB_ICONEXCLAMATION | MB_OK);
 		}
 		return Frequency.QuadPart;
@@ -371,7 +375,8 @@ void Platform_Initialize()
 	PlatformProperties.Instance = GetModuleHandle(NULL);
 	if (PlatformProperties.Instance == NULL)
 	{
-		MessageBox(NULL, "Obtaining Window's Instance Failed!", "Error!",
+		MessageBox(NULL, "Obtaining Window's Instance Failed!", 
+			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
 
@@ -400,7 +405,8 @@ void Platform_Initialize()
 		(const char*)"GameEngine",
 		"First Generation Game Engine",
 		WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
-		CW_USEDEFAULT, CW_USEDEFAULT, WindowProperties.Width, WindowProperties.Height,
+		CW_USEDEFAULT, CW_USEDEFAULT, WindowProperties.Width,
+		WindowProperties.Height,
 		NULL, NULL, PlatformProperties.Instance, NULL);
 
 	if (PlatformWindow.Window == NULL)
@@ -426,8 +432,8 @@ void Platform_InitRenderer()
 	PIXELFORMATDESCRIPTOR DesiredPixelFormat = {};
 	DesiredPixelFormat.nSize = sizeof(DesiredPixelFormat);
 	DesiredPixelFormat.nVersion = 1;
-	DesiredPixelFormat.dwFlags = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW |
-		PFD_DOUBLEBUFFER;
+	DesiredPixelFormat.dwFlags = PFD_SUPPORT_OPENGL | 
+		PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER;
 	DesiredPixelFormat.iPixelType = PFD_TYPE_RGBA;
 	DesiredPixelFormat.cColorBits = 32;
 	DesiredPixelFormat.cAlphaBits = 8;
@@ -439,7 +445,8 @@ void Platform_InitRenderer()
 			&DesiredPixelFormat);
 	if (SuggestedPixelFormatIndex == 0)
 	{
-		MessageBox(NULL, "Obtaining Suggested Pixel Format Index Failed!", "Error!",
+		MessageBox(NULL, "Obtaining Suggested Pixel Format Index Failed!", 
+			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
 
@@ -448,7 +455,8 @@ void Platform_InitRenderer()
 		SuggestedPixelFormatIndex,
 		sizeof(SuggestedPixelFormat), &SuggestedPixelFormat))
 	{
-		MessageBox(NULL, "Obtaining Description of a Possible Pixel Format Failed!", "Error!",
+		MessageBox(NULL, 
+			"Obtaining Description of a Possible Pixel Format Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
 
@@ -471,7 +479,8 @@ void Platform_InitRenderer()
 	{
 		//MessageBoxA(0, (char*)glGetString(GL_VERSION), "OPENGL VERSION", 0);
 		wgl_create_context_attribs_arb *wglCreateContextAttribsARB =
-			(wgl_create_context_attribs_arb *)wglGetProcAddress("wglCreateContextAttribsARB");
+			(wgl_create_context_attribs_arb *)wglGetProcAddress(
+				"wglCreateContextAttribsARB");
 
 		if (wglCreateContextAttribsARB)
 		{
@@ -481,7 +490,8 @@ void Platform_InitRenderer()
 				WGL_CONTEXT_MINOR_VERSION_ARB, 3,
 				WGL_CONTEXT_FLAGS_ARB, //WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB |
 				WGL_CONTEXT_DEBUG_BIT_ARB, // REMOVE DEBUG ON PERFORMANCE
-				WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
+				WGL_CONTEXT_PROFILE_MASK_ARB,
+				WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
 				0
 			};
 			HGLRC ShareContext = 0; // a second context for later.

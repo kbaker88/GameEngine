@@ -99,7 +99,8 @@ void* Render_GetObjectShaderDataPtr(uint32* VertexObjectHandleIDArray,
 void Render_UnmapShaderDataPtr();
 void Render_DeleteTexture(uint32 NumberOfTextures, uint32 *TextureID);
 void Render_DeleteVertexArrays(uint32 NumberOfVertexArrayObjects, uint32 *VAO);
-void Render_DeleteBuffers(uint32 NumberOfBuffers, uint32 *Buffers); //TODO: Will this one ever be used?
+//TODO: Will this one ever be used?
+void Render_DeleteBuffers(uint32 NumberOfBuffers, uint32 *Buffers); 
 void Render_DeleteBuffers(uint32 NumberOfBuffers, 
 	uint32 VertexArrayObjectID, uint32 *Buffers);
 
