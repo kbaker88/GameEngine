@@ -64,12 +64,6 @@
     <Filter Include="Source Files\layers">
       <UniqueIdentifier>{2c57cccc-6e76-4ff3-a63b-9babb4317326}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\engine\memory">
-      <UniqueIdentifier>{adecbc3b-4b48-4687-840a-bcd619857542}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\engine\memory">
-      <UniqueIdentifier>{765fceb0-8c79-430b-8a46-92c3b7062146}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\engine\clock">
       <UniqueIdentifier>{7bb4b6f1-fc60-4cee-bb4b-cd5420a0378c}</UniqueIdentifier>
     </Filter>
@@ -147,9 +141,6 @@
     <ClCompile Include="opengl_layer.cpp">
       <Filter>Source Files\layers</Filter>
     </ClCompile>
-    <ClCompile Include="memory_management.cpp">
-      <Filter>Source Files\engine\memory</Filter>
-    </ClCompile>
     <ClCompile Include="clock.cpp">
       <Filter>Source Files\engine\clock</Filter>
     </ClCompile>
@@ -197,6 +188,9 @@
     </ClCompile>
     <ClCompile Include="entity_utility.cpp">
       <Filter>Source Files\engine\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="memory_system.cpp">
+      <Filter>Source Files\engine\entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -254,9 +248,6 @@
     <ClInclude Include="text_system.h">
       <Filter>Header Files\engine\text</Filter>
     </ClInclude>
-    <ClInclude Include="memory_management.h">
-      <Filter>Header Files\engine\memory</Filter>
-    </ClInclude>
     <ClInclude Include="clock.h">
       <Filter>Header Files\engine\clock</Filter>
     </ClInclude>
@@ -304,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="entity_utility.h">
       <Filter>Header Files\engine\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="memory_system.h">
+      <Filter>Header Files\engine\entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
