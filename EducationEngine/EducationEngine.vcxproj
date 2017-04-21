@@ -131,7 +131,7 @@
     <ClCompile Include="entity_system.cpp" />
     <ClCompile Include="entity_utility.cpp" />
     <ClCompile Include="input_state.cpp" />
-    <ClCompile Include="memory_management.cpp" />
+    <ClCompile Include="memory_system.cpp" />
     <ClCompile Include="game_loop.cpp" />
     <ClCompile Include="game_state.cpp" />
     <ClCompile Include="heightmap.cpp" />
@@ -169,7 +169,7 @@
     <ClInclude Include="line.h" />
     <ClInclude Include="linear_algebra.h" />
     <ClInclude Include="math.h" />
-    <ClInclude Include="memory_management.h" />
+    <ClInclude Include="memory_system.h" />
     <ClInclude Include="network_layer.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="object_system.h" />
