@@ -55,8 +55,8 @@ void Game_Initialize(ProgramState* State)
 	uint32 BoxEntity3 = Utility_CreateEntity(State, &v3(6.0f, 0.0f, 10.0f), 
 		WoodBox);
 	
-	//Object_Create(new MyRectangle, &State->ObjectBlocks, 
-	//State->ObjectCount, 160.0f, 40.0f, 0.0f);
+	Object_Create(new MyRectangle, &State->ObjectBlocks, 
+	State->ObjectCount, 160.0f, 40.0f, 0.0f);
 	//State->ObjectCount++;
 
 	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0),

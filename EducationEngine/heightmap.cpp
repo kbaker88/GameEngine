@@ -22,7 +22,6 @@ void HeightMap::Init(TextureStorage* ImageData)
 	Width = (float)ImageData->Width;
 	Depth = (float)ImageData->Height;
 
-	// TODO: Why 6?
 	NumberOfIndices = 6 * TotalVertices;
 
 	uint32 Pixel = 0;
