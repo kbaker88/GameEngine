@@ -22,7 +22,7 @@ void Object_CreateBlock(ObjectBlock* Block, uint32 Size)
 
 void Object_DeleteBlock(ObjectBlock* Block)
 {
-	if (Block->BlockObjects)
+	if (Block->BlockObjects != 0)
 	{
 		for (uint32 i = 0; i < Block->BlockSize; i++)
 		{

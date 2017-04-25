@@ -515,7 +515,8 @@ void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 void* Render_GetObjectShaderDataPtr(uint32* VertexObjectHandleIDArray,
 	int32 Offset, uint32 Length)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, VertexObjectHandleIDArray[2]);
+	// NOTE: Color Buffer is [1]
+	glBindBuffer(GL_ARRAY_BUFFER, VertexObjectHandleIDArray[1]); 
 	GLsizeiptr NewDataSize;
 	NewDataSize = Length * 3 * sizeof(float);
 	void* test = glMapBufferRange(GL_ARRAY_BUFFER, Offset,

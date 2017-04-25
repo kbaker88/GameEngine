@@ -3,7 +3,22 @@
 
 #include "input_state.h"
 
-void Utility_CreateButton(ProgramState* State, float Width, float Height,
-	v3* Position, TextureStorage* Texture);
+uint32 Utility_CreateButton(ProgramState* State, float Width, 
+	float Height, v3* Position, TextureStorage* Texture);
+
+uint32 Utility_CreateBox(ProgramState* State, float Width,
+	float Depth, float Height);
+
+uint32 Utility_CreateBox(ProgramState* State, float Width,
+	float Height, float Depth, TextureStorage* Texture);
+
+uint32 Utility_CreatePlane(ProgramState* State, uint32 Width,
+	uint32 Depth, TextureStorage* Texture);
+
+uint32 Utility_CreateHeightMap(ProgramState* State,
+	TextureStorage* HeightMapImg, TextureStorage* Texture);
+
+uint32 Utility_CreateEntity(ProgramState* State, v3* Position,
+	unsigned int ObjectID);
 
 #endif

@@ -6,6 +6,9 @@ void Input_UpdateMouseState(ProgramState* State)
 {
 	//TODO: This MousePosition might be the cause of error in mouse picking
 	//TODO: Maybe only do the mouse position calculation once.
+	Platform_GetCursorPosition(&State->CursorPosition.x,
+		&State->CursorPosition.y);
+
 	window_properties WindowDimensions = Render_GetWindowProperties();
 	float WindowHalfWidth = (float)WindowDimensions.Width * 0.5f;
 	float WindowHalfHeight = (float)WindowDimensions.Height * 0.5f;

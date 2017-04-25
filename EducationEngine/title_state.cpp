@@ -2,7 +2,8 @@
 
 void Title_Initialize(ProgramState* State)
 {
-	window_properties WindowDimensions = Render_GetWindowProperties();
+	window_properties WindowDimensions =
+		Render_GetWindowProperties();
 	float HalfScreenWidth = (float)WindowDimensions.Width * 0.5f;
 	float HalfScreenHeight = (float)WindowDimensions.Height * 0.5f;
 
@@ -10,9 +11,11 @@ void Title_Initialize(ProgramState* State)
 		-HalfScreenHeight, 1.0f));
 	State->CameraArray[0].SetProjectionMatrix(0);
 	
-	State->ShaderHandles[0] = Render_CompileShaders(MenuVertexShaderSource, 
+	State->ShaderHandles[0] = 
+		Render_CompileShaders(MenuVertexShaderSource, 
 		MenuFragmentShaderSource);
-	State->ShaderHandles[1] = Render_CompileShaders(TextVertexShaderSource,
+	State->ShaderHandles[1] = 
+		Render_CompileShaders(TextVertexShaderSource,
 		TextFragmentShaderSource);
 
 	float ButtonWidth = 160.0f;
@@ -112,7 +115,8 @@ void Title_Draw(ProgramState* State)
 	}
 }
 
-void Title_CollisionResolve(ProgramState* State, int32 CollisionResult)
+void Title_CollisionResolve(ProgramState* State, 
+	int32 CollisionResult)
 {
 	switch (CollisionResult)
 	{
