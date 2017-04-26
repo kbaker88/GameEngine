@@ -304,5 +304,8 @@
     <Text Include="OpenGL.txt">
       <Filter>Header Files\notes</Filter>
     </Text>
+    <Text Include="TODO.txt">
+      <Filter>Header Files\notes</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -1,2 +1,5 @@
-﻿  opengl_layer.cpp
+﻿  title_state.cpp
+  text_system.cpp
+  game_state.cpp
+  Generating Code...
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.exe

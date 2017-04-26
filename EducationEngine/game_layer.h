@@ -3,7 +3,7 @@
 
 #include "title_state.h"
 
-//TODO: Remove this to somewhere else, temporary testing
+//TODO: Move this to somewhere else, temporary testing
 #include "network_layer.h"
 
 uint32 Game_Main(int32 CommandShow);

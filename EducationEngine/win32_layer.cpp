@@ -209,7 +209,6 @@ void Platform_LoadGlyph(void* Bits, uint16 Glyph, Texture2D *Texture,
 		DestRow -= Pitch;
 		SourceRow -= BitmapWidth;
 	}
-
 }
 
 int64 Platform_GetCPUCounter()

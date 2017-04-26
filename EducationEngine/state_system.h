@@ -9,7 +9,8 @@ struct ProgramState
 		GPUShaderVarArray(0), ShaderHandles(0),
 		Status(0), NumEntityBlocks(0), NumObjectBlocks(0),
 		StateOfProgram(0), CursorPosition(0.0f, 0.0f),
-		ObjectCount(0), EntityCount(0) {}
+		ObjectCount(0), EntityCount(0), Fonts(0), 
+		FontCount(0) {}
 
 	~ProgramState() {}
 
@@ -18,6 +19,9 @@ struct ProgramState
 	Timer* TimerArray;
 	EntityBlock EntityBlocks;
 	ObjectBlock ObjectBlocks;
+
+	Text_Font *Fonts;
+	uint32 FontCount;
 
 	v2 CursorPosition;
 

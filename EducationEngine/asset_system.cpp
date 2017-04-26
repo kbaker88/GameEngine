@@ -15,6 +15,32 @@ void Asset_LoadTextures()
 	Asset_LoadBMP("Images/inputbar.bmp"); // 8
 }
 
+void Asset_LoadFont(char* FontName, char* FilePath, Texture2D* GlyphArray)
+{
+	if (GlyphArray)
+	{
+
+		void* Bits = 0;
+		void* DeviceContext = 0;
+		Platform_SetupFont(FilePath, FontName, &Bits, &DeviceContext);
+		//"c:/Windows/Fonts/cour.ttf", "Courier New", Character
+
+		for (uint32 Character = 32; Character < 126; Character++)
+		{
+			Platform_LoadGlyph(Bits, Character, &GlyphArray[Character], DeviceContext);
+		}
+
+		// TODO: Call DeleteObject() on Bitmap and Font
+		// NOTE: Device Context is for win32 only
+		Platform_ReleaseContext(DeviceContext);
+	}
+	else
+	{
+		// TODO: Error
+	}
+
+}
+
 void Asset_LoadBMP(char* FileName)
 {
 	BmpDimensions TextureDimensions;

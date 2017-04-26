@@ -3,9 +3,9 @@
 
 #include "object_system.h"
 
-struct Text_FONT
+struct Text_Font
 {
-	char* FontName;
+	char* Name;
 	// TODO: Maybe change this to ID's, add spacing
 	MyRectangle Glyph[256]; 
 };
@@ -18,16 +18,19 @@ struct Text_MARKER
 	uint32 ID, ShaderID;
 };
 
-// TODO: maybe should be in asset?
-void Text_BuildFont(char* FontName);
+// TODO: Make sure Data is deleted and Glypharray
+//	     is deleted if it was dynamically allocated
+//void Text_BuildFont(char* FontName);
+void Text_BuildFont(char* FontName, 
+	Texture2D* GlyphArray, Text_Font* Font);
 
 void Text_SendToGlobalSystem(char character);
 void Text_GetFromStream();
 void Text_ClearGlobalStream();
 
 void Text_DrawStream(v3 &Position, float Scale,
-	uint32 ShaderID);
+	uint32 ShaderID, Text_Font *Font);
 void Text_DrawCharLine(string &Text, v3 &Position,
-	float Scale, uint32 ShaderID);
+	float Scale, uint32 ShaderID, Text_Font *Font);
 
 #endif

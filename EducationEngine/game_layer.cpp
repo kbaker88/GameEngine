@@ -2,6 +2,7 @@
 
 static uint8 StateOfProgram = 0;
 ProgramState States[3];
+Text_Font GlobalFont; // TODO: Temporary placement, put into state system
 
 uint32 Game_Main(int32 CommandShow)
 {
@@ -12,8 +13,8 @@ uint32 Game_Main(int32 CommandShow)
 	Platform_Initialize(&WindowDimensions);
 	Platform_InitRenderer();
 	Render_Init(&WindowDimensions);
-
 	Platform_ShowWindow(CommandShow);
+
 	// NOTE: Platform's message loop also calls game's message loop
 	uint32 Message = Platform_MessageLoop();
 
@@ -32,8 +33,14 @@ void Game_Loop()
 	case 0: // NOTE: Loading
 	{
 		DEBUG_Initialize();
-		Asset_LoadTextures(); // TODO: Too general, need to make multiple loads
-		Text_BuildFont("arial\0");
+
+		// TODO: Too general, need to make multiple loads
+		Asset_LoadTextures(); 
+
+		Texture2D FontGlyphs[255];
+		Asset_LoadFont("arial\0", "c:/Windows/Fonts/arial.ttf\0", FontGlyphs);
+		Text_BuildFont("arial\0", FontGlyphs, &GlobalFont);
+
 		//Network_Init();
 		StateOfProgram = 1;
 	} break;
@@ -51,8 +58,11 @@ void Game_Loop()
 			Object_CreateBlock(&States[0].ObjectBlocks, 256);
 			States[0].NumEntityBlocks = 1;
 			States[0].NumObjectBlocks = 1;
-			States[0].Status = 1;
+			
+			States[0].Fonts = &GlobalFont;
+			States[0].FontCount = 1;
 
+			States[0].Status = 1;
 			Title_Initialize(&States[0]);
 		}
 		else
@@ -86,8 +96,11 @@ void Game_Loop()
 			Object_CreateBlock(&States[1].ObjectBlocks, 256);
 			States[1].NumEntityBlocks = 1;
 			States[1].NumObjectBlocks = 1;
-			States[1].Status = 1;
+			
+			States[1].Fonts = &GlobalFont;
+			States[1].FontCount = 1;
 
+			States[1].Status = 1;
 			Game_Initialize(&States[1]);
 		}
 		else
@@ -120,8 +133,11 @@ void Game_Loop()
 			Object_CreateBlock(&States[2].ObjectBlocks, 256);
 			States[2].NumEntityBlocks = 1;
 			States[2].NumObjectBlocks = 1;
-			States[2].Status = 1;
 
+			States[2].Fonts = &GlobalFont;
+			States[2].FontCount = 1;
+
+			States[2].Status = 1;
 			Menu_Initialize(&States[2]);
 		}
 		else
@@ -158,8 +174,8 @@ void Game_Loop()
 		(float)Platform_GetTimeFrequency());
 	while (SecondsElapsedForFrame < SecondsPerFrame)
 	{
-		SecondsElapsedForFrame = ((float)(Platform_GetCPUCounter() - LastCounter) /
-			(float)Platform_GetTimeFrequency());
+		SecondsElapsedForFrame = ((float)(Platform_GetCPUCounter() -
+			LastCounter) / (float)Platform_GetTimeFrequency());
 	}
 	
 	LastCounter = Platform_GetCPUCounter();

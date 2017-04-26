@@ -1,0 +1,17 @@
+
+
+Priority:
+	- Add text input boxes
+	- Add text debug boxes
+	- Fix basic physics system
+	- Texture heightmaps
+	- Add Skybox
+	- Fix lighting
+	- Load Blender files
+	- Add error system
+
+Other:
+	- Add a more robust font choosing system
+	- Add spheres
+	- Make a more robust BMP loader
+	- Make a more robust PNG loader

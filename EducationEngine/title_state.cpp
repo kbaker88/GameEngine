@@ -101,7 +101,7 @@ void Title_Draw(ProgramState* State)
 			(float)(-0.5f * WindowProperties.Height) + 100.0f, 0.0f };
 
 		Text_GetFromStream();
-		Text_DrawStream(TextStartPosition, 0.3f, State->GPUShaderVarArray[0]);
+		Text_DrawStream(TextStartPosition, 0.3f, State->GPUShaderVarArray[0], State->Fonts);
 
 		Text_ClearGlobalStream();
 		if (State->Status == -1)

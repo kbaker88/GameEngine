@@ -30,12 +30,14 @@ struct platform_properties;
 
 struct window_properties
 {
+	window_properties() : Width(0), Height(0) {}
 	int Width;
 	int Height;
 };
 
 struct Texture2D
 {
+	Texture2D() : Data(0), Width(0), Height(0) {}
 	uint8* Data;
 	uint32 Width;
 	uint32 Height;

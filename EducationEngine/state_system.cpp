@@ -30,23 +30,23 @@ void State_Clean(ProgramState* State)
 	if (State->CameraArray)
 	{
 		delete[] State->CameraArray;
-		State->CameraArray = NULL;
+		State->CameraArray = 0;
 	}
 	if (State->TimerArray)
 	{
 		delete[] State->TimerArray;
-		State->TimerArray = NULL;
+		State->TimerArray = 0;
 	}
 	if (State->GPUShaderVarArray)
 	{
 		delete[] State->GPUShaderVarArray;
-		State->GPUShaderVarArray = NULL;
+		State->GPUShaderVarArray = 0;
 	}
 	if (State->ShaderHandles)
 	{
 		delete[] State->ShaderHandles;
-		State->ShaderHandles = NULL;
+		State->ShaderHandles = 0;
 	}
-	State->StateOfProgram = NULL;
+	State->StateOfProgram = 0;
 	State->Status = 0;
 }

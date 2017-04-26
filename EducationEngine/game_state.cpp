@@ -54,10 +54,6 @@ void Game_Initialize(ProgramState* State)
 	// NOTE: Wood Box 6
 	uint32 BoxEntity3 = Utility_CreateEntity(State, &v3(6.0f, 0.0f, 10.0f), 
 		WoodBox);
-	
-	//Object_Create(new MyRectangle, &State->ObjectBlocks, 
-	//State->ObjectCount, 160.0f, 40.0f, 0.0f);
-	//State->ObjectCount++;
 
 	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0),
 		&Gravity);
@@ -274,7 +270,7 @@ void Game_Draw(ProgramState* State)
 	{
 		Text_DrawCharLine(string("MOUSE COLLISION \0"),
 			v3(Left + 20.0f, Top - 100.0f, 0.0f), 0.15f,
-			State->GPUShaderVarArray[0]);
+			State->GPUShaderVarArray[0], State->Fonts);
 	}
 	// TODO: Remove, Test timer and clock features
 	char Buffer[16] = {};
@@ -282,7 +278,7 @@ void Game_Draw(ProgramState* State)
 	Text_DrawCharLine(string("Elapsed Time: ") + 
 		string(Buffer),
 		v3(Right - 200.0f, Top - 40.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0]);
+		State->GPUShaderVarArray[0], State->Fonts);
 
 	// NOTE: Display FPS
 	char FPSBuffer[16] = {};
@@ -290,7 +286,7 @@ void Game_Draw(ProgramState* State)
 	Text_DrawCharLine(string("Frames Per Second: ") +
 		string(FPSBuffer),
 		v3(Right - 200.0f, Top - 20.0f,
-			0.0f), 0.15f, State->GPUShaderVarArray[0]);
+			0.0f), 0.15f, State->GPUShaderVarArray[0], State->Fonts);
 
 	v3 PlayerPosition = Entity_GetPosition(&State->EntityBlocks, 0);
 
@@ -305,7 +301,7 @@ void Game_Draw(ProgramState* State)
 		string(BufferY2) + string(" ") +
 		string(BufferZ2),
 		v3(Left + 20.0f, Top - 20.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0]);
+		State->GPUShaderVarArray[0], State->Fonts);
 
 	v2 CursorPosition;
 	CursorPosition.x =
@@ -321,7 +317,7 @@ void Game_Draw(ProgramState* State)
 		string(BufferX3) + string(" ") +
 		string(BufferY3),
 		v3(Left + 20.0f, Top - 40.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0]);
+		State->GPUShaderVarArray[0], State->Fonts);
 
 	char BufferX4[16] = {};
 	char BufferY4[16] = {};
@@ -334,7 +330,7 @@ void Game_Draw(ProgramState* State)
 		string(BufferY4) + string(" ") +
 		string(BufferZ4),
 		v3(Left + 20.0f, Top - 60.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0]);
+		State->GPUShaderVarArray[0], State->Fonts);
 
 	Text_ClearGlobalStream();
 }
