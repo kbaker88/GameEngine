@@ -1,9 +1,9 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include "object.h"
+#include "render_object.h"
 
-class Box : public Object
+class Box : public RenderObject
 {
 public:
 	Box() {};

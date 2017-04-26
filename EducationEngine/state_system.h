@@ -14,11 +14,10 @@ struct ProgramState
 
 	~ProgramState() {}
 
-	//TODO: Make Cameras into entities.
 	Camera* CameraArray;
 	Timer* TimerArray;
 	EntityBlock EntityBlocks;
-	ObjectBlock ObjectBlocks;
+	RenderObjBlock ObjectBlocks;
 
 	Text_Font *Fonts;
 	uint32 FontCount;

@@ -1,9 +1,9 @@
 #ifndef PLANE2D_H
 #define PLANE2D_H
 
-#include "object.h"
+#include "render_object.h"
 
-class Plane2D : public Object
+class Plane2D : public RenderObject
 {
 public:
 	Plane2D() {}

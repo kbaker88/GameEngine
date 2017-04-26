@@ -19,7 +19,6 @@ void Asset_LoadFont(char* FontName, char* FilePath, Texture2D* GlyphArray)
 {
 	if (GlyphArray)
 	{
-
 		void* Bits = 0;
 		void* DeviceContext = 0;
 		Platform_SetupFont(FilePath, FontName, &Bits, &DeviceContext);

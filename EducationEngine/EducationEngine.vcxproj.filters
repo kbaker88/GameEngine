@@ -19,14 +19,8 @@
     <Filter Include="Source Files\engine\program_states">
       <UniqueIdentifier>{09ef689b-a76c-43e9-abdf-5c84559639f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\engine\objects">
-      <UniqueIdentifier>{864b6d70-9340-44f4-822e-eb5015561576}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\engine">
       <UniqueIdentifier>{45e4bf7a-abb4-46f3-b4b3-bdc7a987547d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\engine\objects">
-      <UniqueIdentifier>{1d72c0c2-c9ef-4322-8348-07f44b347e2d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\engine\program_states">
       <UniqueIdentifier>{bbcd745b-45e8-4088-a907-609341725506}</UniqueIdentifier>
@@ -43,24 +37,6 @@
     <Filter Include="Source Files\math">
       <UniqueIdentifier>{e3360072-e8a2-4fc2-8c92-a892aa4c1ccf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\engine\text">
-      <UniqueIdentifier>{81304e62-6dc9-46f8-bf35-d19921d4aaed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\engine\text">
-      <UniqueIdentifier>{c2907483-f81d-44ce-a67e-70e97ab982b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\engine\assets">
-      <UniqueIdentifier>{8b4321e0-7ecd-4b6b-b03b-a620c7d6edc1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\engine\assets">
-      <UniqueIdentifier>{a4963118-f557-4cfb-b6c7-448392237fc8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\engine\debug">
-      <UniqueIdentifier>{57d91cfe-88e9-4efb-9f2b-e177f625f9e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\engine\debug">
-      <UniqueIdentifier>{9f3a3bd1-ac1a-4700-9c2f-9a60729a96e7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\layers">
       <UniqueIdentifier>{2c57cccc-6e76-4ff3-a63b-9babb4317326}</UniqueIdentifier>
     </Filter>
@@ -76,12 +52,6 @@
     <Filter Include="Source Files\engine\camera">
       <UniqueIdentifier>{b8d94832-50c0-4f04-9069-5069fa2b8acc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\engine\entity">
-      <UniqueIdentifier>{e1b7cb9d-e70a-4f69-abdc-75958c246e76}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\engine\entity">
-      <UniqueIdentifier>{9d408852-5fd1-47b0-8ca5-3a5a696c1d90}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\loaders">
       <UniqueIdentifier>{43ce1e24-abe8-4e6b-8116-17b8a86c02db}</UniqueIdentifier>
     </Filter>
@@ -94,46 +64,46 @@
     <Filter Include="Header Files\notes">
       <UniqueIdentifier>{be35cebe-80b7-4b8d-b7f3-496cf5fb34c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine\systems">
+      <UniqueIdentifier>{9d408852-5fd1-47b0-8ca5-3a5a696c1d90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\systems">
+      <UniqueIdentifier>{e1b7cb9d-e70a-4f69-abdc-75958c246e76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\render_objects">
+      <UniqueIdentifier>{1d72c0c2-c9ef-4322-8348-07f44b347e2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\render_objects">
+      <UniqueIdentifier>{864b6d70-9340-44f4-822e-eb5015561576}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="box.cpp">
-      <Filter>Source Files\engine\objects</Filter>
+      <Filter>Source Files\engine\render_objects</Filter>
     </ClCompile>
     <ClCompile Include="rectangle.cpp">
-      <Filter>Source Files\engine\objects</Filter>
+      <Filter>Source Files\engine\render_objects</Filter>
     </ClCompile>
     <ClCompile Include="sphere.cpp">
-      <Filter>Source Files\engine\objects</Filter>
+      <Filter>Source Files\engine\render_objects</Filter>
     </ClCompile>
     <ClCompile Include="linear_algebra.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
     <ClCompile Include="plane2d.cpp">
-      <Filter>Source Files\engine\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="asset_system.cpp">
-      <Filter>Source Files\engine\assets</Filter>
-    </ClCompile>
-    <ClCompile Include="object.cpp">
-      <Filter>Source Files\engine\objects</Filter>
+      <Filter>Source Files\engine\render_objects</Filter>
     </ClCompile>
     <ClCompile Include="math.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
     <ClCompile Include="line.cpp">
-      <Filter>Source Files\engine\objects</Filter>
+      <Filter>Source Files\engine\render_objects</Filter>
     </ClCompile>
     <ClCompile Include="point.cpp">
-      <Filter>Source Files\engine\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="debug_system.cpp">
-      <Filter>Source Files\engine\debug</Filter>
+      <Filter>Source Files\engine\render_objects</Filter>
     </ClCompile>
     <ClCompile Include="heightmap.cpp">
-      <Filter>Source Files\engine\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="text_system.cpp">
-      <Filter>Source Files\engine\text</Filter>
+      <Filter>Source Files\engine\render_objects</Filter>
     </ClCompile>
     <ClCompile Include="win32_layer.cpp">
       <Filter>Source Files\layers</Filter>
@@ -148,19 +118,13 @@
       <Filter>Source Files\engine\camera</Filter>
     </ClCompile>
     <ClCompile Include="collision_system.cpp">
-      <Filter>Source Files\engine\entity</Filter>
+      <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
     <ClCompile Include="physics_system.cpp">
-      <Filter>Source Files\engine\entity</Filter>
+      <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
     <ClCompile Include="entity_system.cpp">
-      <Filter>Source Files\engine\entity</Filter>
-    </ClCompile>
-    <ClCompile Include="object_system.cpp">
-      <Filter>Source Files\engine\entity</Filter>
-    </ClCompile>
-    <ClCompile Include="state_system.cpp">
-      <Filter>Source Files\engine\program_states</Filter>
+      <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
     <ClCompile Include="game_state.cpp">
       <Filter>Source Files\engine\program_states</Filter>
@@ -187,24 +151,42 @@
       <Filter>Source Files\engine\utility</Filter>
     </ClCompile>
     <ClCompile Include="memory_system.cpp">
-      <Filter>Source Files\engine\entity</Filter>
+      <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
     <ClCompile Include="game_layer.cpp">
       <Filter>Source Files\layers</Filter>
     </ClCompile>
+    <ClCompile Include="render_object.cpp">
+      <Filter>Source Files\engine\render_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="renderobject_system.cpp">
+      <Filter>Source Files\engine\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_system.cpp">
+      <Filter>Source Files\engine\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="asset_system.cpp">
+      <Filter>Source Files\engine\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="text_system.cpp">
+      <Filter>Source Files\engine\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="state_system.cpp">
+      <Filter>Source Files\engine\systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="box.h">
-      <Filter>Header Files\engine\objects</Filter>
+      <Filter>Header Files\engine\render_objects</Filter>
     </ClInclude>
     <ClInclude Include="plane2d.h">
-      <Filter>Header Files\engine\objects</Filter>
+      <Filter>Header Files\engine\render_objects</Filter>
     </ClInclude>
     <ClInclude Include="rectangle.h">
-      <Filter>Header Files\engine\objects</Filter>
+      <Filter>Header Files\engine\render_objects</Filter>
     </ClInclude>
     <ClInclude Include="sphere.h">
-      <Filter>Header Files\engine\objects</Filter>
+      <Filter>Header Files\engine\render_objects</Filter>
     </ClInclude>
     <ClInclude Include="platform_layer.h">
       <Filter>Header Files\layers</Filter>
@@ -218,35 +200,23 @@
     <ClInclude Include="linear_algebra.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
-    <ClInclude Include="asset_system.h">
-      <Filter>Header Files\engine\assets</Filter>
-    </ClInclude>
-    <ClInclude Include="object.h">
-      <Filter>Header Files\engine\objects</Filter>
-    </ClInclude>
     <ClInclude Include="math.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="line.h">
-      <Filter>Header Files\engine\objects</Filter>
+      <Filter>Header Files\engine\render_objects</Filter>
     </ClInclude>
     <ClInclude Include="point.h">
-      <Filter>Header Files\engine\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="debug_system.h">
-      <Filter>Header Files\engine\debug</Filter>
+      <Filter>Header Files\engine\render_objects</Filter>
     </ClInclude>
     <ClInclude Include="opengl.h">
       <Filter>Header Files\layers</Filter>
     </ClInclude>
     <ClInclude Include="heightmap.h">
-      <Filter>Header Files\engine\objects</Filter>
+      <Filter>Header Files\engine\render_objects</Filter>
     </ClInclude>
     <ClInclude Include="png.h">
       <Filter>Header Files\loaders</Filter>
-    </ClInclude>
-    <ClInclude Include="text_system.h">
-      <Filter>Header Files\engine\text</Filter>
     </ClInclude>
     <ClInclude Include="clock.h">
       <Filter>Header Files\engine\clock</Filter>
@@ -254,20 +224,14 @@
     <ClInclude Include="camera.h">
       <Filter>Header Files\engine\camera</Filter>
     </ClInclude>
-    <ClInclude Include="state_system.h">
-      <Filter>Header Files\engine\program_states</Filter>
-    </ClInclude>
     <ClInclude Include="collision_system.h">
-      <Filter>Header Files\engine\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="object_system.h">
-      <Filter>Header Files\engine\entity</Filter>
+      <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
     <ClInclude Include="entity_system.h">
-      <Filter>Header Files\engine\entity</Filter>
+      <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
     <ClInclude Include="physics_system.h">
-      <Filter>Header Files\engine\entity</Filter>
+      <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
     <ClInclude Include="game_state.h">
       <Filter>Header Files\engine\program_states</Filter>
@@ -294,10 +258,28 @@
       <Filter>Header Files\engine\utility</Filter>
     </ClInclude>
     <ClInclude Include="memory_system.h">
-      <Filter>Header Files\engine\entity</Filter>
+      <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
     <ClInclude Include="game_layer.h">
       <Filter>Header Files\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="render_object.h">
+      <Filter>Header Files\engine\render_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="renderobject_system.h">
+      <Filter>Header Files\engine\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_system.h">
+      <Filter>Header Files\engine\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="asset_system.h">
+      <Filter>Header Files\engine\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="text_system.h">
+      <Filter>Header Files\engine\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="state_system.h">
+      <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -305,6 +287,9 @@
       <Filter>Header Files\notes</Filter>
     </Text>
     <Text Include="TODO.txt">
+      <Filter>Header Files\notes</Filter>
+    </Text>
+    <Text Include="Overview.txt">
       <Filter>Header Files\notes</Filter>
     </Text>
   </ItemGroup>

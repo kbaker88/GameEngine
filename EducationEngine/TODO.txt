@@ -9,6 +9,7 @@ Priority:
 	- Fix lighting
 	- Load Blender files
 	- Add error system
+	- Add locks to important coppies operations (file access).
 
 Other:
 	- Add a more robust font choosing system

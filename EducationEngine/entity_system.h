@@ -10,18 +10,23 @@ struct Entity
 {
 	Entity() : EntityID(0), Active(0), CameraObj(0),
 		DirectionVector(0.0f, 0.0f, 0.0f), 
-		Position(0.0f, 0.0f, 0.0f), ObjectPtr(0), 
-		State(0) {}
+		Position(0.0f, 0.0f, 0.0f), Dimensions(0.0f, 0.0f, 0.0f),
+		RenderObjPtrArray(0),
+		State(0), PhysicsObj(0), CollisionObj(0),
+		ObjectTypes(0) {}
 	
 	~Entity() {}
 
-	Object* ObjectPtr;
-	PhysicsObject PhysicsObj;
-	CollisionObject CollisionObj;
-	Camera *CameraObj;
+	RenderObject** RenderObjPtrArray;
+	PhysicsObject* PhysicsObj;
+	CollisionObject* CollisionObj;
+	Camera* CameraObj;
+	// TODO: void** Objects ?
+	// TODO: ObjectTypeCount ?
+	uint64 ObjectTypes;
 	m4 ModelMatrix;
-	v3 DirectionVector, Position;
-	uint32 EntityID, ObjectID, State;
+	v3 DirectionVector, Position, Dimensions;
+	uint32 EntityID, State;
 	bool Active;
 };
 
@@ -34,40 +39,43 @@ struct EntityBlock
 	uint32 BlockSize;
 };
 
-// Entity Creation
+/////////////// CREATE //////////////////////////
 void Entity_CreateBlock(EntityBlock* Block, uint32 Size);
 void Entity_DeleteBlock(EntityBlock* Block);
-
-int32 Entity_Create(EntityBlock* Block, uint32 IDNumber, 
-	v3 *Position);
+// NOTE: Every 4 bits of ObjectType determines which and
+//		 how many of each object type will be added.
+//		 Starting with lowest significance:
+//		 0-3  : Objects
+//		 4-7  : Physics Objects
+//		 8-11 : Collision Objects
 int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
-	ObjectBlock* ObjBlock, uint32 ObjectID, v3 *Position);
+	RenderObject* ObjectPtrs, v3 *Position, uint64 TypesOfObjects);
 
-// Entity Add-Ons
+/////////////// ADDONS //////////////////////////
 void Entity_AddCamera(EntityBlock* Block, uint32 IDNumber,
 	Camera* NewCamera);
 
-// Entity Draw
+/////////////// DRAW ///////////////////////////
 void Entity_Draw(EntityBlock* Block, uint32 IDNumber,
 	uint32 ShaderVariableID);
 void Entity_DrawPolyGonMode(EntityBlock* Block, uint32 IDNumber,
 	uint32 ShaderVariableID);
 
-// Entity Get Values
+/////////////// RETRIEVE ////////////////////////
 Entity* Entity_Ptr(EntityBlock* Block, uint32 IDNumber);
-uint32 Entity_GetObjectID(EntityBlock* Block, uint32 IDNumber);
 Camera* Entity_GetCamera(EntityBlock* Block, uint32 IDNumber);
 CollisionObject* Entity_GetCollisionObjPtr(EntityBlock* Block,
-	uint32 IDNumber);
+	uint32 IDNumber, uint32 ObjectID);
 PhysicsObject* Entity_GetPhysObjPtr(EntityBlock* Block,
-	uint32 IDNumber);
-Object* Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber);
-float Entity_GetWidth(EntityBlock* Block, uint32 IDNumber);
-float Entity_GetHeight(EntityBlock* Block, uint32 IDNumber);
-float Entity_GetDepth(EntityBlock* Block, uint32 IDNumber);
+	uint32 IDNumber, uint32 ObjectID);
+RenderObject* Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber,
+	uint32 ObjectID);
+float Entity_Width(EntityBlock* Block, uint32 IDNumber);
+float Entity_Height(EntityBlock* Block, uint32 IDNumber);
+float Entity_Depth(EntityBlock* Block, uint32 IDNumber);
 v3 Entity_GetPosition(EntityBlock* Block, uint32 IDNumber);
 
-// Entity Set Values
+/////////////// SET ////////////////////////////
 void Entity_SetPosition(EntityBlock* Block, uint32 IDNumber,
 	v3& Position);
 //TODO: UpdatePosition must be used with matrix transformations, fix later

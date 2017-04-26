@@ -2,9 +2,6 @@
 
 void Menu_Initialize(ProgramState* State)
 {
-	//Entity_CreateBlock(State->EntityBlockNum, 32);
-	//Object_CreateBlock(State->ObjectBlockNum, 32);
-
 	window_properties WindowSize = Render_GetWindowProperties();
 	float HalfScreenWidth = 0.5f * (float)WindowSize.Width;
 	float HalfScreenHeight = 0.5f * (float)WindowSize.Height;
@@ -45,8 +42,9 @@ void Menu_Initialize(ProgramState* State)
 
 	// Exit Button (temp second one)
 	ButtonPosition.y -= ButtonHeight;
-	Entity_Create(&State->EntityBlocks, 3, &State->ObjectBlocks, 2,
-		&ButtonPosition);
+	Entity_Create(&State->EntityBlocks, 3, 
+		RenderObj_GetObjectPtr(&State->ObjectBlocks, 2),
+		&ButtonPosition, 0x111);
 }
 
 void Menu_Draw(ProgramState* State)
@@ -78,7 +76,7 @@ void Menu_Draw(ProgramState* State)
 	for (uint32 Index = 0; Index < State->EntityCount; Index++)
 	{
 		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
-			Entity_GetCollisionObjPtr(&State->EntityBlocks, Index));
+			Entity_GetCollisionObjPtr(&State->EntityBlocks, Index, 0));
 		Menu_CollisionResolve(State, CollisionResult);
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[4],
@@ -159,7 +157,7 @@ void Menu_Clean(ProgramState* State)
 {
 	Platform_UpdateMouseState(0);
 	Entity_DeleteBlock(&State->EntityBlocks);
-	Object_DeleteBlock(&State->ObjectBlocks);
+	RenderObj_DeleteBlock(&State->ObjectBlocks);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
 	Render_ClearCurrentShaderProgram();

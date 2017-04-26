@@ -1,9 +1,9 @@
 #ifndef HEIGHTMAP_H
 #define HEIGHTMAP_H
 
-#include "object.h"
+#include "render_object.h"
 
-class HeightMap: public Object
+class HeightMap: public RenderObject
 {
 public:
 	HeightMap() {};

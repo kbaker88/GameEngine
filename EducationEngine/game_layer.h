@@ -9,4 +9,8 @@
 uint32 Game_Main(int32 CommandShow);
 void Game_Loop();
 
+// NOTE: This is assuming #if defined(_WIN64)
+int64 Game_MessageProcessor(void* Window, uint32 Message,
+	uint64 wParam, int64 lParam);
+
 #endif

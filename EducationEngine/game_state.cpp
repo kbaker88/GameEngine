@@ -23,7 +23,7 @@ void Game_Initialize(ProgramState* State)
 		PlayerBox);
 	Entity_AddCamera(&State->EntityBlocks, PlayerEntity, new Camera);
 	Phys_SetAccelerationRate(Entity_GetPhysObjPtr(&State->EntityBlocks,
-		PlayerEntity), 1000.0f);
+		PlayerEntity, 0), 1000.0f);
 
 	// NOTE: Terrain 1
 	uint32 Terrain = Utility_CreateHeightMap(State, Asset_GetTexture(7),
@@ -55,7 +55,7 @@ void Game_Initialize(ProgramState* State)
 	uint32 BoxEntity3 = Utility_CreateEntity(State, &v3(6.0f, 0.0f, 10.0f), 
 		WoodBox);
 
-	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0),
+	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0),
 		&Gravity);
 
 	State->TimerArray[0].Start();
@@ -118,35 +118,35 @@ void Game_Draw(ProgramState* State)
 	v3 Position = Entity_GetPosition(&State->EntityBlocks, 0);
 
 	if ((Position.x < 1.0f) ||
-		(Position.x > Entity_GetWidth(&State->EntityBlocks, 1) - 1) ||
+		(Position.x > Entity_Width(&State->EntityBlocks, 1) - 1) ||
 		(Position.z > -1.0f) ||
-		(Position.z < -Entity_GetDepth(&State->EntityBlocks, 1) + 1))
+		(Position.z < -Entity_Depth(&State->EntityBlocks, 1) + 1))
 	{
 		// NOTE: Outside of terrain map
 		if (Position.y < 0)
 		{
 			Position.y = 0;
 			//TODO: Fix this.
-			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0),
+			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0),
 				&(-Gravity));
-			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0),
+			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0),
 				&v3(0.0f,
-					-Entity_GetPhysObjPtr(&State->EntityBlocks, 0)->Force.y,
+					-Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0)->Force.y,
 					0.0f));
 
 			Entity_SetPosition(&State->EntityBlocks, 0, Position);
 			Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks,
-				0));
+				0, 0));
 			Entity_GetCamera(&State->EntityBlocks, 0)->
 				SetPosition(&Entity_GetPosition(&State->EntityBlocks, 0));
 
-			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0),
+			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0),
 				&(Gravity));
 		}
 		else
 		{
 			Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks,
-				0));
+				0, 0));
 			Entity_GetCamera(&State->EntityBlocks, 0)->
 				SetPosition(&Entity_GetPosition(&State->EntityBlocks, 0));
 		}
@@ -159,21 +159,21 @@ void Game_Draw(ProgramState* State)
 
 		// NOTE: Test Code
 		uint32 PlayerPosition =
-			static_cast<uint32>(((x * Entity_GetWidth(&State->EntityBlocks,
-				1)) + (Entity_GetDepth(&State->EntityBlocks, 1) - z)) * 
+			static_cast<uint32>(((x * Entity_Width(&State->EntityBlocks,
+				1)) + (Entity_Depth(&State->EntityBlocks, 1) - z)) * 
 				3 * sizeof(float));
 
 		Render_UpdateColorVertice(
-			Entity_GetObjectPtr(&State->EntityBlocks, 1)->
+			Entity_GetObjectPtr(&State->EntityBlocks, 1, 0)->
 			ObjectDescription.VertexBufferObjectHandleIDs, PlayerPosition,
 			v3(0.0f, 0.0f, 1.0f).Arr);
 		Render_UnmapShaderDataPtr();
 
 		if (Collision_HeightMap(
 			static_cast<HeightMap*>(Entity_GetObjectPtr(&State->EntityBlocks,
-				1)), Position))
+				1, 0)), Position))
 		{
-			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0),
+			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0),
 				&(-Gravity));
 			//Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
 			//	&v3(0.0f,
@@ -182,16 +182,16 @@ void Game_Draw(ProgramState* State)
 			Entity_SetPosition(&State->EntityBlocks, 0, Position);
 
 			Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks,
-				0));
+				0, 0));
 			Entity_GetCamera(&State->EntityBlocks, 0)->
 				SetPosition(&Entity_GetPosition(&State->EntityBlocks, 0));
-			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0),
+			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0),
 				&(Gravity));
 		}
 		else
 		{
 			Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks,
-				0));
+				0, 0));
 			Entity_GetCamera(&State->EntityBlocks, 0)->
 				SetPosition(&Entity_GetPosition(&State->EntityBlocks, 0));
 		}
@@ -265,7 +265,7 @@ void Game_Draw(ProgramState* State)
 
 	float Distance = 0.0f;
 	if (Collision_RayToOBB(&Entity_GetPosition(&State->EntityBlocks, 0),
-		&MouseRay, Entity_GetCollisionObjPtr(&State->EntityBlocks, 4),
+		&MouseRay, Entity_GetCollisionObjPtr(&State->EntityBlocks, 4, 0),
 		&Distance))
 	{
 		Text_DrawCharLine(string("MOUSE COLLISION \0"),
@@ -338,7 +338,7 @@ void Game_Draw(ProgramState* State)
 void Game_Clean(ProgramState* State)
 {
 	Entity_DeleteBlock(&State->EntityBlocks);
-	Object_DeleteBlock(&State->ObjectBlocks);
+	RenderObj_DeleteBlock(&State->ObjectBlocks);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
 	Render_ClearCurrentShaderProgram();

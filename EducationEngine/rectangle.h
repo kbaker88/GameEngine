@@ -1,9 +1,9 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-#include "object.h"
+#include "render_object.h"
 
-class MyRectangle : public Object
+class MyRectangle : public RenderObject
 {
 public:
 	MyRectangle() {};

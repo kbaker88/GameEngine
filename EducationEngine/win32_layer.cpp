@@ -495,6 +495,9 @@ void Platform_Cleanup()
 
 LRESULT CALLBACK WndProc(HWND Window, UINT Message, WPARAM wParam, LPARAM lParam)
 {
+
+	LRESULT Result = Game_MessageProcessor(Window, Message, (uint64)wParam, (int64)lParam);
+
 	switch (Message)
 	{
 	case WM_CREATE:
@@ -528,7 +531,6 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message, WPARAM wParam, LPARAM lParam
 	}	break;
 	case WM_CHAR:
 	{
-		Text_SendToGlobalSystem((char)wParam);
 		switch (wParam)
 		{
 		case VK_ESCAPE:
@@ -559,5 +561,5 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message, WPARAM wParam, LPARAM lParam
 		return DefWindowProc(Window, Message, wParam, lParam);
 	}
 
-	return 0;
+	return Result;
 }

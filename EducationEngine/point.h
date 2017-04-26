@@ -1,9 +1,9 @@
 #ifndef POINT_H
 #define POINT_H
 
-#include "object.h"
+#include "render_object.h"
 
-class Point : public Object
+class Point : public RenderObject
 {
 public:
 	Point() : PointSize(1.0f) {};

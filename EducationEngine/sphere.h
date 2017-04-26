@@ -1,9 +1,9 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "object.h"
+#include "render_object.h"
 
-class Sphere : public Object
+class Sphere : public RenderObject
 {
 public:
 	Sphere();

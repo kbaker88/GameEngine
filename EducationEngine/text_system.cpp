@@ -9,14 +9,15 @@ char TextStream[512];
 uint32 StreamLength = 0;
 char LastStreamGlyp = ' ';
 
-void Text_BuildFont(char* FontName, Texture2D* GlyphArray, Text_Font* Font)
+void Text_BuildFont(char* FontName, Texture2D* GlyphArray, Text_Font* FontPtr)
 {
-	Font->Name = FontName;
+	FontPtr->Name = FontName;
+	FontPtr->GlyphsCount = 255;
 	for (uint32 Character = 32; Character < 126; Character++)
 	{
-		Font->Glyph[Character].Init((float)GlyphArray[Character].Width,
+		FontPtr->Glyph[Character].Init((float)GlyphArray[Character].Width,
 			(float)GlyphArray[Character].Height);
-		Font->Glyph[Character].InputTexture(&GlyphArray[Character]);
+		FontPtr->Glyph[Character].InputTexture(&GlyphArray[Character]);
 	
 		delete[] GlyphArray[Character].Data;
 	}
@@ -24,8 +25,36 @@ void Text_BuildFont(char* FontName, Texture2D* GlyphArray, Text_Font* Font)
 	StreamLength = 0;
 }
 
+void Text_DeleteFont(Text_Font* FontPtr)
+{
+	if (FontPtr)
+	{
+		for (unsigned int Index = 0; Index < FontPtr->GlyphsCount; Index++)
+		{
+			FontPtr->Glyph[Index].Delete();
+		}
+		// NOTE: This only deletes one font for now
+		delete FontPtr;
+	}
+	else
+	{
+		// TODO: Error
+	}
+}
+
+void Text_InputBox(float Width, float Height, v3 *Position)
+{
+
+}
+
+void Text_Box(float Width, float Height, v3 *Position)
+{
+
+}
+
 void Text_SendToGlobalSystem(char character)
 {
+	// NOTE: If within ascii, no support for unicode yet
 	if (GlobalTextStreamLength < 512)
 	{
 		GlobalTextStream[GlobalTextStreamLength] = character;

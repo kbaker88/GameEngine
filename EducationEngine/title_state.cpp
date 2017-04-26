@@ -67,7 +67,7 @@ void Title_Draw(ProgramState* State)
 	for (uint32 Index = 0; Index < State->EntityCount; Index++)
 	{
 		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
-			Entity_GetCollisionObjPtr(&State->EntityBlocks, Index));
+			Entity_GetCollisionObjPtr(&State->EntityBlocks, Index, 0));
 		Title_CollisionResolve(State, CollisionResult);
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 
@@ -88,8 +88,8 @@ void Title_Draw(ProgramState* State)
 			Render_GetShaderVariable(State->ShaderHandles[1], "view");
 		State->GPUShaderVarArray[2] =
 			Render_GetShaderVariable(State->ShaderHandles[1], "projection");
-		//State->GPUShaderVarArray[3] =
-		//	Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
+		State->GPUShaderVarArray[3] =
+			Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
 			(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
@@ -179,7 +179,7 @@ void Title_Clean(ProgramState* State)
 {
 	Platform_UpdateMouseState(0);
 	Entity_DeleteBlock(&State->EntityBlocks);
-	Object_DeleteBlock(&State->ObjectBlocks);
+	RenderObj_DeleteBlock(&State->ObjectBlocks);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
 	Render_ClearCurrentShaderProgram();

@@ -1,9 +1,9 @@
 #ifndef LINE_H
 #define LINE_H
 
-#include "object.h"
+#include "render_object.h"
 
-class Line : public Object
+class Line : public RenderObject
 {
 public:
 	Line() {};
