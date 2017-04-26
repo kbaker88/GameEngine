@@ -9,7 +9,7 @@ HeightMap::~HeightMap()
 	}
 }
 
-void HeightMap::Init(TextureStorage* ImageData)
+void HeightMap::Init(Texture2D* ImageData)
 {
 	ObjectDescription.NumberOfVertexHandles = 4;
 	ObjectDescription.VertexBufferDescriptions =
@@ -35,7 +35,7 @@ void HeightMap::Init(TextureStorage* ImageData)
 	{
 		for (uint32 Column = 0; Column < ImageData->Height; Column++)
 		{
-			Pixel = ImageData->data[ImagePixelIndex++] << 8 | ImageData->data[ImagePixelIndex++];
+			Pixel = ImageData->Data[ImagePixelIndex++] << 8 | ImageData->Data[ImagePixelIndex++];
 			float Height = (float)Pixel / 1000.0f;
 			VertexIndex = 3 * Row * ImageData->Height + 3 * Column;
 

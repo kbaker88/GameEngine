@@ -55,8 +55,8 @@ void Game_Initialize(ProgramState* State)
 	uint32 BoxEntity3 = Utility_CreateEntity(State, &v3(6.0f, 0.0f, 10.0f), 
 		WoodBox);
 	
-	Object_Create(new MyRectangle, &State->ObjectBlocks, 
-	State->ObjectCount, 160.0f, 40.0f, 0.0f);
+	//Object_Create(new MyRectangle, &State->ObjectBlocks, 
+	//State->ObjectCount, 160.0f, 40.0f, 0.0f);
 	//State->ObjectCount++;
 
 	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0),
@@ -121,9 +121,9 @@ void Game_Draw(ProgramState* State)
 
 	v3 Position = Entity_GetPosition(&State->EntityBlocks, 0);
 
-	if ((Position.x < 0.0f) ||
+	if ((Position.x < 1.0f) ||
 		(Position.x > Entity_GetWidth(&State->EntityBlocks, 1) - 1) ||
-		(Position.z > -0.0f) ||
+		(Position.z > -1.0f) ||
 		(Position.z < -Entity_GetDepth(&State->EntityBlocks, 1) + 1))
 	{
 		// NOTE: Outside of terrain map
@@ -226,8 +226,8 @@ void Game_Draw(ProgramState* State)
 		Render_GetShaderVariable(State->ShaderHandles[1], "view");
 	State->GPUShaderVarArray[2] =
 		Render_GetShaderVariable(State->ShaderHandles[1], "projection");
-	//State->GPUShaderVarArray[3] =
-	//	Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
+	State->GPUShaderVarArray[3] =
+		Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
 
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
 		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
@@ -335,11 +335,6 @@ void Game_Draw(ProgramState* State)
 		string(BufferZ4),
 		v3(Left + 20.0f, Top - 60.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0]);
-	
-	//Text_StepDown();
-	//Text_DrawCharLine(string("Cursor Position: \0") +
-	//	string(Platform_FloatToChar(CursorPosition.x)) + string(" ") +
-	//	string(Platform_FloatToChar(CursorPosition.y)));
 
 	Text_ClearGlobalStream();
 }

@@ -20,11 +20,16 @@ struct ObjectBlock
 
 void Object_CreateBlock(ObjectBlock* Block, uint32 Size);
 void Object_DeleteBlock(ObjectBlock* Block);
-void Object_Create(Object* NewObject, ObjectBlock* Block, uint32 ObjectID);
-void Object_Create(Object* NewObject, ObjectBlock* Block, uint32 ObjectID, TextureStorage* HeightMapTexture);
-void Object_Create(Object* NewObject, ObjectBlock* Block, uint32 ObjectID, uint32 Width, uint32 Depth);
-void Object_Create(Object* NewObject, ObjectBlock* Block, uint32 ObjectID, float Width, float Height, float Depth);
-void Object_SetTexture(ObjectBlock* Block, uint32 ObjectID, TextureStorage* Texture);
+void Object_Create(Object* NewObject, ObjectBlock* Block,
+	uint32 ObjectID);
+void Object_Create(Object* NewObject, ObjectBlock* Block,
+	uint32 ObjectID, Texture2D* HeightMapTexture);
+void Object_Create(Object* NewObject, ObjectBlock* Block, 
+	uint32 ObjectID, uint32 Width, uint32 Depth);
+void Object_Create(Object* NewObject, ObjectBlock* Block,
+	uint32 ObjectID, float Width, float Height, float Depth);
+void Object_SetTexture(ObjectBlock* Block, uint32 ObjectID, 
+	Texture2D* Texture);
 Object* Object_GetObjectPtr(ObjectBlock* Block, uint32 ObjectID);
 
 #endif

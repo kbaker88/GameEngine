@@ -15,7 +15,6 @@ c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\point.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\rectangle.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\sphere.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\state_system.obj
-c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\text_system.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\title_state.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\utility.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\win32_layer.obj
@@ -30,14 +29,8 @@ c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\entity_syst
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\entity_utility.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\input_state.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\memory_system.obj
-c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\game_loop.obj
+c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\game_layer.obj
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\game_state.obj
-c:\users\kevin\documents\github\gameengine\x64\debug\educationengine.ilk
-c:\users\kevin\documents\github\gameengine\x64\debug\educationengine.exe
-c:\users\kevin\documents\github\gameengine\x64\debug\educationengine.pdb
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\educationengine.tlog\cl.command.1.tlog
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\educationengine.tlog\cl.read.1.tlog
 c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\educationengine.tlog\cl.write.1.tlog
-c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\educationengine.tlog\link.command.1.tlog
-c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\educationengine.tlog\link.read.1.tlog
-c:\users\kevin\documents\github\gameengine\educationengine\x64\debug\educationengine.tlog\link.write.1.tlog

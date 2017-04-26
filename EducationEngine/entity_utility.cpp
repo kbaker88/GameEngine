@@ -1,7 +1,7 @@
 #include "entity_utility.h"
 
 uint32 Utility_CreateButton(ProgramState* State, float Width, 
-	float Height, v3* Position, TextureStorage* Texture)
+	float Height, v3* Position, Texture2D* Texture)
 {
 	Object_Create(new MyRectangle, &State->ObjectBlocks,
 		State->ObjectCount, Width, Height, 0.0f);
@@ -28,7 +28,7 @@ uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
 }
 
 uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
-	float Depth, TextureStorage* Texture)
+	float Depth, Texture2D* Texture)
 {
 	Object_Create(new Box, &State->ObjectBlocks, State->ObjectCount,
 		Width, Height, Depth);
@@ -40,7 +40,7 @@ uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
 }
 
 uint32 Utility_CreatePlane(ProgramState* State, uint32 Width,
-	uint32 Depth, TextureStorage* Texture)
+	uint32 Depth, Texture2D* Texture)
 {
 	Object_Create(new Plane2D, &State->ObjectBlocks,
 		State->ObjectCount, Width, Depth);
@@ -52,7 +52,7 @@ uint32 Utility_CreatePlane(ProgramState* State, uint32 Width,
 }
 
 uint32 Utility_CreateHeightMap(ProgramState* State, 
-	TextureStorage* HeightMapImg, TextureStorage* Texture)
+	Texture2D* HeightMapImg, Texture2D* Texture)
 {
 	Object_Create(new HeightMap, &State->ObjectBlocks, State->ObjectCount,
 		HeightMapImg);

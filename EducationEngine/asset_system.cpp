@@ -21,7 +21,7 @@ void Asset_LoadBMP(char* FileName)
 	unsigned char* BMPData = 0;
 	BMPData = Platform_ReadFile(FileName);
 	BMPData = GetBmpData(BMPData, TextureDimensions);
-	Textures[TextureCount].data = BMPData; 
+	Textures[TextureCount].Data = BMPData; 
 	Textures[TextureCount].Width = TextureDimensions.Width;
 	Textures[TextureCount].Height = TextureDimensions.Height;
 	TextureCount++;
@@ -33,14 +33,9 @@ void Asset_LoadPNG(char* FileName)
 	unsigned char* PNGData;
 	PNGData = Platform_ReadFile(FileName);
 	PNGData = PNG_Extract(PNGData, ImageProperties);
-	Textures[TextureCount].data = PNGData;
+	Textures[TextureCount].Data = PNGData;
 	Textures[TextureCount].Width = ImageProperties.Width;
 	Textures[TextureCount].Height = ImageProperties.Height;
-	Textures[TextureCount].BitDepth = ImageProperties.BitDepth;
-	Textures[TextureCount].ColorType = ImageProperties.ColorType;
-	Textures[TextureCount].CompressionMethod = ImageProperties.CompressionMethod;
-	Textures[TextureCount].FilterMethod = ImageProperties.FilterMethod;
-	Textures[TextureCount].InterlaceMethod = ImageProperties.InterlaceMethod;
 
 	TextureCount++;
 }
@@ -50,7 +45,7 @@ uint32 Asset_GetTextureCount()
 	return TextureCount;
 }
 
-TextureStorage* Asset_GetTexture(uint32 TextureNumber)
+Texture2D* Asset_GetTexture(uint32 TextureNumber)
 {
 	return &Textures[TextureNumber];
 }
@@ -59,15 +54,10 @@ void Asset_DeleteAll()
 {
 	for (uint32 Index = 0; Index < TextureCount; Index++)
 	{
-		delete[] Textures[Index].data;
-		Textures[Index].data = 0;
+		delete[] Textures[Index].Data;
+		Textures[Index].Data = 0;
 		Textures[Index].Height = 0;
 		Textures[Index].Width = 0;
-		Textures[Index].BitDepth = 0;
-		Textures[Index].ColorType = 0;
-		Textures[Index].CompressionMethod = 0;
-		Textures[Index].FilterMethod = 0;
-		Textures[Index].InterlaceMethod = 0;
 	}
 	TextureCount = 0;
 }

@@ -67,9 +67,10 @@ static gl_vertex_attrib_format *glVertexAttribFormat;
 static gl_vertex_attrib_binding *glVertexAttribBinding;
 static gl_tex_storage_2d *glTexStorage2D;
 
-void Render_Init(window_properties Window)
+void Render_Init(window_properties *Window)
 {
-	WindowProperties = Window;
+	WindowProperties.Width = Window->Width;
+	WindowProperties.Height = Window->Height;
 
 	Render_UpdateWindow(WindowProperties);
 
@@ -475,9 +476,21 @@ void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 	glGenVertexArrays(1, &ObjectDescription->VertexArrayObjectID);
 	glBindVertexArray(ObjectDescription->VertexArrayObjectID);
 
-	uint32 Index = 0;
+	uint32 LoopCount = ObjectDescription->NumberOfVertexHandles;
 
-	for (Index; Index < ObjectDescription->NumberOfVertexHandles; Index++)
+	if (ObjectDescription->IndiceDescription.Data)
+	{
+		LoopCount--;
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
+			ObjectDescription->VertexBufferObjectHandleIDs[LoopCount]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			ObjectDescription->IndiceDescription.Size,
+			ObjectDescription->IndiceDescription.Data,
+			GL_STATIC_DRAW);
+	}
+
+	for (uint32 Index = 0; Index < LoopCount; Index++)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER,
 			ObjectDescription->VertexBufferObjectHandleIDs[Index]);
@@ -495,16 +508,6 @@ void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 			ObjectDescription->VertexBufferDescriptions[Index].Offset,
 			GL_FLOAT, GL_FALSE, 0);
 		glVertexAttribBinding(Index, Index);
-	}
-
-	if (ObjectDescription->IndiceDescription.Data)
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
-			ObjectDescription->VertexBufferObjectHandleIDs[Index]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			ObjectDescription->IndiceDescription.Size,
-			ObjectDescription->IndiceDescription.Data,
-			GL_STATIC_DRAW);
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0); 

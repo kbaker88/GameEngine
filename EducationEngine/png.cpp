@@ -160,6 +160,7 @@ static void PaethFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 unsigned char* PNG_Extract(unsigned char* Data,
 	PNGProperties& Properties)
 {
+	// TODO: Clean up Data if error.
 	unsigned char* ImageData = 0;
 
 	//NOTE: Confirm that the data is from a PNG file.

@@ -47,7 +47,7 @@ void Object_Create(Object* NewObject, ObjectBlock* Block,
 }
 
 void Object_Create(Object* NewObject, ObjectBlock* Block, 
-	uint32 ObjectID, TextureStorage* HeightMapTexture)
+	uint32 ObjectID, Texture2D* HeightMapTexture)
 {
 	Block->BlockObjects[ObjectID] = NewObject;
 	Block->BlockObjects[ObjectID]->Init(HeightMapTexture);
@@ -71,7 +71,7 @@ void Object_Create(Object* NewObject, ObjectBlock* Block,
 }
 
 void Object_SetTexture(ObjectBlock* Block, uint32 ObjectID,
-	TextureStorage* Texture)
+	Texture2D* Texture)
 {
 	Block->BlockObjects[ObjectID]->InputTexture(Texture);
 }

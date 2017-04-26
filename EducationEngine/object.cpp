@@ -11,15 +11,15 @@ Object::~Object()
 
 void Object::Init() {}
 
-void Object::Init(TextureStorage* ImageData) {}
+void Object::Init(Texture2D* ImageData) {}
 
 void Object::Init(uint32 width, uint32 depth) {}
 
 void Object::Init(float width, float height, float depth) {}
 
-void Object::InputTexture(TextureStorage* Texture)
+void Object::InputTexture(Texture2D* Texture)
 {
-	Render_SetTexture(Texture->data, Texture->Width,
+	Render_SetTexture(Texture->Data, Texture->Width,
 		Texture->Height, &TextureID);
 }
 

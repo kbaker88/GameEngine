@@ -1,10 +1,5 @@
 #include "text_system.h"
 
-static TextureStorage Letters[256]; // data and dimensions
-
-Text_MARKER TextMarkers[256];
-uint32 TextMarkerCount = 0;
-
 Text_FONT Font[2];
 uint32 FontCount = 0;
 
@@ -13,6 +8,34 @@ static uint32 GlobalTextStreamLength;
 char TextStream[512];
 uint32 StreamLength;
 char LastStreamGlyp = ' ';
+
+void Text_BuildFont(char* FontName)
+{
+	Font[FontCount].FontName = FontName;
+	void* Bits = 0;
+
+	void* DeviceContext = 0;
+	Platform_SetupFont("c:/Windows/Fonts/arial.ttf", FontName, &Bits, &DeviceContext);
+	//"c:/Windows/Fonts/cour.ttf", "Courier New", Character
+
+	for (uint32 Character = 32; Character < 126; Character++)
+	{
+		Texture2D GlyphData;
+		Platform_LoadGlyph(Bits, Character, &GlyphData, DeviceContext);
+
+		Font[FontCount].Glyph[Character].Init((float)GlyphData.Width,
+			(float)GlyphData.Height);
+		Font[FontCount].Glyph[Character].InputTexture(&GlyphData);
+
+		delete[] GlyphData.Data;
+	}
+
+	// NOTE: Device Context is for win32 only
+	Platform_ReleaseContext(DeviceContext);
+
+	StreamLength = 0;
+	FontCount++;
+}
 
 void Text_SendToGlobalSystem(char character)
 {
@@ -38,33 +61,8 @@ char Text_LastGlyphPressed()
 	return LastStreamGlyp;
 }
 
-void Text_BuildFont(char* FontName)
-{
-	loaded_bitmap GlyphData;
-
-	Font[FontCount].FontName = FontName;
-	void* Bits = 0;
-	
-	Platform_SetupFont("c:/Windows/Fonts/arial.ttf", FontName, &Bits);
-	//"c:/Windows/Fonts/cour.ttf", "Courier New", Character
-
-	for (uint32 Character = 32; Character < 126; Character++)
-	{
-		GlyphData = Platform_LoadGlyph(Bits, Character);
-		Letters[Character].data = (uint8*)GlyphData.Memory;
-		Letters[Character].Width = GlyphData.Width;
-		Letters[Character].Height = GlyphData.Height;
-
-		Font[FontCount].Glyph[Character].Init((float)Letters[Character].Width,
-			(float)Letters[Character].Height);
-		Font[FontCount].Glyph[Character].InputTexture(&Letters[Character]);
-	}
-
-	StreamLength = 0;
-	FontCount++;
-}
-
-Text_FONT* Text_GetFont(char *FontName) // TODO : Write a string compare to finish this
+// TODO : Write a string compare to finish this
+Text_FONT* Text_GetFont(char *FontName) 
 {
 	return &Font[0];
 }
@@ -78,7 +76,8 @@ void Text_GetFromStream()
 {
 	for (uint32 i = 0; i < GlobalTextStreamLength; i++)
 	{
-		if (GlobalTextStream[i] == '`') // TODO : move this in another function?
+		// TODO : move this in another function?
+		if (GlobalTextStream[i] == '`') 
 		{
 			// DO NOT COPY THIS GLYPH?
 		}
@@ -86,13 +85,15 @@ void Text_GetFromStream()
 		{
 			if (StreamLength < 512)
 			{
-				if (((GlobalTextStream[i] == 127) || // Delete or Backspace was pressed
+				// NOTE: if Delete or Backspace was pressed
+				if (((GlobalTextStream[i] == 127) || 
 					(GlobalTextStream[i] == 8)) &&
 					(StreamLength > 0))
 				{ 
 					StreamLength--;
 				}
-				else if ((GlobalTextStream[i] == 13) || // Return or Enter was pressed
+				// NOTE: if Return or Enter was pressed
+				else if ((GlobalTextStream[i] == 13) ||
 					(GlobalTextStream[i] == 10))
 				{ 
 					StreamLength = 0;
@@ -165,25 +166,4 @@ void Text_DrawCharLine(string &Text, v3 &Position, float Scale, uint32 ShaderID)
 		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
 			v3((Width * Scale / 2) + (NextWidth * Scale / 2), 0.0f, 0.0f) );
 	}
-}
-
-uint32 Text_CreateMarker(v3 &Position, float Scale, uint32 ShaderID)
-{
-	TextMarkers[TextMarkerCount].StartPos = Position;
-	TextMarkers[TextMarkerCount].ShaderID = ShaderID;
-	TextMarkers[TextMarkerCount].Scale = Scale;
-	TextMarkers[TextMarkerCount].ModelMatrix = Math_IdentityMatrix();
-	TextMarkers[TextMarkerCount].ModelMatrix =
-		Math_ScaleMatrix(TextMarkers[TextMarkerCount].ModelMatrix, v3(Scale, Scale, 1.0f));
-	TextMarkers[TextMarkerCount].ModelMatrix = 
-		Math_TranslateMatrix(TextMarkers[TextMarkerCount].ModelMatrix, Position);
-	TextMarkerCount++;
-
-	return (TextMarkerCount - 1);
-}
-
-void Text_NewLine(uint32 TextID)
-{
-	TextMarkers[TextID].ModelMatrix = Math_TranslateMatrix(TextMarkers[TextID].ModelMatrix,
-		v3(0.0f, -40.0f, 0.0f));
 }

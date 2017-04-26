@@ -1,4 +1,4 @@
-#include "game_loop.h"
+#include "game_layer.h"
 #include <Windows.h>
 
 #include <sys/types.h>
@@ -59,6 +59,8 @@ void Platform_UpdateWindowSize(uint32 Width, uint32 Height)
 
 void Platform_TemporaryError(char* Text)
 {
+	// TODO: Remove this when engine error system is complete
+	// NOTE: Beware of buffer overflow potential.
 	char Buffer[256];
 	wsprintf(Buffer, Text);
 	OutputDebugStringA(Buffer);
@@ -73,7 +75,7 @@ int8 Platform_DoesFileExist(char* FileName)
 	}
 	else
 	{
-		return 0; // // TODO: ERROR
+		return 0; // TODO: ERROR
 	}
 }
 
@@ -85,7 +87,8 @@ unsigned char* Platform_ReadFile(char* FileName)
 	uint8* ReturnValues = new uint8[buffer.st_size]();
 
 	FILE* OpenFile;
-	fopen_s(&OpenFile, FileName, "rb"); // rb = Read Binary
+	// NOTE: rb = Read Binary
+	fopen_s(&OpenFile, FileName, "rb");
 
 	if (OpenFile != 0)
 	{
@@ -96,161 +99,117 @@ unsigned char* Platform_ReadFile(char* FileName)
 	}
 	else
 	{
+		// TODO: Error
 		Platform_TemporaryError("Failed to open file");
-		return NULL; // FAILED TO OPEN
+		return 0; 
 	}
 
 	return ReturnValues;
 }
 
-static HDC TestContext = 0; // // TODO: REMOVE
-
-void Platform_SetupFont(char* FileName, char* FontName, void** Bits)
+void Platform_SetupFont(char* FileName, char* FontName, 
+	void** Bits, void** DeviceContextPtr)
 {
-	int MaxWidth = 1024;
-	int MaxHeight = 1024;
+	if (!*DeviceContextPtr)
+	{
+		//TODO: Release this DC later
+		*DeviceContextPtr = (void*)CreateCompatibleDC(GetDC(PlatformWindow.Window));
+	}
 
+	BITMAPINFO BitmapInfo = {};
+	BitmapInfo.bmiHeader.biSize = sizeof(BitmapInfo.bmiHeader);
+	BitmapInfo.bmiHeader.biWidth = 1024;
+	BitmapInfo.bmiHeader.biHeight = 1024;
+	BitmapInfo.bmiHeader.biPlanes = 1;
+	BitmapInfo.bmiHeader.biBitCount = 32;
+	BitmapInfo.bmiHeader.biCompression = BI_RGB;
+
+	// NOTE: Returns bottom up space. ptr at top
+	HBITMAP Bitmap = CreateDIBSection((HDC)(*DeviceContextPtr),
+		&BitmapInfo, DIB_RGB_COLORS, Bits, 0, 0);
+	SelectObject((HDC)(*DeviceContextPtr), Bitmap);
+	SetBkColor((HDC)(*DeviceContextPtr), RGB(0, 0, 0));
+
+	////////////////////////////////////////////
 	AddFontResourceExA(FileName, FR_PRIVATE, 0);
-	int Height = 128;
-	HFONT Font = CreateFontA(Height, 0, 0, 0,
-		FW_NORMAL,
-		FALSE,
-		FALSE,
-		FALSE,
-		DEFAULT_CHARSET,
-		OUT_DEFAULT_PRECIS,
-		CLIP_DEFAULT_PRECIS,
-		ANTIALIASED_QUALITY,
-		DEFAULT_PITCH | FF_DONTCARE,
-		FontName);
 
-	TestContext = CreateCompatibleDC(GetDC(0));
+	HFONT Font = CreateFontA(128, 0, 0, 0, FW_NORMAL,
+		0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+		CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY,
+		DEFAULT_PITCH | FF_DONTCARE, FontName);
 
-	BITMAPINFO Info = {};
-	Info.bmiHeader.biSize = sizeof(Info.bmiHeader);
-	Info.bmiHeader.biWidth = MaxWidth;
-	Info.bmiHeader.biHeight = MaxHeight;
-	Info.bmiHeader.biPlanes = 1;
-	Info.bmiHeader.biBitCount = 32;
-	Info.bmiHeader.biCompression = BI_RGB;
-	Info.bmiHeader.biSizeImage = 0;
-	Info.bmiHeader.biXPelsPerMeter = 0;
-	Info.bmiHeader.biYPelsPerMeter = 0;
-	Info.bmiHeader.biClrUsed = 0;
-	Info.bmiHeader.biClrImportant = 0;
-
-	HBITMAP Bitmap = CreateDIBSection(TestContext,
-		&Info, DIB_RGB_COLORS, Bits, 0, 0); // Returns bottom up space. ptr at top
-
-	SelectObject(TestContext, Bitmap); // TODO: Need both?
-	SelectObject(TestContext, Font);
-	SetBkColor(TestContext, RGB(0, 0, 0)); // Glyph background color
+	SelectObject((HDC)(*DeviceContextPtr), Font);
 
 	TEXTMETRIC TextMetric;
-	GetTextMetrics(TestContext, &TextMetric);
+	GetTextMetrics((HDC)(*DeviceContextPtr), &TextMetric);
 }
 
-loaded_bitmap Platform_LoadGlyph(void* Bits, uint32 CodePoint)
+void Platform_LoadGlyph(void* Bits, uint16 Glyph, Texture2D *Texture,
+	void* DeviceContext)
 {
-	loaded_bitmap Result = {};
-
-	int MaxWidth = 1024;
-	int MaxHeight = 1024;
-
-	wchar_t ConvertToChar = (wchar_t)CodePoint;
+	int BitmapWidth = 1024;
+	int BitmapHeight = 1024;
 
 	SIZE Size;
-	GetTextExtentPoint32W(TestContext, &ConvertToChar, 1, &Size);
+	if (!GetTextExtentPoint32W((HDC)DeviceContext, (LPCWSTR)&Glyph, 
+		1, &Size))
+	{
+		// TODO: Error
+	}
 
 	int Width = Size.cx;
-	if (Width > MaxWidth)
+	if (Width > BitmapWidth)
 	{
-		Width = MaxWidth;
+		Width = BitmapWidth;
 	}
 	int Height = Size.cy;
-	if (Height > MaxHeight)
+	if (Height > BitmapHeight)
 	{
-		Height = MaxHeight;
+		Height = BitmapHeight;
 	}
 
-	SetTextColor(TestContext, RGB(255, 255, 255));
-	TextOutW(TestContext, 0, 0, &ConvertToChar, 1);
+	if (SetTextColor((HDC)DeviceContext, RGB(255, 255, 255)) ==
+		CLR_INVALID)
+	{
+		// TODO: Error
+	}
 
-	int32 MinX = 10000;
-	int32 MinY = 10000;
-	int32 MaxX = -10000;
-	int32 MaxY = -10000;
-	uint32 *Row = (uint32 *)Bits + (MaxHeight - 1) * MaxWidth;
+	if (!TextOutW((HDC)DeviceContext, 0, 0, (LPCWSTR)&Glyph, 1))
+	{
+		// TODO: Error
+	}
+
+	Texture->Width = Width;
+	Texture->Height = Height;
+	unsigned int Pitch = Texture->Width * 4;
+	
+	// NOTE: Dynamic allocation
+	Texture->Data = new uint8[Texture->Height* Pitch] {};
+
+	uint8 *DestRow = (uint8 *)Texture->Data + (Texture->Height - 1) *
+		Pitch;
+	uint32 *SourceRow = (uint32 *)Bits + (BitmapHeight - 1) *
+		BitmapWidth;
 	for (int32 Y = 0; Y < Height; ++Y)
 	{
-		uint32 *Pixel = Row;
+		uint32 *Source = (uint32 *)SourceRow;
+		uint32 *Dest = (uint32 *)DestRow;
 		for (int32 X = 0; X < Width; ++X)
 		{
-			if (Pixel != 0)
-			{
-				if (MinX > X)
-				{
-					MinX = X;
-				}
-
-				if (MinY > Y)
-				{
-					MinY = Y;
-				}
-
-				if (MaxX < X)
-				{
-					MaxX = X;
-				}
-
-				if (MaxY < Y)
-				{
-					MaxY = Y;
-				}
-			}
-			++Pixel;
+			//uint32 Pixel = *Source;
+	
+			uint8 Alpha = (uint8)(*Source & 0xFF);
+			*Dest++ = ((Alpha << 24) |
+				(Alpha << 16) |
+				(Alpha << 8) |
+				(Alpha << 0));
+			++Source;
 		}
-		Row -= MaxWidth;
+	
+		DestRow -= Pitch;
+		SourceRow -= BitmapWidth;
 	}
 
-	if (MinX <= MaxX)
-	{
-		Width = (MaxX - MinX) + 1;
-		Height = (MaxY - MinY) + 1;
-
-		Result.Width = Width;
-		Result.Height = Height;
-		Result.Pitch = Result.Width* 4; //Note: 4 is bytes per pixel
-		Result.Memory = malloc(Result.Height*Result.Pitch);
-		Result.Free = Result.Memory;
-
-		uint8 *DestRow = (uint8 *)Result.Memory + (Result.Height - 1) * 
-			Result.Pitch;
-		uint32 *SourceRow = (uint32 *)Bits + (MaxHeight - 1 - MinY) * 
-			MaxWidth;
-		for (int32 Y = MinY; Y <= MaxY; ++Y)
-		{
-			uint32 *Source = (uint32 *)SourceRow + MinX;
-			uint32 *Dest = (uint32 *)DestRow;
-			for (int32 X = MinX; X <= MaxX; ++X)
-			{
-				uint32 Pixel = *Source;
-
-				uint8 Gray = (uint8)(Pixel & 0xFF);
-				uint8 Alpha = Gray;
-				*Dest++ = ((Alpha << 24) |
-					(Gray << 16) |
-					(Gray << 8) |
-					(Gray << 0));
-				++Source;
-			}
-
-			DestRow -= Result.Pitch;
-			SourceRow -= MaxWidth;
-		}
-	}
-
-	return Result;
 }
 
 int64 Platform_GetCPUCounter()
@@ -259,7 +218,7 @@ int64 Platform_GetCPUCounter()
 	if (!QueryPerformanceCounter(&Time))
 	{
 	// TODO: Error
-		MessageBox(NULL, "QueryPerformanceCounter Failed!", "Error!",
+		MessageBox(0, "QueryPerformanceCounter Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
 	return Time.QuadPart;
@@ -273,7 +232,7 @@ int64 Platform_GetTimeFrequency()
 		if (!QueryPerformanceFrequency(&Frequency))
 		{
 			// TODO: Error
-			MessageBox(NULL, "Obtaining Timer Frequency Failed!", 
+			MessageBox(0, "Obtaining Timer Frequency Failed!", 
 				"Error!",
 				MB_ICONEXCLAMATION | MB_OK);
 		}
@@ -336,46 +295,15 @@ void Platform_EndProgram()
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int CommandShow)
 {
-	WindowProperties.Width = 1200;
-	WindowProperties.Height = 700;
-	
-	Platform_Initialize();
-	Platform_InitRenderer();
-
-	Render_Init(WindowProperties);
-	ShowWindow(PlatformWindow.Window, CommandShow);
-
-	MSG Message = {};
-
-	while (Message.message != WM_QUIT)
-	{
-		if (PeekMessage(&Message, NULL, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&Message);
-			DispatchMessage(&Message);
-		}
-
-		Game_Loop();
-
-		if (!SwapBuffers(PlatformProperties.DeviceContext))
-		{
-			MessageBox(NULL, "Swapping Buffers Failed!", "Error!",
-				MB_ICONEXCLAMATION | MB_OK);
-		}
-	}
-
-	Asset_DeleteAll(); //TODO: Temporary, remove this later.
-	Platform_Cleanup();
-
-	return Message.message;
+	return Game_Main(CommandShow);
 }
 
-void Platform_Initialize()
+void Platform_Initialize(window_properties *WindowProps)
 {
-	PlatformProperties.Instance = GetModuleHandle(NULL);
-	if (PlatformProperties.Instance == NULL)
+	PlatformProperties.Instance = GetModuleHandle(0);
+	if (PlatformProperties.Instance == 0)
 	{
-		MessageBox(NULL, "Obtaining Window's Instance Failed!", 
+		MessageBox(0, "Obtaining Window's Instance Failed!", 
 			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
@@ -387,16 +315,16 @@ void Platform_Initialize()
 	WindowsClassStructure.cbClsExtra = 0;
 	WindowsClassStructure.cbWndExtra = 0;
 	WindowsClassStructure.hInstance = PlatformProperties.Instance;
-	WindowsClassStructure.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	WindowsClassStructure.hCursor = LoadCursor(NULL, IDC_ARROW);
+	WindowsClassStructure.hIcon = LoadIcon(0, IDI_APPLICATION);
+	WindowsClassStructure.hCursor = LoadCursor(0, IDC_ARROW);
 	WindowsClassStructure.hbrBackground = (HBRUSH)(COLOR_WINDOW + 3);
-	WindowsClassStructure.lpszMenuName = NULL;
+	WindowsClassStructure.lpszMenuName = 0;
 	WindowsClassStructure.lpszClassName = (const char*)"GameEngine";
-	WindowsClassStructure.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+	WindowsClassStructure.hIconSm = LoadIcon(0, IDI_APPLICATION);
 
 	if (!RegisterClassEx(&WindowsClassStructure))
 	{
-		MessageBox(NULL, "Window Registration Failed!", "Error!",
+		MessageBox(0, "Window Registration Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
 
@@ -405,26 +333,56 @@ void Platform_Initialize()
 		(const char*)"GameEngine",
 		"First Generation Game Engine",
 		WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
-		CW_USEDEFAULT, CW_USEDEFAULT, WindowProperties.Width,
-		WindowProperties.Height,
-		NULL, NULL, PlatformProperties.Instance, NULL);
+		CW_USEDEFAULT, CW_USEDEFAULT, WindowProps->Width, WindowProps->Height,
+		0, 0, PlatformProperties.Instance, 0);
 
-	if (PlatformWindow.Window == NULL)
+	if (PlatformWindow.Window == 0)
 	{
-		MessageBox(NULL, "Window Creation Failed!", "Error!",
+		MessageBox(0, "Window Creation Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
 
 	PlatformProperties.DeviceContext = GetDC(PlatformWindow.Window);
 
-	if (PlatformProperties.DeviceContext == NULL)
+	if (PlatformProperties.DeviceContext == 0)
 	{
-		MessageBox(NULL, "Obtaining Device Context Failed!", "Error!",
+		MessageBox(0, "Obtaining Device Context Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
 
 	UpdateWindow(PlatformWindow.Window);
+
+	// TODO: Pull this out into a separate timer init
 	PlatformProperties.TimerFrequency = Platform_GetTimeFrequency();
+}
+
+void Platform_ShowWindow(int CommandShow)
+{
+	ShowWindow(PlatformWindow.Window, CommandShow);
+}
+
+unsigned int Platform_MessageLoop()
+{
+	MSG Message = {};
+
+	while (Message.message != WM_QUIT)
+	{
+		if (PeekMessage(&Message, 0, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&Message);
+			DispatchMessage(&Message);
+		}
+
+		Game_Loop();
+
+		if (!SwapBuffers(PlatformProperties.DeviceContext))
+		{
+			MessageBox(0, "Swapping Buffers Failed!", "Error!",
+				MB_ICONEXCLAMATION | MB_OK);
+		}
+	}
+	
+	return Message.message;
 }
 
 void Platform_InitRenderer()
@@ -445,7 +403,7 @@ void Platform_InitRenderer()
 			&DesiredPixelFormat);
 	if (SuggestedPixelFormatIndex == 0)
 	{
-		MessageBox(NULL, "Obtaining Suggested Pixel Format Index Failed!", 
+		MessageBox(0, "Obtaining Suggested Pixel Format Index Failed!", 
 			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
@@ -455,7 +413,7 @@ void Platform_InitRenderer()
 		SuggestedPixelFormatIndex,
 		sizeof(SuggestedPixelFormat), &SuggestedPixelFormat))
 	{
-		MessageBox(NULL, 
+		MessageBox(0, 
 			"Obtaining Description of a Possible Pixel Format Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
@@ -463,18 +421,18 @@ void Platform_InitRenderer()
 	if (!SetPixelFormat(PlatformProperties.DeviceContext,
 		SuggestedPixelFormatIndex, &SuggestedPixelFormat))
 	{
-		MessageBox(NULL, "Setting Pixel Format Failed!", "Error!",
+		MessageBox(0, "Setting Pixel Format Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
 
 	HGLRC OpenGLContext = wglCreateContext(PlatformProperties.DeviceContext);
-	if (OpenGLContext == NULL)
+	if (OpenGLContext == 0)
 	{
-		MessageBox(NULL, "Obtaining OpenGL Render Context Failed!", "Error!",
+		MessageBox(0, "Obtaining OpenGL Render Context Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
 
-	//TODO: Assumes OpenGL right now. Make more generalized.
+	//TODO: Assumes OpenGL right now. Make more generalized for DirectX also
 	if (wglMakeCurrent(PlatformProperties.DeviceContext, OpenGLContext))
 	{
 		//MessageBoxA(0, (char*)glGetString(GL_VERSION), "OPENGL VERSION", 0);
@@ -488,13 +446,13 @@ void Platform_InitRenderer()
 			{
 				WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
 				WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-				WGL_CONTEXT_FLAGS_ARB, //WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB |
-				WGL_CONTEXT_DEBUG_BIT_ARB, // REMOVE DEBUG ON PERFORMANCE
+				WGL_CONTEXT_FLAGS_ARB, 
+				WGL_CONTEXT_DEBUG_BIT_ARB, // TODO: Remove Debug for final
 				WGL_CONTEXT_PROFILE_MASK_ARB,
 				WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
 				0
 			};
-			HGLRC ShareContext = 0; // a second context for later.
+			HGLRC ShareContext = 0; 
 			HGLRC ModernContext =
 				wglCreateContextAttribsARB(PlatformProperties.DeviceContext,
 					ShareContext, Attribs);
@@ -504,7 +462,6 @@ void Platform_InitRenderer()
 				if (wglMakeCurrent(PlatformProperties.DeviceContext,
 					ModernContext))
 				{
-					//	ModernContext = true;
 					wglDeleteContext(OpenGLContext);
 					OpenGLContext = ModernContext;
 				}
@@ -512,20 +469,27 @@ void Platform_InitRenderer()
 		}
 		else
 		{
-			MessageBox(NULL, "wglMakeCurrent Failed!", "Error!",
+			MessageBox(0, "wglMakeCurrent Failed!", "Error!",
 				MB_ICONEXCLAMATION | MB_OK);
 		}
 	}
 	else
 	{
-		// ERROR?
+		// TODO: Error
+	}
+}
+
+void Platform_ReleaseContext(void* DeviceContext)
+{
+	if (DeviceContext)
+	{
+		ReleaseDC(PlatformWindow.Window, (HDC)DeviceContext);
 	}
 }
 
 void Platform_Cleanup()
 {
-	wglMakeCurrent(NULL, NULL);
-	//wglDeleteContext(RenderContext);
+	wglMakeCurrent(0, 0);
 	ReleaseDC(PlatformWindow.Window,
 		PlatformProperties.DeviceContext);
 }

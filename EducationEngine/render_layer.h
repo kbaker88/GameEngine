@@ -34,7 +34,7 @@ struct PipelineObjectDescription
 };
 
 // NOTE: General Functions
-void Render_Init(window_properties Window);
+void Render_Init(window_properties *Window);
 void Render_UpdateWindow(window_properties Window);
 void Render_UpdateWindow(uint32 Width, uint32 Height);
 void Render_ClearScreen(v4* Color);

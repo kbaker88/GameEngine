@@ -9,7 +9,7 @@ public:
 	HeightMap() {};
 	~HeightMap();
 
-	void Init(TextureStorage* ImageData);
+	void Init(Texture2D* ImageData);
 };
 
 

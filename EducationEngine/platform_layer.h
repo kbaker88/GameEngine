@@ -1,7 +1,9 @@
 #ifndef PLATFORM_LAYER_H
 #define PLATFORM_LAYER_H
 
-//TODO: Remove this later, find a better solution.
+//TODO: Remove LEAN AND MEAN later, find a better solution.
+//NOTE: LEAN AND MEAN is here for include redundancies in WinSock2.h
+//		in the network layer.
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -32,26 +34,33 @@ struct window_properties
 	int Height;
 };
 
+struct Texture2D
+{
+	uint8* Data;
+	uint32 Width;
+	uint32 Height;
+};
+
+
 // ERROR SYSTEM
 // TODO : REPLACE WITH INGAME TEXT ERROR SYSTEM
 void Platform_TemporaryError(char* Text); 
 
 // FILE SYSTEM
-struct loaded_bitmap
-{
-	int32 Width;
-	int32 Height;
-	int32 Pitch;
-	void *Memory;
-
-	void *Free;
-};
-
 int8 Platform_DoesFileExist(char* FileName);
+// NOTE: Platform_ReadFile dynamically allocates memory,
+//		 make sure to clean.
 unsigned char* Platform_ReadFile(char* FileName);
 
-void Platform_SetupFont(char* FileName, char* FontName, void** Bits);
-loaded_bitmap Platform_LoadGlyph(void* Bits, uint32 CodePoint);
+// NOTE: Platform_SetupFont obtains a device context,
+//		 release it later.
+void Platform_SetupFont(char* FileName, char* FontName, 
+	void** Bits,
+	void** HDCPtr);
+// NOTE: Platform_LoadGlyph dynamically allocates memory,
+//		 make sure to clean.
+void Platform_LoadGlyph(void* Bits, uint16 Glyph, 
+	Texture2D *TextureInfo, void* HDCPtr);
 
 // TIME SYSTEM
 int64 Platform_GetCPUCounter();
@@ -67,7 +76,11 @@ uint32 Platform_GetMouseState();
 
 // CORE FUNCTIONALITY
 // TODO: Remember to check for already initialized
-void Platform_Initialize(); 
+void Platform_Initialize(window_properties *WindowProps);
+void Platform_ShowWindow(int CommandShow);
+unsigned int Platform_MessageLoop();
+void Platform_ReleaseContext(void* DeviceContext);
+
 // TODO: Put as much of this in renderer file as possible
 void Platform_InitRenderer(); 
 void Platform_UpdateWindowSize(uint32 Width, uint32 Height);
