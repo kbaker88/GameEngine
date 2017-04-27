@@ -124,7 +124,7 @@
   <ItemGroup>
     <ClCompile Include="asset_system.cpp" />
     <ClCompile Include="box.cpp" />
-    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="camera_system.cpp" />
     <ClCompile Include="clock.cpp" />
     <ClCompile Include="collision_system.cpp" />
     <ClCompile Include="debug_system.cpp" />
@@ -158,7 +158,7 @@
   <ItemGroup>
     <ClInclude Include="asset_system.h" />
     <ClInclude Include="bmp.h" />
-    <ClInclude Include="camera.h" />
+    <ClInclude Include="camera_system.h" />
     <ClInclude Include="clock.h" />
     <ClInclude Include="collision_system.h" />
     <ClInclude Include="debug_system.h" />

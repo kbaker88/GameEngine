@@ -19,6 +19,6 @@ uint32 Utility_CreateHeightMap(ProgramState* State,
 	Texture2D* HeightMapImg, Texture2D* Texture);
 
 uint32 Utility_CreateEntity(ProgramState* State, v3* Position,
-	unsigned int ObjectID);
+	unsigned int ObjectID, uint64 TypesOfObjects);
 
 #endif

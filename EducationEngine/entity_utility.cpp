@@ -65,11 +65,11 @@ uint32 Utility_CreateHeightMap(ProgramState* State,
 }
 
 uint32 Utility_CreateEntity(ProgramState* State, v3* Position,
-	unsigned int ObjectID)
+	unsigned int ObjectID, uint64 TypesOfObjects)
 {
 	Entity_Create(&State->EntityBlocks, State->EntityCount,
 		RenderObj_GetObjectPtr(&State->ObjectBlocks, ObjectID), Position,
-		0x111);
+		TypesOfObjects);
 	State->EntityCount++;
 
 	return (State->EntityCount - 1);

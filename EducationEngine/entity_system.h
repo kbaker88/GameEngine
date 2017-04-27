@@ -3,7 +3,7 @@
 
 #include "collision_system.h"
 #include "clock.h"  // TODO: Move this later. 
-#include "camera.h" // TODO: Move this later. 
+#include "camera_system.h" // TODO: Move this later. 
 #include "shaders.h" //TODO: Remove this later.
 
 struct Entity
@@ -48,12 +48,9 @@ void Entity_DeleteBlock(EntityBlock* Block);
 //		 0-3  : Objects
 //		 4-7  : Physics Objects
 //		 8-11 : Collision Objects
+//		 12-15: Camera Objects
 int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 	RenderObject* ObjectPtrs, v3 *Position, uint64 TypesOfObjects);
-
-/////////////// ADDONS //////////////////////////
-void Entity_AddCamera(EntityBlock* Block, uint32 IDNumber,
-	Camera* NewCamera);
 
 /////////////// DRAW ///////////////////////////
 void Entity_Draw(EntityBlock* Block, uint32 IDNumber,

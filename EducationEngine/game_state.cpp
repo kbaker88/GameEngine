@@ -20,8 +20,8 @@ void Game_Initialize(ProgramState* State)
 	// NOTE: Player's Model 0
 	uint32 PlayerBox = Utility_CreateBox(State, 0.25f, 0.25f, 0.25f);
 	uint32 PlayerEntity = Utility_CreateEntity(State, &v3(0.0f, 6.0f, 20.0f), 
-		PlayerBox);
-	Entity_AddCamera(&State->EntityBlocks, PlayerEntity, new Camera);
+		PlayerBox, 0x1111);
+	//Entity_AddCamera(&State->EntityBlocks, PlayerEntity, new Camera);
 	Phys_SetAccelerationRate(Entity_GetPhysObjPtr(&State->EntityBlocks,
 		PlayerEntity, 0), 1000.0f);
 
@@ -29,31 +29,31 @@ void Game_Initialize(ProgramState* State)
 	uint32 Terrain = Utility_CreateHeightMap(State, Asset_GetTexture(7),
 		Asset_GetTexture(4));
 	uint32 TerrainEntity = Utility_CreateEntity(State, &v3(0.0f, 0.0f, 0.0f), 
-		Terrain);
+		Terrain, 0x111);
 
 	// NOTE: Wood Floor 2
 	uint32 WoodFloor = Utility_CreatePlane(State, 10, 10, Asset_GetTexture(6));
 	uint32 PlaneEntity = Utility_CreateEntity(State, &v3(0.0f, -0.5f, 20.0f), 
-		WoodFloor);
+		WoodFloor, 0x111);
 
 	// NOTE: Light Box 3
 	uint32 LightBox = Utility_CreateBox(State, 0.25f, 0.25f, 0.25f);
 	uint32 LightEntity = Utility_CreateEntity(State, &v3(2.0f, 1.0f, 17.0f), 
-		LightBox);
+		LightBox, 0x111);
 
 	// NOTE: Wood Box 4
 	uint32 WoodBox = Utility_CreateBox(State, 0.25f, 0.25f, 0.25f, 
 		Asset_GetTexture(5));
 	uint32 BoxEntity1 = Utility_CreateEntity(State, &v3(3.0f, 0.0f, 15.0f), 
-		WoodBox);
+		WoodBox, 0x111);
 
 	// NOTE: Wood Box 5
 	uint32 BoxEntity2 = Utility_CreateEntity(State, &v3(0.0f, 0.0f, 10.0f), 
-		WoodBox);
+		WoodBox, 0x111);
 	
 	// NOTE: Wood Box 6
 	uint32 BoxEntity3 = Utility_CreateEntity(State, &v3(6.0f, 0.0f, 10.0f), 
-		WoodBox);
+		WoodBox, 0x111);
 
 	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0),
 		&Gravity);

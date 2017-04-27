@@ -44,11 +44,11 @@ void Entity_DeleteBlock(EntityBlock* Block)
 				delete[] Block->Entities[i].CollisionObj;
 				Block->Entities[i].CollisionObj = 0;
 			}
-
-			if (Block->Entities->CameraObj)
+			ObjectType = ((Block->Entities[i].ObjectTypes & 0xF000) >> 12);
+			if (ObjectType)
 			{
-				delete Block->Entities->CameraObj;
-				Block->Entities->CameraObj = 0;
+				delete[] Block->Entities[i].CameraObj;
+				Block->Entities[i].CameraObj = 0;
 			}
 			Block->Entities[i].ObjectTypes = 0;
 		}
@@ -114,7 +114,6 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 					&Block->Entities[IDNumber].DirectionVector;
 			}
 		}
-
 		ObjectType = ((TypesOfObjects & 0xF00) >> 8);
 		if (ObjectType)
 		{
@@ -149,6 +148,20 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 				}
 			}
 		}
+		ObjectType = ((TypesOfObjects & 0xF000) >> 12);
+		if (ObjectType)
+		{
+			Block->Entities[IDNumber].CameraObj = new Camera[ObjectType];
+
+			for (uint32 Index = 0; Index < ObjectType; Index++)
+			{
+				Block->Entities[IDNumber].CameraObj[Index].
+					SetPosition(&Block->Entities[IDNumber].Position);
+				Block->Entities[IDNumber].CameraObj[Index].
+					SetProjectionMatrix(1);
+			}
+		}
+
 		Block->Entities[IDNumber].Active = 1;
 
 		return 1;
@@ -166,17 +179,6 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 			return 0;
 		}
 	}
-}
-
-void Entity_AddCamera(EntityBlock* Block, uint32 IDNumber, 
-	Camera* NewCamera)
-{
-	Block->Entities[IDNumber].CameraObj = 
-		NewCamera;
-	Block->Entities[IDNumber].CameraObj->
-		SetPosition(&Block->Entities[IDNumber].Position);
-	Block->Entities[IDNumber].CameraObj->
-		SetProjectionMatrix(1);
 }
 
 Camera* Entity_GetCamera(EntityBlock* Block, uint32 IDNumber)

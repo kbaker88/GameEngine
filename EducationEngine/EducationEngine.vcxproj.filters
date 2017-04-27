@@ -46,12 +46,6 @@
     <Filter Include="Source Files\engine\clock">
       <UniqueIdentifier>{b4c044a5-80d1-4907-829f-94dff721c2e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\engine\camera">
-      <UniqueIdentifier>{a6aa86b2-c69a-46d0-9df0-9216893c6088}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\engine\camera">
-      <UniqueIdentifier>{b8d94832-50c0-4f04-9069-5069fa2b8acc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\loaders">
       <UniqueIdentifier>{43ce1e24-abe8-4e6b-8116-17b8a86c02db}</UniqueIdentifier>
     </Filter>
@@ -114,9 +108,6 @@
     <ClCompile Include="clock.cpp">
       <Filter>Source Files\engine\clock</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files\engine\camera</Filter>
-    </ClCompile>
     <ClCompile Include="collision_system.cpp">
       <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
@@ -174,6 +165,9 @@
     <ClCompile Include="state_system.cpp">
       <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
+    <ClCompile Include="camera_system.cpp">
+      <Filter>Source Files\engine\systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="box.h">
@@ -220,9 +214,6 @@
     </ClInclude>
     <ClInclude Include="clock.h">
       <Filter>Header Files\engine\clock</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files\engine\camera</Filter>
     </ClInclude>
     <ClInclude Include="collision_system.h">
       <Filter>Header Files\engine\systems</Filter>
@@ -279,6 +270,9 @@
       <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
     <ClInclude Include="state_system.h">
+      <Filter>Header Files\engine\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="camera_system.h">
       <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
   </ItemGroup>
