@@ -2,7 +2,9 @@
 
 static uint8 StateOfProgram = 0;
 ProgramState States[3];
-Text_Font *GlobalFont; // TODO: Temporary placement, put into state system
+
+// TODO: Temporary placement, put into state system
+Text_Font *GlobalFont;
 
 uint32 Game_Main(int32 CommandShow)
 {
@@ -18,10 +20,12 @@ uint32 Game_Main(int32 CommandShow)
 	// NOTE: Platform_MessageLoop() also calls Game_Loop() internally
 	uint32 Message = Platform_MessageLoop();
 
-	Asset_DeleteAll(); // TODO: Temporary, remove this later.
-	Text_DeleteFont(GlobalFont); // TODO: Temporary, remove this later.
-	Platform_Cleanup();
+	// TODO: Temporary, remove this later.
+	Asset_DeleteAll(); 
+	// TODO: Temporary, remove this later.
+	Text_DeleteFont(GlobalFont); 
 
+	Platform_Cleanup();
 	return Message;
 }
 
@@ -43,7 +47,8 @@ void Game_Loop()
 			GlobalFont = new Text_Font;
 		}
 		Texture2D FontGlyphs[255];
-		Asset_LoadFont("arial\0", "c:/Windows/Fonts/arial.ttf\0", FontGlyphs);
+		Asset_LoadFont("arial\0", "c:/Windows/Fonts/arial.ttf\0",
+			FontGlyphs);
 		Text_BuildFont("arial\0", FontGlyphs, GlobalFont);
 
 		//Network_Init();
@@ -73,7 +78,7 @@ void Game_Loop()
 		else
 		{
 			Title_Draw(&States[0]);
-			// NOTE: SPACE BAR (VK_SPACE) REPLACE WITH SELF MADE KEY CODES
+			// NOTE: Right Arrow, replace later.
 			if (Platform_GetStateOfKey(0x27) == 1) 
 			{
 				StateOfProgram = 2;
@@ -193,7 +198,66 @@ int64 Game_MessageProcessor(void* Window, uint32 Message,
 	{
 	case WM_CHAR:
 	{
-		Text_SendToGlobalSystem((char)wParam);
+		switch (wParam)
+		{
+		case VK_ESCAPE:
+		{
+			if (StateOfProgram)
+			{
+				if (States[StateOfProgram - 1].ConsoleState)
+				{
+					States[StateOfProgram - 1].ConsoleState = 0;
+				}
+				else
+				{
+					States[StateOfProgram - 1].ConsoleState = 1;
+				}
+			}
+		} break;
+		default:
+			break;
+		}
+
+		if (States[StateOfProgram - 1].ConsoleState)
+		{
+			if (StateOfProgram)
+			{
+				if (wParam == VK_BACK)
+				{
+					if (States[StateOfProgram - 1].ConsoleItr > 0)
+					{
+						States[StateOfProgram - 1].
+							ConsoleGlyph[States[StateOfProgram - 1].
+							ConsoleItr] = 0;
+						States[StateOfProgram - 1].ConsoleItr--;
+					}
+					else if (!States[StateOfProgram - 1].ConsoleItr)
+					{
+						States[StateOfProgram - 1].
+							ConsoleGlyph[States[StateOfProgram - 1].
+							ConsoleItr] = 0;
+					}
+				}
+				else if (wParam == VK_RETURN)
+				{
+					States[StateOfProgram - 1].ConsoleItr = 0;
+					for (uint32 i = 0;
+						i < States[StateOfProgram - 1].ConsoleBufferLength;
+						i++)
+					{
+						States[StateOfProgram - 1].ConsoleGlyph[i] = 0;
+					}
+				}
+				else if (States[StateOfProgram - 1].ConsoleItr <
+					States[StateOfProgram - 1].ConsoleBufferLength)
+				{
+					States[StateOfProgram - 1].
+						ConsoleGlyph[States[StateOfProgram - 1].
+						ConsoleItr] = (uint16)wParam;
+					States[StateOfProgram - 1].ConsoleItr++;
+				}
+			}
+		}
 	} break;
 	default: break;
 	}

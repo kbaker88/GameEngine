@@ -20,12 +20,10 @@ void Text_BuildFont(char* FontName,
 	Texture2D* GlyphArray, Text_Font* FontPtr);
 void Text_DeleteFont(Text_Font* FontPtr);
 
-void Text_SendToGlobalSystem(char character);
-void Text_GetFromStream();
-void Text_ClearGlobalStream();
+// TODO: Add Support for UNICODE
+void Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
+	Text_Font *Font, uint16* ConsoleBuffer, uint32 BufferLength);
 
-void Text_DrawStream(v3 &Position, float Scale,
-	uint32 ShaderID, Text_Font *Font);
 void Text_DrawCharLine(string &Text, v3 &Position,
 	float Scale, uint32 ShaderID, Text_Font *Font);
 

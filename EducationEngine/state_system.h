@@ -3,6 +3,7 @@
 
 #include "entity_system.h"
 
+// TODO: Try to reduce size to save space.
 struct ProgramState
 {
 	ProgramState() : CameraArray(0), TimerArray(0),
@@ -10,7 +11,7 @@ struct ProgramState
 		Status(0), NumEntityBlocks(0), NumObjectBlocks(0),
 		StateOfProgram(0), CursorPosition(0.0f, 0.0f),
 		ObjectCount(0), EntityCount(0), Fonts(0), 
-		FontCount(0) {}
+		FontCount(0), ConsoleItr(0), ConsoleState(0) {}
 
 	~ProgramState() {}
 
@@ -18,6 +19,11 @@ struct ProgramState
 	Timer* TimerArray;
 	EntityBlock EntityBlocks;
 	RenderObjBlock ObjectBlocks;
+
+	static const uint32 ConsoleBufferLength = 256;
+	uint16 ConsoleGlyph[ConsoleBufferLength]{};
+	uint32 ConsoleItr;
+	uint8 ConsoleState;
 
 	Text_Font *Fonts;
 	uint32 FontCount;

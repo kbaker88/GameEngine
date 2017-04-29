@@ -21,8 +21,6 @@ struct Entity
 	PhysicsObject* PhysicsObj;
 	CollisionObject* CollisionObj;
 	Camera* CameraObj;
-	// TODO: void** Objects ?
-	// TODO: ObjectTypeCount ?
 	uint64 ObjectTypes;
 	m4 ModelMatrix;
 	v3 DirectionVector, Position, Dimensions;

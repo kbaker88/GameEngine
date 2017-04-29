@@ -48,6 +48,8 @@ IMPORTANT -
 ///////////////////////////////////////////////////////
 
 Render Object - 
+	Holds vertices, indices, texture data, etc needed to
+	render an object to the screen.
 
 Physics Object -
 

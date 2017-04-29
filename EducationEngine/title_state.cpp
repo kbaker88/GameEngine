@@ -72,7 +72,8 @@ void Title_Draw(ProgramState* State)
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 
 			Entity_Ptr(&State->EntityBlocks, Index)->State);
-		Entity_Draw(&State->EntityBlocks, Index, State->GPUShaderVarArray[0]);
+		Entity_Draw(&State->EntityBlocks, Index, 
+			State->GPUShaderVarArray[0]);
 	}
 
 	if (State->Status == -1)
@@ -87,9 +88,11 @@ void Title_Draw(ProgramState* State)
 		State->GPUShaderVarArray[1] =
 			Render_GetShaderVariable(State->ShaderHandles[1], "view");
 		State->GPUShaderVarArray[2] =
-			Render_GetShaderVariable(State->ShaderHandles[1], "projection");
+			Render_GetShaderVariable(State->ShaderHandles[1],
+				"projection");
 		State->GPUShaderVarArray[3] =
-			Render_GetShaderVariable(State->ShaderHandles[1], "myTexture");
+			Render_GetShaderVariable(State->ShaderHandles[1], 
+				"myTexture");
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
 			(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
@@ -97,13 +100,19 @@ void Title_Draw(ProgramState* State)
 			(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[3], 0);
 
-		v3 TextStartPosition = { (float)(-0.5f * WindowProperties.Width) + 20.0f,
-			(float)(-0.5f * WindowProperties.Height) + 100.0f, 0.0f };
+		window_properties WindowDimensions = 
+			Render_GetWindowProperties();
+		v3 TextStartPosition = 
+		{ -0.5f * (float)WindowDimensions.Width + 10.0f,
+			-0.5f * (float)WindowDimensions.Height + 20.0f, 0.0f };
 
-		Text_GetFromStream();
-		Text_DrawStream(TextStartPosition, 0.3f, State->GPUShaderVarArray[0], State->Fonts);
+		if (State->ConsoleState)
+		{
+			Text_DrawConsole(&TextStartPosition, 0.2f,
+				State->GPUShaderVarArray[0], State->Fonts, 
+				State->ConsoleGlyph, State->ConsoleBufferLength);
+		}
 
-		Text_ClearGlobalStream();
 		if (State->Status == -1)
 		{
 			Title_Clean(State);

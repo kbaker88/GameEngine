@@ -21,7 +21,6 @@ void Game_Initialize(ProgramState* State)
 	uint32 PlayerBox = Utility_CreateBox(State, 0.25f, 0.25f, 0.25f);
 	uint32 PlayerEntity = Utility_CreateEntity(State, &v3(0.0f, 6.0f, 20.0f), 
 		PlayerBox, 0x1111);
-	//Entity_AddCamera(&State->EntityBlocks, PlayerEntity, new Camera);
 	Phys_SetAccelerationRate(Entity_GetPhysObjPtr(&State->EntityBlocks,
 		PlayerEntity, 0), 1000.0f);
 
@@ -331,8 +330,6 @@ void Game_Draw(ProgramState* State)
 		string(BufferZ4),
 		v3(Left + 20.0f, Top - 60.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0], State->Fonts);
-
-	Text_ClearGlobalStream();
 }
 
 void Game_Clean(ProgramState* State)

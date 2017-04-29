@@ -531,15 +531,15 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message, WPARAM wParam, LPARAM lParam
 	}	break;
 	case WM_CHAR:
 	{
-		switch (wParam)
-		{
-		case VK_ESCAPE:
-		{
-			PostQuitMessage(0);
-		} break;
-		default:
-			break;
-		}
+		//switch (wParam)
+		//{
+		//case VK_ESCAPE:
+		//{
+		//	PostQuitMessage(0);
+		//} break;
+		//default:
+		//	break;
+		//}
 	} break;
 	case WM_LBUTTONUP:
 	{

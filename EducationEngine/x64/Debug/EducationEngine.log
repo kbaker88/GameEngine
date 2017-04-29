@@ -1,13 +1,12 @@
-﻿  entity_system.cpp
-  Generating Code...
-  Compiling...
-  win32_layer.cpp
-  title_state.cpp
+﻿  win32_layer.cpp
   state_system.cpp
   menu_state.cpp
   input_state.cpp
   game_state.cpp
-  game_layer.cpp
   entity_utility.cpp
+  Generating Code...
+  Compiling...
+  title_state.cpp
+  game_layer.cpp
   Generating Code...
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.exe

@@ -3,6 +3,9 @@
 //NOTE: Math_Floor() is only for 32-bit floats on Little-Endian Machines
 float Math_Floor(float Value)
 {
+	/* Shortest Method
+		Value = Value - (Value % 1);
+	*/
 	/* Short Method
 	int Result = (int)Value;
 	if (Value < 0)
