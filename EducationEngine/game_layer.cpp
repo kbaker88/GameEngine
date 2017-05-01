@@ -4,7 +4,7 @@ static uint8 StateOfProgram = 0;
 ProgramState States[3];
 
 // TODO: Temporary placement, put into state system
-Text_Font *GlobalFont;
+Font *GlobalFont;
 
 uint32 Game_Main(int32 CommandShow)
 {
@@ -44,7 +44,7 @@ void Game_Loop()
 
 		if (!GlobalFont)
 		{
-			GlobalFont = new Text_Font;
+			GlobalFont = new Font;
 		}
 		Texture2D FontGlyphs[255];
 		Asset_LoadFont("arial\0", "c:/Windows/Fonts/arial.ttf\0",
@@ -62,6 +62,7 @@ void Game_Loop()
 			State_CreateCameras(&States[0], 1);
 			State_CreateShaderVariables(&States[0], 5);
 			State_CreateShaderHandles(&States[0], 2);
+			State_CreateTimers(&States[0], 2);
 			State_LinkToProgram(&States[0], &StateOfProgram);
 
 			Entity_CreateBlock(&States[0].EntityBlocks, 256);
@@ -69,8 +70,11 @@ void Game_Loop()
 			States[0].NumEntityBlocks = 1;
 			States[0].NumObjectBlocks = 1;
 			
-			States[0].Fonts = GlobalFont;
+			States[0].FontArr = GlobalFont;
 			States[0].FontCount = 1;
+
+			States[0].TextObjArray = 
+				new Text_Object[TEXT_OBJECTS_PER_PROGSTATE]{};
 
 			States[0].Status = 1;
 			Title_Initialize(&States[0]);
@@ -107,7 +111,7 @@ void Game_Loop()
 			States[1].NumEntityBlocks = 1;
 			States[1].NumObjectBlocks = 1;
 			
-			States[1].Fonts = GlobalFont;
+			States[1].FontArr = GlobalFont;
 			States[1].FontCount = 1;
 
 			States[1].Status = 1;
@@ -144,7 +148,7 @@ void Game_Loop()
 			States[2].NumEntityBlocks = 1;
 			States[2].NumObjectBlocks = 1;
 
-			States[2].Fonts = GlobalFont;
+			States[2].FontArr = GlobalFont;
 			States[2].FontCount = 1;
 
 			States[2].Status = 1;
@@ -218,18 +222,18 @@ int64 Game_MessageProcessor(void* Window, uint32 Message,
 			break;
 		}
 
-		if (States[StateOfProgram - 1].ConsoleState)
+		if (StateOfProgram)
 		{
-			if (StateOfProgram)
+			if (States[StateOfProgram - 1].ConsoleState)
 			{
 				if (wParam == VK_BACK)
 				{
 					if (States[StateOfProgram - 1].ConsoleItr > 0)
 					{
+						States[StateOfProgram - 1].ConsoleItr--;
 						States[StateOfProgram - 1].
 							ConsoleGlyph[States[StateOfProgram - 1].
 							ConsoleItr] = 0;
-						States[StateOfProgram - 1].ConsoleItr--;
 					}
 					else if (!States[StateOfProgram - 1].ConsoleItr)
 					{
@@ -237,25 +241,34 @@ int64 Game_MessageProcessor(void* Window, uint32 Message,
 							ConsoleGlyph[States[StateOfProgram - 1].
 							ConsoleItr] = 0;
 					}
+					else
+					{
+						States[StateOfProgram - 1].
+							ConsoleGlyph[0] = 0;
+					}
 				}
 				else if (wParam == VK_RETURN)
 				{
 					States[StateOfProgram - 1].ConsoleItr = 0;
 					for (uint32 i = 0;
-						i < States[StateOfProgram - 1].ConsoleBufferLength;
+						i < CONSOLE_BUFFER_LENGTH;
 						i++)
 					{
 						States[StateOfProgram - 1].ConsoleGlyph[i] = 0;
 					}
 				}
 				else if (States[StateOfProgram - 1].ConsoleItr <
-					States[StateOfProgram - 1].ConsoleBufferLength)
+					CONSOLE_BUFFER_LENGTH)
 				{
 					States[StateOfProgram - 1].
 						ConsoleGlyph[States[StateOfProgram - 1].
 						ConsoleItr] = (uint16)wParam;
 					States[StateOfProgram - 1].ConsoleItr++;
 				}
+			}
+			else
+			{
+				States[StateOfProgram - 1].LastKeyPress = wParam;
 			}
 		}
 	} break;

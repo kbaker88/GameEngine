@@ -1,12 +1,62 @@
 
 ////////////////////////////////////////////////////////
-//////////////// NOTES ON OPENGL //////////////////////
-//////////////////////////////////////////////////////
+////////////////       OPENGL     //////////////////////
+////////////////////////////////////////////////////////
+
+Search - 
+	* OPENGL_NOTES
+	* OPENGL_NAMING
+	* OPENGL_FUNCTIONS 
+	* OPENGL_SHADING_LANGUAGE
+
+////////////////////////////////////////////////////////
+////////////////   OPENGL_NOTES  ///////////////////////
+////////////////////////////////////////////////////////
+
+Overview:
+	Fundamental unt of rendering are primitives( point, line, triangle). Rendering
+	uses the hardwae accelerator rasterizer.
+
+Graphics Pipeline:
+	Front End - 
+	- Vertex Fetch
+	- Vertex Shader
+	- Tessellation Control Shader
+	- Tessellation
+	- Tessellation Evaluation Shader
+	- Geometry Shader
+	- Raterization
+	Back End - 
+	- Fragment Shader
+	- Framebuffer Operations
+
+Shader Stages:
+	- Vertex Shaders
+	- Tessellation control
+	- Evaluation shaders
+	- Geometry Shaders
+	- Fragment Shaders
+	- Compute Shaders
+
+NOTE: At a minimum there must be a vertex shader or compute shader.
+NOTE: Minumum to see pixels must include a fragment shader.
 
 General Observations:
 	- Changing OpenGL Object states generally require that the object is first
 	  bound to the OpenGL Context. 
 	- Unbinding Objects is important to avoid errors.
+
+Degenerate Primitive:
+	A line with zero length or a triangle wth zero area.
+
+Clip Space:
+	Coordinate system for the OpenGL pipeline.
+
+Shader Object:
+	Source code for a shader. The shader compiles here.
+
+Program Object:
+	Stores multiple shader objects for one or more shader stages
 
 Buffer Object (BO):
 	Store an array of unformatted memory allocated by the OpenGL context. Usage
@@ -17,8 +67,10 @@ Buffer Object (BO):
 	NOTE: Buffer can be allocated as mutable or immutable
 
 Vertex Array Object (VAO):
-	Stores the state needed to supply vertex data to the pipeline. Stores the
-	format of the vertex data and the Buffer Objects
+	An Object that represents the vertex fetch stage of the OpenGL pipeline
+	and is used to supply input to the vertex shader. Stores the format of 
+	the vertex data and the Buffer Objects. Maintains all of the state related
+	to the input to the OpenGL pipeline?
 	- Enable array access by glEnableVertexAttribArray()
 	NOTE: VAO's do not copy, freeze, or store the contents of references buffers.
 	NOTE: Array access is disabled until the enable function is called
@@ -29,3 +81,86 @@ Vertex Buffer Object (VBO):
 	the vertex format for an attribute array and the source data for 
 	that array. 
 	NOTE: Two ways to use a VBO, one combines two processes into one function
+
+
+////////////////////////////////////////////////////////
+////////////////  OPENGL_NAMING   //////////////////////
+////////////////////////////////////////////////////////
+
+	gl - Naming prefix for all OpenGl functions
+	v  - Vector or Array (used interchangeably)
+	f  - Floating-point
+	fv - Vector of floating-point values 
+
+	GL_POINTS 
+	GL_LINES
+	GL_TRIANGLES
+
+////////////////////////////////////////////////////////
+//////////////// OPENGL_FUNCTIONS //////////////////////
+////////////////////////////////////////////////////////
+
+void glClearBufferfv(GLenum Buffer, GLint drawBuffer, const GLfloat *value);
+	Purpose: Set a specified buffer to a color;
+	Paramters:
+		Buffer	   - The buffer to be changed
+		drawBuffer - An index to specify which buffer in the case of multiple
+					 output buffers.
+		value	   - The color to be written into the buffer.
+
+void glCreateShader()
+	Purpose: Creates an empty shader object, ready to accept source code and
+			 be compiled.
+
+void glShaderSource()
+	Purpose: Hands shader source code to the shader object so that it can
+		     keep a copy of it.
+
+void glCompileShader()
+	Purpose: Compiles whatever source code is contained in the shader object.
+
+void glCreateProgram()
+	Purpose: Creates a program object to which you can attach shader objects.
+
+void glAttachShader()
+	Purpose: Attaches a shader object to a program object.
+
+void glLinkProgram()
+	Purpose: Links all of the shader objects attached to a program object
+			 together.
+
+void glDeleteShader()
+	Purpose: Deletes a shader object. Once a shader has been linked into a
+			 program object, the program contains the binary code and the
+			 shader is no longer needed.
+
+void glCreateVertexArrays(GLsizei n, GLuint* arrays)
+
+void glBindVertexArray(GLuint array)
+
+void glUseProgram()
+	Purpose: Tell OpenGL to use a specified Program Object for rendering.
+
+void glDrawArrays(GLenum mode, GLint first, GLsizei, count)
+	Purpose: To send vertices into the OpenGL pipeline. 
+	Parameters:
+		mode  - Tells OpenGL what type of graphics primitive to render.
+		first - 
+		count - The number of vertices to render. 
+
+void glPointSize(GLfloat size)
+	Purpose: Sets the diameter of the point in pixels
+	Parameters:
+		size - The size of which to make the new diameter.
+
+////////////////////////////////////////////////////////
+////////////// OPENGL_SHADING_LANGUAGE  ////////////////
+////////////////////////////////////////////////////////
+
+	main() -
+		Start of the shader execution.
+
+	Connection Variables:
+
+	gl_Position 
+	gl_VertexID

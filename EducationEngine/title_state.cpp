@@ -28,7 +28,7 @@ void Title_Initialize(ProgramState* State)
 	// NOTE: Menu Button
 	Utility_CreateButton(State, ButtonWidth, ButtonHeight,
 		&v3(0.0f, -165.0f, 0.0f), Asset_GetTexture(1));
-
+	
 	// NOTE: Exit Button
 	Utility_CreateButton(State, ButtonWidth, ButtonHeight,
 		&v3(HalfScreenWidth - (160.0f * 0.5f), -HalfScreenHeight +
@@ -36,7 +36,14 @@ void Title_Initialize(ProgramState* State)
 
 	Utility_CreateButton(State, 400, 40, &v3(0.0f, 0.0f, 0.0f),
 		Asset_GetTexture(8));
+
+	Text_CreateObj(&State->TextObjArray[0], 0.3f, &v3(-60.0f, 3.0f, 0.1f),
+		16, &State->FontArr[0]);
+
+	State->TimerArray[0].Start();
 }
+
+static bool TempPing = false;
 
 void Title_Draw(ProgramState* State)
 {
@@ -106,13 +113,30 @@ void Title_Draw(ProgramState* State)
 		{ -0.5f * (float)WindowDimensions.Width + 10.0f,
 			-0.5f * (float)WindowDimensions.Height + 20.0f, 0.0f };
 
+		if (State->TimerArray[0].GetTime() > 0.5f)
+		{
+			if (TempPing)
+			{
+				TempPing = false;
+			}
+			else
+			{
+				TempPing = true;
+			}
+			State->TimerArray[0].Start();
+		}
+		Text_InputBoxUpdate(&State->TextObjArray[0],
+			(uint16)State->LastKeyPress, TempPing);
+		Text_Draw(&State->TextObjArray[0], State->GPUShaderVarArray[0]);
+
 		if (State->ConsoleState)
 		{
 			Text_DrawConsole(&TextStartPosition, 0.2f,
-				State->GPUShaderVarArray[0], State->Fonts, 
-				State->ConsoleGlyph, State->ConsoleBufferLength);
+				State->GPUShaderVarArray[0], State->FontArr, 
+				State->ConsoleGlyph, CONSOLE_BUFFER_LENGTH);
 		}
 
+		State->LastKeyPress = 0;
 		if (State->Status == -1)
 		{
 			Title_Clean(State);
@@ -178,7 +202,14 @@ void Title_CollisionResolve(ProgramState* State,
 	} break;
 	case 32:
 	{
-
+		if (State->TextObjArray[0].CollisionResult)
+		{
+			State->TextObjArray[0].CollisionResult = 0;
+		}
+		else
+		{
+			State->TextObjArray[0].CollisionResult = 1;
+		}
 	} break;
 	default: {} break;
 	}

@@ -37,6 +37,19 @@ void State_Clean(ProgramState* State)
 		delete[] State->TimerArray;
 		State->TimerArray = 0;
 	}
+	if (State->TextObjArray)
+	{
+		for (uint32 i = 0; i < TEXT_OBJECTS_PER_PROGSTATE; i++)
+		{
+			if (State->TextObjArray->Buffer)
+			{
+				delete[] State->TextObjArray->Buffer;
+				State->TextObjArray->Buffer = 0;
+			}
+		}
+		delete[] State->TextObjArray;
+		State->TextObjArray = 0;
+	}
 	if (State->GPUShaderVarArray)
 	{
 		delete[] State->GPUShaderVarArray;

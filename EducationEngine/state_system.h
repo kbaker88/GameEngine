@@ -10,9 +10,10 @@ struct ProgramState
 		GPUShaderVarArray(0), ShaderHandles(0),
 		Status(0), NumEntityBlocks(0), NumObjectBlocks(0),
 		StateOfProgram(0), CursorPosition(0.0f, 0.0f),
-		ObjectCount(0), EntityCount(0), Fonts(0), 
-		FontCount(0), ConsoleItr(0), ConsoleState(0) {}
-
+		ObjectCount(0), EntityCount(0), FontArr(0), 
+		FontCount(0), ConsoleItr(0), ConsoleState(0),
+		LastKeyPress(0), TextObjArray(0) {}
+		
 	~ProgramState() {}
 
 	Camera* CameraArray;
@@ -20,13 +21,16 @@ struct ProgramState
 	EntityBlock EntityBlocks;
 	RenderObjBlock ObjectBlocks;
 
-	static const uint32 ConsoleBufferLength = 256;
-	uint16 ConsoleGlyph[ConsoleBufferLength]{};
-	uint32 ConsoleItr;
-	uint8 ConsoleState;
+	// TODO: Temporary System
+	Text_Object* TextObjArray;
 
-	Text_Font *Fonts;
+	Font *FontArr;
 	uint32 FontCount;
+	
+	uint16 ConsoleGlyph[CONSOLE_BUFFER_LENGTH]{};
+	int32 ConsoleItr;
+	uint8 ConsoleState;
+	uint64 LastKeyPress;
 
 	v2 CursorPosition;
 

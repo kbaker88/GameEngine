@@ -269,7 +269,7 @@ void Game_Draw(ProgramState* State)
 	{
 		Text_DrawCharLine(string("MOUSE COLLISION \0"),
 			v3(Left + 20.0f, Top - 100.0f, 0.0f), 0.15f,
-			State->GPUShaderVarArray[0], State->Fonts);
+			State->GPUShaderVarArray[0], State->FontArr);
 	}
 	// TODO: Remove, Test timer and clock features
 	char Buffer[16] = {};
@@ -277,7 +277,7 @@ void Game_Draw(ProgramState* State)
 	Text_DrawCharLine(string("Elapsed Time: ") + 
 		string(Buffer),
 		v3(Right - 200.0f, Top - 40.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0], State->Fonts);
+		State->GPUShaderVarArray[0], State->FontArr);
 
 	// NOTE: Display FPS
 	char FPSBuffer[16] = {};
@@ -285,7 +285,7 @@ void Game_Draw(ProgramState* State)
 	Text_DrawCharLine(string("Frames Per Second: ") +
 		string(FPSBuffer),
 		v3(Right - 200.0f, Top - 20.0f,
-			0.0f), 0.15f, State->GPUShaderVarArray[0], State->Fonts);
+			0.0f), 0.15f, State->GPUShaderVarArray[0], State->FontArr);
 
 	v3 PlayerPosition = Entity_GetPosition(&State->EntityBlocks, 0);
 
@@ -300,7 +300,7 @@ void Game_Draw(ProgramState* State)
 		string(BufferY2) + string(" ") +
 		string(BufferZ2),
 		v3(Left + 20.0f, Top - 20.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0], State->Fonts);
+		State->GPUShaderVarArray[0], State->FontArr);
 
 	v2 CursorPosition;
 	CursorPosition.x =
@@ -316,7 +316,7 @@ void Game_Draw(ProgramState* State)
 		string(BufferX3) + string(" ") +
 		string(BufferY3),
 		v3(Left + 20.0f, Top - 40.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0], State->Fonts);
+		State->GPUShaderVarArray[0], State->FontArr);
 
 	char BufferX4[16] = {};
 	char BufferY4[16] = {};
@@ -329,7 +329,7 @@ void Game_Draw(ProgramState* State)
 		string(BufferY4) + string(" ") +
 		string(BufferZ4),
 		v3(Left + 20.0f, Top - 60.0f, 0.0f), 0.15f,
-		State->GPUShaderVarArray[0], State->Fonts);
+		State->GPUShaderVarArray[0], State->FontArr);
 }
 
 void Game_Clean(ProgramState* State)
