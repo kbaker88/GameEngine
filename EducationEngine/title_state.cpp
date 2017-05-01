@@ -6,7 +6,7 @@ void Title_Initialize(ProgramState* State)
 		Render_GetWindowProperties();
 	float HalfScreenWidth = (float)WindowDimensions.Width * 0.5f;
 	float HalfScreenHeight = (float)WindowDimensions.Height * 0.5f;
-
+	 
 	State->CameraArray[0].SetPosition(&v3(-HalfScreenWidth, 
 		-HalfScreenHeight, 1.0f));
 	State->CameraArray[0].SetProjectionMatrix(0);

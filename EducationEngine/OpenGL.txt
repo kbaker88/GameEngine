@@ -5,6 +5,7 @@
 
 Search - 
 	* OPENGL_NOTES
+	* OPENGL_DEFINITIONS
 	* OPENGL_NAMING
 	* OPENGL_FUNCTIONS 
 	* OPENGL_SHADING_LANGUAGE
@@ -43,8 +44,19 @@ NOTE: Minumum to see pixels must include a fragment shader.
 
 General Observations:
 	- Changing OpenGL Object states generally require that the object is first
-	  bound to the OpenGL Context. 
-	- Unbinding Objects is important to avoid errors.
+	  bound to the OpenGL Context.  
+
+
+////////////////////////////////////////////////////////
+////////////////  OPENGL_DEFINITIONS   /////////////////
+////////////////////////////////////////////////////////
+
+Vertex Fetching:
+	Fixed-function stage of the OpenGL Pipeline that provides inputs to
+	the vertex shader.
+
+Vertex Shader:
+	The only mandatory stage in the graphics pipeline.
 
 Degenerate Primitive:
 	A line with zero length or a triangle wth zero area.
@@ -96,59 +108,100 @@ Vertex Buffer Object (VBO):
 	GL_LINES
 	GL_TRIANGLES
 
+NAMING_SHADER_TYPES:
+	GL_COMPUTE_SHADER
+	GL_VERTEX_SHADER
+	GL_TESS_CONTROL_SHADER
+	GL_TESS_EVALUATION_SHADER
+	GL_GEOMETRY_SHADER
+	GL_FRAGMENT_SHADER
+
 ////////////////////////////////////////////////////////
 //////////////// OPENGL_FUNCTIONS //////////////////////
 ////////////////////////////////////////////////////////
 
-void glClearBufferfv(GLenum Buffer, GLint drawBuffer, const GLfloat *value);
-	Purpose: Set a specified buffer to a color;
-	Paramters:
+void glClearBufferfv (GLenum Buffer, GLint drawBuffer, const GLfloat *value);
+	Purpose: Set a specified buffer to a color
+	Parameters:
 		Buffer	   - The buffer to be changed
 		drawBuffer - An index to specify which buffer in the case of multiple
 					 output buffers.
 		value	   - The color to be written into the buffer.
 
-void glCreateShader()
+GLuint glCreateShader (GLenum shaderType)
 	Purpose: Creates an empty shader object, ready to accept source code and
 			 be compiled.
+	Parameters:
+		shaderType - The type of shader to be created. 
+	Return:
+		Reference value to the shader object. Returns 0 if error.
 
-void glShaderSource()
-	Purpose: Hands shader source code to the shader object so that it can
-		     keep a copy of it.
+void glShaderSource (GLuint shader, GLsizei count, const GLchar **string,
+				    const GLint *length)
+	Purpose: Writes source code to the specified shader object, rewriting
+			 any previous code.
+	Parameters:
+		shader - Reference to the shader object to write to.
+		count  - Number of elements in the string and length arrays.
+		string - Array of pointers to strings containing the source code
+				 to be loaded into the shader.
+		length - Array of string lengths.
 
-void glCompileShader()
+void glCompileShader (GLuint shader)
 	Purpose: Compiles whatever source code is contained in the shader object.
+	Parameters:
+		shader - Shader object to be compiled.
 
-void glCreateProgram()
+GLuint glCreateProgram ()
 	Purpose: Creates a program object to which you can attach shader objects.
+	Return:
+		Reference value of an empty shader program. Returns 0 if error.
 
-void glAttachShader()
+void glAttachShader (GLuint program, GLuint shader)
 	Purpose: Attaches a shader object to a program object.
+	Parameters:
+		program - Program object to attach a shader object to.
+		shader  - Shader object that will be attached.
 
-void glLinkProgram()
+void glLinkProgram (GLuint program)
 	Purpose: Links all of the shader objects attached to a program object
 			 together.
+	Parameters:
+		program - The reference value of the program object to be linked.
 
-void glDeleteShader()
+void glDeleteShader (GLuint shader)
 	Purpose: Deletes a shader object. Once a shader has been linked into a
 			 program object, the program contains the binary code and the
 			 shader is no longer needed.
+	Parameters:
+		shader - The shader object to be deleted.
 
-void glCreateVertexArrays(GLsizei n, GLuint* arrays)
+void glCreateVertexArrays (GLsizei n, GLuint* arrays)
+	Purpose: Obtains the references to n previously unused vertex array
+			 objects initialized to the default state.
+	Parameters:
+		n	   - The number of vertex array objects to create.
+		arrays - Array to hold the references of the objects.
 
-void glBindVertexArray(GLuint array)
+void glBindVertexArray (GLuint array)
+	Purpose: Binds the vertex array objects specified by the given
+			 object references.
+	Parameters:
+		array - An array of vertex array object references.
 
-void glUseProgram()
+void glUseProgram (GLuint program)
 	Purpose: Tell OpenGL to use a specified Program Object for rendering.
+	Parameters:
+		program - Reference of the program object to use.
 
-void glDrawArrays(GLenum mode, GLint first, GLsizei, count)
+void glDrawArrays (GLenum mode, GLint first, GLsizei, count)
 	Purpose: To send vertices into the OpenGL pipeline. 
 	Parameters:
 		mode  - Tells OpenGL what type of graphics primitive to render.
-		first - 
+		first - Starting index in the enabled arrays.
 		count - The number of vertices to render. 
 
-void glPointSize(GLfloat size)
+void glPointSize (GLfloat size)
 	Purpose: Sets the diameter of the point in pixels
 	Parameters:
 		size - The size of which to make the new diameter.
@@ -157,7 +210,10 @@ void glPointSize(GLfloat size)
 ////////////// OPENGL_SHADING_LANGUAGE  ////////////////
 ////////////////////////////////////////////////////////
 
-	main() -
+	Getting data between shaders is done by declaring global variables
+	using the in and out storage qualifies.
+
+	main () -
 		Start of the shader execution.
 
 	Connection Variables:
