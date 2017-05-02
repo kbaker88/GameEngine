@@ -286,5 +286,8 @@
     <Text Include="Overview.txt">
       <Filter>Header Files\notes</Filter>
     </Text>
+    <Text Include="Physics.txt">
+      <Filter>Header Files\notes</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -81,14 +81,16 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 		ObjectType = (TypesOfObjects & 0xF);
 		if (ObjectType)
 		{
-			Block->Entities[IDNumber].RenderObjPtrArray = new RenderObject*[ObjectType];
+			Block->Entities[IDNumber].RenderObjPtrArray = 
+				new RenderObject*[ObjectType];
 
 			// NOTE: Potential error point if user enters an ObjectType
 			//		 with a count greater than there are actual pointers;
 			// TODO: Fix this error point
 			for (uint32 Index = 0; Index < ObjectType; Index++)
 			{
-				Block->Entities[IDNumber].RenderObjPtrArray[Index] = &ObjectPtrs[Index];
+				Block->Entities[IDNumber].RenderObjPtrArray[Index] =
+					&ObjectPtrs[Index];
 			}
 			if (ObjectType == 1)
 			{

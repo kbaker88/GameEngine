@@ -1,0 +1,13 @@
+
+////////////////////////////////////////////////////
+////////////////   PHYSICS_NOTES   /////////////////
+////////////////////////////////////////////////////
+
+
+Velocity = Displacement over time (p' - p) / t
+Acceleration = Change in velocity over time (v' - v) / t
+New Position = 
+
+acceleration = a (never new acceleration, we dont save it)
+New Velocity = at + v(existing)
+New Position = a/2t^2 + vt + p(existing)
