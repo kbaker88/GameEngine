@@ -32,7 +32,7 @@ void Game_Initialize(ProgramState* State)
 
 	// NOTE: Wood Floor 2
 	uint32 WoodFloor = Utility_CreatePlane(State, 10, 10, Asset_GetTexture(6));
-	uint32 PlaneEntity = Utility_CreateEntity(State, &v3(0.0f, -0.5f, 20.0f), 
+	uint32 PlaneEntity = Utility_CreateEntity(State, &v3(0.0f, 0.0f, 20.0f), 
 		WoodFloor, 0x111);
 
 	// NOTE: Light Box 3
@@ -43,16 +43,17 @@ void Game_Initialize(ProgramState* State)
 	// NOTE: Wood Box 4
 	uint32 WoodBox = Utility_CreateBox(State, 0.25f, 0.25f, 0.25f, 
 		Asset_GetTexture(5));
-	uint32 BoxEntity1 = Utility_CreateEntity(State, &v3(3.0f, 0.0f, 15.0f), 
+	uint32 BoxEntity1 = Utility_CreateEntity(State, &v3(3.0f, 0.125f, 15.0f), 
 		WoodBox, 0x111);
 
 	// NOTE: Wood Box 5
-	uint32 BoxEntity2 = Utility_CreateEntity(State, &v3(0.0f, 0.0f, 10.0f), 
+	uint32 BoxEntity2 = Utility_CreateEntity(State, &v3(0.0f, 0.125f, 10.0f), 
 		WoodBox, 0x111);
 	
 	// NOTE: Wood Box 6
-	uint32 BoxEntity3 = Utility_CreateEntity(State, &v3(6.0f, 0.0f, 10.0f), 
+	uint32 BoxEntity3 = Utility_CreateEntity(State, &v3(6.0f, 0.125f, 10.0f), 
 		WoodBox, 0x111);
+	Math_ScaleMatrix(Entity_Ptr(&State->EntityBlocks, 7)->ModelMatrix, v3(5.0f, 5.0f, 5.0f));
 
 	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0),
 		&Gravity);
@@ -122,9 +123,9 @@ void Game_Draw(ProgramState* State)
 		(Position.z < -Entity_Depth(&State->EntityBlocks, 1) + 1))
 	{
 		// NOTE: Outside of terrain map
-		if (Position.y < 0)
+		if (Position.y < 1)
 		{
-			Position.y = 0;
+			Position.y = 1;
 			//TODO: Fix this.
 			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks, 0, 0),
 				&(-Gravity));
@@ -199,7 +200,7 @@ void Game_Draw(ProgramState* State)
 	//NOTE: Draw Objects below
 	IsTextured = 1;
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], IsTextured);
-	for (uint32 Index = 2; Index < 7; Index++) 
+	for (uint32 Index = 2; Index < State->EntityCount; Index++) 
 	{
 		Entity_Draw(&State->EntityBlocks, Index, State->GPUShaderVarArray[0]);
 	}
