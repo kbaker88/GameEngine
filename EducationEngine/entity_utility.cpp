@@ -3,14 +3,14 @@
 uint32 Utility_CreateButton(ProgramState* State, float Width, 
 	float Height, v3* Position, Texture2D* Texture)
 {
-	RenderObj_Create(new MyRectangle, &State->ObjectBlocks,
+	RenderObj_Create(new MyRectangle, &State->RenderObjBlocks[0],
 		State->ObjectCount, Width, Height, 0.0f);
-	RenderObj_SetTexture(&State->ObjectBlocks, State->ObjectCount,
+	RenderObj_SetTexture(&State->RenderObjBlocks[0], State->ObjectCount,
 		Texture);
-	Entity_Create(&State->EntityBlocks, State->EntityCount,
-		RenderObj_GetObjectPtr(&State->ObjectBlocks, State->ObjectCount),
+	Entity_Create(&State->EntityBlocks[0], State->EntityCount,
+		RenderObj_GetObjectPtr(&State->RenderObjBlocks[0], State->ObjectCount),
 		Position, 0x101);
-	Entity_GetCollisionObjPtr(&State->EntityBlocks, State->EntityCount, 0)->
+	Entity_GetCollisionObjPtr(&State->EntityBlocks[0], State->EntityCount, 0)->
 		CollisionCode = State->EntityCount * 10;
 	State->ObjectCount++;
 	State->EntityCount++;
@@ -21,7 +21,7 @@ uint32 Utility_CreateButton(ProgramState* State, float Width,
 uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
 	float Depth)
 {
-	RenderObj_Create(new Box, &State->ObjectBlocks, State->ObjectCount,
+	RenderObj_Create(new Box, &State->RenderObjBlocks[0], State->ObjectCount,
 		Width, Height, Depth);
 	State->ObjectCount++;
 
@@ -31,9 +31,9 @@ uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
 uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
 	float Depth, Texture2D* Texture)
 {
-	RenderObj_Create(new Box, &State->ObjectBlocks, State->ObjectCount,
+	RenderObj_Create(new Box, &State->RenderObjBlocks[0], State->ObjectCount,
 		Width, Height, Depth);
-	RenderObj_SetTexture(&State->ObjectBlocks, State->ObjectCount,
+	RenderObj_SetTexture(&State->RenderObjBlocks[0], State->ObjectCount,
 		Texture);
 	State->ObjectCount++;
 
@@ -43,9 +43,9 @@ uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
 uint32 Utility_CreatePlane(ProgramState* State, uint32 Width,
 	uint32 Depth, Texture2D* Texture)
 {
-	RenderObj_Create(new Plane2D, &State->ObjectBlocks,
+	RenderObj_Create(new Plane2D, &State->RenderObjBlocks[0],
 		State->ObjectCount, Width, Depth);
-	RenderObj_SetTexture(&State->ObjectBlocks, State->ObjectCount,
+	RenderObj_SetTexture(&State->RenderObjBlocks[0], State->ObjectCount,
 		Texture);
 	State->ObjectCount++;
 
@@ -55,9 +55,9 @@ uint32 Utility_CreatePlane(ProgramState* State, uint32 Width,
 uint32 Utility_CreateHeightMap(ProgramState* State, 
 	Texture2D* HeightMapImg, Texture2D* Texture)
 {
-	RenderObj_Create(new HeightMap, &State->ObjectBlocks, State->ObjectCount,
+	RenderObj_Create(new HeightMap, &State->RenderObjBlocks[0], State->ObjectCount,
 		HeightMapImg);
-	RenderObj_SetTexture(&State->ObjectBlocks, State->ObjectCount,
+	RenderObj_SetTexture(&State->RenderObjBlocks[0], State->ObjectCount,
 		Texture);
 	State->ObjectCount++;
 
@@ -67,8 +67,8 @@ uint32 Utility_CreateHeightMap(ProgramState* State,
 uint32 Utility_CreateEntity(ProgramState* State, v3* Position,
 	unsigned int ObjectID, uint64 TypesOfObjects)
 {
-	Entity_Create(&State->EntityBlocks, State->EntityCount,
-		RenderObj_GetObjectPtr(&State->ObjectBlocks, ObjectID), Position,
+	Entity_Create(&State->EntityBlocks[0], State->EntityCount,
+		RenderObj_GetObjectPtr(&State->RenderObjBlocks[0], ObjectID), Position,
 		TypesOfObjects);
 	State->EntityCount++;
 

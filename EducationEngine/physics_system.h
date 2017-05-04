@@ -8,12 +8,13 @@ struct PhysicsObject
 	PhysicsObject() : AccelerationRate(0.0f), Mass(1.0f),
 		Force(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f),
 		Acceleration(0.0f, 0.0f, 0.0f), ForceSum(0.0f, 0.0f, 0.0f), 
-		MoveDirection(0), Position(0) {}
+		MoveDirection(0), Position(0), ModelMatrix(0) {}
 	
 	~PhysicsObject() {}
 
+	m4 *ModelMatrix;
 	v3 *Position, *MoveDirection;
-	v3 Velocity, Force, ForceSum, Acceleration;
+	v3 Velocity, Force, ForceSum, Acceleration, PrevPosition;
 	float AccelerationRate;
 	float Mass;
 };
@@ -24,5 +25,7 @@ void Phys_CalculatePosition(PhysicsObject* PhysObject);
 void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force);
 void Phys_SetAccelerationRate(PhysicsObject* PhysObject,
 	float MetersPerSec);
+
+void Phys_StopObject(PhysicsObject* PhysObject);
 
 #endif

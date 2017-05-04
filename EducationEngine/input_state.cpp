@@ -40,9 +40,9 @@ void Input_UpdateMouseState(ProgramState* State)
 	CursorState.PositionOffset *= Sensitivity;
 
 	float* YawPtr = 
-		&Entity_GetCamera(&State->EntityBlocks, 0)->Yaw;
+		&Entity_GetCamera(&State->EntityBlocks[0], 0)->Yaw;
 	float* PitchPtr = 
-		&Entity_GetCamera(&State->EntityBlocks, 0)->Pitch;
+		&Entity_GetCamera(&State->EntityBlocks[0], 0)->Pitch;
 
 	*YawPtr += CursorState.PositionOffset.x;
 	*PitchPtr += CursorState.PositionOffset.y;
@@ -57,23 +57,23 @@ void Input_UpdateMouseState(ProgramState* State)
 		(*YawPtr)) * Math_Cosine(Math_ConvertToRadians(*PitchPtr)),
 		Math_Sine(Math_ConvertToRadians(*PitchPtr)),
 		Math_Sine(Math_ConvertToRadians(*YawPtr)) * Math_Cosine(Math_ConvertToRadians(*PitchPtr)));
-	Entity_GetCamera(&State->EntityBlocks, 0)->FacingVector =
+	Entity_GetCamera(&State->EntityBlocks[0], 0)->FacingVector =
 		Math_Normalize(PlayerFront);
 }
 
 void Input_UpdateKeyStates(ProgramState* State)
 {
 	float* YawPtr =
-		&Entity_GetCamera(&State->EntityBlocks, 0)->Yaw;
+		&Entity_GetCamera(&State->EntityBlocks[0], 0)->Yaw;
 	float* PitchPtr =
-		&Entity_GetCamera(&State->EntityBlocks, 0)->Pitch;
+		&Entity_GetCamera(&State->EntityBlocks[0], 0)->Pitch;
 
 	v3* DirectionVector = 
-		&Entity_Ptr(&State->EntityBlocks, 0)->DirectionVector;
+		&Entity_Ptr(&State->EntityBlocks[0], 0)->DirectionVector;
 	v3* FacingVector =
-		&Entity_GetCamera(&State->EntityBlocks, 0)->FacingVector;
+		&Entity_GetCamera(&State->EntityBlocks[0], 0)->FacingVector;
 	v3* RelativeUpVector =
-		&Entity_GetCamera(&State->EntityBlocks, 0)->UpVector;
+		&Entity_GetCamera(&State->EntityBlocks[0], 0)->UpVector;
 	
 	if (Platform_GetStateOfKey('Q') == 1)
 	{

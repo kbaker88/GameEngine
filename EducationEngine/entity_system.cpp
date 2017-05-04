@@ -114,6 +114,8 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 					&Block->Entities[IDNumber].Position;
 				Block->Entities[IDNumber].PhysicsObj[Index].MoveDirection =
 					&Block->Entities[IDNumber].DirectionVector;
+				Block->Entities[IDNumber].PhysicsObj[Index].ModelMatrix =
+					&Block->Entities[IDNumber].ModelMatrix;
 			}
 		}
 		ObjectType = ((TypesOfObjects & 0xF00) >> 8);

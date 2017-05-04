@@ -74,12 +74,12 @@ void Title_Draw(ProgramState* State)
 	for (uint32 Index = 0; Index < State->EntityCount; Index++)
 	{
 		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
-			Entity_GetCollisionObjPtr(&State->EntityBlocks, Index, 0));
+			Entity_GetCollisionObjPtr(&State->EntityBlocks[0], Index, 0));
 		Title_CollisionResolve(State, CollisionResult);
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 
-			Entity_Ptr(&State->EntityBlocks, Index)->State);
-		Entity_Draw(&State->EntityBlocks, Index, 
+			Entity_Ptr(&State->EntityBlocks[0], Index)->State);
+		Entity_Draw(&State->EntityBlocks[0], Index,
 			State->GPUShaderVarArray[0]);
 	}
 
@@ -155,11 +155,11 @@ void Title_CollisionResolve(ProgramState* State,
 	{
 	case 0:
 	{
-		Entity_Ptr(&State->EntityBlocks, 0)->State = 0;
+		Entity_Ptr(&State->EntityBlocks[0], 0)->State = 0;
 	} break;
 	case 1:
 	{
-		Entity_Ptr(&State->EntityBlocks, 0)->State = 1;
+		Entity_Ptr(&State->EntityBlocks[0], 0)->State = 1;
 	} break;
 	case 2:
 	{
@@ -168,11 +168,11 @@ void Title_CollisionResolve(ProgramState* State,
 	} break;
 	case 10:
 	{
-		Entity_Ptr(&State->EntityBlocks, 1)->State = 0;
+		Entity_Ptr(&State->EntityBlocks[0], 1)->State = 0;
 	} break;
 	case 11:
 	{
-		Entity_Ptr(&State->EntityBlocks, 1)->State = 1;
+		Entity_Ptr(&State->EntityBlocks[0], 1)->State = 1;
 	} break;
 	case 12:
 	{
@@ -181,11 +181,11 @@ void Title_CollisionResolve(ProgramState* State,
 	} break;
 	case 20:
 	{
-		Entity_Ptr(&State->EntityBlocks, 2)->State = 0;
+		Entity_Ptr(&State->EntityBlocks[0], 2)->State = 0;
 	} break;
 	case 21:
 	{
-		Entity_Ptr(&State->EntityBlocks, 2)->State = 1;
+		Entity_Ptr(&State->EntityBlocks[0], 2)->State = 1;
 	} break;
 	case 22:
 	{
@@ -218,8 +218,8 @@ void Title_CollisionResolve(ProgramState* State,
 void Title_Clean(ProgramState* State)
 {
 	Platform_UpdateMouseState(0);
-	Entity_DeleteBlock(&State->EntityBlocks);
-	RenderObj_DeleteBlock(&State->ObjectBlocks);
+	Entity_DeleteBlock(&State->EntityBlocks[0]);
+	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
 	Render_ClearCurrentShaderProgram();

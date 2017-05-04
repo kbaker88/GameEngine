@@ -12,14 +12,15 @@ struct ProgramState
 		StateOfProgram(0), CursorPosition(0.0f, 0.0f),
 		ObjectCount(0), EntityCount(0), FontArr(0), 
 		FontCount(0), ConsoleItr(0), ConsoleState(0),
-		LastKeyPress(0), TextObjArray(0) {}
+		LastKeyPress(0), TextObjArray(0), EntityBlocks(0),
+		RenderObjBlocks (0) {}
 		
 	~ProgramState() {}
 
 	Camera* CameraArray;
 	Timer* TimerArray;
-	EntityBlock EntityBlocks;
-	RenderObjBlock ObjectBlocks;
+	EntityBlock* EntityBlocks;
+	RenderObjBlock* RenderObjBlocks;
 
 	// TODO: Temporary System
 	Text_Object* TextObjArray;

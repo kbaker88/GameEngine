@@ -50,6 +50,16 @@ void State_Clean(ProgramState* State)
 		delete[] State->TextObjArray;
 		State->TextObjArray = 0;
 	}
+	if (State->RenderObjBlocks)
+	{
+		delete[] State->RenderObjBlocks;
+		State->RenderObjBlocks = 0;
+	}
+	if (State->EntityBlocks)
+	{
+		delete[] State->EntityBlocks;
+		State->EntityBlocks = 0;
+	}
 	if (State->GPUShaderVarArray)
 	{
 		delete[] State->GPUShaderVarArray;
