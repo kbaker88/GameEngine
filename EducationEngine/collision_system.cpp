@@ -499,23 +499,23 @@ Face Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB)
 	}
 }
 
-bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
+bool Collision_HeightMap(CollisionObject* CollisionObj, v3 &ObjectPosition)
 {
 	int32 x, z;
 	x = (int32)round(ObjectPosition.x) - 1; // because negative is backwards?
 	z = (int32)round(ObjectPosition.z); //TODO: Write round to get rid of cmath
 
 	v3 TerrainVertice;
-	
+
 	TerrainVertice.x =
-		HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-		((uint32)HeightMapPlane->Depth - z)) * 3];
+		CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+		((uint32)CollisionObj->Depth - z)) * 3];
 	TerrainVertice.y =
-		HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-		((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
+		CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+		((uint32)CollisionObj->Depth - z)) * 3 + 1];
 	TerrainVertice.z =
-		HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-		((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
+		CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+		((uint32)CollisionObj->Depth - z)) * 3 + 2];
 
 	if ((ObjectPosition.y) < TerrainVertice.y + 1.0f)
 	{
@@ -527,42 +527,42 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 		{
 			if ((ObjectPosition.z - z) < 0)
 			{
-				if (z < (int32)HeightMapPlane->Depth)
+				if (z < (int32)CollisionObj->Depth)
 				{
 					TerrainVertice2.x =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z - 1))) * 3];
+						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z - 1))) * 3];
 					TerrainVertice2.y =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 1];
+						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z - 1))) * 3 + 1];
 					TerrainVertice2.z =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 2];
+						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z - 1))) * 3 + 2];
 				}
 				if (x > 0)
 				{
 					TerrainVertice3.x =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - z)) * 3];
+						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3];
 					TerrainVertice3.y =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
+						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3 + 1];
 					TerrainVertice3.z =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
+						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3 + 2];
 				}
 			}
 			else
 			{
 				TerrainVertice2.x =
-					HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
-					((uint32)HeightMapPlane->Depth - (z + 1))) * 3];
+					CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
+					((uint32)CollisionObj->Depth - (z + 1))) * 3];
 				TerrainVertice2.y =
-					HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
-					((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 1];
+					CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
+					((uint32)CollisionObj->Depth - (z + 1))) * 3 + 1];
 				TerrainVertice2.z =
-					HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
-					((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 2];
+					CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
+					((uint32)CollisionObj->Depth - (z + 1))) * 3 + 2];
 
 				if ((((TerrainVertice.x - TerrainVertice2.x) * // Determinant 
 					((-ObjectPosition.z) - (-TerrainVertice2.z))) -
@@ -570,26 +570,26 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 					(ObjectPosition.x - TerrainVertice2.x))) < 0)
 				{
 					TerrainVertice3.x =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z + 1))) * 3];
+						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z + 1))) * 3];
 					TerrainVertice3.y =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 1];
+						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z + 1))) * 3 + 1];
 					TerrainVertice3.z =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 2];
+						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z + 1))) * 3 + 2];
 				}
 				else
 				{
 					TerrainVertice3.x =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - z)) * 3];
+						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3];
 					TerrainVertice3.y =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
+						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3 + 1];
 					TerrainVertice3.z =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x - 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
+						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3 + 2];
 				}
 			}
 		}
@@ -598,44 +598,44 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 			if ((ObjectPosition.z - z) < 0) // red
 			{
 				if ((z < 0) &&
-					(x < (int32)HeightMapPlane->Width))
+					(x < (int32)CollisionObj->Width))
 				{
 					TerrainVertice2.x =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z - 1))) * 3];
+						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z - 1))) * 3];
 					TerrainVertice2.y =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 1];
+						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z - 1))) * 3 + 1];
 					TerrainVertice2.z =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 2];
+						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z - 1))) * 3 + 2];
 
 					if ((((TerrainVertice2.x - TerrainVertice.x) *
 						((-ObjectPosition.z) - (-TerrainVertice.z))) -
 						(((-TerrainVertice2.z) - (-TerrainVertice.z)) *
 						(ObjectPosition.x - TerrainVertice.x))) < 0)
 					{
-						TerrainVertice3.x =
-							HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
-							((uint32)HeightMapPlane->Depth - z)) * 3];
-						TerrainVertice3.y =
-							HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
-							((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
-						TerrainVertice3.z =
-							HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
-							((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
+						TerrainVertice3.x = CollisionObj->VerticesPtr[(((x + 1) * 
+							(uint32)CollisionObj->Depth) +
+							((uint32)CollisionObj->Depth - z)) * 3];
+						TerrainVertice3.y = CollisionObj->VerticesPtr[(((x + 1) * 
+							(uint32)CollisionObj->Depth) +
+							((uint32)CollisionObj->Depth - z)) * 3 + 1];
+						TerrainVertice3.z = CollisionObj->VerticesPtr[(((x + 1) * 
+							(uint32)CollisionObj->Depth) +
+							((uint32)CollisionObj->Depth - z)) * 3 + 2];
 					}
 					else
 					{
 						TerrainVertice3.x =
-							HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-							((uint32)HeightMapPlane->Depth - (z - 1))) * 3];
+							CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+							((uint32)CollisionObj->Depth - (z - 1))) * 3];
 						TerrainVertice3.y =
-							HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-							((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 1];
+							CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+							((uint32)CollisionObj->Depth - (z - 1))) * 3 + 1];
 						TerrainVertice3.z =
-							HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-							((uint32)HeightMapPlane->Depth - (z - 1))) * 3 + 2];
+							CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+							((uint32)CollisionObj->Depth - (z - 1))) * 3 + 2];
 					}
 				}
 			}
@@ -644,48 +644,52 @@ bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition)
 				if (z < 0)
 				{
 					TerrainVertice2.x =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z + 1))) * 3];
+						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z + 1))) * 3];
 					TerrainVertice2.y =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 1];
+						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z + 1))) * 3 + 1];
 					TerrainVertice2.z =
-						HeightMapPlane->VerticeFloatArrayPtr[((x * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - (z + 1))) * 3 + 2];
+						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z + 1))) * 3 + 2];
 				}
-				if (x < (int32)HeightMapPlane->Width) // conversation errors?
+				if (x < (int32)CollisionObj->Width) // conversation errors?
 				{
 					TerrainVertice3.x =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - z)) * 3];
+						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3];
 					TerrainVertice3.y =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - z)) * 3 + 1];
+						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3 + 1];
 					TerrainVertice3.z =
-						HeightMapPlane->VerticeFloatArrayPtr[(((x + 1) * (uint32)HeightMapPlane->Depth) +
-						((uint32)HeightMapPlane->Depth - z)) * 3 + 2];
+						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3 + 2];
 				}
 			}
 		}
 
 		//Line Test;
-		//Test.Init(TerrainVertice.Arr, (TerrainVertice + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
+		//Test.Init(TerrainVertice.Arr,
+		//	 (TerrainVertice + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
 		//Test.Draw();
 		//Test.Delete();
 		//
 		//Line Test2;
-		//Test2.Init(TerrainVertice2.Arr, (TerrainVertice2 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
+		//Test2.Init(TerrainVertice2.Arr, 
+		//	(TerrainVertice2 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
 		//Test2.Draw();
 		//Test2.Delete();
 		//
 		//Line Test3;
-		//Test3.Init(TerrainVertice3.Arr, (TerrainVertice3 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
+		//Test3.Init(TerrainVertice3.Arr, 
+		//	(TerrainVertice3 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
 		//Test3.Draw();
 		//Test3.Delete();
 
 		v3 Line1 = (TerrainVertice2 - TerrainVertice);
 		v3 Line2 = (TerrainVertice3 - TerrainVertice);
 		v3 Norm = Math_Normalize(Math_CrossProduct(Line2, Line1));
+		CollisionObj->CollideNormal = Norm;
 		v3 PointLine = ObjectPosition - TerrainVertice;
 		float test = -Math_InnerProduct(&PointLine, &Norm);
 		v3 point = test * Norm;

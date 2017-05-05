@@ -78,6 +78,10 @@ void Game_Draw(ProgramState* State)
 
 	Input_UpdateMouseState(State);
 	Input_UpdateKeyStates(State);
+	Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+		0, 0));
+	Entity_GetCamera(&State->EntityBlocks[0], 0)->
+		SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
 
 	v3 MouseRay = Collision_UpdateMousePickRay(
 		&Entity_GetCamera(&State->EntityBlocks[0], 0)->ProjectionMatrix,
@@ -130,40 +134,17 @@ void Game_Draw(ProgramState* State)
 		(Position.z < -Entity_Depth(&State->EntityBlocks[0], 1) + 1))
 	{
 		// NOTE: Outside of terrain map
-		if (Position.y < 1.0f)
+		// NOTE: If collision with floor
+		if (Position.y <= 1.0f)
 		{
-			Position.y = 1.0f;
-			////TODO: Fix this.
-			static bool test = true;
-			if (test)
-			{
-				Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0),
-					&(-Gravity));
-				test = false;
-			}
-		
-			//Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0),
-			//	&v3(0.0f,
-			//		-Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0)->Force.y,
-			//		0.0f));
-			
-			Entity_SetPosition(&State->EntityBlocks[0], 0, Position);
-			Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
-				0, 0));
-			//Phys_StopObject(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
-			//		0, 0));
+			Phys_WallSlide(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+				0, 0), &v3(0.0f, 1.0f, 0.0f));
 			Entity_GetCamera(&State->EntityBlocks[0], 0)->
 				SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
-			//
-			//Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0),
-			//	&(Gravity));
 		}
 		else
 		{
-			Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
-				0, 0));
-			Entity_GetCamera(&State->EntityBlocks[0], 0)->
-				SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
+			// NOTE: No collision.
 		}
 	}
 	else
@@ -184,31 +165,18 @@ void Game_Draw(ProgramState* State)
 			v3(0.0f, 0.0f, 1.0f).Arr);
 		Render_UnmapShaderDataPtr();
 
-		if (Collision_HeightMap(
-			static_cast<HeightMap*>(Entity_GetObjectPtr(&State->EntityBlocks[0],
-				1, 0)), Position))
+		if (Collision_HeightMap(Entity_GetCollisionObjPtr(&State->EntityBlocks[0],
+			1, 0), Position))
 		{
-			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0),
-				&(-Gravity));
-			//Phys_AddForce(Entity_GetPhysObjPtr(State->EntityBlockNum, 0),
-			//	&v3(0.0f,
-			//		-Entity_GetPhysObjPtr(State->EntityBlockNum, 0)->Force.y, 
-			//		0.0f));
-			Entity_SetPosition(&State->EntityBlocks[0], 0, Position);
-
-			Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
-				0, 0));
+			Phys_WallSlide(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+				0, 0), &Entity_GetCollisionObjPtr(&State->EntityBlocks[0],
+					1, 0)->CollideNormal);
 			Entity_GetCamera(&State->EntityBlocks[0], 0)->
 				SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
-			Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0),
-				&(Gravity));
 		}
 		else
 		{
-			Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
-				0, 0));
-			Entity_GetCamera(&State->EntityBlocks[0], 0)->
-				SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
+			// NOTE: No Heightmap collision.
 		}
 	}
 
@@ -262,19 +230,17 @@ void Game_Draw(ProgramState* State)
 		//Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 6, 0));
 	}
 
-	if (Collision_GJK(Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 0, 0),
-		Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 6, 0)))
-	{
-		Text_DrawCharLine(string("COLLISION \0"),
-			v3(Left + 20.0f, Top - 80.0f, 0.0f), 0.15f,
-			State->GPUShaderVarArray[0], &State->FontArr[0]);
-		Phys_StopObject(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0));
-		Phys_StopObject(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 6, 0));
-		//Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0));
-		//Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 6, 0));
-		Entity_GetCamera(&State->EntityBlocks[0], 0)->
-			SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
-	}
+	//if (Collision_GJK(Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 0, 0),
+	//	Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 6, 0)))
+	//{
+	//	Text_DrawCharLine(string("COLLISION \0"),
+	//		v3(Left + 20.0f, Top - 80.0f, 0.0f), 0.15f,
+	//		State->GPUShaderVarArray[0], &State->FontArr[0]);
+	//	Phys_StopObject(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0));
+	//	Phys_StopObject(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 6, 0));
+	//	Entity_GetCamera(&State->EntityBlocks[0], 0)->
+	//		SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
+	//}
 
 	//char BufferX[16] = {};
 	//char BufferY[16] = {};

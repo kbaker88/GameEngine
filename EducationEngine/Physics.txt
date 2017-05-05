@@ -12,22 +12,4 @@ acceleration = a (never new acceleration, we dont save it)
 New Velocity = at + v(existing)
 New Position = a/2t^2 + vt + p(existing)
 
-Ax/A = cos(theta)
-Ay/A = sin(theta)
-Ax = Acos(theta)
-Ay = Asin(theta)
-tan(theta) = Ay/Ax
-theta = arctan(Ay/Ax)
-
-(scalar)dot product:
-vecA * vecB = |vecA||vecB|cos(theta) = AxBx + AyBy + AzBz
-
-cross(vector) product
-C = ABsin(theta)
-vecA X vecB = -vecB X vecA
-Cx = AyBz - AzBy
-Cy = AzBx - AxBz
-Cz = AxBy - AyBx
-
-
 

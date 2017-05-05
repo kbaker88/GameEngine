@@ -194,6 +194,7 @@
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Math.txt" />
     <Text Include="OpenGL.txt" />
     <Text Include="Overview.txt" />
     <Text Include="Physics.txt" />

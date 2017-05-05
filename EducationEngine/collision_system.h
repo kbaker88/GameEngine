@@ -19,6 +19,7 @@ struct CollisionObject
 
 	m4 *ModelMatrix;
 	v3 *Position;
+	v3 CollideNormal;
 	float* VerticesPtr;
 	float Width, Height, Depth, HalfWidth, HalfHeight, HalfDepth;
 	uint32 NumVertices;
@@ -29,6 +30,7 @@ struct CollisionObject
 		NumVertices = NewObj.NumVertices;
 		VerticesPtr = NewObj.VerticesPtr;
 		Position = NewObj.Position;
+		CollideNormal = NewObj.CollideNormal;
 		Width = NewObj.Width;
 		Height = NewObj.Height;
 		Depth = NewObj.Depth;
@@ -156,5 +158,7 @@ Face AddFaceEPA(SupportPoint &v0, SupportPoint &v1, SupportPoint &v2);
 Face Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB);
 
 bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition);
+bool Collision_HeightMap(CollisionObject* HeightMapCollisionObj,
+	v3 &ObjectPosition);
 
 #endif
