@@ -431,6 +431,13 @@ inline float Math_InnerProduct(v3* A, v3* B)
 	return(Result);
 }
 
+inline float Math_InnerProduct(v4* A, v4* B)
+{
+	float Result = A->x*B->x + A->y*B->y + A->z*B->z + A->w*B->w;
+
+	return(Result);
+}
+
 inline float Math_Length(v3 A)
 {
 	float Result = Math_InnerProduct(&A, &A);

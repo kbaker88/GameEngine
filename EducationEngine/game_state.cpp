@@ -221,26 +221,20 @@ void Game_Draw(ProgramState* State)
 	if (Collision_GJK(Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 5, 0),
 		Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 6, 0)))
 	{
-		Text_DrawCharLine(string("COLLISION \0"),
-			v3(Left + 20.0f, Top - 80.0f, 0.0f), 0.15f,
-			State->GPUShaderVarArray[0], &State->FontArr[0]);  
-		Phys_StopObject(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 5, 0));
-		Phys_StopObject(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 6, 0));
-		//Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 5, 0));
-		//Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 6, 0));
+		Phys_BounceBack(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+			5, 0), &v3(-1.0f, 0.0f, 0.0f));
+		Phys_BounceBack(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+			6, 0), &v3(1.0f, 0.0f, 0.0f));
 	}
 
-	//if (Collision_GJK(Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 0, 0),
-	//	Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 6, 0)))
-	//{
-	//	Text_DrawCharLine(string("COLLISION \0"),
-	//		v3(Left + 20.0f, Top - 80.0f, 0.0f), 0.15f,
-	//		State->GPUShaderVarArray[0], &State->FontArr[0]);
-	//	Phys_StopObject(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 0, 0));
-	//	Phys_StopObject(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 6, 0));
-	//	Entity_GetCamera(&State->EntityBlocks[0], 0)->
-	//		SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
-	//}
+	if (Collision_GJK(Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 0, 0),
+		Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 6, 0)))
+	{
+		Phys_BounceBack(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+			0, 0), &v3(0.0f, 0.0f, 1.0f));
+		Entity_GetCamera(&State->EntityBlocks[0], 0)->
+			SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
+	}
 
 	//char BufferX[16] = {};
 	//char BufferY[16] = {};

@@ -702,3 +702,78 @@ bool Collision_HeightMap(CollisionObject* CollisionObj, v3 &ObjectPosition)
 		return false;
 	}
 }
+
+v3 Collision_GetNormal(CollisionObject* CollideObj, PhysicsObject* PhysObj)
+{
+	v3 Normal;
+	
+	v3 LBR = { CollideObj->VerticesPtr[0], CollideObj->VerticesPtr[1] , CollideObj->VerticesPtr[2] };
+	v3 RBR = { CollideObj->VerticesPtr[3], CollideObj->VerticesPtr[4] , CollideObj->VerticesPtr[5] };
+	v3 RTR = { CollideObj->VerticesPtr[6], CollideObj->VerticesPtr[7] , CollideObj->VerticesPtr[8] };
+	v3 LTR = { CollideObj->VerticesPtr[12], CollideObj->VerticesPtr[13] , CollideObj->VerticesPtr[14] };
+	v3 LBF = { CollideObj->VerticesPtr[18], CollideObj->VerticesPtr[19] , CollideObj->VerticesPtr[20] };
+	v3 RBF = { CollideObj->VerticesPtr[21], CollideObj->VerticesPtr[22] , CollideObj->VerticesPtr[23] };
+	v3 RTF = { CollideObj->VerticesPtr[24], CollideObj->VerticesPtr[25] , CollideObj->VerticesPtr[26] };
+	v3 LTF = { CollideObj->VerticesPtr[30], CollideObj->VerticesPtr[31] , CollideObj->VerticesPtr[32] };
+	LBR = LBR * *CollideObj->Position;
+	RBR = RBR + *CollideObj->Position;
+	RTR = RTR + *CollideObj->Position;
+	LTR = LTR + *CollideObj->Position;
+	LBF = LBF + *CollideObj->Position;
+	RBF = RBF + *CollideObj->Position;
+	RTF = RTF + *CollideObj->Position;
+	LTF = LTF + *CollideObj->Position;
+
+	v4 CurrentPoint = { PhysObj->PrevPosition.x, PhysObj->PrevPosition.y,
+		PhysObj->PrevPosition.z, 1 };
+
+	// back
+	v3 LineBackBottom = (RBR - LBR);
+	v3 LineBackRight = (RBR - RTR);
+	v3 BackNormal = Math_CrossProduct(LineBackBottom, LineBackRight);
+
+	float w = Math_InnerProduct(&LineBackBottom, &BackNormal);
+
+	v4 BackPlane = { BackNormal.x, BackNormal.y, BackNormal.z, w};
+
+	// top
+	v3 LineTopBack = (RTR - LTR);
+	v3 LineTopRight = (RTR - RTF);
+	v3 TopNormal = Math_CrossProduct(LineTopBack, LineTopRight);
+
+	float t = Math_InnerProduct(&LineTopBack, &TopNormal);
+
+	v4 TopPlane = { TopNormal.x, TopNormal.y, TopNormal.z, t };
+
+
+	// right
+	v3 LineRightBottom = (RTR - RTF);
+	v3 LineRightRight = (RTR - RBR);
+	v3 RightNormal = Math_CrossProduct(LineRightBottom, LineRightRight);
+
+	float p = Math_InnerProduct(&LineRightBottom, &RightNormal);
+
+	v4 RightPlane = { RightNormal.x, RightNormal.y, RightNormal.z, p };
+
+
+	if (Math_InnerProduct(&BackPlane, &CurrentPoint) < 0)
+	{
+		Normal = BackNormal;
+	}
+	else if (Math_InnerProduct(&TopPlane, &CurrentPoint) < 0)
+	{
+		Normal = TopNormal;
+	}
+	else if (Math_InnerProduct(&RightPlane, &CurrentPoint) < 0)
+	{
+		Normal = RightNormal;
+	}
+
+	Line Test;
+	Test.Init(CollideObj->Position->Arr, Normal.Arr, 10.0f);
+	Test.Draw();
+	Test.Delete();
+	Test.~Test();
+
+	return Normal;
+}

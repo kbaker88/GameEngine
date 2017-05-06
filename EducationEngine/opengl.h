@@ -539,6 +539,8 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_RGB10_A2UI 0x906F
 
 // 4.0
+#define GL_TESS_CONTROL_SHADER            0x8E88
+#define GL_TESS_EVALUATION_SHADER         0x8E87
 #define GL_SAMPLE_SHADING 0x8C36
 #define GL_MIN_SAMPLE_SHADING_VALUE 0x8C37
 #define GL_MIN_PROGRAM_TEXTURE_GATHER_OFFSET 0x8E5E
@@ -564,6 +566,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_COPY_WRITE_BUFFER_BINDING 0x8F37
 
 // 4.3
+#define GL_COMPUTE_SHADER                 0x91B9
 #define GL_NUM_SHADING_LANGUAGE_VERSIONS 0x82E9
 #define GL_VERTEX_ATTRIB_ARRAY_LONG 0x874E
 

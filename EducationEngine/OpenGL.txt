@@ -26,7 +26,7 @@ Graphics Pipeline:
 	- Tessellation
 	- Tessellation Evaluation Shader
 	- Geometry Shader
-	- Raterization
+	- Rasterization
 	Back End - 
 	- Fragment Shader
 	- Framebuffer Operations

@@ -40,8 +40,21 @@ void Phys_SetAccelerationRate(PhysicsObject* PhysObject,
 
 void Phys_BounceBack(PhysicsObject* PhysObject, v3* CollisionNormal)
 {
+	*PhysObject->Position = PhysObject->PrevPosition;
+
+	PhysObject->Force = PhysObject->Force - Math_InnerProduct(
+		&PhysObject->Force, CollisionNormal) * *CollisionNormal;
+
 	PhysObject->Velocity = PhysObject->Velocity - 2 * Math_InnerProduct(
 		&PhysObject->Velocity, CollisionNormal) * *CollisionNormal;
+
+	*PhysObject->Position =
+		(0.5f * PhysObject->Force * Math_Square(SecondsPerFrame)) +
+		(PhysObject->Velocity * SecondsPerFrame) +
+		*PhysObject->Position;
+
+	*PhysObject->ModelMatrix = Math_TranslateMatrix(
+		Math_IdentityMatrix(), *PhysObject->Position);
 }
 
 void Phys_WallSlide(PhysicsObject* PhysObject, v3* CollisionNormal)
@@ -50,14 +63,6 @@ void Phys_WallSlide(PhysicsObject* PhysObject, v3* CollisionNormal)
 
 	PhysObject->Force = PhysObject->Force - Math_InnerProduct(
 		&PhysObject->Force, CollisionNormal) * *CollisionNormal;
-
-//	PhysObject->Force = PhysObject->Mass * *PhysObject->MoveDirection *
-//		PhysObject->AccelerationRate;
-//
-//	PhysObject->Force = PhysObject->Force - Math_InnerProduct(
-//		&PhysObject->Force, CollisionNormal) * *CollisionNormal;
-//
-//	PhysObject->Force += PhysObject->ForceSum;
 
 	PhysObject->Velocity = PhysObject->Velocity - Math_InnerProduct(
 		&PhysObject->Velocity, CollisionNormal) * *CollisionNormal;

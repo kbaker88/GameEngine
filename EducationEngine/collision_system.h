@@ -157,8 +157,9 @@ Face AddFaceEPA(SupportPoint &v0, SupportPoint &v1, SupportPoint &v2);
 //Face EPA(ObjectInstance *ObjA, ObjectInstance *ObjB);
 Face Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB);
 
-bool Collision_HeightMap(HeightMap* HeightMapPlane, v3 &ObjectPosition);
 bool Collision_HeightMap(CollisionObject* HeightMapCollisionObj,
 	v3 &ObjectPosition);
+
+v3 Collision_GetNormal(CollisionObject* CollideObj, PhysicsObject* PhysObj);
 
 #endif
