@@ -136,6 +136,7 @@ float Math_Root(float Value, unsigned int Degree)
 	{
 		return -1.0f; // Error
 	}
+
 	if (Degree == 1)
 	{
 		return Value;

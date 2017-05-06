@@ -3,13 +3,13 @@
 Priority:
 	- Add text input boxes
 	- Add text debug boxes
-	- Fix basic physics system
-	- Texture heightmaps
+	- Texture heightmaps 
 	- Add Skybox
 	- Fix lighting
 	- Load Blender files
 	- Add error system
 	- Add locks to important coppies operations (file access).
+	- Stop using allocations and allocate one big block at the  start
 
 Other:
 	- Add a more robust font choosing system
