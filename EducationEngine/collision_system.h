@@ -21,7 +21,8 @@ struct CollisionObject
 	v3 *Position;
 	v3 CollideNormal;
 	float* VerticesPtr;
-	float Width, Height, Depth, HalfWidth, HalfHeight, HalfDepth;
+	float Width, Height, Depth, HalfWidth, HalfHeight,
+		HalfDepth;
 	uint32 NumVertices;
 	int32 CollisionCode;
 
@@ -41,7 +42,8 @@ struct CollisionObject
 struct SupportPoint
 {
 	SupportPoint() : MinkowskiPoint(0.0f, 0.0f, 0.0f),
-		ObjAPoint(0.0f, 0.0f, 0.0f), ObjBPoint(0.0f, 0.0f, 0.0f) {}
+		ObjAPoint(0.0f, 0.0f, 0.0f),
+		ObjBPoint(0.0f, 0.0f, 0.0f) {}
 	
 	~SupportPoint() {}
 
@@ -88,7 +90,8 @@ struct Face
 
 	~Face() {}
 
-	Face(SupportPoint& X, SupportPoint& Y, SupportPoint& Z)
+	Face(SupportPoint& X, SupportPoint& Y,
+		SupportPoint& Z)
 	{
 		Vertices[0] = X;
 		Vertices[1] = Y;
@@ -134,32 +137,44 @@ struct Edge
 	}
 };
 
-int Collision_ButtonClick(v2* MousePosition, CollisionObject* Object);
+int Collision_ButtonClick(v2* MousePosition,
+	CollisionObject* Object);
 
-bool Collision_OrthoMouseToRect(v2* MousePosition, CollisionObject* Object);
-v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix);
+bool Collision_OrthoMouseToRect(v2* MousePosition, 
+	CollisionObject* Object);
+v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix,
+	m4 *ViewMatrix);
 bool Collision_RayToOBB(v3* RayOrigin, v3* RayDirection, 
 	CollisionObject* Object, float* Distance);
-bool Collision_PlaneRayIntersect(v3* RayOrigin, v3* RayDirection,
-	CollisionObject* CollideObject, float* Distance);
+bool Collision_PlaneRayIntersect(v3* RayOrigin, 
+	v3* RayDirection, CollisionObject* CollideObject, 
+	float* Distance);
 
 v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction); 
 
 SupportPoint MinkowskiSupport(CollisionObject* ObjectA,
 	CollisionObject* ObjectB, v3 *Direction);
 
-bool LineSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);
-bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);
-bool TetrahedronSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount);
-bool Collision_GJK(CollisionObject* ObjectA, CollisionObject* ObjectB);
+bool LineSimplex(SupportPoint* PList, v3* Direction,
+	uint32* PointCount);
+bool PlaneSimplex(SupportPoint* PList, v3* Direction, 
+	uint32* PointCount);
+bool TetrahedronSimplex(SupportPoint* PList, v3* Direction,
+	uint32* PointCount);
+bool Collision_GJK(CollisionObject* ObjectA,
+	CollisionObject* ObjectB);
 
-Face AddFaceEPA(SupportPoint &v0, SupportPoint &v1, SupportPoint &v2);
+Face AddFaceEPA(SupportPoint &v0, SupportPoint &v1, 
+	SupportPoint &v2);
 //Face EPA(ObjectInstance *ObjA, ObjectInstance *ObjB);
-Face Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB);
+Face Collision_EPA(CollisionObject* ObjectA,
+	CollisionObject* ObjectB);
 
-bool Collision_HeightMap(CollisionObject* HeightMapCollisionObj,
+bool Collision_HeightMap(
+	CollisionObject* HeightMapCollisionObj,
 	v3 &ObjectPosition);
 
-v3 Collision_GetNormal(CollisionObject* CollideObj, PhysicsObject* PhysObj);
+v3 Collision_GetNormal(CollisionObject* CollideObj, 
+	PhysicsObject* PhysObj);
 
 #endif

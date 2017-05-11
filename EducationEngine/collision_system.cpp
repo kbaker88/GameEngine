@@ -90,7 +90,7 @@ v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction)
 	v3 FurthestPoint = { 0.0f, 0.0f, 0.0f };
 	float MaxDot = -100000.0f;
 
-	//for (uint32 i = 0; i < CollisionObjects[EntityID].NumVertices; i++) // this is checking all points twice...
+	// this is checking all points twice...
 	for (uint32 i = 0; i < Object->NumVertices; i++)
 	{
 		v3 Vertex = { Object->VerticesPtr[i * 3],
@@ -109,7 +109,9 @@ v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction)
 	return FurthestPoint;
 }
 
-SupportPoint MinkowskiSupport(CollisionObject* ObjectA, CollisionObject* ObjectB, v3 *Direction) // Finds the furtherst point within a shape in a given direction
+// Finds the furtherst point within a shape in a given direction
+SupportPoint MinkowskiSupport(CollisionObject* ObjectA, 
+	CollisionObject* ObjectB, v3 *Direction) 
 {
 	SupportPoint Result;
 	Result.ObjAPoint = GetFurthestPoint(ObjectA, Direction);
@@ -242,7 +244,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			PList[0] = B;
 			PList[1] = A;
 			*PointCount = 2;
-		//	PlaneSimplex(PList, Direction, PointCount);
 			return false;
 		}
 		else if (Math_InnerProduct(&AC, &AO) > 0)
@@ -251,7 +252,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			PList[0] = C;
 			PList[1] = A;
 			*PointCount = 2;
-		//	PlaneSimplex(PList, Direction, PointCount);
 			return false;
 		}
 		else
@@ -261,7 +261,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			PList[1] = B;
 			PList[2] = A;
 			*PointCount = 3;
-		//	TetrahedronSimplex(PList, Direction, PointCount);
 			return false;
 		}
 	}
@@ -273,7 +272,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			PList[0] = C;
 			PList[1] = A;
 			*PointCount = 2;
-			//PlaneSimplex(PList, Direction, PointCount);
 			return false;
 		}
 		else if (Math_InnerProduct(&AD, &AO) > 0)
@@ -282,7 +280,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			PList[0] = D;
 			PList[1] = A;
 			*PointCount = 2;
-			//PlaneSimplex(PList, Direction, PointCount);
 			return false;
 		}
 		else
@@ -292,7 +289,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			PList[1] = C;
 			PList[2] = A;
 			*PointCount = 3;
-			//TetrahedronSimplex(PList, Direction, PointCount);
 			return false;
 		}
 	}
@@ -304,7 +300,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			PList[0] = B;
 			PList[1] = A;
 			*PointCount = 2;
-		//	PlaneSimplex(PList, Direction, PointCount);
 			return false;
 		}
 		else if (Math_InnerProduct(&AD, &AO) > 0)
@@ -313,7 +308,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			PList[0] = C;
 			PList[1] = A;
 			*PointCount = 2;
-			//PlaneSimplex(PList, Direction, PointCount);
 			return false;
 		}
 		else
@@ -323,7 +317,6 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 			PList[1] = D;
 			PList[2] = A;
 			*PointCount = 3;
-			//TetrahedronSimplex(PList, Direction, PointCount);
 			return false;
 		}
 	}
@@ -341,7 +334,8 @@ bool Collision_GJK(CollisionObject* ObjectA, CollisionObject* ObjectB)
 	uint32 PointCount = 1;
 
 	v3 RandomDirection = { 0.0f, 1.0f, 0.0f };
-	SupportPoint StartingPoint = MinkowskiSupport(ObjectA, ObjectB, &RandomDirection);
+	SupportPoint StartingPoint = MinkowskiSupport(ObjectA, ObjectB, 
+		&RandomDirection);
 
 	PointList[0] = StartingPoint;
 	v3 Direction = -StartingPoint.MinkowskiPoint; // Origin - StartPoint.
@@ -499,97 +493,154 @@ Face Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB)
 	}
 }
 
+//face C = Collision_EPA_FindClosestFace()
+//get a new support in the direction
+//find closest face to origin
+
+/*
+Take over the simplex from GJK when GJK terminated, and “blow up” the simplex 
+to a tetrahedron if it contains less than 4 vertices.
+
+Use the 4 faces (triangles) of the tetrahedron to construct an initial polytope.
+
+Pick the closest face of the polytope to the origin.
+
+If the closest face is no closer (by a certain threshold) to the origin than 
+the previously picked one, go to 8.
+
+Remove the closest face, use the face normal (outward pointing) as the search 
+direction to find a support point on the Minkowski Difference.
+
+Remove all faces from the polytope that can be “seen” by this new support point,
+and add new faces to cover up the “hole” on the polytope, where all new faces 
+share the new support point as a common vertex (this is the expanding part of 
+the algorithm).
+
+Go to 3.
+
+Project the origin onto the closest triangle. This is our closest point to the 
+origin on the CSO’s boundary. Compute the barycentric coordinates of this closest 
+point with respect to the vertices from the closest triangle. The barycentric 
+coordinates are coefficients of linear combination of vertices from the closest 
+triangle. Linearly combining the individual support points (original results 
+from individual colliders) corresponding to the vertices from the closest triangle, 
+with the same barycentric coordinates as coefficients, gives us contact 
+points on both colliders in their own local space. We can then convert these 
+contact points to world space.
+
+End EPA.
+*/
+
+/* EPA algorithm
+Simplex s = termination simplex from GJK
+//loop to find the collision information
+while (true) {
+// obtain the feature (edge for 2D) closest to the
+// origin on the Minkowski Difference
+Edge e = findClosestEdge(s);
+// obtain a new support point in the direction of the edge normal
+Vector p = support(A, B, e.normal);
+// check the distance from the origin to the edge against the
+// distance p is along e.normal
+double d = p.dot(e.normal);
+if (d - e.distance < TOLERANCE) {
+// the tolerance should be something positive close to zero (ex. 0.00001)
+
+// if the difference is less than the tolerance then we can
+// assume that we cannot expand the simplex any further and
+// we have our solution
+normal = e.normal;
+depth = d;
+} else {
+// we haven't reached the edge of the Minkowski Difference
+// so continue expanding by adding the new point to the simplex
+// in between the points that made the closest edge
+simplex.insert(p, e.index);
+}
+}
+
+
+*/
+
 bool Collision_HeightMap(CollisionObject* CollisionObj, v3 &ObjectPosition)
 {
 	int32 x, z;
-	x = (int32)round(ObjectPosition.x) - 1; // because negative is backwards?
-	z = (int32)round(ObjectPosition.z); //TODO: Write round to get rid of cmath
+	// TODO: Add bounds for overflow.
+	x = (int32)round(ObjectPosition.x);// -1; 
+	z = (int32)round(ObjectPosition.z);
+	// x and z contain the objects poisition (player?)
 
 	v3 TerrainVertice;
 
-	TerrainVertice.x =
-		CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-		((uint32)CollisionObj->Depth - z)) * 3];
-	TerrainVertice.y =
-		CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-		((uint32)CollisionObj->Depth - z)) * 3 + 1];
-	TerrainVertice.z =
-		CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-		((uint32)CollisionObj->Depth - z)) * 3 + 2];
+	float* VerticeAttrib = 0;
 
+	int Test3 = ((x * (uint32)CollisionObj->Depth) + // column
+		((uint32)CollisionObj->Depth - z)) * 3; // row and 3  for floats to vertices
+	VerticeAttrib = &CollisionObj->VerticesPtr[Test3];
+	TerrainVertice.x = *VerticeAttrib++;
+	TerrainVertice.y = *VerticeAttrib++;
+	TerrainVertice.z = *VerticeAttrib;
+
+	// NOTE: If the object is below the terrain
 	if ((ObjectPosition.y) < TerrainVertice.y + 1.0f)
 	{
 
-		v3 TerrainVertice3;
 		v3 TerrainVertice2;
+		v3 TerrainVertice3;
 
-		if ((ObjectPosition.x - 1 - x) < 0) // allignment issues?
+		if ((ObjectPosition.x - x) < 0)//1 - x) < 0)
 		{
 			if ((ObjectPosition.z - z) < 0)
 			{
 				if (z < (int32)CollisionObj->Depth)
 				{
-					TerrainVertice2.x =
-						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z - 1))) * 3];
-					TerrainVertice2.y =
-						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z - 1))) * 3 + 1];
-					TerrainVertice2.z =
-						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z - 1))) * 3 + 2];
+					int Test = ((x * (uint32)CollisionObj->Depth) + ((uint32)CollisionObj->Depth - (z - 1))) * 3;
+					VerticeAttrib = &CollisionObj->VerticesPtr[Test];
+					TerrainVertice2.x = *VerticeAttrib++;
+					TerrainVertice2.y = *VerticeAttrib++;
+					TerrainVertice2.z = *VerticeAttrib;
+
+					int x = 0;
 				}
 				if (x > 0)
 				{
-					TerrainVertice3.x =
-						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - z)) * 3];
-					TerrainVertice3.y =
-						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - z)) * 3 + 1];
-					TerrainVertice3.z =
-						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - z)) * 3 + 2];
+					int Test = (((x - 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3;
+					VerticeAttrib = &CollisionObj->VerticesPtr[Test];
+					TerrainVertice3.x = *VerticeAttrib++;
+					TerrainVertice3.y = *VerticeAttrib++;
+					TerrainVertice3.z = *VerticeAttrib;
 				}
 			}
 			else
 			{
-				TerrainVertice2.x =
-					CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
-					((uint32)CollisionObj->Depth - (z + 1))) * 3];
-				TerrainVertice2.y =
-					CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
-					((uint32)CollisionObj->Depth - (z + 1))) * 3 + 1];
-				TerrainVertice2.z =
-					CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
-					((uint32)CollisionObj->Depth - (z + 1))) * 3 + 2];
+				int Test2 = (((x - 1) * (uint32)CollisionObj->Depth) +
+					((uint32)CollisionObj->Depth - (z + 1))) * 3;
+				VerticeAttrib = &CollisionObj->VerticesPtr[Test2];
+				TerrainVertice2.x = *VerticeAttrib++;
+				TerrainVertice2.y = *VerticeAttrib++;
+				TerrainVertice2.z = *VerticeAttrib;
 
-				if ((((TerrainVertice.x - TerrainVertice2.x) * // Determinant 
+				if ((((TerrainVertice.x - TerrainVertice2.x) * 
 					((-ObjectPosition.z) - (-TerrainVertice2.z))) -
 					(((-TerrainVertice.z) - (-TerrainVertice2.z)) *
 					(ObjectPosition.x - TerrainVertice2.x))) < 0)
 				{
-					TerrainVertice3.x =
-						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z + 1))) * 3];
-					TerrainVertice3.y =
-						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z + 1))) * 3 + 1];
-					TerrainVertice3.z =
-						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z + 1))) * 3 + 2];
+					int Test = ((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z + 1))) * 3;
+					VerticeAttrib = &CollisionObj->VerticesPtr[Test];
+					TerrainVertice3.x = *VerticeAttrib++;
+					TerrainVertice3.y = *VerticeAttrib++;
+					TerrainVertice3.z = *VerticeAttrib;
 				}
 				else
 				{
-					TerrainVertice3.x =
-						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - z)) * 3];
-					TerrainVertice3.y =
-						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - z)) * 3 + 1];
-					TerrainVertice3.z =
-						CollisionObj->VerticesPtr[(((x - 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - z)) * 3 + 2];
+					int Test = (((x - 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3;
+					VerticeAttrib = &CollisionObj->VerticesPtr[Test];
+					TerrainVertice3.x = *VerticeAttrib++;
+					TerrainVertice3.y = *VerticeAttrib++;
+					TerrainVertice3.z = *VerticeAttrib;
 				}
 			}
 		}
@@ -600,42 +651,34 @@ bool Collision_HeightMap(CollisionObject* CollisionObj, v3 &ObjectPosition)
 				if ((z < 0) &&
 					(x < (int32)CollisionObj->Width))
 				{
-					TerrainVertice2.x =
-						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z - 1))) * 3];
-					TerrainVertice2.y =
-						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z - 1))) * 3 + 1];
-					TerrainVertice2.z =
-						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z - 1))) * 3 + 2];
+					int Test2 = (((x + 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z - 1))) * 3;
+					VerticeAttrib = &CollisionObj->VerticesPtr[Test2];
+					TerrainVertice2.x = *VerticeAttrib++;
+					TerrainVertice2.y = *VerticeAttrib++;
+					TerrainVertice2.z = *VerticeAttrib;
 
 					if ((((TerrainVertice2.x - TerrainVertice.x) *
 						((-ObjectPosition.z) - (-TerrainVertice.z))) -
 						(((-TerrainVertice2.z) - (-TerrainVertice.z)) *
 						(ObjectPosition.x - TerrainVertice.x))) < 0)
 					{
-						TerrainVertice3.x = CollisionObj->VerticesPtr[(((x + 1) * 
+						int Test = (((x + 1) *
 							(uint32)CollisionObj->Depth) +
-							((uint32)CollisionObj->Depth - z)) * 3];
-						TerrainVertice3.y = CollisionObj->VerticesPtr[(((x + 1) * 
-							(uint32)CollisionObj->Depth) +
-							((uint32)CollisionObj->Depth - z)) * 3 + 1];
-						TerrainVertice3.z = CollisionObj->VerticesPtr[(((x + 1) * 
-							(uint32)CollisionObj->Depth) +
-							((uint32)CollisionObj->Depth - z)) * 3 + 2];
+							((uint32)CollisionObj->Depth - z)) * 3;
+						VerticeAttrib = &CollisionObj->VerticesPtr[Test];
+						TerrainVertice3.x = *VerticeAttrib++;
+						TerrainVertice3.y = *VerticeAttrib++;
+						TerrainVertice3.z = *VerticeAttrib;
 					}
 					else
 					{
-						TerrainVertice3.x =
-							CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-							((uint32)CollisionObj->Depth - (z - 1))) * 3];
-						TerrainVertice3.y =
-							CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-							((uint32)CollisionObj->Depth - (z - 1))) * 3 + 1];
-						TerrainVertice3.z =
-							CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-							((uint32)CollisionObj->Depth - (z - 1))) * 3 + 2];
+						int Test = ((x * (uint32)CollisionObj->Depth) +
+							((uint32)CollisionObj->Depth - (z - 1))) * 3;
+						VerticeAttrib = &CollisionObj->VerticesPtr[Test];
+						TerrainVertice3.x = *VerticeAttrib++;
+						TerrainVertice3.y = *VerticeAttrib++;
+						TerrainVertice3.z = *VerticeAttrib;
 					}
 				}
 			}
@@ -643,27 +686,21 @@ bool Collision_HeightMap(CollisionObject* CollisionObj, v3 &ObjectPosition)
 			{
 				if (z < 0)
 				{
-					TerrainVertice2.x =
-						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z + 1))) * 3];
-					TerrainVertice2.y =
-						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z + 1))) * 3 + 1];
-					TerrainVertice2.z =
-						CollisionObj->VerticesPtr[((x * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - (z + 1))) * 3 + 2];
+					int Test = ((x * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - (z + 1))) * 3;
+					VerticeAttrib = &CollisionObj->VerticesPtr[Test];
+					TerrainVertice2.x = *VerticeAttrib++;
+					TerrainVertice2.y = *VerticeAttrib++;
+					TerrainVertice2.z = *VerticeAttrib;
 				}
 				if (x < (int32)CollisionObj->Width) // conversation errors?
 				{
-					TerrainVertice3.x =
-						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - z)) * 3];
-					TerrainVertice3.y =
-						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - z)) * 3 + 1];
-					TerrainVertice3.z =
-						CollisionObj->VerticesPtr[(((x + 1) * (uint32)CollisionObj->Depth) +
-						((uint32)CollisionObj->Depth - z)) * 3 + 2];
+					int Test = (((x + 1) * (uint32)CollisionObj->Depth) +
+						((uint32)CollisionObj->Depth - z)) * 3;
+					VerticeAttrib = &CollisionObj->VerticesPtr[Test];
+					TerrainVertice3.x = *VerticeAttrib++;
+					TerrainVertice3.y = *VerticeAttrib++;
+					TerrainVertice3.z = *VerticeAttrib;
 				}
 			}
 		}
@@ -673,18 +710,21 @@ bool Collision_HeightMap(CollisionObject* CollisionObj, v3 &ObjectPosition)
 		//	 (TerrainVertice + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
 		//Test.Draw();
 		//Test.Delete();
+		//Test.~Line();
 		//
 		//Line Test2;
 		//Test2.Init(TerrainVertice2.Arr, 
 		//	(TerrainVertice2 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
 		//Test2.Draw();
 		//Test2.Delete();
+		//Test2.~Line();
 		//
 		//Line Test3;
 		//Test3.Init(TerrainVertice3.Arr, 
 		//	(TerrainVertice3 + v3(0.0f, 1.0f, 0.0f)).Arr, 10.0f);
 		//Test3.Draw();
 		//Test3.Delete();
+		//Test3.~Line();
 
 		v3 Line1 = (TerrainVertice2 - TerrainVertice);
 		v3 Line2 = (TerrainVertice3 - TerrainVertice);
