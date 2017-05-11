@@ -1,4 +1,4 @@
-#include "sphere.h"
+#include "render_object.h"
 
 Sphere::Sphere() 
 {

@@ -170,18 +170,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="box.h">
-      <Filter>Header Files\engine\render_objects</Filter>
-    </ClInclude>
-    <ClInclude Include="plane2d.h">
-      <Filter>Header Files\engine\render_objects</Filter>
-    </ClInclude>
-    <ClInclude Include="rectangle.h">
-      <Filter>Header Files\engine\render_objects</Filter>
-    </ClInclude>
-    <ClInclude Include="sphere.h">
-      <Filter>Header Files\engine\render_objects</Filter>
-    </ClInclude>
     <ClInclude Include="platform_layer.h">
       <Filter>Header Files\layers</Filter>
     </ClInclude>
@@ -197,17 +185,8 @@
     <ClInclude Include="math.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
-    <ClInclude Include="line.h">
-      <Filter>Header Files\engine\render_objects</Filter>
-    </ClInclude>
-    <ClInclude Include="point.h">
-      <Filter>Header Files\engine\render_objects</Filter>
-    </ClInclude>
     <ClInclude Include="opengl.h">
       <Filter>Header Files\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="heightmap.h">
-      <Filter>Header Files\engine\render_objects</Filter>
     </ClInclude>
     <ClInclude Include="png.h">
       <Filter>Header Files\loaders</Filter>
@@ -254,9 +233,6 @@
     <ClInclude Include="game_layer.h">
       <Filter>Header Files\layers</Filter>
     </ClInclude>
-    <ClInclude Include="render_object.h">
-      <Filter>Header Files\engine\render_objects</Filter>
-    </ClInclude>
     <ClInclude Include="renderobject_system.h">
       <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
@@ -274,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="camera_system.h">
       <Filter>Header Files\engine\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="render_object.h">
+      <Filter>Header Files\engine\render_objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

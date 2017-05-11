@@ -1,5 +1,5 @@
 
-#include "box.h"
+#include "render_object.h"
 
 void Box::Init(float NewWidth, float NewHeight, float NewDepth)
 {

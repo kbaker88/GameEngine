@@ -1,4 +1,4 @@
-#include "point.h"
+#include "render_object.h"
 
 void Point::Init(float* PointPosition, float Size)
 {

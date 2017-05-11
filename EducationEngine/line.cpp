@@ -1,4 +1,4 @@
-#include "line.h"
+#include "render_object.h"
 
 void Line::Init(float* Point1, float* Point2, float lineSize)
 {

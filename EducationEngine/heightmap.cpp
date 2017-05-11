@@ -1,4 +1,4 @@
-#include "heightmap.h"
+#include "render_object.h"
 
 HeightMap::~HeightMap()
 {

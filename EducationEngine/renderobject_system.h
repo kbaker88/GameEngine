@@ -3,14 +3,6 @@
 
 #include "render_object.h"
 
-#include "box.h"
-#include "rectangle.h"
-#include "sphere.h"
-#include "line.h"
-#include "point.h"
-#include "plane2d.h"
-#include "heightmap.h"
-
 struct RenderObjBlock
 {
 	RenderObjBlock() : BlockObjects(0), BlockSize(0) {}
