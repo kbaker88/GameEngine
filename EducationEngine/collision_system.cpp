@@ -504,6 +504,7 @@ to a tetrahedron if it contains less than 4 vertices.
 Use the 4 faces (triangles) of the tetrahedron to construct an initial polytope.
 
 Pick the closest face of the polytope to the origin.
+- requires, 3 vertices of the face, normal of the face, 
 
 If the closest face is no closer (by a certain threshold) to the origin than 
 the previously picked one, go to 8.
