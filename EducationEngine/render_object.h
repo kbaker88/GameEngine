@@ -4,6 +4,50 @@
 #include "debug_system.h"
 #include "asset_system.h"
 
+#if DATA_ORIENTED 
+/* IN RENDERER HEADER
+struct PipelineObjectDescription
+{
+	PipelineObjectDescription() : VertexArrayObjectID(0),
+		NumberOfVertexHandles(0), VertexBufferObjectHandleIDs(0),
+		VertexBufferDescriptions(0) {}
+
+	~PipelineObjectDescription() {}
+
+	uint32 VertexArrayObjectID;
+	uint32 NumberOfVertexHandles;
+	uint32* VertexBufferObjectHandleIDs;
+	VBODescription IndiceDescription;
+	VBODescription* VertexBufferDescriptions;
+};
+*/
+
+struct Rectangle
+{
+	float Vertices[4];
+	const uint32 Indices[6];
+
+	uint32 NumVertices;
+};
+
+// TODO: Is it better to pass as one big buffer?
+//struct RenderObj
+//{
+//	float* VerticeFloatArrayPtr;
+//	float* ColorDataPtr;
+//	float* TextureCoordsPtr;
+//	float* NormalVectsPtr;
+//	uint32* IndicesPtr;
+//	//float PointSize, LineSize; // these should be in renderer
+//	uint32 NumVertices, NumIndices, NumBuffers;
+//};
+
+void RenderObj_Init(RenderObj* Object, float Width, float Height);
+
+void RenderObj_Delete(RenderObj* Object);
+#endif
+
+// TODO: Remove this Object Oriented design for Data Oriented
 class RenderObject
 {
 public:

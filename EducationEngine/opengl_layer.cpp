@@ -469,6 +469,60 @@ void Render_UpdateShaderVariable(int32 Location, int32 MatrixSize,
 	}
 }
 
+#if DATA_ORIENTED
+void Render_InitObjectToPipeline(RenderObj* Object)
+{
+	glGenBuffers(Object->NumBuffers,
+		&Object->VBOID);
+	glGenVertexArrays(1, &Object->VBOID);
+	glBindVertexArray(Object->VBOID);
+
+	uint32 LoopCount = Object->NumBuffers;
+	//TODO: Get rid of this if statement.
+	if (Object->IndicesPtr)
+	{
+		LoopCount--;
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
+			Object->BufferIDs[LoopCount]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			sizeof(uint32) * Object->NumIndices,
+			Object->IndicesPtr, GL_STATIC_DRAW);
+	}
+	for (uint32 Index = 0; Index < LoopCount; Index++)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER,
+			Object->BufferIDs[Index]);
+		glBufferData(GL_ARRAY_BUFFER,
+			sizeof(float) * Object->BufferSize[Index],
+			Object->Buffer[Index],
+			GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(Index);
+		glBindVertexBuffer(Index,
+			*Object->Buffer[Index],
+			0, sizeof(float) * Object->BufferOffset[Index]);
+		glVertexAttribFormat(Index,
+			Object->BufferOffset[Index],
+			GL_FLOAT, GL_FALSE, 0);
+		glVertexAttribBinding(Index, Index);
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void Render_Draw(RenderObj* Object)
+{
+	glBindVertexArray(Object->VBOID);
+	glBindTexture(GL_TEXTURE_2D, Texture);
+
+	glDrawArrays(GL_TRIANGLES, 0, Object->NumVertices);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindVertexArray(0);
+}
+#endif
+
 void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 {
 	glGenBuffers(ObjectDescription->NumberOfVertexHandles,

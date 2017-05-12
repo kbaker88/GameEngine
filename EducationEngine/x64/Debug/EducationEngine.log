@@ -1,23 +1,28 @@
-﻿  win32_layer.cpp
+﻿  winsock_layer.cpp
+  Generating Code...
+  Compiling...
+  box.cpp
+  Generating Code...
+  Compiling...
+  win32_layer.cpp
   title_state.cpp
   text_system.cpp
   state_system.cpp
+  sphere.cpp
   renderobject_system.cpp
+  render_object.cpp
+  rectangle.cpp
+  point.cpp
+  plane2d.cpp
   menu_state.cpp
+  line.cpp
   input_state.cpp
+  heightmap.cpp
   game_state.cpp
   game_layer.cpp
   entity_utility.cpp
   entity_system.cpp
   collision_system.cpp
   Generating Code...
-  Skipping... (no relevant changes detected)
-  sphere.cpp
-  rectangle.cpp
-  point.cpp
-  plane2d.cpp
-  line.cpp
-  heightmap.cpp
-  box.cpp
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.exe
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.pdb (Partial PDB)

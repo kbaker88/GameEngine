@@ -4,6 +4,27 @@
 #include "utility.h"
 #include "opengl.h"
 
+#define RENDER_OPENGL 1
+#define DATA_ORIENTED 0
+#if DATA_ORIENTED
+#if RENDER_OPENGL
+struct RenderObj
+{
+	// TODO: Is it better to pass as one big buffer?
+	//float* VerticeFloatArrayPtr;
+	//float* ColorDataPtr;
+	//float* TextureCoordsPtr;
+	//float* NormalVectsPtr;
+	float** Buffer;
+	uint32* Size;
+	uint32* BufferOffset;
+	uint32* IndicesPtr, *BufferIDs;
+	//float PointSize, LineSize; // NOTE: These should be in renderer
+	uint32 VBOID, NumBuffers, NumIndices;
+};
+#endif
+#endif
+
 static window_properties WindowProperties;
 
 //TODO: Fix Render_ObjectPipelineInit, if handles are out 
@@ -86,6 +107,10 @@ void Render_UpdateShaderVariable(int32 Location, int32 MatrixSize,
 	float* NewData, int32 MatrixArraySize, bool Transpose);
 
 // NOTE: Object Rendering Functions
+#if DATA_ORIENTED
+void Render_InitObjectToPipeline(RenderObj* Object);
+#endif
+
 void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription);
 void Render_SetTexture(unsigned char* ImageData, int32 Width,
 				int32 Height, uint32 *TextureID);

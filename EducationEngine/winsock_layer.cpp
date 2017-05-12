@@ -1,5 +1,6 @@
 #include "network_layer.h"
 
+// NOTE: This is practice for now. Not significant to the projecty yet.
 bool Network_Init()
 {
 	WSADATA wsaData;
