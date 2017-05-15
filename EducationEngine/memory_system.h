@@ -5,6 +5,7 @@
 
 // NOTE: This system is not fully implemented yet
 // TODO: Remove all news and mallocs and use this system when complete.
+#if MEMORY_ON
 void*
 Memory_Itr();
 
@@ -14,5 +15,6 @@ char*
 Memory_AllocCharArr(unsigned int Size);
 void
 Memory_Clean();
+#endif
 
 #endif

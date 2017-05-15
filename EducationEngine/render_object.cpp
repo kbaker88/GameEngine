@@ -3,8 +3,33 @@
 #if DATA_ORIENTED
 
 void 
-RenderObj_Init(RenderObj* RenderObject, Model* ModelObj)
+RenderObj_CreateModelObject(Model* ModelObj,
+	float* VerticeData, uint32 VerticeDataSize, float* ColorData,
+	uint32 ColorDataSize)
 {
+	ModelObj->NumAttribs = 2;
+#if MEMORY_ON
+	// TODO: Implement memory management
+#else
+	ModelObj->Data = new float*[ModelObj->NumAttribs];
+	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs];
+#endif
+	ModelObj->Data[0] = VerticeData;
+	ModelObj->ArraySize[0] = VerticeDataSize * sizeof(float);
+	ModelObj->Data[1] = ColorData;
+	ModelObj->ArraySize[1] = ColorDataSize * sizeof(float);
+}
+
+void 
+RenderObj_CreateRenderObject(RenderObj* RenderObject, Model* ModelObj)
+{
+	// TODO: Make sure this is cleaned
+#if MEMORY_ON
+	// TODO: Implement memory management
+#else
+	RenderObject->BufferID = new uint32[ModelObj->NumAttribs];
+#endif
+
 	//TODO: Think about creating many VAO's at once.
 	Render_CreateVertexArrays(1, &RenderObject->VertexArrayID);
 	Render_CreateBuffers(ModelObj->NumAttribs, 
@@ -18,9 +43,27 @@ RenderObj_Init(RenderObj* RenderObject, Model* ModelObj)
 }
 
 void 
-RenderObj_Delete(RenderObj* Object)
+RenderObj_Delete(RenderObj* Object, Model* ModelObj)
 {
-
+#if MEMORY_ON
+	// TODO: Implement memory management
+#else
+	if (Object->BufferID)
+	{
+		delete[] Object->BufferID;
+		Object->BufferID = 0;
+	}
+	if (ModelObj->Data)
+	{
+		delete[] ModelObj->Data;
+		ModelObj->Data = 0;
+	}
+	if (ModelObj->ArraySize)
+	{
+		delete[] ModelObj->ArraySize;
+		ModelObj->ArraySize = 0;
+	}
+#endif
 }
 
 #else

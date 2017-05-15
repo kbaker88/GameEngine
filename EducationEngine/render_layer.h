@@ -5,7 +5,7 @@
 #include "opengl.h"
 
 #define RENDER_OPENGL 1
-#define DATA_ORIENTED 0 //TODO: Temporary while transfering
+#define DATA_ORIENTED 1 //TODO: Temporary while transfering
 
 #if DATA_ORIENTED
 #if RENDER_OPENGL

@@ -6,10 +6,18 @@
 
 #if DATA_ORIENTED 
 
+// NOTE: Temporary function.
+void
+RenderObj_CreateModelObject(Model* ModelObj,
+	float* VerticeData, uint32 VerticeDataSize, float* ColorData,
+	uint32 ColorDataSize);
 void 
-RenderObj_Init(RenderObj* RenderObject, Model* ModelObj);
+RenderObj_CreateRenderObject(RenderObj* RenderObject,
+	Model* ModelObj);
+
+// TODO: Place the model object in a different delete.
 void 
-RenderObj_Delete(RenderObj* Object);
+RenderObj_Delete(RenderObj* Object, Model* ModelObj);
 #else
 
 // TODO: Remove this Object Oriented design for Data Oriented
