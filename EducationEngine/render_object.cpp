@@ -46,7 +46,7 @@ void RenderObj_Delete(RenderObj* Object)
 		Object->VerticeFloatArrayPtr = 0;
 	}
 }
-#endif
+#else
 RenderObject::~RenderObject()
 {
 	if (VerticeFloatArrayPtr)
@@ -108,23 +108,6 @@ void RenderObject::Delete()
 	Render_DeleteVertexArrays(1, &ObjectDescription.VertexArrayObjectID);
 	Render_DeleteTexture(1, &TextureID);
 
-	//for (uint32 Index = 0; 
-	//	Index < ObjectDescription.NumberOfVertexHandles; 
-	//	Index++)
-	//{
-	//	//TODO: Are these actually needed?
-	//	if (ObjectDescription.VertexBufferDescriptions[Index].FloatData)
-	//	{
-	//		delete[] ObjectDescription.VertexBufferDescriptions[Index].FloatData;
-	//		ObjectDescription.VertexBufferDescriptions[Index].FloatData = NULL;
-	//	}
-	//	if (ObjectDescription.VertexBufferDescriptions[Index].Uint32Data)
-	//	{
-	//		delete[] ObjectDescription.VertexBufferDescriptions[Index].Uint32Data;
-	//		ObjectDescription.VertexBufferDescriptions[Index].Uint32Data = NULL;
-	//	}
-	//}
-
 	if (ObjectDescription.VertexBufferDescriptions)
 	{
 		delete[] ObjectDescription.VertexBufferDescriptions;
@@ -143,3 +126,4 @@ void RenderObject::Delete()
 		VerticeFloatArrayPtr = 0;
 	}
 }
+#endif

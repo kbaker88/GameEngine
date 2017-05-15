@@ -22,7 +22,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_MAP_FLUSH_EXPLICIT_BIT 0x0010
 #define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 
-// 1.2
+// OpenGL 1.2
 #define GL_SMOOTH_POINT_SIZE_RANGE 0x0B12
 #define GL_SMOOTH_POINT_SIZE_GRANULARITY 0x0B13
 #define GL_SMOOTH_LINE_WIDTH_RANGE 0x0B22
@@ -64,7 +64,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_ALIASED_POINT_SIZE_RANGE 0x846D
 #define GL_ALIASED_LINE_WIDTH_RANGE 0x846E
 
-// 1.3
+// OpenGL 1.3
 #define GL_MULTISAMPLE 0x809D
 #define GL_SAMPLE_ALPHA_TO_COVERAGE 0x809E
 #define GL_SAMPLE_ALPHA_TO_ONE 0x809F
@@ -162,7 +162,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_DOT3_RGBA 0x86AF
 #define GL_MULTISAMPLE_BIT 0x20000000
 
-// 1.4 
+// OpenGL 1.4 
 #define GL_BLEND_DST_RGB 0x80C8
 #define GL_BLEND_SRC_RGB 0x80C9
 #define GL_BLEND_DST_ALPHA 0x80CA
@@ -203,7 +203,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_TEXTURE_COMPARE_FUNC 0x884D
 #define GL_COMPARE_R_TO_TEXTURE 0x884E
 
-// 1.5
+// OpenGL 1.5
 #define GL_CURRENT_FOG_COORD GL_CURRENT_FOG_COORDINATE
 #define GL_FOG_COORD GL_FOG_COORDINATE
 #define GL_FOG_COORD_ARRAY GL_FOG_COORDINATE_ARRAY
@@ -255,7 +255,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_DYNAMIC_COPY 0x88EA
 #define GL_SAMPLES_PASSED 0x8914
 
-// 2.0
+// OpenGL 2.0
 #define GL_BLEND_EQUATION_RGB GL_BLEND_EQUATION
 #define GL_VERTEX_ATTRIB_ARRAY_ENABLED 0x8622
 #define GL_VERTEX_ATTRIB_ARRAY_SIZE 0x8623
@@ -341,7 +341,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_STENCIL_BACK_VALUE_MASK 0x8CA4
 #define GL_STENCIL_BACK_WRITEMASK 0x8CA5
 
-// 2.1
+// OpenGL 2.1
 #define GL_CURRENT_RASTER_SECONDARY_COLOR 0x845F
 #define GL_PIXEL_PACK_BUFFER 0x88EB
 #define GL_PIXEL_UNPACK_BUFFER 0x88EC
@@ -367,7 +367,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_COMPRESSED_SLUMINANCE_ALPHA 0x8C4B
 
 
-// 3.0
+// OpenGL 3.0
 #define GL_CLIP_DISTANCE0 GL_CLIP_PLANE0
 #define GL_CLIP_DISTANCE1 GL_CLIP_PLANE1
 #define GL_CLIP_DISTANCE2 GL_CLIP_PLANE2
@@ -474,7 +474,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_QUERY_BY_REGION_WAIT 0x8E15
 #define GL_QUERY_BY_REGION_NO_WAIT 0x8E16
 
-// 3.1
+// OpenGL 3.1
 #define GL_TEXTURE_RECTANGLE 0x84F5
 #define GL_TEXTURE_BINDING_RECTANGLE 0x84F6
 #define GL_PROXY_TEXTURE_RECTANGLE 0x84F7
@@ -534,11 +534,11 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_MAX_FRAGMENT_INPUT_COMPONENTS 0x9125
 #define GL_CONTEXT_PROFILE_MASK 0x9126
 
-// 3.3
+// OpenGL 3.3
 #define GL_VERTEX_ATTRIB_ARRAY_DIVISOR 0x88FE
 #define GL_RGB10_A2UI 0x906F
 
-// 4.0
+// OpenGL 4.0
 #define GL_TESS_CONTROL_SHADER            0x8E88
 #define GL_TESS_EVALUATION_SHADER         0x8E87
 #define GL_SAMPLE_SHADING 0x8C36
@@ -555,7 +555,7 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY 0x900F
 
 
-// 4.2
+// OpenGL 4.2
 #define GL_TRANSFORM_FEEDBACK_PAUSED 0x8E23
 #define GL_TRANSFORM_FEEDBACK_ACTIVE 0x8E24
 #define GL_COMPRESSED_RGBA_BPTC_UNORM 0x8E8C
@@ -565,20 +565,20 @@ typedef ptrdiff_t GLsizeiptr;
 #define GL_COPY_READ_BUFFER_BINDING 0x8F36
 #define GL_COPY_WRITE_BUFFER_BINDING 0x8F37
 
-// 4.3
+// OpenGL 4.3
 #define GL_COMPUTE_SHADER                 0x91B9
 #define GL_NUM_SHADING_LANGUAGE_VERSIONS 0x82E9
 #define GL_VERTEX_ATTRIB_ARRAY_LONG 0x874E
 
-// 4.4
+// OpenGL 4.4
 #define GL_PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED 0x8221
 #define GL_MAX_VERTEX_ATTRIB_STRIDE 0x82E5
 #define GL_TEXTURE_BUFFER_BINDING 0x8C2A
 
-// 4.5
+// OpenGL 4.5
 #define GL_CONTEXT_FLAG_ROBUST_ACCESS_BIT 0x00000004
 
-// gl2
+// OpenGL 2
 typedef GLuint __stdcall gl_create_shader(GLenum shaderType);
 typedef void __stdcall gl_shader_source(GLuint shader, GLsizei count, const char **string, const GLint *length);
 typedef void __stdcall gl_compile_shader(GLuint shader);
@@ -632,20 +632,22 @@ typedef void __stdcall gl_enable_vertex_attrib_array(GLuint index);
 typedef void __stdcall gl_delete_buffers(GLsizei n, const GLuint * buffers);
 typedef void __stdcall gl_get_shader_info_log(GLuint shader, GLsizei maxLength, GLsizei *length, char *infoLog);
 typedef GLboolean __stdcall gl_unmap_buffer(GLenum target);
+typedef void __stdcall gl_disable_vertex_attrib_array(GLuint index);
 
-// gl3
+// OpenGL 3
 typedef void __stdcall gl_gen_vertex_arrays(GLsizei n, GLuint *arrays);
 typedef void __stdcall gl_bind_vertex_array(GLuint arr);
 typedef void __stdcall gl_delete_vertex_arrays(GLsizei n, const GLuint *arrays);
 typedef void* __stdcall gl_map_buffer_range(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 
-// gl4
+// OpenGL 4
 typedef void __stdcall gl_bind_vertex_buffer(GLuint bindingindex, GLuint buffer, ptrdiff_t offset, ptrdiff_t stride);
 typedef void __stdcall gl_vertex_attrib_format(GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
 typedef void __stdcall gl_vertex_attrib_binding(GLuint attribindex, GLuint bindingindex);
 typedef void __stdcall gl_tex_storage_2d(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
 
-/***** OpenGL 1.1
+
+/* OpenGL 1.1
 typedef void __stdcall gl_point_size(GLfloat size);
 static gl_point_size *glPointSize;
 

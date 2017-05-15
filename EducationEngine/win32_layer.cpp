@@ -75,7 +75,8 @@ int8 Platform_DoesFileExist(char* FileName)
 	}
 	else
 	{
-		return 0; // TODO: ERROR
+		// TODO: ERROR
+		return 0; 
 	}
 }
 
@@ -215,6 +216,7 @@ void Platform_LoadGlyph(void* Bits, uint16 Glyph,
 int64 Platform_GetCPUCounter()
 {
 	LARGE_INTEGER Time;
+#if DEBUG_MODE
 	if (!QueryPerformanceCounter(&Time))
 	{
 	// TODO: Error
@@ -222,6 +224,9 @@ int64 Platform_GetCPUCounter()
 			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
+#else
+	QueryPerformanceCounter(&Time);
+#endif
 	return Time.QuadPart;
 }
 
@@ -230,6 +235,7 @@ int64 Platform_GetTimeFrequency()
 	if (PlatformProperties.TimerFrequency == 0)
 	{
 		LARGE_INTEGER Frequency;
+#if DEBUG_MODE
 		if (!QueryPerformanceFrequency(&Frequency))
 		{
 			// TODO: Error
@@ -237,6 +243,9 @@ int64 Platform_GetTimeFrequency()
 				"Error!",
 				MB_ICONEXCLAMATION | MB_OK);
 		}
+#else
+		QueryPerformanceFrequency(&Frequency);
+#endif
 		return Frequency.QuadPart;
 	}
 	else
@@ -303,12 +312,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 void Platform_Initialize(window_properties *WindowProps)
 {
 	PlatformProperties.Instance = GetModuleHandle(0);
+#if DEBUG_MODE
 	if (PlatformProperties.Instance == 0)
 	{
 		MessageBox(0, "Obtaining Window's Instance Failed!", 
 			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
+#endif
 
 	WNDCLASSEX WindowsClassStructure;
 	WindowsClassStructure.cbSize = sizeof(WNDCLASSEX);
@@ -316,50 +327,50 @@ void Platform_Initialize(window_properties *WindowProps)
 	WindowsClassStructure.lpfnWndProc = WndProc;
 	WindowsClassStructure.cbClsExtra = 0;
 	WindowsClassStructure.cbWndExtra = 0;
-	WindowsClassStructure.hInstance =
-		PlatformProperties.Instance;
-	WindowsClassStructure.hIcon =
-		LoadIcon(0, IDI_APPLICATION);
-	WindowsClassStructure.hCursor =
-		LoadCursor(0, IDC_ARROW);
-	WindowsClassStructure.hbrBackground = 
-		(HBRUSH)(COLOR_WINDOW + 3);
+	WindowsClassStructure.hInstance = PlatformProperties.Instance;
+	WindowsClassStructure.hIcon = LoadIcon(0, IDI_APPLICATION);
+	WindowsClassStructure.hCursor = LoadCursor(0, IDC_ARROW);
+	WindowsClassStructure.hbrBackground = (HBRUSH)(COLOR_WINDOW + 3);
 	WindowsClassStructure.lpszMenuName = 0;
-	WindowsClassStructure.lpszClassName = 
-		(const char*)"GameEngine";
-	WindowsClassStructure.hIconSm =
-		LoadIcon(0, IDI_APPLICATION);
+	WindowsClassStructure.lpszClassName = "GameEngine";
+	WindowsClassStructure.hIconSm = LoadIcon(0, IDI_APPLICATION);
 
+#if DEBUG_MODE
 	if (!RegisterClassEx(&WindowsClassStructure))
 	{
 		MessageBox(0, "Window Registration Failed!", 
 			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
+#else
+	RegisterClassEx(&WindowsClassStructure);
+#endif
 
 	PlatformWindow.Window = CreateWindowEx(
-		WS_EX_CLIENTEDGE,
-		(const char*)"GameEngine",
+		WS_EX_CLIENTEDGE, "GameEngine",
 		"First Generation Game Engine",
 		WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, WindowProps->Width,
 		WindowProps->Height, 0, 0, PlatformProperties.Instance, 0);
 
+#if DEBUG_MODE
 	if (PlatformWindow.Window == 0)
 	{
 		MessageBox(0, "Window Creation Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
+#endif
 
-	PlatformProperties.DeviceContext = 
-		GetDC(PlatformWindow.Window);
+	PlatformProperties.DeviceContext = GetDC(PlatformWindow.Window);
 
+#if DEBUG_MODE
 	if (PlatformProperties.DeviceContext == 0)
 	{
 		MessageBox(0, "Obtaining Device Context Failed!", 
 			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
+#endif
 
 	UpdateWindow(PlatformWindow.Window);
 
@@ -387,11 +398,15 @@ unsigned int Platform_MessageLoop()
 
 		Game_Loop();
 
+#if DEBUG_MODE
 		if (!SwapBuffers(PlatformProperties.DeviceContext))
 		{
 			MessageBox(0, "Swapping Buffers Failed!", "Error!",
 				MB_ICONEXCLAMATION | MB_OK);
 		}
+#else
+		SwapBuffers(PlatformProperties.DeviceContext);
+#endif
 	}
 	
 	return Message.message;
@@ -413,6 +428,7 @@ void Platform_InitRenderer()
 	int SuggestedPixelFormatIndex =
 		ChoosePixelFormat(PlatformProperties.DeviceContext,
 			&DesiredPixelFormat);
+#if DEBUG_MODE
 	if (SuggestedPixelFormatIndex == 0)
 	{
 		MessageBox(0, 
@@ -420,11 +436,14 @@ void Platform_InitRenderer()
 			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
+#endif
 
 	PIXELFORMATDESCRIPTOR SuggestedPixelFormat;
+
+#if DEBUG_MODE
 	if (!DescribePixelFormat(PlatformProperties.DeviceContext,
-		SuggestedPixelFormatIndex,
-		sizeof(SuggestedPixelFormat), &SuggestedPixelFormat))
+		SuggestedPixelFormatIndex, sizeof(SuggestedPixelFormat),
+		&SuggestedPixelFormat))
 	{
 		MessageBox(0, 
 			"Obtaining Description of a Pixel Format Failed!",
@@ -438,23 +457,30 @@ void Platform_InitRenderer()
 		MessageBox(0, "Setting Pixel Format Failed!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
+#else
+	DescribePixelFormat(PlatformProperties.DeviceContext,
+		SuggestedPixelFormatIndex, sizeof(SuggestedPixelFormat),
+		&SuggestedPixelFormat);
+	SetPixelFormat(PlatformProperties.DeviceContext,
+		SuggestedPixelFormatIndex, &SuggestedPixelFormat);
+#endif
 
-	HGLRC OpenGLContext = 
+	 HGLRC OpenGLContext = 
 		wglCreateContext(PlatformProperties.DeviceContext);
+#if DEBUG_MODE
 	if (OpenGLContext == 0)
 	{
 		MessageBox(0, "Obtaining OpenGL Render Context Failed!",
 			"Error!",
 			MB_ICONEXCLAMATION | MB_OK);
 	}
+#endif
 
-	//TODO: Assumes OpenGL right now.
-	//      Make more generalized for DirectX also
+	//TODO: Assumes OpenGL right now. Generalize to other APIs.
+#if DEBUG_MODE
 	if (wglMakeCurrent(PlatformProperties.DeviceContext,
 		OpenGLContext))
 	{
-		//MessageBoxA(0, (char*)glGetString(GL_VERSION),
-		//			"OPENGL VERSION", 0);
 		wgl_create_context_attribs_arb *wglCreateContextAttribsARB =
 			(wgl_create_context_attribs_arb *)wglGetProcAddress(
 				"wglCreateContextAttribsARB");
@@ -498,6 +524,37 @@ void Platform_InitRenderer()
 	{
 		// TODO: Error
 	}
+#else
+	wglMakeCurrent(PlatformProperties.DeviceContext,
+		OpenGLContext);
+
+	wgl_create_context_attribs_arb *wglCreateContextAttribsARB =
+		(wgl_create_context_attribs_arb *)wglGetProcAddress(
+			"wglCreateContextAttribsARB");
+
+	int Attribs[] =
+	{
+		WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+		WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+		WGL_CONTEXT_FLAGS_ARB,
+		//WGL_CONTEXT_DEBUG_BIT_ARB, ?
+		WGL_CONTEXT_PROFILE_MASK_ARB,
+		WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
+		0
+	};
+	HGLRC ShareContext = 0;
+	HGLRC ModernContext =
+		wglCreateContextAttribsARB(
+			PlatformProperties.DeviceContext,
+			ShareContext, Attribs);
+
+	if (wglMakeCurrent(PlatformProperties.DeviceContext,
+		ModernContext))
+	{
+		wglDeleteContext(OpenGLContext);
+		OpenGLContext = ModernContext;
+	}
+#endif
 }
 
 void Platform_ReleaseContext(void* DeviceContext)

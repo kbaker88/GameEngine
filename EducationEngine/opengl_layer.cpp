@@ -52,6 +52,7 @@ static gl_gen_buffers *glGenBuffers;
 static gl_bind_buffer *glBindBuffer;
 static gl_buffer_data *glBufferData;
 static gl_enable_vertex_attrib_array *glEnableVertexAttribArray;
+static gl_disable_vertex_attrib_array *glDisableVertexAttribArray;
 static gl_delete_buffers *glDeleteBuffers;
 static gl_unmap_buffer *glUnmapBuffer;
 
@@ -128,6 +129,7 @@ void Render_Init(window_properties *Window)
 	glBindBuffer = (gl_bind_buffer *)wglGetProcAddress("glBindBuffer");
 	glBufferData = (gl_buffer_data *)wglGetProcAddress("glBufferData");
 	glEnableVertexAttribArray = (gl_enable_vertex_attrib_array *)wglGetProcAddress("glEnableVertexAttribArray");
+	glDisableVertexAttribArray = (gl_disable_vertex_attrib_array *)wglGetProcAddress("glDisableVertexAttribArray");
 	glDeleteBuffers = (gl_delete_buffers *)wglGetProcAddress("glDeleteBuffers");
 	glUnmapBuffer = (gl_unmap_buffer*)wglGetProcAddress("glUnmapBuffer");
 
@@ -173,37 +175,24 @@ window_properties Render_GetWindowProperties()
 uint32 Render_CompileShaders(const char* VertexShaderSource,
 	const char* FragmentShaderSource) 
 {
-	GLuint ShaderProgramHandle;
-
 	GLuint VertexShader = glCreateShader(GL_VERTEX_SHADER);
-	if (VertexShader == 0)
-	{
-		Platform_TemporaryError("Error in CreateShader for VertexShader\n");
-	}
-
-	const char* codeArray[] = { VertexShaderSource };
-	glShaderSource(VertexShader, 1, codeArray, 0);
+	glShaderSource(VertexShader, 1, &VertexShaderSource, 0);
 	glCompileShader(VertexShader);
 
-	GLint result;
-	glGetShaderiv(VertexShader, GL_COMPILE_STATUS, &result);
-	if (GL_FALSE == result)
+	GLuint FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(FragmentShader, 1, &FragmentShaderSource, 0);
+	glCompileShader(FragmentShader);
+
+#if DEBUG_MODE
+	GLint ErrorResult;
+	glGetShaderiv(VertexShader, GL_COMPILE_STATUS, &ErrorResult);
+	if (ErrorResult == 0)
 	{
 		Platform_TemporaryError("Error in GetShaderiv for VertexShader\n");
 	}
 
-	GLuint FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	if (FragmentShader == 0)
-	{
-		Platform_TemporaryError("Error in CreateShader for FragmentShader\n");
-	}
-
-	const char* codeArray2[] = { FragmentShaderSource };
-	glShaderSource(FragmentShader, 1, codeArray2, 0);
-	glCompileShader(FragmentShader);
-
-	glGetShaderiv(FragmentShader, GL_COMPILE_STATUS, &result);
-	if (GL_FALSE == result)
+	glGetShaderiv(FragmentShader, GL_COMPILE_STATUS, &ErrorResult);
+	if (ErrorResult == 0)
 	{
 		Platform_TemporaryError("Error in GetShaderiv for FragmentShader\n");
 		GLsizei returnedlength;
@@ -211,31 +200,61 @@ uint32 Render_CompileShaders(const char* VertexShaderSource,
 		glGetShaderInfoLog(FragmentShader, 256, &returnedlength, buffer);
 		Platform_TemporaryError(buffer);
 	}
+#endif
 
-	ShaderProgramHandle = glCreateProgram();
-	if (ShaderProgramHandle == 0)
+	GLuint ShaderProgram;
+	ShaderProgram = glCreateProgram();
+
+	glAttachShader(ShaderProgram, VertexShader);
+#if DEBUG_MODE
+	HWND Window = GetActiveWindow();
+	glGetProgramiv(ShaderProgram, GL_ATTACHED_SHADERS, &ErrorResult);
+	if (ErrorResult == GL_FALSE)
 	{
-		Platform_TemporaryError("Error in creating the ShaderProgramHandle\n");
+		MessageBox(Window, "Error in Shader Attachment\n", 0, 0);
+		GLsizei returnedlength;
+		char buffer[256];
+		glGetShaderInfoLog(ShaderProgram, 256, &returnedlength, buffer);
+		MessageBox(Window, buffer, 0, 0);
 	}
-
-	glAttachShader(ShaderProgramHandle, VertexShader);
-	glAttachShader(ShaderProgramHandle, FragmentShader);
-
-	glLinkProgram(ShaderProgramHandle);
-
-	glDetachShader(ShaderProgramHandle, VertexShader);
-	glDetachShader(ShaderProgramHandle, FragmentShader);
-
+#endif
+	glAttachShader(ShaderProgram, FragmentShader);
+#if DEBUG_MODE
+	glGetProgramiv(ShaderProgram, GL_ATTACHED_SHADERS, &ErrorResult);
+	if (ErrorResult == GL_FALSE)
+	{
+		MessageBox(Window, "Error in Shader Attachment\n", 0, 0);
+		GLsizei returnedlength;
+		char buffer[256];
+		glGetShaderInfoLog(ShaderProgram, 256, &returnedlength, buffer);
+		MessageBox(Window, buffer, 0, 0);
+	}
+#endif
+	glLinkProgram(ShaderProgram);
+#if DEBUG_MODE
+	glGetProgramiv(ShaderProgram, GL_LINK_STATUS, &ErrorResult);
+	if (ErrorResult == GL_FALSE)
+	{
+		MessageBox(Window, "Error in Linking Shader Program\n", 0, 0);
+		GLsizei returnedlength;
+		char buffer[256];
+		glGetShaderInfoLog(ShaderProgram, 256, &returnedlength, buffer);
+		MessageBox(Window, buffer, 0, 0);
+	}
+#endif
+	glDetachShader(ShaderProgram, VertexShader);
+	glDetachShader(ShaderProgram, FragmentShader);
 	glDeleteShader(VertexShader);
 	glDeleteShader(FragmentShader);
 
-	return ShaderProgramHandle;
+	return ShaderProgram;
 }
 
 void Render_BindShaders(uint32 ShaderProgramHandle)
 {
 	GLint status;
 	glGetProgramiv(ShaderProgramHandle, GL_LINK_STATUS, &status);
+#if DEBUG_MODE
 	if (status == GL_FALSE)
 	{
 		Platform_TemporaryError("Error in compiling the ShaderProgramHandle\n");
@@ -244,6 +263,9 @@ void Render_BindShaders(uint32 ShaderProgramHandle)
 	{
 		glUseProgram(ShaderProgramHandle);
 	}
+#else
+	glUseProgram(ShaderProgramHandle);
+#endif
 }
 
 void Render_ClearCurrentShaderProgram()
@@ -258,11 +280,7 @@ void Render_DeleteShaderProgram(uint32 ShaderProgramHandle)
 
 int32 Render_GetShaderVariable(uint32 ShaderProgramHandle, char* name)
 {
-	int32 ReturnValue;
-
-	ReturnValue = glGetUniformLocation(ShaderProgramHandle, name);
-
-	return ReturnValue;
+	return glGetUniformLocation(ShaderProgramHandle, name);
 }
 
 void Render_UpdateShaderVariable(int32 Location, int32 Integer)
@@ -521,8 +539,7 @@ void Render_Draw(RenderObj* Object)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 }
-#endif
-
+#else
 void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 {
 	glGenBuffers(ObjectDescription->NumberOfVertexHandles,
@@ -563,11 +580,13 @@ void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 			GL_FLOAT, GL_FALSE, 0);
 		glVertexAttribBinding(Index, Index);
 	}
+	// TODO: Should i be disabling the vertex attribute arrays? 
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0); 
 	// NOTE: Do not unbind the EBO, keep it bound to this VAO
 	glBindVertexArray(0); 
 }
+#endif
 
 void* Render_GetObjectShaderDataPtr(uint32* VertexObjectHandleIDArray,
 	int32 Offset, uint32 Length)

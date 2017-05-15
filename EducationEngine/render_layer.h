@@ -23,12 +23,8 @@ struct RenderObj
 	uint32 VBOID, NumBuffers, NumIndices;
 };
 #endif
-#endif
+#else
 
-static window_properties WindowProperties;
-
-//TODO: Fix Render_ObjectPipelineInit, if handles are out 
-//		of order textures don't render.
 struct VBODescription
 {
 	VBODescription() : Data(0), Size(0), Offset(0) {}
@@ -53,6 +49,9 @@ struct PipelineObjectDescription
 	VBODescription IndiceDescription;
 	VBODescription* VertexBufferDescriptions; 
 };
+#endif
+
+static window_properties WindowProperties;
 
 // NOTE: General Functions
 void Render_Init(window_properties *Window);
@@ -109,9 +108,10 @@ void Render_UpdateShaderVariable(int32 Location, int32 MatrixSize,
 // NOTE: Object Rendering Functions
 #if DATA_ORIENTED
 void Render_InitObjectToPipeline(RenderObj* Object);
+#else
+void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription);
 #endif
 
-void Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription);
 void Render_SetTexture(unsigned char* ImageData, int32 Width,
 				int32 Height, uint32 *TextureID);
 void Render_DrawPoint(uint32 VertexArrayObjectID,

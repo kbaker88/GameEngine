@@ -45,7 +45,7 @@ struct Rectangle
 void RenderObj_Init(RenderObj* Object, float Width, float Height);
 
 void RenderObj_Delete(RenderObj* Object);
-#endif
+#else
 
 // TODO: Remove this Object Oriented design for Data Oriented
 class RenderObject
@@ -162,5 +162,5 @@ public:
 
 private:
 };
-
+#endif
 #endif

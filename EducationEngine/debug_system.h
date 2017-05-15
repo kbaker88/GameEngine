@@ -3,6 +3,7 @@
 
 #include "render_layer.h"
 
+
 void DEBUG_Initialize();
 float DEBUG_GetFPS();
 

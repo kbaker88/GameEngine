@@ -8,6 +8,8 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#define DEBUG_MODE 1
+
 #define Assert(Expression) / if (!(Expression)) {*(int *)0 = 0;}
 #define Kilobytes(value) ((value) * 1024)
 #define Megabytes(value) (Kilobytes(value) * 1024)
