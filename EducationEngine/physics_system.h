@@ -21,14 +21,20 @@ struct PhysicsObject
 
 static v3 Gravity = { 0.0f, -9.807f  /* * 0.5f * SecondsPerFrame*/, 0.0f };
 
-void Phys_CalculatePosition(PhysicsObject* PhysObject);
-void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force);
-void Phys_SetAccelerationRate(PhysicsObject* PhysObject,
+void 
+Phys_CalculatePosition(PhysicsObject* PhysObject);
+void 
+Phys_AddForce(PhysicsObject* PhysObject, v3 *Force);
+void
+Phys_SetAccelerationRate(PhysicsObject* PhysObject,
 	float MetersPerSec);
 
-void Phys_BounceBack(PhysicsObject* PhysObject, v3* CollisionNormal);
-void Phys_WallSlide(PhysicsObject* PhysObject, v3* CollisionNormal);
+void
+Phys_BounceBack(PhysicsObject* PhysObject, v3* CollisionNormal);
+void
+Phys_WallSlide(PhysicsObject* PhysObject, v3* CollisionNormal);
 
-void Phys_StopObject(PhysicsObject* PhysObject);
+void 
+Phys_StopObject(PhysicsObject* PhysObject);
 
 #endif

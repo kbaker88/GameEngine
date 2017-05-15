@@ -12,7 +12,8 @@ struct Clock
 	int64 Frequency, StartCPUCount, CurrentCPUCount;
 };
 
-float Clock_GetCurrentTime();
+float 
+Clock_GetCurrentTime();
 
 struct Timer
 {

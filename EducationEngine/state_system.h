@@ -4,6 +4,7 @@
 #include "entity_system.h"
 
 // TODO: Try to reduce size to save space.
+// TODO: Change to data-oriented design
 struct ProgramState
 {
 	ProgramState() : CameraArray(0), TimerArray(0),
@@ -43,13 +44,19 @@ struct ProgramState
 	uint8* StateOfProgram;
 };
 
-void State_CreateCameras(ProgramState* State, uint32 NumberOfCameras);
-void State_CreateTimers(ProgramState* State, uint32 NumberOfTimers);
-void State_CreateShaderVariables(ProgramState* State, uint32 NumberOfVars);
-void State_CreateShaderHandles(ProgramState* State, uint32 NumberOfHandles);
-void State_LinkToProgram(ProgramState* State, uint8* StateOfProgramPtr);
+void
+State_CreateCameras(ProgramState* State, uint32 NumberOfCameras);
+void 
+State_CreateTimers(ProgramState* State, uint32 NumberOfTimers);
+void
+State_CreateShaderVariables(ProgramState* State, uint32 NumberOfVars);
+void 
+State_CreateShaderHandles(ProgramState* State, uint32 NumberOfHandles);
+void
+State_LinkToProgram(ProgramState* State, uint8* StateOfProgramPtr);
 
-void State_Clean(ProgramState* State);
+void 
+State_Clean(ProgramState* State);
 
 
 #endif

@@ -1,6 +1,7 @@
 #include "text_system.h"
 
-void Text_BuildFont(char* FontName, Texture2D* GlyphArray, Font* FontPtr)
+void 
+Text_BuildFont(char* FontName, Texture2D* GlyphArray, Font* FontPtr)
 {
 	FontPtr->Name = FontName;
 	FontPtr->GlyphsCount = 255;
@@ -14,7 +15,8 @@ void Text_BuildFont(char* FontName, Texture2D* GlyphArray, Font* FontPtr)
 	}
 }
 
-void Text_DeleteFont(Font* FontPtr)
+void 
+Text_DeleteFont(Font* FontPtr)
 {
 	if (FontPtr)
 	{
@@ -31,7 +33,8 @@ void Text_DeleteFont(Font* FontPtr)
 	}
 }
 
-void Text_CreateObj(Text_Object* TextObj, float Scale,
+void
+Text_CreateObj(Text_Object* TextObj, float Scale,
 	v3 *Position, uint32 MaxLength, Font* Font)
 {
 	TextObj->Buffer = new uint16[MaxLength];
@@ -43,7 +46,8 @@ void Text_CreateObj(Text_Object* TextObj, float Scale,
 	TextObj->CollisionResult = 0;
 }
 
-void Text_InputBoxUpdate(Text_Object* TextObj, uint16 Glyph, 
+void
+Text_InputBoxUpdate(Text_Object* TextObj, uint16 Glyph, 
 	bool SecPing)
 {
 	if (TextObj)
@@ -83,7 +87,8 @@ void Text_InputBoxUpdate(Text_Object* TextObj, uint16 Glyph,
 	}
 }
 
-void Text_Draw(Text_Object* TextObj, uint32 ShaderID)
+void 
+Text_Draw(Text_Object* TextObj, uint32 ShaderID)
 {
 	if (TextObj)
 	{
@@ -118,7 +123,8 @@ void Text_Draw(Text_Object* TextObj, uint32 ShaderID)
 	}
 }
 
-void Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
+void
+Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
 	Font *Font, uint16* ConsoleBuffer, uint32 BufferLength)
 {
 	m4 ModelMatrix = Math_ScaleMatrix(Math_IdentityMatrix(), v3(Scale, Scale, 1.0f));
@@ -138,7 +144,8 @@ void Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
 	}
 }
 
-void Text_DrawCharLine(string &Text, v3 &Position, float Scale,
+void 
+Text_DrawCharLine(string &Text, v3 &Position, float Scale,
 	uint32 ShaderID, Font *Font)
 {
 	m4 ModelMatrix = Math_ScaleMatrix(Math_IdentityMatrix(), v3(Scale, Scale, 1.0f));
@@ -159,7 +166,8 @@ void Text_DrawCharLine(string &Text, v3 &Position, float Scale,
 	}
 }
 
-float Text_SpacingWidth(Font* Font, uint16 A, uint16 B)
+float 
+Text_SpacingWidth(Font* Font, uint16 A, uint16 B)
 {
 	if (Font)
 	{

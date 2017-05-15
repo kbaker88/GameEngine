@@ -1,7 +1,8 @@
 #include "math.h"
 
 //NOTE: Math_Floor() is only for 32-bit floats on Little-Endian Machines
-float Math_Floor(float Value)
+float 
+Math_Floor(float Value)
 {
 	 //Shortest Method
 	return Value - ((int)Value % 1);
@@ -60,7 +61,8 @@ float Math_Floor(float Value)
 	*/
 }
 
-float Math_Power(float Base, int Exponent)
+float
+Math_Power(float Base, int Exponent)
 {
 	float Result = 1.0f;
 	while (Exponent)
@@ -74,7 +76,8 @@ float Math_Power(float Base, int Exponent)
 	return Result;
 }
 
-int Math_Power(int Base, int Exponent)
+int
+Math_Power(int Base, int Exponent)
 {
 	int Result = 1;
 	while (Exponent)
@@ -90,7 +93,8 @@ int Math_Power(int Base, int Exponent)
 //NOTE: Uses Newton's Method (NewGuess = OldGuess - f(OldGuess) / f'(OldGuess)) 
 //      with f(Guess) = Guess^2 - Radicand
 //TODO: Look for performance improvements
-float Math_SquareRoot(float Value)
+float
+Math_SquareRoot(float Value)
 {
 	if (Value == 1.0f)
 	{
@@ -122,7 +126,8 @@ float Math_SquareRoot(float Value)
 // NOTE: Uses Newton's Method (NewGuess = OldGuess - f(OldGuess) / f'(OldGuess))
 //      f(Guess) = Guess^Degree - Radicand
 // TODO: Reduce decision spots
-float Math_Root(float Value, unsigned int Degree)
+float
+Math_Root(float Value, unsigned int Degree)
 {
 	if (Value == 1.0f)
 	{
@@ -163,7 +168,8 @@ float Math_Root(float Value, unsigned int Degree)
 	return Result;
 }
 
-int Math_Factorial(int Value)
+int
+Math_Factorial(int Value)
 {
 	int Result = Value;
 
@@ -175,7 +181,8 @@ int Math_Factorial(int Value)
 	return Result;
 }
 
-float Math_Sine(float Radians)
+float 
+Math_Sine(float Radians)
 {
 	while (Radians < -PI)
 	{
@@ -208,7 +215,8 @@ float Math_Sine(float Radians)
 	//return sinf(Radians);
 }
 
-float Math_Cosine(float Radians)
+float
+Math_Cosine(float Radians)
 {
 	while (Radians < -PI)
 	{
@@ -241,7 +249,8 @@ float Math_Cosine(float Radians)
 	//return cosf(Radians);
 }
 
-float Math_Tangent(float Radians)
+float 
+Math_Tangent(float Radians)
 {
 	return (Math_Sine(Radians) / Math_Cosine(Radians));
 	//return tanf(Radians);

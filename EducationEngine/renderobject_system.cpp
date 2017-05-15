@@ -1,6 +1,7 @@
 #include "renderobject_system.h"
 
-void RenderObj_CreateBlock(RenderObjBlock* Block, uint32 Size)
+void 
+RenderObj_CreateBlock(RenderObjBlock* Block, uint32 Size)
 {
 	if (!Block)
 	{
@@ -20,7 +21,8 @@ void RenderObj_CreateBlock(RenderObjBlock* Block, uint32 Size)
 	}
 }
 
-void RenderObj_DeleteBlock(RenderObjBlock* Block)
+void 
+RenderObj_DeleteBlock(RenderObjBlock* Block)
 {
 	if (Block->BlockObjects != 0)
 	{
@@ -38,7 +40,8 @@ void RenderObj_DeleteBlock(RenderObjBlock* Block)
 	}
 }
 
-void RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
+void 
+RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
 	uint32 ObjectID)
 {
 	Block->BlockObjects[ObjectID] = NewObject;
@@ -46,7 +49,8 @@ void RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
 	Block->BlockObjects[ObjectID]->ObjectID = ObjectID;
 }
 
-void RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
+void
+RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
 	uint32 ObjectID, Texture2D* HeightMapTexture)
 {
 	Block->BlockObjects[ObjectID] = NewObject;
@@ -54,7 +58,8 @@ void RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
 	Block->BlockObjects[ObjectID]->ObjectID = ObjectID;
 }
 
-void RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
+void 
+RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
 	uint32 ObjectID, uint32 Width, uint32 Depth)
 {
 	Block->BlockObjects[ObjectID] = NewObject;
@@ -62,7 +67,8 @@ void RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
 	Block->BlockObjects[ObjectID]->ObjectID = ObjectID;
 }
 
-void RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
+void 
+RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
 	uint32 ObjectID, float Width, float Height, float Depth)
 {
 	Block->BlockObjects[ObjectID] = NewObject;
@@ -70,13 +76,15 @@ void RenderObj_Create(RenderObject* NewObject, RenderObjBlock* Block,
 	Block->BlockObjects[ObjectID]->ObjectID = ObjectID;
 }
 
-void RenderObj_SetTexture(RenderObjBlock* Block, uint32 ObjectID,
+void
+RenderObj_SetTexture(RenderObjBlock* Block, uint32 ObjectID,
 	Texture2D* Texture)
 {
 	Block->BlockObjects[ObjectID]->InputTexture(Texture);
 }
 
-RenderObject* RenderObj_GetObjectPtr(RenderObjBlock* Block, uint32 ObjectID)
+RenderObject*
+RenderObj_GetObjectPtr(RenderObjBlock* Block, uint32 ObjectID)
 {
 	return Block->BlockObjects[ObjectID];
 }

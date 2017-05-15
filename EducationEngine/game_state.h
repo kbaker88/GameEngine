@@ -9,9 +9,12 @@
    1.4 meters/sec * 1/60 sec/frame * 0.25 pix/meter
 */
 
-void Game_Initialize(ProgramState* State);
-void Game_Draw(ProgramState* State);
-void Game_Clean(ProgramState* State);
+void 
+Game_Initialize(ProgramState* State);
+void 
+Game_Draw(ProgramState* State);
+void 
+Game_Clean(ProgramState* State);
 
 #endif
 

@@ -36,27 +36,35 @@ struct Text_Object
 
 // TODO: Make sure Data is deleted and Glypharray
 //	     is deleted if it was dynamically allocated
-void Text_BuildFont(char* FontName, 
+void
+Text_BuildFont(char* FontName, 
 	Texture2D* GlyphArray, Font* FontPtr);
-void Text_DeleteFont(Font* FontPtr);
+void
+Text_DeleteFont(Font* FontPtr);
 
-void Text_CreateObj(Text_Object* TextObj, float Scale,
+void 
+Text_CreateObj(Text_Object* TextObj, float Scale,
 	v3 *Position, uint32 MaxLength, Font* Font);
-void Text_InputBoxUpdate(Text_Object* TextObj, 
+void
+Text_InputBoxUpdate(Text_Object* TextObj, 
 	uint16 Glyph, bool SecPing);
 
 // TODO: Add Support for UNICODE
-void Text_Draw(Text_Object* TextObj, uint32 ShaderID);
+void 
+Text_Draw(Text_Object* TextObj, uint32 ShaderID);
 
-void Text_DrawConsole(v3* Position, float Scale,
+void 
+Text_DrawConsole(v3* Position, float Scale,
 	uint32 ShaderID, Font *Font, uint16* ConsoleBuffer, 
 	uint32 BufferLength);
 
 
-void Text_DrawCharLine(string &Text, v3 &Position,
+void
+Text_DrawCharLine(string &Text, v3 &Position,
 	float Scale, uint32 ShaderID, Font *Font);
 
-float Text_SpacingWidth(Font* Font, uint16 A, 
+float
+Text_SpacingWidth(Font* Font, uint16 A, 
 	uint16 B);
 
 #endif

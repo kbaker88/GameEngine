@@ -48,47 +48,66 @@ struct Texture2D
 
 // ERROR SYSTEM
 // TODO : REPLACE WITH INGAME TEXT ERROR SYSTEM
-void Platform_TemporaryError(char* Text); 
+void 
+Platform_TemporaryError(char* Text); 
 
 // FILE SYSTEM
-int8 Platform_DoesFileExist(char* FileName);
+int8 
+Platform_DoesFileExist(char* FileName);
 // NOTE: Platform_ReadFile dynamically allocates memory,
 //		 make sure to clean.
-unsigned char* Platform_ReadFile(char* FileName);
+unsigned char* 
+Platform_ReadFile(char* FileName);
 
 // NOTE: Platform_SetupFont obtains a device context,
 //		 release it later.
-void Platform_SetupFont(char* FileName, char* FontName, 
+void 
+Platform_SetupFont(char* FileName, char* FontName, 
 	void** Bits,
 	void** HDCPtr);
 // NOTE: Platform_LoadGlyph dynamically allocates memory,
 //		 make sure to clean.
-void Platform_LoadGlyph(void* Bits, uint16 Glyph, 
+void 
+Platform_LoadGlyph(void* Bits, uint16 Glyph, 
 	Texture2D *TextureInfo, void* HDCPtr);
 
 // TIME SYSTEM
-int64 Platform_GetCPUCounter();
-int64 Platform_GetTimeFrequency();
+int64
+Platform_GetCPUCounter();
+int64 
+Platform_GetTimeFrequency();
 
 // INPUT DEVICES
 // TODO: Should this be Long?
-void Platform_GetCursorPosition(float *X, float *Y);
-int8 Platform_GetStateOfKey(int key);
+void 
+Platform_GetCursorPosition(float *X, float *Y);
+int8
+Platform_GetStateOfKey(int key);
 
-void Platform_UpdateMouseState(uint32 State);
-uint32 Platform_GetMouseState();
+void 
+Platform_UpdateMouseState(uint32 State);
+uint32
+Platform_GetMouseState();
 
 // CORE FUNCTIONALITY
 // TODO: Remember to check for already initialized
-void Platform_Initialize(window_properties *WindowProps);
-void Platform_ShowWindow(int CommandShow);
-unsigned int Platform_MessageLoop();
-void Platform_ReleaseContext(void* DeviceContext);
+void 
+Platform_Initialize(window_properties *WindowProps);
+void
+Platform_ShowWindow(int CommandShow);
+unsigned int 
+Platform_MessageLoop();
+void
+Platform_ReleaseContext(void* DeviceContext);
 
 // TODO: Put as much of this in renderer file as possible
-void Platform_InitRenderer(); 
-void Platform_UpdateWindowSize(uint32 Width, uint32 Height);
-void Platform_EndProgram();
-void Platform_Cleanup(); 
+void
+Platform_InitRenderer(); 
+void
+Platform_UpdateWindowSize(uint32 Width, uint32 Height);
+void 
+Platform_EndProgram();
+void
+Platform_Cleanup(); 
 
 #endif

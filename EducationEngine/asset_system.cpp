@@ -1,6 +1,7 @@
 #include "asset_system.h"
 
-void Asset_LoadTextures()
+void 
+Asset_LoadTextures()
 {
 	TextureCount = 0;
 
@@ -15,7 +16,8 @@ void Asset_LoadTextures()
 	Asset_LoadBMP("Images/inputbar.bmp"); // 8
 }
 
-void Asset_LoadFont(char* FontName, char* FilePath, Texture2D* GlyphArray)
+void 
+Asset_LoadFont(char* FontName, char* FilePath, Texture2D* GlyphArray)
 {
 	if (GlyphArray)
 	{
@@ -40,7 +42,8 @@ void Asset_LoadFont(char* FontName, char* FilePath, Texture2D* GlyphArray)
 
 }
 
-void Asset_LoadBMP(char* FileName)
+void 
+Asset_LoadBMP(char* FileName)
 {
 	BmpDimensions TextureDimensions;
 	unsigned char* BMPData = 0;
@@ -52,7 +55,8 @@ void Asset_LoadBMP(char* FileName)
 	TextureCount++;
 }
 
-void Asset_LoadPNG(char* FileName)
+void 
+Asset_LoadPNG(char* FileName)
 {
 	PNGProperties ImageProperties;
 	unsigned char* PNGData;
@@ -65,17 +69,20 @@ void Asset_LoadPNG(char* FileName)
 	TextureCount++;
 }
 
-uint32 Asset_GetTextureCount()
+uint32
+Asset_GetTextureCount()
 {
 	return TextureCount;
 }
 
-Texture2D* Asset_GetTexture(uint32 TextureNumber)
+Texture2D*
+Asset_GetTexture(uint32 TextureNumber)
 {
 	return &Textures[TextureNumber];
 }
 
-void Asset_DeleteAll()
+void
+Asset_DeleteAll()
 {
 	for (uint32 Index = 0; Index < TextureCount; Index++)
 	{

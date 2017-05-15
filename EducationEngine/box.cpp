@@ -1,7 +1,8 @@
 
 #include "render_object.h"
 
-void Box::Init(float NewWidth, float NewHeight, float NewDepth)
+void
+Box::Init(float NewWidth, float NewHeight, float NewDepth)
 {
 	ObjectDescription.NumberOfVertexHandles = 4;
 	ObjectDescription.VertexBufferDescriptions =

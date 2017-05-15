@@ -7,17 +7,26 @@
 // TODO: Fix the error of displaying both INTEGER.0 and INTEGER. 
 // TODO: Add NaN's and other error values
 // TODO: Add 64-bit
-void Utility_FloatToChar(float Value, unsigned int Percision, 
+void 
+Utility_FloatToChar(float Value, unsigned int Percision, 
 	char* ReturnBuffer);
-void Utility_IntToChar(int32 Value, char* ReturnBuffer);
-void Utility_IntToChar(int64 Value, char* ReturnBuffer);
-void Utility_UIntToChar(uint32 Value, char* ReturnBuffer);
+void 
+Utility_IntToChar(int32 Value, char* ReturnBuffer);
+void 
+Utility_IntToChar(int64 Value, char* ReturnBuffer);
+void 
+Utility_UIntToChar(uint32 Value, char* ReturnBuffer);
 
-int8 Utility_CompareStrings(char *StrA, char* StrB);
-int32 Utility_FindString(char* Str, char* Data);
-int32 Utility_FindString(char* Str, uint32 StartPos, char* Data);
-uint32 Utility_StringLength(char* Str);
-char* Utility_AppendString(char* StrA, char* StrB);
+int8 
+Utility_CompareStrings(char *StrA, char* StrB);
+int32
+Utility_FindString(char* Str, char* Data);
+int32 
+Utility_FindString(char* Str, uint32 StartPos, char* Data);
+uint32 
+Utility_StringLength(char* Str);
+char*
+Utility_AppendString(char* StrA, char* StrB);
 
 struct string // string inside of a string gives an error
 {
@@ -114,7 +123,8 @@ struct string // string inside of a string gives an error
 	unsigned int Size;
 };
 
-inline int32 Utility_DeleteString(char* Str)
+inline int32 
+Utility_DeleteString(char* Str)
 {
 	if (Str)
 	{
@@ -125,7 +135,7 @@ inline int32 Utility_DeleteString(char* Str)
 }
 
 
-// TEMPLATES, REMOVE LATER
+// TODO: TEMPLATES, REMOVE LATER
 
 template <typename Type> 
 struct LinkedListNode

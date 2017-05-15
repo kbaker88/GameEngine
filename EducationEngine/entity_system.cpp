@@ -1,6 +1,7 @@
 #include "entity_system.h"
 
-void Entity_CreateBlock(EntityBlock* Block, uint32 Size)
+void 
+Entity_CreateBlock(EntityBlock* Block, uint32 Size)
 {
 	if (!Block)
 	{
@@ -19,7 +20,8 @@ void Entity_CreateBlock(EntityBlock* Block, uint32 Size)
 	}
 }
 
-void Entity_DeleteBlock(EntityBlock* Block)
+void 
+Entity_DeleteBlock(EntityBlock* Block)
 {
 	if (Block->Entities != 0)
 	{
@@ -185,12 +187,14 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 	}
 }
 
-Camera* Entity_GetCamera(EntityBlock* Block, uint32 IDNumber)
+Camera*
+Entity_GetCamera(EntityBlock* Block, uint32 IDNumber)
 {
 	return Block->Entities[IDNumber].CameraObj;
 }
 
-void Entity_Draw(EntityBlock* Block, uint32 IDNumber, 
+void 
+Entity_Draw(EntityBlock* Block, uint32 IDNumber, 
 	uint32 ShaderVariableID)
 {
 	if (Block->Entities[IDNumber].Active == 1)
@@ -201,7 +205,8 @@ void Entity_Draw(EntityBlock* Block, uint32 IDNumber,
 	}
 }
 
-void Entity_DrawPolyGonMode(EntityBlock* Block, uint32 IDNumber, 
+void 
+Entity_DrawPolyGonMode(EntityBlock* Block, uint32 IDNumber, 
 	uint32 ShaderVariableID)
 {
 	if (Block->Entities[IDNumber].Active == 1)
@@ -212,12 +217,14 @@ void Entity_DrawPolyGonMode(EntityBlock* Block, uint32 IDNumber,
 	}
 }
 
-Entity* Entity_Ptr(EntityBlock* Block, uint32 IDNumber)
+Entity* 
+Entity_Ptr(EntityBlock* Block, uint32 IDNumber)
 {
 	return &Block->Entities[IDNumber];
 }
 
-CollisionObject* Entity_GetCollisionObjPtr(EntityBlock* Block,
+CollisionObject*
+Entity_GetCollisionObjPtr(EntityBlock* Block,
 	uint32 IDNumber, uint32 ObjectID)
 {
 	if (ObjectID < ((Block->Entities[IDNumber].ObjectTypes & 0xF00) >> 8))
@@ -231,7 +238,8 @@ CollisionObject* Entity_GetCollisionObjPtr(EntityBlock* Block,
 	}
 }
 
-PhysicsObject* Entity_GetPhysObjPtr(EntityBlock* Block, uint32 IDNumber,
+PhysicsObject* 
+Entity_GetPhysObjPtr(EntityBlock* Block, uint32 IDNumber,
 	uint32 ObjectID)
 {
 	if (ObjectID < ((Block->Entities[IDNumber].ObjectTypes & 0xF0) >> 4))
@@ -245,7 +253,8 @@ PhysicsObject* Entity_GetPhysObjPtr(EntityBlock* Block, uint32 IDNumber,
 	}
 }
 
-RenderObject* Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber,
+RenderObject* 
+Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber,
 	uint32 ObjectID)
 {
 	if (ObjectID < (Block->Entities[IDNumber].ObjectTypes & 0xF))
@@ -259,33 +268,39 @@ RenderObject* Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber,
 	}
 }
 
-float Entity_Width(EntityBlock* Block, uint32 IDNumber)
+float
+Entity_Width(EntityBlock* Block, uint32 IDNumber)
 {
 	return Block->Entities[IDNumber].Dimensions.x;
 }
 
-float Entity_Height(EntityBlock* Block, uint32 IDNumber)
+float 
+Entity_Height(EntityBlock* Block, uint32 IDNumber)
 {
 	return  Block->Entities[IDNumber].Dimensions.y;
 }
 
-float Entity_Depth(EntityBlock* Block, uint32 IDNumber)
+float 
+Entity_Depth(EntityBlock* Block, uint32 IDNumber)
 {
 	return  Block->Entities[IDNumber].Dimensions.z;
 }
 
-v3 Entity_GetPosition(EntityBlock* Block, uint32 IDNumber)
+v3 
+Entity_GetPosition(EntityBlock* Block, uint32 IDNumber)
 {
 	return Block->Entities[IDNumber].Position;
 }
 
-void Entity_SetPosition(EntityBlock* Block, uint32 IDNumber,
+void 
+Entity_SetPosition(EntityBlock* Block, uint32 IDNumber,
 	v3& Position)
 {
 	Block->Entities[IDNumber].Position = Position;
 }
 
-void Entity_UpdatePosition(EntityBlock* Block, uint32 IDNumber)
+void 
+Entity_UpdatePosition(EntityBlock* Block, uint32 IDNumber)
 {
 	Block->Entities[IDNumber].ModelMatrix.Rc[3][0] =
 		Block->Entities[IDNumber].Position.x;

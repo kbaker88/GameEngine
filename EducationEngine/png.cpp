@@ -16,7 +16,8 @@ struct DeflateBlock
 	uint8 CurrentFilter;
 };
 
-static int32 PaethPredictor(int32 Previous, int32 Above, int32 AbovePrev)
+static int32
+PaethPredictor(int32 Previous, int32 Above, int32 AbovePrev)
 {
 	int32 p = Previous + Above - AbovePrev;
 	int32 pa = Math_AbsVal(p - Previous);
@@ -36,14 +37,16 @@ static int32 PaethPredictor(int32 Previous, int32 Above, int32 AbovePrev)
 	}
 }
 
-static void NoFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+static void
+NoFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	uint8* ImageData, DeflateBlock* BlockState)
 {
 	ImageData[*ImgIndex] = Data[*Index];
 	*ImgIndex = *ImgIndex + 1;
 }
 
-static void SubFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+static void 
+SubFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	uint8* ImageData, DeflateBlock* BlockState) 
 {
 	if (BlockState->ScanLinePos > 2)
@@ -59,7 +62,8 @@ static void SubFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	}
 }
 
-static void UpFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+static void 
+UpFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	uint8* ImageData, DeflateBlock* BlockState) 
 {
 	if (*Index > (BlockState->EndIndexPos -
@@ -77,7 +81,8 @@ static void UpFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 
 }
 
-static void AverageFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+static void 
+AverageFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	uint8* ImageData, DeflateBlock* BlockState)
 {
 	if (*Index > (BlockState->EndIndexPos - 
@@ -116,7 +121,8 @@ static void AverageFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	}
 }
 
-static void PaethFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
+static void
+PaethFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	uint8* ImageData, DeflateBlock* BlockState)
 {
 	if (*Index > (BlockState->EndIndexPos -
@@ -157,7 +163,8 @@ static void PaethFilter(uint32* Index, uint8* Data, uint32* ImgIndex,
 	}
 }
 
-unsigned char* PNG_Extract(unsigned char* Data,
+unsigned char*
+PNG_Extract(unsigned char* Data,
 	PNGProperties& Properties)
 {
 	// TODO: Clean up Data if error.

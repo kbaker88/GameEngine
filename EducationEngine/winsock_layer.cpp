@@ -1,7 +1,8 @@
 #include "network_layer.h"
 
 // NOTE: This is practice for now. Not significant to the projecty yet.
-bool Network_Init()
+bool
+Network_Init()
 {
 	WSADATA wsaData;
 	/*
@@ -137,7 +138,8 @@ bool Network_Init()
 	return 0;
 }
 
-bool Network_Connect(char* IPAddress, uint32 Port)
+bool
+Network_Connect(char* IPAddress, uint32 Port)
 {
 
 	return 0;

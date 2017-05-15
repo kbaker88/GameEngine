@@ -7,14 +7,21 @@
 static Texture2D Textures[512];
 static uint32 TextureCount;
 
-void Asset_LoadTextures();
-void Asset_LoadFont(char* FontName, char* FilePath,
+void 
+Asset_LoadTextures();
+void 
+Asset_LoadFont(char* FontName, char* FilePath,
 	Texture2D* GlyphArray);
-void Asset_LoadBMP(char* FileName);
-void Asset_LoadPNG(char* FileName);
-uint32 Asset_GetTextureCount();
-Texture2D* Asset_GetTexture(uint32 TextureNumber);
+void 
+Asset_LoadBMP(char* FileName);
+void 
+Asset_LoadPNG(char* FileName);
+uint32 
+Asset_GetTextureCount();
+Texture2D* 
+Asset_GetTexture(uint32 TextureNumber);
 
-void Asset_DeleteAll();
+void
+Asset_DeleteAll();
 
 #endif

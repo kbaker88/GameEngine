@@ -4,6 +4,7 @@
 #include "linear_algebra.h" // TODO: fix the linkage here. 
 #include "render_layer.h"
 
+// TODO: Change this to data-oriented
 struct Camera
 {
 	Camera() : Yaw(-90.0f), Pitch(0.0f), Position(0.0f, 0.0f, 0.0f),

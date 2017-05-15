@@ -640,12 +640,23 @@ typedef void __stdcall gl_bind_vertex_array(GLuint arr);
 typedef void __stdcall gl_delete_vertex_arrays(GLsizei n, const GLuint *arrays);
 typedef void* __stdcall gl_map_buffer_range(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 
-// OpenGL 4
+// OpenGL 4.2
+typedef void __stdcall gl_tex_storage_2d(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
+
+// OpenGL 4.3
 typedef void __stdcall gl_bind_vertex_buffer(GLuint bindingindex, GLuint buffer, ptrdiff_t offset, ptrdiff_t stride);
 typedef void __stdcall gl_vertex_attrib_format(GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
 typedef void __stdcall gl_vertex_attrib_binding(GLuint attribindex, GLuint bindingindex);
-typedef void __stdcall gl_tex_storage_2d(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
 
+// OpenGL 4.5
+typedef void __stdcall gl_create_vertex_arrays(GLsizei n, GLuint* arrays);
+typedef void __stdcall gl_named_buffer_storage(GLuint buffer, GLsizei size, const void* data, GLbitfield flags);
+typedef void __stdcall gl_enable_vertex_array_attrib(GLuint vaobj, GLuint index);
+typedef void __stdcall gl_disable_vertex_array_attrib(GLuint vaobj, GLuint index);
+typedef void __stdcall gl_vertex_array_vertex_buffer(GLuint vaobj, GLuint bindingindex, GLuint buffer, GLint* offset, GLsizei stride);
+typedef void __stdcall gl_vertex_array_attrib_binding(GLuint vaobj, GLuint attribindex, GLuint bindingindex);
+typedef void __stdcall gl_vertex_array_attrib_ib_format(GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
+typedef void __stdcall gl_create_buffers(GLsizei n, GLuint *buffers);
 
 /* OpenGL 1.1
 typedef void __stdcall gl_point_size(GLfloat size);

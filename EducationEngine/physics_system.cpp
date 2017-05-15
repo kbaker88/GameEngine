@@ -1,6 +1,7 @@
 #include "physics_system.h"
 
-void Phys_CalculatePosition(PhysicsObject* PhysObject)
+void
+Phys_CalculatePosition(PhysicsObject* PhysObject)
 {
 	PhysObject->PrevPosition = *PhysObject->Position;
 	PhysObject->Acceleration = *PhysObject->MoveDirection *
@@ -26,19 +27,22 @@ void Phys_CalculatePosition(PhysicsObject* PhysObject)
 		Math_IdentityMatrix(), *PhysObject->Position);
 }
 
-void Phys_AddForce(PhysicsObject* PhysObject, v3 *Force)
+void
+Phys_AddForce(PhysicsObject* PhysObject, v3 *Force)
 {
 	PhysObject->ForceSum += PhysObject->Mass * *Force;
 }
 
-void Phys_SetAccelerationRate(PhysicsObject* PhysObject, 
+void 
+Phys_SetAccelerationRate(PhysicsObject* PhysObject, 
 	float MetersPerSec)
 {
 	PhysObject->AccelerationRate = MetersPerSec * 
 		UnitsPerMeter * SecondsPerFrame;
 }
 
-void Phys_BounceBack(PhysicsObject* PhysObject, v3* CollisionNormal)
+void 
+Phys_BounceBack(PhysicsObject* PhysObject, v3* CollisionNormal)
 {
 	*PhysObject->Position = PhysObject->PrevPosition;
 
@@ -57,7 +61,8 @@ void Phys_BounceBack(PhysicsObject* PhysObject, v3* CollisionNormal)
 		Math_IdentityMatrix(), *PhysObject->Position);
 }
 
-void Phys_WallSlide(PhysicsObject* PhysObject, v3* CollisionNormal)
+void
+Phys_WallSlide(PhysicsObject* PhysObject, v3* CollisionNormal)
 {
 	*PhysObject->Position = PhysObject->PrevPosition;
 
@@ -76,7 +81,8 @@ void Phys_WallSlide(PhysicsObject* PhysObject, v3* CollisionNormal)
 		Math_IdentityMatrix(), *PhysObject->Position);
 }
 
-void Phys_StopObject(PhysicsObject* PhysObject)
+void 
+Phys_StopObject(PhysicsObject* PhysObject)
 {
 	*PhysObject->Position = PhysObject->PrevPosition;
 	*PhysObject->ModelMatrix = Math_TranslateMatrix(

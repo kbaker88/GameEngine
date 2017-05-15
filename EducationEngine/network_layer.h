@@ -5,7 +5,9 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
-bool Network_Init();
-bool Network_Connect(char* IPAddress, uint32 Port);
+bool 
+Network_Init();
+bool
+Network_Connect(char* IPAddress, uint32 Port);
 
 #endif

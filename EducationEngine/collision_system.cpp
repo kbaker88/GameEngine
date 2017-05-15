@@ -1,6 +1,7 @@
 #include "collision_system.h"
 
-int Collision_ButtonClick(v2* MousePosition, CollisionObject* Object)
+int 
+Collision_ButtonClick(v2* MousePosition, CollisionObject* Object)
 {
 	window_properties WindowDimensions = Render_GetWindowProperties();
 	v2 NewMousePosition;
@@ -25,7 +26,8 @@ int Collision_ButtonClick(v2* MousePosition, CollisionObject* Object)
 	return Object->CollisionCode;
 }
 
-bool Collision_OrthoMouseToRect(v2* MousePosition, CollisionObject* Object)
+bool 
+Collision_OrthoMouseToRect(v2* MousePosition, CollisionObject* Object)
 {
 	window_properties WindowDimensions = Render_GetWindowProperties();
 	v2 NewMousePosition;
@@ -72,20 +74,23 @@ v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix, m4 *ViewMatrix)
 	return WorldMouseRay;
 }
 
-bool Collision_PlaneRayIntersect(v3* RayOrigin, v3* RayDirection, 
+bool 
+Collision_PlaneRayIntersect(v3* RayOrigin, v3* RayDirection, 
 	CollisionObject* CollideObject, float* Distance)
 {
 
 	return false;
 }
 
-bool Collision_RayToOBB(v3* RayOrigin, v3* RayDirection,
+bool 
+Collision_RayToOBB(v3* RayOrigin, v3* RayDirection,
 	CollisionObject* Object, float* Distance)
 {
 	return false;
 }
 
-v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction)
+v3 
+GetFurthestPoint(CollisionObject* Object, v3 *Direction)
 {
 	v3 FurthestPoint = { 0.0f, 0.0f, 0.0f };
 	float MaxDot = -100000.0f;
@@ -110,7 +115,8 @@ v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction)
 }
 
 // Finds the furtherst point within a shape in a given direction
-SupportPoint MinkowskiSupport(CollisionObject* ObjectA, 
+SupportPoint 
+MinkowskiSupport(CollisionObject* ObjectA, 
 	CollisionObject* ObjectB, v3 *Direction) 
 {
 	SupportPoint Result;
@@ -121,7 +127,8 @@ SupportPoint MinkowskiSupport(CollisionObject* ObjectA,
 	return Result;// max point in direction
 }
 
-bool LineSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
+bool 
+LineSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
 {
 	SupportPoint A = PList[1];
 	SupportPoint B = PList[0];
@@ -143,7 +150,8 @@ bool LineSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
 	}
 }
 
-bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
+bool
+PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
 {	
 	SupportPoint A = PList[2];
 	SupportPoint B = PList[1];
@@ -222,7 +230,8 @@ bool PlaneSimplex(SupportPoint* PList, v3* Direction, uint32* PointCount)
 	}
 }
 
-bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
+bool 
+TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 {
 	SupportPoint A = PList[3];
 	SupportPoint B = PList[2];
@@ -326,9 +335,11 @@ bool TetrahedronSimplex(SupportPoint* PList, v3 *Direction, uint32* PointCount)
 	}
 }
 
+// TODO: Temporary variable
 SupportPoint PointList[4];
 
-bool Collision_GJK(CollisionObject* ObjectA, CollisionObject* ObjectB)
+bool 
+Collision_GJK(CollisionObject* ObjectA, CollisionObject* ObjectB)
 {
 	SupportPoint A;
 	uint32 PointCount = 1;
@@ -391,7 +402,8 @@ bool Collision_GJK(CollisionObject* ObjectA, CollisionObject* ObjectB)
 
 }
 
-Face AddFaceEPA(SupportPoint &v0, SupportPoint &v1, SupportPoint &v2)
+Face 
+AddFaceEPA(SupportPoint &v0, SupportPoint &v1, SupportPoint &v2)
 {
 	Face Result;
 	Result.Vertices[0] = v0;
@@ -412,7 +424,8 @@ Face AddFaceEPA(SupportPoint &v0, SupportPoint &v1, SupportPoint &v2)
 	return Result;
 }
 
-void AddEdge(SupportPoint *A, SupportPoint *B, std::list<Edge> *Edges)
+void 
+AddEdge(SupportPoint *A, SupportPoint *B, std::list<Edge> *Edges)
 {
 	for (auto it = Edges->begin(); it != Edges->end(); it++) 
 	{
@@ -426,7 +439,8 @@ void AddEdge(SupportPoint *A, SupportPoint *B, std::list<Edge> *Edges)
 	Edges->push_back(Edge(*A, *B));
 }
 
-Face Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB)
+Face 
+Collision_EPA(CollisionObject* ObjectA, CollisionObject* ObjectB)
 {
 	double Threshold = 0.000001;
 	uint32 IterationLimit = 50;

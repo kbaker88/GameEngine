@@ -6,7 +6,8 @@ ProgramState States[3];
 // TODO: Temporary placement, put into state system
 Font *GlobalFont;
 
-uint32 Game_Main(int32 CommandShow)
+uint32
+Game_Main(int32 CommandShow)
 {
 	window_properties WindowDimensions;
 	WindowDimensions.Width = 1200;
@@ -29,7 +30,8 @@ uint32 Game_Main(int32 CommandShow)
 	return Message;
 }
 
-void Game_Loop()
+void
+Game_Loop()
 {
 	int64 LastCounter = Platform_GetCPUCounter();
 
@@ -201,7 +203,8 @@ void Game_Loop()
 	LastCounter = Platform_GetCPUCounter();
 }
 
-int64 Game_MessageProcessor(void* Window, uint32 Message,
+int64
+Game_MessageProcessor(void* Window, uint32 Message,
 	uint64 wParam, int64 lParam)
 {
 	switch (Message)

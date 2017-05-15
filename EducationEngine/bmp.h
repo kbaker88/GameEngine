@@ -14,7 +14,8 @@ struct BmpDimensions
 	int32 Height;
 };
 
-static unsigned char* GetBmpData(unsigned char* Data, BmpDimensions& Dimensions)
+static unsigned char* 
+GetBmpData(unsigned char* Data, BmpDimensions& Dimensions)
 {
 	unsigned char* ImageData = 0;
 

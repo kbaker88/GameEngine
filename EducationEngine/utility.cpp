@@ -1,6 +1,7 @@
 #include "utility.h"
 
-void Utility_FloatToChar(float Value, unsigned int Precision,
+void 
+Utility_FloatToChar(float Value, unsigned int Precision,
 	char* ReturnBuffer)
 {
 	if (Precision > 8)
@@ -241,7 +242,8 @@ void Utility_FloatToChar(float Value, unsigned int Precision,
 	}
 }
 
-void Utility_IntToChar(int32 Value, char* ReturnBuffer)
+void 
+Utility_IntToChar(int32 Value, char* ReturnBuffer)
 {
 	unsigned char Buffer[16] = {};
 	unsigned int Index = 0;
@@ -330,7 +332,8 @@ void Utility_IntToChar(int32 Value, char* ReturnBuffer)
 	}
 }
 
-void Utility_IntToChar(int64 Value, char* ReturnBuffer)
+void 
+Utility_IntToChar(int64 Value, char* ReturnBuffer)
 {
 	unsigned char Buffer[16] = {};
 	unsigned int Index = 0;
@@ -419,7 +422,8 @@ void Utility_IntToChar(int64 Value, char* ReturnBuffer)
 	}
 }
 
-void Utility_UIntToChar(uint32 Value, char* ReturnBuffer)
+void
+Utility_UIntToChar(uint32 Value, char* ReturnBuffer)
 {
 	unsigned char Buffer[16] = {};
 	unsigned int Index = 0;
@@ -474,7 +478,8 @@ void Utility_UIntToChar(uint32 Value, char* ReturnBuffer)
 	}
 }
 
-int8 Utility_CompareStrings(char *StrA, char* StrB)
+int8
+Utility_CompareStrings(char *StrA, char* StrB)
 {
 	if (StrA)
 	{
@@ -519,7 +524,8 @@ int8 Utility_CompareStrings(char *StrA, char* StrB)
 	return 1;
 }
 
-int32 Utility_FindString(char* Str, char* Data)
+int32
+Utility_FindString(char* Str, char* Data)
 {
 	char* StrItr = Str;
 	char* DataItr = Data;
@@ -560,7 +566,8 @@ int32 Utility_FindString(char* Str, char* Data)
 	}
 }
 
-int32 Utility_FindString(char* Str, uint32 StartPos, char* Data)
+int32 
+Utility_FindString(char* Str, uint32 StartPos, char* Data)
 {
 	char* StrItr = Str;
 	char* DataItr = Data;
@@ -605,7 +612,8 @@ int32 Utility_FindString(char* Str, uint32 StartPos, char* Data)
 	}
 }
 
-uint32 Utility_StringLength(char* Str)
+uint32
+Utility_StringLength(char* Str)
 {
 	uint32 Length = 0;
 
@@ -624,7 +632,8 @@ uint32 Utility_StringLength(char* Str)
 	}
 }
 
-char* Utility_AppendString(char* StrA, char* StrB)
+char*
+Utility_AppendString(char* StrA, char* StrB)
 {
 	int LengthA = 0;
 	int LengthB = 0;

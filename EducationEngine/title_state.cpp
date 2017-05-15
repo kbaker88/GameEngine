@@ -1,6 +1,7 @@
 #include "title_state.h"
 
-void Title_Initialize(ProgramState* State)
+void 
+Title_Initialize(ProgramState* State)
 {
 	window_properties WindowDimensions =
 		Render_GetWindowProperties();
@@ -43,9 +44,11 @@ void Title_Initialize(ProgramState* State)
 	State->TimerArray[0].Start();
 }
 
+// TODO: Remove this, temporary testing
 static bool TempPing = false;
 
-void Title_Draw(ProgramState* State)
+void 
+Title_Draw(ProgramState* State)
 {
 	Render_ClearScreen(&v4(1.0f, 1.0f, 1.0f, 1.0f));
 
@@ -148,7 +151,8 @@ void Title_Draw(ProgramState* State)
 	}
 }
 
-void Title_CollisionResolve(ProgramState* State, 
+void 
+Title_CollisionResolve(ProgramState* State, 
 	int32 CollisionResult)
 {
 	switch (CollisionResult)
@@ -215,7 +219,8 @@ void Title_CollisionResolve(ProgramState* State,
 	}
 }
 
-void Title_Clean(ProgramState* State)
+void
+Title_Clean(ProgramState* State)
 {
 	Platform_UpdateMouseState(0);
 	Entity_DeleteBlock(&State->EntityBlocks[0]);

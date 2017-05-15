@@ -13,7 +13,9 @@ struct Cursor_State
 	v2 Position, PrevPosition, PositionOffset;
 };
 
-void Input_UpdateMouseState(ProgramState* State);
-void Input_UpdateKeyStates(ProgramState* State);
+void 
+Input_UpdateMouseState(ProgramState* State);
+void 
+Input_UpdateKeyStates(ProgramState* State);
 
 #endif

@@ -1,6 +1,7 @@
 #include "entity_utility.h"
 
-uint32 Utility_CreateButton(ProgramState* State, float Width, 
+uint32 
+Utility_CreateButton(ProgramState* State, float Width, 
 	float Height, v3* Position, Texture2D* Texture)
 {
 	RenderObj_Create(new MyRectangle, &State->RenderObjBlocks[0],
@@ -18,7 +19,8 @@ uint32 Utility_CreateButton(ProgramState* State, float Width,
 	return (State->ObjectCount - 1);
 }
 
-uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
+uint32
+Utility_CreateBox(ProgramState* State, float Width, float Height,
 	float Depth)
 {
 	RenderObj_Create(new Box, &State->RenderObjBlocks[0], State->ObjectCount,
@@ -28,7 +30,8 @@ uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
 	return (State->ObjectCount - 1);
 }
 
-uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
+uint32 
+Utility_CreateBox(ProgramState* State, float Width, float Height,
 	float Depth, Texture2D* Texture)
 {
 	RenderObj_Create(new Box, &State->RenderObjBlocks[0], State->ObjectCount,
@@ -40,7 +43,8 @@ uint32 Utility_CreateBox(ProgramState* State, float Width, float Height,
 	return (State->ObjectCount - 1);
 }
 
-uint32 Utility_CreatePlane(ProgramState* State, uint32 Width,
+uint32
+Utility_CreatePlane(ProgramState* State, uint32 Width,
 	uint32 Depth, Texture2D* Texture)
 {
 	RenderObj_Create(new Plane2D, &State->RenderObjBlocks[0],
@@ -52,7 +56,8 @@ uint32 Utility_CreatePlane(ProgramState* State, uint32 Width,
 	return (State->ObjectCount - 1);
 }
 
-uint32 Utility_CreateHeightMap(ProgramState* State, 
+uint32 
+Utility_CreateHeightMap(ProgramState* State, 
 	Texture2D* HeightMapImg, Texture2D* Texture)
 {
 	RenderObj_Create(new HeightMap, &State->RenderObjBlocks[0], State->ObjectCount,
@@ -64,7 +69,8 @@ uint32 Utility_CreateHeightMap(ProgramState* State,
 	return (State->ObjectCount - 1);
 }
 
-uint32 Utility_CreateEntity(ProgramState* State, v3* Position,
+uint32
+Utility_CreateEntity(ProgramState* State, v3* Position,
 	unsigned int ObjectID, uint64 TypesOfObjects)
 {
 	Entity_Create(&State->EntityBlocks[0], State->EntityCount,

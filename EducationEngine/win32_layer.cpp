@@ -41,14 +41,16 @@ static platform_properties PlatformProperties = {};
 typedef HGLRC __stdcall wgl_create_context_attribs_arb(HDC hDC,
 					HGLRC hShareContext, const int *attribList);
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, 
+LRESULT CALLBACK
+WndProc(HWND hwnd, UINT msg, WPARAM wParam, 
 	LPARAM lParam);
 
 // TEMPORARY: Throws these in a struct later? Or get rid of them
 uint32 MouseState;
 uint8 MouseLeftClickToggle = 0;
 
-void Platform_UpdateWindowSize(uint32 Width, uint32 Height)
+void 
+Platform_UpdateWindowSize(uint32 Width, uint32 Height)
 {
 	RECT CurrentWindowPosition;
 	GetWindowRect(PlatformWindow.Window, &CurrentWindowPosition);
@@ -57,7 +59,8 @@ void Platform_UpdateWindowSize(uint32 Width, uint32 Height)
 		Width, Height, SWP_SHOWWINDOW);
 }
 
-void Platform_TemporaryError(char* Text)
+void
+Platform_TemporaryError(char* Text)
 {
 	// TODO: Remove this when engine error system is complete
 	// NOTE: Beware of buffer overflow potential.
@@ -66,7 +69,8 @@ void Platform_TemporaryError(char* Text)
 	OutputDebugStringA(Buffer);
 }
 
-int8 Platform_DoesFileExist(char* FileName)
+int8 
+Platform_DoesFileExist(char* FileName)
 {
 	struct stat buffer;
 	if (stat(FileName, &buffer) == 0)
@@ -80,7 +84,8 @@ int8 Platform_DoesFileExist(char* FileName)
 	}
 }
 
-unsigned char* Platform_ReadFile(char* FileName)
+unsigned char*
+Platform_ReadFile(char* FileName)
 {
 	struct stat buffer;
 	stat(FileName, &buffer);
@@ -108,7 +113,8 @@ unsigned char* Platform_ReadFile(char* FileName)
 	return ReturnValues;
 }
 
-void Platform_SetupFont(char* FileName, char* FontName, 
+void 
+Platform_SetupFont(char* FileName, char* FontName, 
 	void** Bits, void** DeviceContextPtr)
 {
 	if (!*DeviceContextPtr)
@@ -146,7 +152,8 @@ void Platform_SetupFont(char* FileName, char* FontName,
 	GetTextMetrics((HDC)(*DeviceContextPtr), &TextMetric);
 }
 
-void Platform_LoadGlyph(void* Bits, uint16 Glyph,
+void 
+Platform_LoadGlyph(void* Bits, uint16 Glyph,
 	Texture2D *Texture, void* DeviceContext)
 {
 	int BitmapWidth = 1024;
@@ -213,7 +220,8 @@ void Platform_LoadGlyph(void* Bits, uint16 Glyph,
 	}
 }
 
-int64 Platform_GetCPUCounter()
+int64
+Platform_GetCPUCounter()
 {
 	LARGE_INTEGER Time;
 #if DEBUG_MODE
@@ -230,7 +238,8 @@ int64 Platform_GetCPUCounter()
 	return Time.QuadPart;
 }
 
-int64 Platform_GetTimeFrequency()
+int64 
+Platform_GetTimeFrequency()
 {
 	if (PlatformProperties.TimerFrequency == 0)
 	{
@@ -254,7 +263,8 @@ int64 Platform_GetTimeFrequency()
 	}
 } 
 
-void Platform_GetCursorPosition(float *X, float *Y)
+void 
+Platform_GetCursorPosition(float *X, float *Y)
 {
 	POINT currentCursorPoint;
 
@@ -272,7 +282,8 @@ void Platform_GetCursorPosition(float *X, float *Y)
 	}
 }
 
-int8 Platform_GetStateOfKey(int key)
+int8 
+Platform_GetStateOfKey(int key)
 {
 	int8 result = 0;
 
@@ -287,29 +298,34 @@ int8 Platform_GetStateOfKey(int key)
 	}
 }
 
-void Platform_UpdateMouseState(uint32 State)
+void 
+Platform_UpdateMouseState(uint32 State)
 {
 	MouseState = State;
 }
 
-uint32 Platform_GetMouseState()
+uint32
+Platform_GetMouseState()
 {
 	uint32 ReturnState = MouseState;
 	return MouseState;
 }
 
-void Platform_EndProgram()
+void 
+Platform_EndProgram()
 {
 	PostQuitMessage(0);
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+int WINAPI 
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int CommandShow)
 {
 	return Game_Main(CommandShow);
 }
 
-void Platform_Initialize(window_properties *WindowProps)
+void 
+Platform_Initialize(window_properties *WindowProps)
 {
 	PlatformProperties.Instance = GetModuleHandle(0);
 #if DEBUG_MODE
@@ -379,12 +395,14 @@ void Platform_Initialize(window_properties *WindowProps)
 		Platform_GetTimeFrequency();
 }
 
-void Platform_ShowWindow(int CommandShow)
+void 
+Platform_ShowWindow(int CommandShow)
 {
 	ShowWindow(PlatformWindow.Window, CommandShow);
 }
 
-unsigned int Platform_MessageLoop()
+unsigned int
+Platform_MessageLoop()
 {
 	MSG Message = {};
 
@@ -412,7 +430,8 @@ unsigned int Platform_MessageLoop()
 	return Message.message;
 }
 
-void Platform_InitRenderer()
+void 
+Platform_InitRenderer()
 {
 	PIXELFORMATDESCRIPTOR DesiredPixelFormat = {};
 	DesiredPixelFormat.nSize = sizeof(DesiredPixelFormat);
@@ -557,7 +576,8 @@ void Platform_InitRenderer()
 #endif
 }
 
-void Platform_ReleaseContext(void* DeviceContext)
+void
+Platform_ReleaseContext(void* DeviceContext)
 {
 	if (DeviceContext)
 	{
@@ -565,14 +585,16 @@ void Platform_ReleaseContext(void* DeviceContext)
 	}
 }
 
-void Platform_Cleanup()
+void 
+Platform_Cleanup()
 {
 	wglMakeCurrent(0, 0);
 	ReleaseDC(PlatformWindow.Window,
 		PlatformProperties.DeviceContext);
 }
 
-LRESULT CALLBACK WndProc(HWND Window, UINT Message,
+LRESULT CALLBACK 
+WndProc(HWND Window, UINT Message,
 	WPARAM wParam, LPARAM lParam)
 {
 

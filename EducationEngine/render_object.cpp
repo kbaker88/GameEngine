@@ -1,51 +1,28 @@
 #include "render_object.h"
 
 #if DATA_ORIENTED
-PipelineObjectDescription ObjectDescription;
 
-void RenderObj_Init(RenderObj* Object, float* Vertices,
-	uint32 VerticeAmount, uint32* Indices, uint32 IndiceAmount,
-	float* ColorData, float* TextureCoords, uint32 NumTextCoords,
-	float* NormalVecs)
+void 
+RenderObj_Init(RenderObj* RenderObject, Model* ModelObj)
 {
-	Object->Buffer[0] = Vertices;
-	Object->Size[0] = VerticeAmount;
-	Object->IndicesPtr = Indices;
-	Object->NumIndices = IndiceAmount;
-	Object->Buffer[1] = ColorData;
-	Object->Size[1] = VerticeAmount;
-	Object->Buffer[2] = TextureCoords;
-	Object->Size[2] = NumTextCoords;
-	Object->Buffer[3] = NormalVecs;
-	Object->Size[3] = VerticeAmount;
+	//TODO: Think about creating many VAO's at once.
+	Render_CreateVertexArrays(1, &RenderObject->VertexArrayID);
+	Render_CreateBuffers(ModelObj->NumAttribs, 
+		RenderObject->BufferID);
+	for (uint32 Index = 0; Index < ModelObj->NumAttribs; Index++)
+	{
+		Render_FillBuffer(RenderObject->BufferID[Index],
+			ModelObj->ArraySize[Index], ModelObj->Data[Index], 0);
+	}
+	Render_FillVetexArrayObject(RenderObject, ModelObj->NumAttribs);
 }
 
-void RenderObj_Delete(RenderObj* Object)
+void 
+RenderObj_Delete(RenderObj* Object)
 {
-	Render_DeleteBuffers(ObjectDescription.NumberOfVertexHandles,
-		ObjectDescription.VertexArrayObjectID,
-		ObjectDescription.VertexBufferObjectHandleIDs);
-	Render_DeleteVertexArrays(1, &ObjectDescription.VertexArrayObjectID);
-	Render_DeleteTexture(1, &Object->TextureID);
 
-	if (ObjectDescription.VertexBufferDescriptions)
-	{
-		delete[] ObjectDescription.VertexBufferDescriptions;
-		ObjectDescription.VertexBufferDescriptions = 0;
-	}
-
-	if (ObjectDescription.VertexBufferObjectHandleIDs)
-	{
-		delete[] ObjectDescription.VertexBufferObjectHandleIDs;
-		ObjectDescription.VertexBufferObjectHandleIDs = 0;
-	}
-
-	if (Object->VerticeFloatArrayPtr)
-	{
-		delete[] Object->VerticeFloatArrayPtr;
-		Object->VerticeFloatArrayPtr = 0;
-	}
 }
+
 #else
 RenderObject::~RenderObject()
 {

@@ -1,6 +1,7 @@
 #include "camera_system.h"
 
-void Camera::SetPosition(v3* NewPosition) //TODO: Make sure this is only called once per frame
+void 
+Camera::SetPosition(v3* NewPosition) //TODO: Make sure this is only called once per frame
 {
 	Position = *NewPosition;
 
@@ -9,37 +10,44 @@ void Camera::SetPosition(v3* NewPosition) //TODO: Make sure this is only called 
 		UpVector);
 }
 
-v3* Camera::GetPosition()
+v3*
+Camera::GetPosition()
 {
 	return &Position;
 }
 
-void Camera::SetFrontDirection(v3* Direction)
+void
+Camera::SetFrontDirection(v3* Direction)
 {
 	FacingVector = *Direction;
 }
 
-v3* Camera::GetFrontDirection()
+v3* 
+Camera::GetFrontDirection()
 {
 	return &FacingVector;
 }
 
-void Camera::SetUpDirection(v3* Direction)
+void 
+Camera::SetUpDirection(v3* Direction)
 {
 	UpVector = *Direction;
 }
 
-v3* Camera::GetUpDirection()
+v3* 
+Camera::GetUpDirection()
 {
 	return &UpVector;
 }
 
-m4* Camera::GetViewMatrix()
+m4* 
+Camera::GetViewMatrix()
 {
 	return &ViewMatrix;
 }
 
-void Camera::SetProjectionMatrix(uint8 Type)
+void 
+Camera::SetProjectionMatrix(uint8 Type)
 {
 	window_properties WindowProperties = Render_GetWindowProperties(); //TODO: Fix this, get it out of here
 	switch (Type)
@@ -65,7 +73,8 @@ void Camera::SetProjectionMatrix(uint8 Type)
 	}
 }
 
-m4* Camera::GetProjectionMatrix()
+m4*
+Camera::GetProjectionMatrix()
 {
 	return &ProjectionMatrix;
 }

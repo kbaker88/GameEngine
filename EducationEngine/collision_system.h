@@ -137,44 +137,59 @@ struct Edge
 	}
 };
 
-int Collision_ButtonClick(v2* MousePosition,
+int 
+Collision_ButtonClick(v2* MousePosition,
 	CollisionObject* Object);
 
-bool Collision_OrthoMouseToRect(v2* MousePosition, 
+bool 
+Collision_OrthoMouseToRect(v2* MousePosition, 
 	CollisionObject* Object);
-v3 Collision_UpdateMousePickRay(m4 *ProjectionMatrix,
+v3 
+Collision_UpdateMousePickRay(m4 *ProjectionMatrix,
 	m4 *ViewMatrix);
-bool Collision_RayToOBB(v3* RayOrigin, v3* RayDirection, 
+bool
+Collision_RayToOBB(v3* RayOrigin, v3* RayDirection, 
 	CollisionObject* Object, float* Distance);
-bool Collision_PlaneRayIntersect(v3* RayOrigin, 
+bool
+Collision_PlaneRayIntersect(v3* RayOrigin, 
 	v3* RayDirection, CollisionObject* CollideObject, 
 	float* Distance);
 
-v3 GetFurthestPoint(CollisionObject* Object, v3 *Direction); 
+v3 
+GetFurthestPoint(CollisionObject* Object, v3 *Direction); 
 
-SupportPoint MinkowskiSupport(CollisionObject* ObjectA,
+SupportPoint
+MinkowskiSupport(CollisionObject* ObjectA,
 	CollisionObject* ObjectB, v3 *Direction);
 
-bool LineSimplex(SupportPoint* PList, v3* Direction,
+bool 
+LineSimplex(SupportPoint* PList, v3* Direction,
 	uint32* PointCount);
-bool PlaneSimplex(SupportPoint* PList, v3* Direction, 
+bool
+PlaneSimplex(SupportPoint* PList, v3* Direction, 
 	uint32* PointCount);
-bool TetrahedronSimplex(SupportPoint* PList, v3* Direction,
+bool 
+TetrahedronSimplex(SupportPoint* PList, v3* Direction,
 	uint32* PointCount);
-bool Collision_GJK(CollisionObject* ObjectA,
+bool
+Collision_GJK(CollisionObject* ObjectA,
 	CollisionObject* ObjectB);
 
-Face AddFaceEPA(SupportPoint &v0, SupportPoint &v1, 
+Face 
+AddFaceEPA(SupportPoint &v0, SupportPoint &v1, 
 	SupportPoint &v2);
 //Face EPA(ObjectInstance *ObjA, ObjectInstance *ObjB);
-Face Collision_EPA(CollisionObject* ObjectA,
+Face 
+Collision_EPA(CollisionObject* ObjectA,
 	CollisionObject* ObjectB);
 
-bool Collision_HeightMap(
+bool 
+Collision_HeightMap(
 	CollisionObject* HeightMapCollisionObj,
 	v3 &ObjectPosition);
 
-v3 Collision_GetNormal(CollisionObject* CollideObj, 
+v3 
+Collision_GetNormal(CollisionObject* CollideObj, 
 	PhysicsObject* PhysObj);
 
 #endif

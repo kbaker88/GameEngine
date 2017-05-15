@@ -38,8 +38,10 @@ struct EntityBlock
 };
 
 /////////////// CREATE //////////////////////////
-void Entity_CreateBlock(EntityBlock* Block, uint32 Size);
-void Entity_DeleteBlock(EntityBlock* Block);
+void 
+Entity_CreateBlock(EntityBlock* Block, uint32 Size);
+void
+Entity_DeleteBlock(EntityBlock* Block);
 // NOTE: Every 4 bits of ObjectType determines which and
 //		 how many of each object type will be added.
 //		 Starting with lowest significance:
@@ -47,33 +49,47 @@ void Entity_DeleteBlock(EntityBlock* Block);
 //		 4-7  : Physics Objects
 //		 8-11 : Collision Objects
 //		 12-15: Camera Objects
-int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
+int32 
+Entity_Create(EntityBlock* Block, uint32 IDNumber,
 	RenderObject* ObjectPtrs, v3 *Position, uint64 TypesOfObjects);
 
 /////////////// DRAW ///////////////////////////
-void Entity_Draw(EntityBlock* Block, uint32 IDNumber,
+void 
+Entity_Draw(EntityBlock* Block, uint32 IDNumber,
 	uint32 ShaderVariableID);
-void Entity_DrawPolyGonMode(EntityBlock* Block, uint32 IDNumber,
+void
+Entity_DrawPolyGonMode(EntityBlock* Block, uint32 IDNumber,
 	uint32 ShaderVariableID);
 
 /////////////// RETRIEVE ////////////////////////
-Entity* Entity_Ptr(EntityBlock* Block, uint32 IDNumber);
-Camera* Entity_GetCamera(EntityBlock* Block, uint32 IDNumber);
-CollisionObject* Entity_GetCollisionObjPtr(EntityBlock* Block,
+Entity* 
+Entity_Ptr(EntityBlock* Block, uint32 IDNumber);
+Camera* 
+Entity_GetCamera(EntityBlock* Block, uint32 IDNumber);
+CollisionObject* 
+Entity_GetCollisionObjPtr(EntityBlock* Block,
 	uint32 IDNumber, uint32 ObjectID);
-PhysicsObject* Entity_GetPhysObjPtr(EntityBlock* Block,
+PhysicsObject*
+Entity_GetPhysObjPtr(EntityBlock* Block,
 	uint32 IDNumber, uint32 ObjectID);
-RenderObject* Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber,
+RenderObject* 
+Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber,
 	uint32 ObjectID);
-float Entity_Width(EntityBlock* Block, uint32 IDNumber);
-float Entity_Height(EntityBlock* Block, uint32 IDNumber);
-float Entity_Depth(EntityBlock* Block, uint32 IDNumber);
-v3 Entity_GetPosition(EntityBlock* Block, uint32 IDNumber);
+float
+Entity_Width(EntityBlock* Block, uint32 IDNumber);
+float 
+Entity_Height(EntityBlock* Block, uint32 IDNumber);
+float
+Entity_Depth(EntityBlock* Block, uint32 IDNumber);
+v3 
+Entity_GetPosition(EntityBlock* Block, uint32 IDNumber);
 
 /////////////// SET ////////////////////////////
-void Entity_SetPosition(EntityBlock* Block, uint32 IDNumber,
+void 
+Entity_SetPosition(EntityBlock* Block, uint32 IDNumber,
 	v3& Position);
 //TODO: UpdatePosition must be used with matrix transformations, fix later
-void Entity_UpdatePosition(EntityBlock* Block, uint32 IDNumber);
+void 
+Entity_UpdatePosition(EntityBlock* Block, uint32 IDNumber);
 
 #endif

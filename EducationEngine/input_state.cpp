@@ -2,7 +2,8 @@
 
 static Cursor_State CursorState;
 
-void Input_UpdateMouseState(ProgramState* State)
+void 
+Input_UpdateMouseState(ProgramState* State)
 {
 	//TODO: This MousePosition might be the cause of error in mouse picking
 	//TODO: Maybe only do the mouse position calculation once.
@@ -61,7 +62,8 @@ void Input_UpdateMouseState(ProgramState* State)
 		Math_Normalize(PlayerFront);
 }
 
-void Input_UpdateKeyStates(ProgramState* State)
+void 
+Input_UpdateKeyStates(ProgramState* State)
 {
 	float* YawPtr =
 		&Entity_GetCamera(&State->EntityBlocks[0], 0)->Yaw;

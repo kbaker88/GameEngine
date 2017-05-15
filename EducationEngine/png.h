@@ -20,7 +20,8 @@ struct PNGProperties
 	unsigned char InterlaceMethod;
 };
 
-unsigned char* PNG_Extract(unsigned char* Data,
+unsigned char* 
+PNG_Extract(unsigned char* Data,
 	PNGProperties& Properties);
 
 #endif 

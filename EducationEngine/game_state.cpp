@@ -1,6 +1,7 @@
 #include "game_state.h"
 
-void Game_Initialize(ProgramState* State)
+void 
+Game_Initialize(ProgramState* State)
 {
 	window_properties WindowDimensions = Render_GetWindowProperties();
 	float WindowHalfHeight = (float)WindowDimensions.Height * 0.5f;
@@ -68,7 +69,8 @@ void Game_Initialize(ProgramState* State)
 	State->TimerArray[0].Start();
 }
 
-void Game_Draw(ProgramState* State)
+void 
+Game_Draw(ProgramState* State)
 {
 	Render_ClearScreen(&v4(0.2f, 0.3f, 0.3f, 1.0f));
 
@@ -323,7 +325,8 @@ void Game_Draw(ProgramState* State)
 		State->GPUShaderVarArray[0], State->FontArr);
 }
 
-void Game_Clean(ProgramState* State)
+void 
+Game_Clean(ProgramState* State)
 {
 	Entity_DeleteBlock(&State->EntityBlocks[0]);
 	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);

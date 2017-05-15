@@ -4,7 +4,9 @@
 #include "render_layer.h"
 
 
-void DEBUG_Initialize();
-float DEBUG_GetFPS();
+void 
+DEBUG_Initialize();
+float
+DEBUG_GetFPS();
 
 #endif

@@ -128,7 +128,8 @@ union m4
 };
 
 // Vector Operations (+, -, +=, -=, *, *=, ==)
-inline v2 operator+(v2 A, v2 B)
+inline v2
+operator+(v2 A, v2 B)
 {
 	v2 Result;
 
@@ -138,7 +139,8 @@ inline v2 operator+(v2 A, v2 B)
 	return(Result);
 }
 
-inline v2 operator-(v2 A)
+inline v2 
+operator-(v2 A)
 {
 	v2 Result;
 
@@ -148,7 +150,8 @@ inline v2 operator-(v2 A)
 	return(Result);
 }
 
-inline v2 operator-(v2 A, v2 B)
+inline v2 
+operator-(v2 A, v2 B)
 {
 	v2 Result;
 
@@ -158,21 +161,24 @@ inline v2 operator-(v2 A, v2 B)
 	return(Result);
 }
 
-inline v2 & operator+=(v2 &A, v2 B)
+inline v2 & 
+operator+=(v2 &A, v2 B)
 {
 	A = A + B;
 
 	return(A);
 }
 
-inline v2 & operator-=(v2 &A, v2 B)
+inline v2 & 
+operator-=(v2 &A, v2 B)
 {
 	A = A - B;
 
 	return(A);
 }
 
-inline v2 operator*(float A, v2 B)
+inline v2
+operator*(float A, v2 B)
 {
 	v2 Result;
 
@@ -182,21 +188,24 @@ inline v2 operator*(float A, v2 B)
 	return(Result);
 }
 
-inline v2 operator*(v2 B, float A)
+inline v2 
+operator*(v2 B, float A)
 {
 	v2 Result = A * B;
 
 	return(Result);
 }
 
-inline v2 & operator*=(v2 &B, float A)
+inline v2 & 
+operator*=(v2 &B, float A)
 {
 	B = A * B;
 
 	return(B);
 }
 
-inline bool operator==(v2 &A, v2 &B)
+inline bool 
+operator==(v2 &A, v2 &B)
 {
 	if (A.x == B.x)
 		if (A.y == B.y)
@@ -205,7 +214,8 @@ inline bool operator==(v2 &A, v2 &B)
 	return false;
 }
 
-inline bool operator==(v2 &A, const v2 &B)
+inline bool
+operator==(v2 &A, const v2 &B)
 {
 	if (A.x == B.x)
 		if (A.y == B.y)
@@ -214,7 +224,8 @@ inline bool operator==(v2 &A, const v2 &B)
 	return false;
 }
 
-inline v3 operator+(v3 A, v3 B)
+inline v3 
+operator+(v3 A, v3 B)
 {
 	v3 Result;
 
@@ -225,7 +236,8 @@ inline v3 operator+(v3 A, v3 B)
 	return(Result);
 }
 
-inline v3 operator-(v3 A)
+inline v3 
+operator-(v3 A)
 {
 	v3 Result;
 
@@ -236,7 +248,8 @@ inline v3 operator-(v3 A)
 	return(Result);
 }
 
-inline v3 operator-(v3 A, v3 B)
+inline v3 
+operator-(v3 A, v3 B)
 {
 	v3 Result;
 
@@ -247,21 +260,24 @@ inline v3 operator-(v3 A, v3 B)
 	return(Result);
 }
 
-inline v3 & operator+=(v3 &A, v3 B)
+inline v3 &
+operator+=(v3 &A, v3 B)
 {
 	A = A + B;
 
 	return(A);
 }
 
-inline v3 & operator-=(v3 &A, v3 B)
+inline v3 &
+operator-=(v3 &A, v3 B)
 {
 	A = A - B;
 
 	return(A);
 }
 
-inline v3 operator*(float A, v3 B)
+inline v3
+operator*(float A, v3 B)
 {
 	v3 Result;
 
@@ -272,14 +288,16 @@ inline v3 operator*(float A, v3 B)
 	return(Result);
 }
 
-inline v3 operator*(v3 B, float A)
+inline v3
+operator*(v3 B, float A)
 {
 	v3 Result = A * B;
 
 	return(Result);
 }
 
-inline v3 operator*(v3 A, v3 B)
+inline v3
+operator*(v3 A, v3 B)
 {
 	v3 Result;
 
@@ -290,14 +308,16 @@ inline v3 operator*(v3 A, v3 B)
 	return(Result);
 }
 
-inline v3 & operator*=(v3 &B, float A)
+inline v3 & 
+operator*=(v3 &B, float A)
 {
 	B = A * B;
 
 	return(B);
 }
 
-inline bool operator==(v3 &A, v3 &B)
+inline bool 
+operator==(v3 &A, v3 &B)
 {
 	if (A.x == B.x)
 		if (A.y == B.y)
@@ -307,7 +327,8 @@ inline bool operator==(v3 &A, v3 &B)
 	return false;
 }
 
-inline bool operator==(v3 &A, const v3 &B)
+inline bool
+operator==(v3 &A, const v3 &B)
 {
 	if (A.x == B.x)
 		if (A.y == B.y)
@@ -317,7 +338,8 @@ inline bool operator==(v3 &A, const v3 &B)
 	return false;
 }
 
-inline v4 operator+(v4 A, v4 B)
+inline v4 
+operator+(v4 A, v4 B)
 {
 	v4 Result;
 
@@ -329,7 +351,8 @@ inline v4 operator+(v4 A, v4 B)
 	return(Result);
 }
 
-inline v4 operator-(v4 A, v4 B)
+inline v4
+operator-(v4 A, v4 B)
 {
 	v4 Result;
 
@@ -341,7 +364,8 @@ inline v4 operator-(v4 A, v4 B)
 	return(Result);
 }
 
-inline v4 operator*(float A, v4 B)
+inline v4 
+operator*(float A, v4 B)
 {
 	v4 Result;
 
@@ -353,14 +377,16 @@ inline v4 operator*(float A, v4 B)
 	return(Result);
 }
 
-inline v4 operator*(v4 B, float A)
+inline v4 
+operator*(v4 B, float A)
 {
 	v4 Result = A * B;
 
 	return(Result);
 }
 
-inline v4 operator*(m4& Matrix, v4& Vec)
+inline v4 
+operator*(m4& Matrix, v4& Vec)
 {
 	v4 Result;
 
@@ -388,7 +414,8 @@ inline v4 operator*(m4& Matrix, v4& Vec)
 }
 
 // Matrix Operations
-inline v3 operator*(m4& Matrix, v3& Vec) //TODO: Get Rid of this, can cause bad results if people don't know implementation.
+inline v3 
+operator*(m4& Matrix, v3& Vec) //TODO: Get Rid of this, can cause bad results if people don't know implementation.
 {
 	v3 Result;
 
@@ -410,35 +437,41 @@ inline v3 operator*(m4& Matrix, v3& Vec) //TODO: Get Rid of this, can cause bad 
 	return(Result);
 }
 
-inline v3 operator*(v3 Vec, m4 Matrix)
+inline v3 
+operator*(v3 Vec, m4 Matrix)
 {
 	return(Matrix * Vec);
 }
 
-m4 operator*(m4 &A, m4 &B);
+m4 
+operator*(m4 &A, m4 &B);
 
 // Vector Math
-inline v2 Math_Orthogonal(v2 A)
+inline v2
+Math_Orthogonal(v2 A)
 {
 	v2 Result = { -A.y, A.x };
 	return(Result);
 }
 
-inline float Math_InnerProduct(v3* A, v3* B)
+inline float
+Math_InnerProduct(v3* A, v3* B)
 {
 	float Result = A->x*B->x + A->y*B->y + A->z*B->z;
 
 	return(Result);
 }
 
-inline float Math_InnerProduct(v4* A, v4* B)
+inline float 
+Math_InnerProduct(v4* A, v4* B)
 {
 	float Result = A->x*B->x + A->y*B->y + A->z*B->z + A->w*B->w;
 
 	return(Result);
 }
 
-inline float Math_Length(v3 A)
+inline float
+Math_Length(v3 A)
 {
 	float Result = Math_InnerProduct(&A, &A);
 	Result = Math_SquareRoot(Result);
@@ -446,31 +479,42 @@ inline float Math_Length(v3 A)
 }
 
 
-inline v3 Math_Normalize(v3 A)
+inline v3
+Math_Normalize(v3 A)
 {
 	v3 Result = A * (1.0f / Math_Length(A));
 
 	return(Result);
 }
 
-inline float Math_Magnitude(v3 &A)
+inline float 
+Math_Magnitude(v3 &A)
 {
 	return Math_Square((A.x * A.x + A.y * A.y + A.z * A.z));
 }
 
-v3 Math_CrossProduct(v3 &A, v3 &B);
-v3 Math_ReflectVector(v3 &IncomingVect, v3 &Normal);
+v3 
+Math_CrossProduct(v3 &A, v3 &B);
+v3
+Math_ReflectVector(v3 &IncomingVect, v3 &Normal);
 
 // Matrix Math
-m4 Math_IdentityMatrix();
-m4 Math_LookAtMatrix(v3 &Eye, v3 &Target, v3 &Up);
-m4 Math_PerspectiveMatrix(float FieldOfView, float AspectRatio, 
+m4
+Math_IdentityMatrix();
+m4
+Math_LookAtMatrix(v3 &Eye, v3 &Target, v3 &Up);
+m4
+Math_PerspectiveMatrix(float FieldOfView, float AspectRatio, 
 	float NearPlane, float FarPlane);
-m4 Math_OrthographicMarix(float Left, float Right, float Bottom,
+m4 
+Math_OrthographicMarix(float Left, float Right, float Bottom,
 	float Top, float Near, float Far);
-m4 Math_TranslateMatrix(m4 &Matrix, v3 &Vector);
-m4 Math_ScaleMatrix(m4 &Matrix, v3 &Vector);
-m4 Math_InvertMatrix(m4 *Matrix);
+m4
+Math_TranslateMatrix(m4 &Matrix, v3 &Vector);
+m4 
+Math_ScaleMatrix(m4 &Matrix, v3 &Vector);
+m4
+Math_InvertMatrix(m4 *Matrix);
 //m4 MatrixInverse(m4 &Matrix); // expensive
 //float Determinant(m4 &Mat); // expensive
 
