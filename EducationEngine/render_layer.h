@@ -10,12 +10,12 @@
 #if DATA_ORIENTED
 #if RENDER_OPENGL
 
-struct Model
+struct Model // Byte Total: 20
 {
-	float** Data;
-	float* IndiceData;
-	uint32* ArraySize;
-	uint32 NumAttribs;
+	float** Data;						// Bytes 4
+	uint32* IndiceData;					// Bytes 4
+	uint32* ArraySize;					// Bytes 4
+	uint32 NumAttribs, IndiceCount;		// Bytes 8
 };
 
 struct RenderObj  // Byte Total: 26
