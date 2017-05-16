@@ -59,6 +59,26 @@ Platform_UpdateWindowSize(uint32 Width, uint32 Height)
 		Width, Height, SWP_SHOWWINDOW);
 }
 
+void* 
+Platform_AllocateMemory(unsigned long long *Size)
+{
+	_SYSTEM_INFO SystemInfo;
+	GetSystemInfo(&SystemInfo);
+
+	uint32 NumberOfPages = *Size / SystemInfo.dwPageSize;
+	*Size = NumberOfPages * SystemInfo.dwPageSize;
+	void* MemoryPtr = VirtualAlloc(0, *Size,
+		MEM_COMMIT, PAGE_READWRITE);
+	
+	return MemoryPtr;
+}
+
+void*
+Platform_DeallocateMemory(void* MemoryPtr, unsigned long long *Size)
+{
+	VirtualFree(MemoryPtr, *Size, MEM_RELEASE);
+}
+
 void
 Platform_TemporaryError(char* Text)
 {

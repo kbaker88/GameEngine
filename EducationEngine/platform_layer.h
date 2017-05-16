@@ -46,6 +46,12 @@ struct Texture2D
 };
 
 
+void* 
+Platform_AllocateMemory(unsigned long long *Size);
+void*
+Platform_DeallocateMemory(void* MemoryPtr, 
+	unsigned long long *Size);
+
 // ERROR SYSTEM
 // TODO : REPLACE WITH INGAME TEXT ERROR SYSTEM
 void 

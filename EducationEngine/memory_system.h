@@ -6,15 +6,15 @@
 // NOTE: This system is not fully implemented yet
 // TODO: Remove all news and mallocs and use this system when complete.
 #if MEMORY_ON
-void*
-Memory_Itr();
 
 void 
 Memory_Initialize(void* MemoryBuffer, unsigned int Size);
+
 char* 
-Memory_AllocCharArr(unsigned int Size);
+Memory_Allocate(char* Ptr, unsigned int Size);
 void
 Memory_Clean();
+
 #endif
 
 #endif

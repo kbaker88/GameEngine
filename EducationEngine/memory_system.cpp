@@ -1,36 +1,35 @@
 #include "memory_system.h"
 
 // TODO: Temporary vars
-void* MemoryStart;
+void* MemoryStore;
 void* MemoryItr;
 void* MemoryEnd;
+unsigned long long MemoryStoreSize;
+
 
 void
 Memory_Initialize(void* MemoryBuffer, unsigned int Size)
 {
-	MemoryStart = MemoryBuffer;
-	MemoryItr = MemoryStart;
-	MemoryEnd = (char*)MemoryStart + Size;
-}
+	MemoryStoreSize = Gigabytes(2);
+	MemoryStore = Platform_AllocateMemory(&MemoryStoreSize);
 
-void*
-Memory_Itr()
-{
-	return MemoryItr;
+	MemoryItr = MemoryStore;
+
+	MemoryEnd = (char*)MemoryStore + Size;
 }
 
 char*
-Memory_AllocCharArr(unsigned int Size)
+Memory_Allocate(char* Ptr, unsigned int Size)
 {
-	char *Start = (char*)MemoryItr;
-	char *End = Start + Size;
+	Ptr = (char*)MemoryItr;
+	MemoryItr = (char*)MemoryItr + Size;
+	char *End = (char*)MemoryItr - 1;
 	*End = '\0';
-	MemoryItr = End + 1;
-	return Start;
+	return Ptr;
 }
 
 void
 Memory_Clean()
 {
-
+	Platform_DeallocateMemory(MemoryStore, &MemoryStoreSize);
 }
