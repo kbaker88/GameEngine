@@ -218,8 +218,14 @@ PNG_Extract(unsigned char* Data,
 
 	if (Properties.Width && Properties.Height)
 	{
+#if MEMORY_ON
+		ImageData = 0;
+		ImageData = Memory_Allocate(ImageData, Properties.WidthInBytes *
+			Properties.Height);
+#else
 		ImageData = new unsigned char[Properties.WidthInBytes *
 			Properties.Height];
+#endif
 	}
 	else
 	{
@@ -241,8 +247,12 @@ PNG_Extract(unsigned char* Data,
 
 		if (ChunkName == IEND)
 		{
+#if MEMORY_ON
+	// TODO: Create a cleaning system.
+#else
 			delete[] Data;
 			Data = 0;
+#endif
 			return ImageData;
 		}
 		else if (ChunkName == IDAT)

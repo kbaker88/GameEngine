@@ -1,34 +1,30 @@
-﻿  winsock_layer.cpp
-  win32_layer.cpp
-  utility.cpp
-  title_state.cpp
+﻿  utility.cpp
   text_system.cpp
   state_system.cpp
+  renderobject_system.cpp
+  render_object.cpp
+  png.cpp
+  memory_system.cpp
+  game_layer.cpp
+  entity_utility.cpp
+  entity_system.cpp
+  Generating Code...
+  Compiling...
+  winsock_layer.cpp
+  win32_layer.cpp
+  title_state.cpp
   sphere.cpp
   rectangle.cpp
   point.cpp
-  png.cpp
-  opengl_layer.cpp
-  menu_state.cpp
   plane2d.cpp
   physics_system.cpp
-  renderobject_system.cpp
-  render_object.cpp
-  math.cpp
-  linear_algebra.cpp
+  opengl_layer.cpp
+  menu_state.cpp
   line.cpp
-  heightmap.cpp
-  Generating Code...
-  Compiling...
-  game_state.cpp
-  game_layer.cpp
-  memory_system.cpp
   input_state.cpp
-  entity_utility.cpp
-  entity_system.cpp
-  debug_system.cpp
+  heightmap.cpp
+  game_state.cpp
   collision_system.cpp
-  clock.cpp
   camera_system.cpp
   box.cpp
   asset_system.cpp

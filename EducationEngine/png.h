@@ -1,7 +1,7 @@
 #ifndef PNG_H
 #define PNG_H
 
-#include "platform_layer.h"
+#include "utility.h"
 #include "math.h"
 
 //TODO: Make more robust. 

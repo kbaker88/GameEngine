@@ -3,25 +3,47 @@
 void 
 State_CreateCameras(ProgramState* State, uint32 NumberOfCameras)
 {
+#if MEMORY_ON
+	State->CameraArray = (Camera*)Memory_GetMemPtr();
+	Memory_AdvanceItr(sizeof(Camera) * NumberOfCameras);
+#else
 	State->CameraArray = new Camera[NumberOfCameras];
+#endif
 }
 
 void
 State_CreateTimers(ProgramState* State, uint32 NumberOfTimers)
 {
+#if MEMORY_ON
+	State->TimerArray = (Timer*)Memory_GetMemPtr();
+	Memory_AdvanceItr(sizeof(Timer) * NumberOfTimers);
+#else
 	State->TimerArray = new Timer[NumberOfTimers];
+#endif
 }
 
 void 
 State_CreateShaderVariables(ProgramState* State, uint32 NumberOfVars)
 {
+#if MEMORY_ON
+	State->GPUShaderVarArray = 0;
+	State->GPUShaderVarArray = Memory_Allocate(State->GPUShaderVarArray, 
+		NumberOfVars);
+#else
 	State->GPUShaderVarArray = new int32[NumberOfVars];
+#endif
 }
 
 void
 State_CreateShaderHandles(ProgramState* State, uint32 NumberOfHandles)
 {
+#if MEMORY_ON
+	State->ShaderHandles = 0;
+	State->ShaderHandles = Memory_Allocate(State->ShaderHandles, 
+		NumberOfHandles)
+#else
 	State->ShaderHandles = new uint32[NumberOfHandles];
+#endif
 }
 
 void 
@@ -33,6 +55,9 @@ State_LinkToProgram(ProgramState* State, uint8* StateOfProgramPtr)
 void
 State_Clean(ProgramState* State)
 {
+#if MEMORY_ON
+	// TODO: Make cleaning system
+#else
 	if (State->CameraArray)
 	{
 		delete[] State->CameraArray;
@@ -76,6 +101,7 @@ State_Clean(ProgramState* State)
 		delete[] State->ShaderHandles;
 		State->ShaderHandles = 0;
 	}
+#endif
 	State->StateOfProgram = 0;
 	State->Status = 0;
 }

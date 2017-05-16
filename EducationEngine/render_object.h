@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "debug_system.h"
+#include "render_layer.h"
 #include "asset_system.h"
 
 #if DATA_ORIENTED 

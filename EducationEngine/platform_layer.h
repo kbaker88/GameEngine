@@ -48,7 +48,7 @@ struct Texture2D
 
 void* 
 Platform_AllocateMemory(unsigned long long *Size);
-void*
+void
 Platform_DeallocateMemory(void* MemoryPtr, 
 	unsigned long long *Size);
 

@@ -3,9 +3,8 @@
 
 #include "platform_layer.h"
 #include "linear_algebra.h"
-
-// NOTE: Temporary until memory system is complete.
-#define MEMORY_ON 0
+#include "memory_system.h"
+#include "debug_system.h"
 
 // TODO: Fix the error of displaying both INTEGER.0 and INTEGER. 
 // TODO: Add NaN's and other error values

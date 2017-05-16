@@ -640,7 +640,13 @@ Utility_AppendString(char* StrA, char* StrB)
 	LengthA += Utility_StringLength(StrA);
 	LengthB += Utility_StringLength(StrB);
 
+#if MEMORY_ON
+	char* Result = 0;
+	Result = Memory_Allocate(Result, LengthA + LengthB);
+
+#else
 	char* Result = new char[LengthA + LengthB];
+#endif
 
 	for (int i = 0; i < LengthA; i++)
 	{

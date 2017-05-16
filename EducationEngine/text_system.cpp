@@ -11,7 +11,11 @@ Text_BuildFont(char* FontName, Texture2D* GlyphArray, Font* FontPtr)
 			(float)GlyphArray[Character].Height);
 		FontPtr->Glyph[Character].InputTexture(&GlyphArray[Character]);
 	
+#if MEMORY_ON
+		// TODO: Make cleanup system
+#else
 		delete[] GlyphArray[Character].Data;
+#endif
 	}
 }
 
@@ -25,7 +29,11 @@ Text_DeleteFont(Font* FontPtr)
 			FontPtr->Glyph[Index].Delete();
 		}
 		// NOTE: This only deletes one font for now
+#if MEMORY_ON
+		// TODO: Make cleanup system
+#else
 		delete FontPtr;
+#endif
 	}
 	else
 	{
@@ -37,7 +45,12 @@ void
 Text_CreateObj(Text_Object* TextObj, float Scale,
 	v3 *Position, uint32 MaxLength, Font* Font)
 {
+#if MEMORY_ON
+	TextObj->Buffer = 0;
+	TextObj->Buffer = Memory_Allocate(TextObj->Buffer, MaxLength);
+#else
 	TextObj->Buffer = new uint16[MaxLength];
+#endif
 	TextObj->Length = MaxLength;
 	TextObj->Font = Font;
 	TextObj->XScale = Scale;

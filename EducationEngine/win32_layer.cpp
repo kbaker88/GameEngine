@@ -65,7 +65,7 @@ Platform_AllocateMemory(unsigned long long *Size)
 	_SYSTEM_INFO SystemInfo;
 	GetSystemInfo(&SystemInfo);
 
-	uint32 NumberOfPages = *Size / SystemInfo.dwPageSize;
+	uint64 NumberOfPages = *Size / SystemInfo.dwPageSize;
 	*Size = NumberOfPages * SystemInfo.dwPageSize;
 	void* MemoryPtr = VirtualAlloc(0, *Size,
 		MEM_COMMIT, PAGE_READWRITE);
@@ -73,7 +73,7 @@ Platform_AllocateMemory(unsigned long long *Size)
 	return MemoryPtr;
 }
 
-void*
+void
 Platform_DeallocateMemory(void* MemoryPtr, unsigned long long *Size)
 {
 	VirtualFree(MemoryPtr, *Size, MEM_RELEASE);
@@ -110,8 +110,12 @@ Platform_ReadFile(char* FileName)
 	struct stat buffer;
 	stat(FileName, &buffer);
 
+#if MEMORY_ON
+	uint8* ReturnValues = 0;
+	ReturnValues = Memory_Allocate(ReturnValues, buffer.st_size);
+#else
 	uint8* ReturnValues = new uint8[buffer.st_size]();
-
+#endif
 	FILE* OpenFile;
 	// NOTE: rb = Read Binary
 	fopen_s(&OpenFile, FileName, "rb");
@@ -213,8 +217,12 @@ Platform_LoadGlyph(void* Bits, uint16 Glyph,
 	unsigned int Pitch = Texture->Width * 4;
 	
 	// NOTE: Dynamic allocation
+#if MEMORY_ON
+	Texture->Data = 0;
+	Texture->Data = Memory_Allocate(Texture->Data, Texture->Height* Pitch);
+#else
 	Texture->Data = new uint8[Texture->Height* Pitch] {};
-
+#endif
 	uint8 *DestRow = (uint8 *)Texture->Data +
 		(Texture->Height - 1) * Pitch;
 	uint32 *SourceRow = (uint32 *)Bits + (BitmapHeight - 1) *

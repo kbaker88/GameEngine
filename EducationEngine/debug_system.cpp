@@ -1,6 +1,6 @@
 #include "debug_system.h"
 
-int64 TimeFrequency, LastCounter;
+long long TimeFrequency, LastCounter;
 float FPS;
 
 void 

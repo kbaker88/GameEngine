@@ -11,8 +11,13 @@ Entity_CreateBlock(EntityBlock* Block, uint32 Size)
 	{
 		if (!Block->Entities)
 		{
+#if MEMORY_ON
+			Block->Entities = (Entity*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(Entity) * Size);
+#else
 			Block->Entities = new Entity[Size];
 			Block->BlockSize = Size;
+#endif
 		}
 		{
 			//TODO: Error, block already exists
@@ -25,6 +30,12 @@ Entity_DeleteBlock(EntityBlock* Block)
 {
 	if (Block->Entities != 0)
 	{
+#if MEMORY_ON
+		for (uint32 i = 0; i < Block->BlockSize; i++)
+		{
+			// TODO: Make some cleanup function.
+		}
+#else
 		for (uint32 i = 0; i < Block->BlockSize; i++)
 		{
 			unsigned short ObjectType = 0;
@@ -57,6 +68,7 @@ Entity_DeleteBlock(EntityBlock* Block)
 		delete[] Block->Entities;
 		Block->Entities = 0;
 		Block->BlockSize = 0;
+#endif
 	}
 	else
 	{
@@ -83,9 +95,14 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 		ObjectType = (TypesOfObjects & 0xF);
 		if (ObjectType)
 		{
+#if MEMORY_ON
+			Block->Entities[IDNumber].RenderObjPtrArray = 
+				(Entity**)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(Entity*) * ObjectType);
+#else
 			Block->Entities[IDNumber].RenderObjPtrArray = 
 				new RenderObject*[ObjectType];
-
+#endif
 			// NOTE: Potential error point if user enters an ObjectType
 			//		 with a count greater than there are actual pointers;
 			// TODO: Fix this error point
@@ -107,9 +124,14 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 		ObjectType = ((TypesOfObjects & 0xF0) >> 4);
 		if (ObjectType)
 		{
+#if MEMORY_ON
+			Block->Entities[IDNumber].PhysicsObj = 
+				(PhysicsObject*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(PhysicsObject) * ObjectType);
+#else
 			Block->Entities[IDNumber].PhysicsObj =
 				new PhysicsObject[ObjectType];
-
+#endif
 			for (uint32 Index = 0; Index < ObjectType; Index++)
 			{
 				Block->Entities[IDNumber].PhysicsObj[Index].Position =
@@ -123,9 +145,14 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 		ObjectType = ((TypesOfObjects & 0xF00) >> 8);
 		if (ObjectType)
 		{
+#if MEMORY_ON
+			Block->Entities[IDNumber].CollisionObj =
+				(CollisionObject*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(CollisionObject) * ObjectType);
+#else
 			Block->Entities[IDNumber].CollisionObj =
 				new CollisionObject[ObjectType];
-
+#endif
 			for (uint32 Index = 0; Index < ObjectType; Index++)
 			{
 				Block->Entities[IDNumber].CollisionObj[Index].Position =
@@ -157,7 +184,13 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 		ObjectType = ((TypesOfObjects & 0xF000) >> 12);
 		if (ObjectType)
 		{
+#if MEMORY_ON
+			Block->Entities[IDNumber].CameraObj =
+				(Camera*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(Camera) * ObjectType);
+#else
 			Block->Entities[IDNumber].CameraObj = new Camera[ObjectType];
+#endif
 
 			for (uint32 Index = 0; Index < ObjectType; Index++)
 			{

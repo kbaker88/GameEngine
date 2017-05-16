@@ -9,7 +9,11 @@ RenderObj_CreateModelObject(Model* ModelObj,
 {
 	ModelObj->NumAttribs = 2;
 #if MEMORY_ON
-	// TODO: Implement memory management
+	ModelObj->Data = 0;
+	ModelObj->Data = Memory_Allocate(ModelObj->Data, ModelObj->NumAttribs);
+	ModelObj->ArraySize = 0;
+	ModelObj->ArraySize = Memory_Allocate(ModelObj->ArraySize, 
+		ModelObj->NumAttribs);
 #else
 	ModelObj->Data = new float*[ModelObj->NumAttribs];
 	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs];
@@ -23,9 +27,10 @@ RenderObj_CreateModelObject(Model* ModelObj,
 void 
 RenderObj_CreateRenderObject(RenderObj* RenderObject, Model* ModelObj)
 {
-	// TODO: Make sure this is cleaned
 #if MEMORY_ON
-	// TODO: Implement memory management
+	RenderObject->BufferID = 0;
+	RenderObject->BufferID = Memory_Allocate(RenderObject->BufferID, 
+		ModelObj->NumAttribs);
 #else
 	RenderObject->BufferID = new uint32[ModelObj->NumAttribs];
 #endif

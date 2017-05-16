@@ -11,8 +11,13 @@ RenderObj_CreateBlock(RenderObjBlock* Block, uint32 Size)
 	{
 		if (!Block->BlockObjects)
 		{
+#if MEMORY_ON
+			Block->BlockObjects = (RenderObject*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(RenderObject) * Size);
+#else
 			Block->BlockObjects = new RenderObject*[Size] {};
 			Block->BlockSize = Size;
+#endif
 		}
 		else
 		{
@@ -26,6 +31,9 @@ RenderObj_DeleteBlock(RenderObjBlock* Block)
 {
 	if (Block->BlockObjects != 0)
 	{
+#if MEMORY_ON
+		// TODO: Make cleaning system
+#else
 		for (uint32 i = 0; i < Block->BlockSize; i++)
 		{
 			if (Block->BlockObjects[i])
@@ -37,6 +45,7 @@ RenderObj_DeleteBlock(RenderObjBlock* Block)
 		delete[] Block->BlockObjects;
 		Block->BlockObjects = 0;
 		Block->BlockSize = 0;
+#endif
 	}
 }
 

@@ -16,6 +16,19 @@ Search Index:
 	* RENDER_LAYER
 
 
+win32.cpp -> game_layer.h -> title_state.h -> game_state.h -> menu_state.h -> entity_utility.h -> input_state.h -> state_system.h -> entity_system.h -> collision_system.h -> physics_system.h -> utility.h -> platform_layer.h
+(collision_system.h: text_system.h) -> renderobject_system.h -> render_object.h -> render_layer.h -> utility_h
+(render_object.h: asset_system.h) -> bmp.h, png.h -> platform_layer.h, math.h
+(game_layer.h: network_layer.h) -> utility.h, winsock2, ws2tcpip -> platform_layer.h
+(entity_system.h: clock.h) -> platform_layer.h
+(entity_system.h: camera_system.h) -> linear_algebra.h -> math.h
+(camera_system.h: render_layer.h) -> utility.h -> platform_layer.h
+(utility.h: linear_algebra.h) -> math.h
+(utility.h: memory_system.h)
+(utility.h: debug_system.h) -> platform_layer.h
+(render_layer.h: opengl.h) -> windows.h, opengl.h
+(entity_system.h: shaders.h) ->
+
 ///////////////////////////////////////////////////////
 ///////////////////   ENTITY_SYSTEM   /////////////////
 ///////////////////////////////////////////////////////

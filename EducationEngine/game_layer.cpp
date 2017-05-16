@@ -46,7 +46,13 @@ Game_Loop()
 
 		if (!GlobalFont)
 		{
+#if MEMORY_ON
+			GlobalFont = 0;
+			GlobalFont = (Font*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(Font));
+#else
 			GlobalFont = new Font;
+#endif
 		}
 		Texture2D FontGlyphs[255];
 		Asset_LoadFont("arial\0", "c:/Windows/Fonts/arial.ttf\0",
@@ -61,8 +67,17 @@ Game_Loop()
 	{
 		if (States[0].Status == 0)
 		{
+#if MEMORY_ON
+			States[0].EntityBlocks = 0;
+			States[0].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
+			States[0].RenderObjBlocks = 0;
+			States[0].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
+#else
 			States[0].EntityBlocks = new EntityBlock[2]{};
 			States[0].RenderObjBlocks = new RenderObjBlock[2]{};
+#endif
 			State_CreateCameras(&States[0], 1);
 			State_CreateShaderVariables(&States[0], 5);
 			State_CreateShaderHandles(&States[0], 2);
@@ -77,9 +92,14 @@ Game_Loop()
 			States[0].FontArr = GlobalFont;
 			States[0].FontCount = 1;
 
+#if MEMORY_ON
+			States[0].TextObjArray = 0;
+			States[0].RenderObjBlocks = (Text_Object*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(Text_Object) * TEXT_OBJECTS_PER_PROGSTATE);
+#else
 			States[0].TextObjArray = 
 				new Text_Object[TEXT_OBJECTS_PER_PROGSTATE]{};
-
+#endif
 			States[0].Status = 1;
 			Title_Initialize(&States[0]);
 		}
@@ -104,8 +124,17 @@ Game_Loop()
 	{
 		if (States[1].Status == 0)
 		{
+#if MEMORY_ON
+			States[1].EntityBlocks = 0;
+			States[1].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
+			States[1].RenderObjBlocks = 0;
+			States[1].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
+#else
 			States[1].EntityBlocks = new EntityBlock[2]{};
 			States[1].RenderObjBlocks = new RenderObjBlock[2]{};
+#endif
 			State_CreateCameras(&States[1], 1);
 			State_CreateTimers(&States[1], 1);
 			State_CreateShaderVariables(&States[1], 7);
@@ -144,8 +173,17 @@ Game_Loop()
 	{
 		if (States[2].Status == 0)
 		{
+#if MEMORY_ON
+			States[2].EntityBlocks = 0;
+			States[2].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
+			States[2].RenderObjBlocks = 0;
+			States[2].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
+#else
 			States[2].EntityBlocks = new EntityBlock[2]{};
 			States[2].RenderObjBlocks = new RenderObjBlock[2]{};
+#endif
 			State_CreateCameras(&States[2], 1);
 			State_CreateShaderVariables(&States[2], 5);
 			State_CreateShaderHandles(&States[2], 2);
