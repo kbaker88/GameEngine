@@ -1,5 +1,8 @@
 #include "render_object.h"
 
+#if DATA_ORIENTED
+	// TODO: Delete this file.
+#else
 void Line::Init(float* Point1, float* Point2, float lineSize)
 {
 	ObjectDescription.NumberOfVertexHandles = 2;
@@ -37,3 +40,4 @@ void Line::Draw()
 {
 	Render_DrawLine(ObjectDescription.VertexArrayObjectID, LineSize, 2);
 }
+#endif

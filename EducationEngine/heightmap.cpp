@@ -1,5 +1,8 @@
 #include "render_object.h"
 
+#if DATA_ORIENTED
+	// TODO: Delete this file.
+#else
 HeightMap::~HeightMap()
 {
 	if (VerticeFloatArrayPtr)
@@ -227,3 +230,4 @@ void HeightMap::Init(Texture2D* ImageData)
 	delete[] NormalData;
 	delete[] TextureCoords;
 }
+#endif

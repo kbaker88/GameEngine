@@ -1,5 +1,9 @@
 #include "render_object.h"
 
+#if DATA_ORIENTED
+	// TODO: Delete this file.
+#else
+
 void Point::Init(float* PointPosition, float Size)
 {
 	ObjectDescription.NumberOfVertexHandles = 2;
@@ -35,3 +39,4 @@ void Point::Draw()
 {
 	Render_DrawPoint(ObjectDescription.VertexArrayObjectID, PointSize, 1);
 }
+#endif

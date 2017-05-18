@@ -1,6 +1,46 @@
 #ifndef SHADERS_H
 #define SHADERS_H
 
+#if DATA_ORIENTED
+
+static const char* VertexShader_Source =
+{
+	"#version 450 core												\n"
+	"																\n"
+	"layout (location = 0) in vec3 position;						\n"
+	"layout (location = 1) in vec3 color;							\n"
+	"																\n"
+	"out VS_OUT														\n"
+	"{																\n"
+	"	vec3 color;													\n"
+	"} vs_out;														\n"
+	"																\n"
+	"void main(void)												\n"
+	"{																\n"
+	"																\n"
+	"	vs_out.color = color;										\n"
+	"gl_Position = vec4(position, 1.0);								\n"
+	"}																\n"
+};
+
+static const char* FragmentShader_Source =
+{
+	"#version 450 core												\n"
+	"																\n"
+	"in VS_OUT														\n"
+	"{																\n"
+	"	vec3 color;													\n"
+	"} fs_in;														\n"
+	"																\n"
+	"out vec4 color;												\n"
+	"																\n"
+	"void main(void)												\n"
+	"{																\n"
+	"	color = vec4(fs_in.color, 1.0);								\n"
+	"}																\n"
+};
+
+#else
 // TODO: Temporary file until shaders are pre-compiled.
 //TODO: Include shader header with shader version defined
 static const char* MenuVertexShaderSource = "#version 430 core\n"
@@ -188,5 +228,6 @@ static const char* TestFragShader = "#version 430 core\n"
 "color = vec4(Color, 1.0f);\n"
 
 "}\n\0";
+#endif
 
 #endif

@@ -15,7 +15,11 @@ struct Font
 	// TODO: Maybe change this to ID's, add spacing
 	// TODO: Dynamically allocate Glyph array size
 	//		 to allow for more languages
+#if DATA_ORIENTED
+
+#else
 	MyRectangle Glyph[255]; 
+#endif
 	unsigned int GlyphsCount;
 };
 

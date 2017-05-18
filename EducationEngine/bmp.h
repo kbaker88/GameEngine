@@ -1,7 +1,7 @@
 #ifndef BMP_H
 #define BMP_H
 
-#include "platform_layer.h"
+#include "utility.h"
 /*#pragma pack(push, 1)
 
 #pragma pack(pop)*/
@@ -47,15 +47,17 @@ GetBmpData(unsigned char* Data, BmpDimensions& Dimensions)
 			PixelItr = PixelItr + 4;
 		}
 
+#if MEMORY_ON
+	// TODO: Make a deallocation function.
+#else
 		delete[] Data;
+#endif
 
 	}
 	else
 	{
 		// OS/2 type
 	}
-
-	int x = 0;
 
 	return ImageData;
 }

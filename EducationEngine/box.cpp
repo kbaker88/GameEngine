@@ -1,6 +1,9 @@
 
 #include "render_object.h"
 
+#if DATA_ORIENTED
+	// TODO: Delete this file.
+#else
 void
 Box::Init(float NewWidth, float NewHeight, float NewDepth)
 {
@@ -339,3 +342,4 @@ Box::Init(float NewWidth, float NewHeight, float NewDepth)
 
 	Render_ObjectPipelineInit(&ObjectDescription);*/
 }
+#endif

@@ -86,7 +86,11 @@ Asset_DeleteAll()
 {
 	for (uint32 Index = 0; Index < TextureCount; Index++)
 	{
+#if MEMORY_ON
+
+#else
 		delete[] Textures[Index].Data;
+#endif
 		Textures[Index].Data = 0;
 		Textures[Index].Height = 0;
 		Textures[Index].Width = 0;

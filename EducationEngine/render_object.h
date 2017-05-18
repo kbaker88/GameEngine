@@ -7,6 +7,7 @@
 #if DATA_ORIENTED 
 
 // NOTE: Temporary function.
+// TODO: Deallocate all the Model and RenderObj data.
 void
 RenderObj_CreateModelObject(Model* ModelObj,
 	float* VerticeData, uint32 VerticeDataSize, float* ColorData,

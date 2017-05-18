@@ -1,5 +1,8 @@
 #include "entity_utility.h"
 
+#if DATA_ORIENTED
+
+#else
 uint32 
 Utility_CreateButton(ProgramState* State, float Width, 
 	float Height, v3* Position, Texture2D* Texture)
@@ -100,3 +103,4 @@ Utility_CreateEntity(ProgramState* State, v3* Position,
 
 	return (State->EntityCount - 1);
 }
+#endif

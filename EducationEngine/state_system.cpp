@@ -39,8 +39,8 @@ State_CreateShaderHandles(ProgramState* State, uint32 NumberOfHandles)
 {
 #if MEMORY_ON
 	State->ShaderHandles = 0;
-	State->ShaderHandles = Memory_Allocate(State->ShaderHandles, 
-		NumberOfHandles)
+	State->ShaderHandles = Memory_Allocate(State->ShaderHandles,
+		NumberOfHandles);
 #else
 	State->ShaderHandles = new uint32[NumberOfHandles];
 #endif
@@ -81,11 +81,15 @@ State_Clean(ProgramState* State)
 		delete[] State->TextObjArray;
 		State->TextObjArray = 0;
 	}
+#if DATA_ORIENTED
+
+#else
 	if (State->RenderObjBlocks)
 	{
 		delete[] State->RenderObjBlocks;
 		State->RenderObjBlocks = 0;
 	}
+#endif
 	if (State->EntityBlocks)
 	{
 		delete[] State->EntityBlocks;

@@ -824,11 +824,15 @@ v3 Collision_GetNormal(CollisionObject* CollideObj, PhysicsObject* PhysObj)
 		Normal = RightNormal;
 	}
 
+#if DATA_ORIENTED
+
+#else
 	Line Test;
 	Test.Init(CollideObj->Position->Arr, Normal.Arr, 10.0f);
 	Test.Draw();
 	Test.Delete();
 	Test.~Test();
+#endif
 
 	return Normal;
 }

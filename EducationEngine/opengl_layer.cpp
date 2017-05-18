@@ -602,12 +602,12 @@ Render_BindVertexArray(uint32 VertexArrayObject)
 }
 
 void 
-Render_Draw(RenderObj* RenderObject)
+Render_Draw(RenderObj* RenderObject, uint32 VerticeCount)
 {
 	glBindVertexArray(RenderObject->VertexArrayID);
 	//glBindTexture(GL_TEXTURE_2D, Texture);
 
-	glDrawArrays(GL_TRIANGLES, 0, RenderObject->NumVertices);
+	glDrawArrays(GL_TRIANGLES, 0, VerticeCount);
 
 	//glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
@@ -661,6 +661,7 @@ Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
 	// NOTE: Do not unbind the EBO, keep it bound to this VAO
 	glBindVertexArray(0); 
 }
+
 #endif
 
 void* 

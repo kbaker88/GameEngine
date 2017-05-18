@@ -14,7 +14,7 @@ struct Model // Byte Total: 20
 {
 	float** Data;						// Bytes 4
 	uint32* IndiceData;					// Bytes 4
-	uint32* ArraySize;					// Bytes 4
+	uint32* ArraySize; // (In Bytes)	// Bytes 4
 	uint32 NumAttribs, IndiceCount;		// Bytes 8
 };
 
@@ -49,6 +49,9 @@ Render_FillVetexArrayObject(RenderObj* RenderObject,
 
 void 
 Render_BindVertexArray(uint32 VertexArrayObject);
+
+void
+Render_Draw(RenderObj *RenderObject, uint32 VerticeCount);
 
 #endif
 #else

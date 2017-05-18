@@ -17,7 +17,11 @@ struct Entity
 	
 	~Entity() {}
 
+#if DATA_ORIENTED
+	RenderObj** RenderObjPtrArray;
+#else
 	RenderObject** RenderObjPtrArray;
+#endif
 	PhysicsObject* PhysicsObj;
 	CollisionObject* CollisionObj;
 	Camera* CameraObj;
@@ -49,6 +53,9 @@ Entity_DeleteBlock(EntityBlock* Block);
 //		 4-7  : Physics Objects
 //		 8-11 : Collision Objects
 //		 12-15: Camera Objects
+#if DATA_ORIENTED
+
+#else
 int32 
 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 	RenderObject* ObjectPtrs, v3 *Position, uint64 TypesOfObjects);
@@ -60,7 +67,7 @@ Entity_Draw(EntityBlock* Block, uint32 IDNumber,
 void
 Entity_DrawPolyGonMode(EntityBlock* Block, uint32 IDNumber,
 	uint32 ShaderVariableID);
-
+#endif
 /////////////// RETRIEVE ////////////////////////
 Entity* 
 Entity_Ptr(EntityBlock* Block, uint32 IDNumber);
@@ -72,9 +79,14 @@ Entity_GetCollisionObjPtr(EntityBlock* Block,
 PhysicsObject*
 Entity_GetPhysObjPtr(EntityBlock* Block,
 	uint32 IDNumber, uint32 ObjectID);
+
+#if DATA_ORIENTED
+
+#else
 RenderObject* 
 Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber,
 	uint32 ObjectID);
+#endif
 float
 Entity_Width(EntityBlock* Block, uint32 IDNumber);
 float 

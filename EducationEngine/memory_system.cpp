@@ -6,13 +6,13 @@
 void* MemoryStore;
 void* MemoryItr;
 void* MemoryEnd;
-unsigned long long MemoryStoreSize;
+uint64 MemoryStoreSize;
 
 
 void
-Memory_Initialize(void* MemoryBuffer, unsigned int Size)
+Memory_Initialize(uint64 Size)
 {
-	MemoryStoreSize = Gigabytes(2);
+	MemoryStoreSize = Gigabytes(1);
 	MemoryStore = Platform_AllocateMemory(&MemoryStoreSize);
 
 	MemoryItr = MemoryStore;

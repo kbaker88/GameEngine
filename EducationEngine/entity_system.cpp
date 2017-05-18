@@ -76,6 +76,9 @@ Entity_DeleteBlock(EntityBlock* Block)
 	}
 }
 
+#if DATA_ORIENTED
+
+#else
 int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 	RenderObject* ObjectPtrs, v3 *Position, uint64 TypesOfObjects)
 {
@@ -219,6 +222,7 @@ int32 Entity_Create(EntityBlock* Block, uint32 IDNumber,
 		}
 	}
 }
+#endif
 
 Camera*
 Entity_GetCamera(EntityBlock* Block, uint32 IDNumber)
@@ -226,6 +230,9 @@ Entity_GetCamera(EntityBlock* Block, uint32 IDNumber)
 	return Block->Entities[IDNumber].CameraObj;
 }
 
+#if DATA_ORIENTED
+
+#else
 void 
 Entity_Draw(EntityBlock* Block, uint32 IDNumber, 
 	uint32 ShaderVariableID)
@@ -249,6 +256,7 @@ Entity_DrawPolyGonMode(EntityBlock* Block, uint32 IDNumber,
 		Block->Entities[IDNumber].RenderObjPtrArray[0]->Draw(1);
 	}
 }
+#endif
 
 Entity* 
 Entity_Ptr(EntityBlock* Block, uint32 IDNumber)
@@ -286,6 +294,9 @@ Entity_GetPhysObjPtr(EntityBlock* Block, uint32 IDNumber,
 	}
 }
 
+#if DATA_ORIENTED
+
+#else
 RenderObject* 
 Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber,
 	uint32 ObjectID)
@@ -300,6 +311,7 @@ Entity_GetObjectPtr(EntityBlock* Block, uint32 IDNumber,
 		return 0;
 	}
 }
+#endif
 
 float
 Entity_Width(EntityBlock* Block, uint32 IDNumber)

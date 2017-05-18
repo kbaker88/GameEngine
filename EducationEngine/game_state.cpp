@@ -11,6 +11,10 @@ Game_Initialize(ProgramState* State)
 		-WindowHalfHeight, 1.0f));
 	State->CameraArray[0].SetProjectionMatrix(0);
 
+#if DATA_ORIENTED
+
+#else
+
 	State->ShaderHandles[0] = 
 		Render_CompileShaders(VertShaderForTextureAndLight,
 		FragShaderForTextureAndLight);
@@ -65,7 +69,7 @@ Game_Initialize(ProgramState* State)
 	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0], BoxEntity2,
 		0), &v3(1.0f, 0.0f, 0.0f));
 	
-
+#endif
 	State->TimerArray[0].Start();
 }
 
@@ -80,6 +84,10 @@ Game_Draw(ProgramState* State)
 
 	Input_UpdateMouseState(State);
 	Input_UpdateKeyStates(State);
+
+#if DATA_ORIENTED
+
+#else
 	Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
 		0, 0));
 	Entity_GetCamera(&State->EntityBlocks[0], 0)->
@@ -88,6 +96,7 @@ Game_Draw(ProgramState* State)
 	v3 MouseRay = Collision_UpdateMousePickRay(
 		&Entity_GetCamera(&State->EntityBlocks[0], 0)->ProjectionMatrix,
 		&Entity_GetCamera(&State->EntityBlocks[0], 0)->ViewMatrix);
+#endif
 
 	// NOTE: Bind New Shaders
 	Render_BindShaders(State->ShaderHandles[0]);
@@ -125,6 +134,9 @@ Game_Draw(ProgramState* State)
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], IsTextured);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		(float*)&ModelMatrix, 1, 0);
+#if DATA_ORIENTED
+
+#else
 	Entity_DrawPolyGonMode(&State->EntityBlocks[0], 1,
 		State->GPUShaderVarArray[0]);
 
@@ -323,15 +335,20 @@ Game_Draw(ProgramState* State)
 		string(BufferZ4),
 		v3(Left + 20.0f, Top - 60.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0], State->FontArr);
+#endif
 }
 
 void 
 Game_Clean(ProgramState* State)
 {
+#if DATA_ORIENTED
+
+#else
 	Entity_DeleteBlock(&State->EntityBlocks[0]);
 	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
+#endif
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);

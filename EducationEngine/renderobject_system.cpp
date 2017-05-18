@@ -1,5 +1,8 @@
 #include "renderobject_system.h"
 
+#if DATA_ORIENTED
+
+#else
 void 
 RenderObj_CreateBlock(RenderObjBlock* Block, uint32 Size)
 {
@@ -97,3 +100,4 @@ RenderObj_GetObjectPtr(RenderObjBlock* Block, uint32 ObjectID)
 {
 	return Block->BlockObjects[ObjectID];
 }
+#endif

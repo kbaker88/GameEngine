@@ -1,5 +1,8 @@
 #include "render_object.h"
 
+#if DATA_ORIENTED
+	// TODO: Delete this file.
+#else
 Plane2D::~Plane2D()
 {
 	if (VerticeFloatArrayPtr)
@@ -267,3 +270,4 @@ void Plane2D::Draw()
 {
 	Render_DrawObject(ObjectDescription.VertexArrayObjectID, TextureID, NumberOfVertices);
 }
+#endif

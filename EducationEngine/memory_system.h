@@ -11,7 +11,7 @@
 #if MEMORY_ON
 
 void 
-Memory_Initialize(void* MemoryBuffer, unsigned int Size);
+Memory_Initialize(uint64 Size);
 
 char* 
 Memory_Allocate(char* Ptr, unsigned int Size);

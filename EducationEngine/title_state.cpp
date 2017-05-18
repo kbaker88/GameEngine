@@ -1,5 +1,10 @@
 #include "title_state.h"
 
+#if DATA_ORIENTED
+// TODO: Remove this, temporary var
+RenderObj TestRenderObj;
+#endif
+
 void 
 Title_Initialize(ProgramState* State)
 {
@@ -12,8 +17,19 @@ Title_Initialize(ProgramState* State)
 		-HalfScreenHeight, 1.0f));
 	State->CameraArray[0].SetProjectionMatrix(0);
 	
+#if DATA_ORIENTED
+	State->ShaderHandles[0] =
+		Render_CompileShaders(VertexShader_Source,
+			FragmentShader_Source);
+
+	Model Rectangle;
+	RenderObj_CreateModelRectangle(&Rectangle, 0.5f, 0.5f);
+	RenderObj_CreateRenderObject(&TestRenderObj, &Rectangle);
+	TestRenderObj.NumVertices = 6;
+#else
+
 	State->ShaderHandles[0] = 
-		Render_CompileShaders(MenuVertexShaderSource, 
+		Render_CompileShaders(MenuVertexShaderSource,
 		MenuFragmentShaderSource);
 	State->ShaderHandles[1] = 
 		Render_CompileShaders(TextVertexShaderSource,
@@ -42,6 +58,7 @@ Title_Initialize(ProgramState* State)
 		16, &State->FontArr[0]);
 
 	State->TimerArray[0].Start();
+#endif
 }
 
 // TODO: Remove this, temporary testing
@@ -51,6 +68,15 @@ void
 Title_Draw(ProgramState* State)
 {
 	Render_ClearScreen(&v4(1.0f, 1.0f, 1.0f, 1.0f));
+
+#if DATA_ORIENTED
+	Render_BindShaders(State->ShaderHandles[0]);
+
+	m4 ModelMatrix = Math_IdentityMatrix();
+
+	Render_Draw(&TestRenderObj, TestRenderObj.NumVertices);
+
+#else
 
 	Render_BindShaders(State->ShaderHandles[0]);
 	State->GPUShaderVarArray[0] = 
@@ -149,6 +175,7 @@ Title_Draw(ProgramState* State)
 			Platform_UpdateMouseState(0);
 		}
 	}
+#endif
 }
 
 void 
@@ -222,11 +249,15 @@ Title_CollisionResolve(ProgramState* State,
 void
 Title_Clean(ProgramState* State)
 {
+#if DATA_ORIENTED
+
+#else
 	Platform_UpdateMouseState(0);
 	Entity_DeleteBlock(&State->EntityBlocks[0]);
 	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
+#endif
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);

@@ -11,6 +11,9 @@ Menu_Initialize(ProgramState* State)
 		-HalfScreenHeight, 1.0f));
 	State->CameraArray[0].SetProjectionMatrix(0);
 
+#if DATA_ORIENTED
+
+#else
 
 	State->ShaderHandles[0] = 
 		Render_CompileShaders(MenuVertexShaderSource,
@@ -46,6 +49,7 @@ Menu_Initialize(ProgramState* State)
 	Entity_Create(&State->EntityBlocks[0], 3,
 		RenderObj_GetObjectPtr(&State->RenderObjBlocks[0], 2),
 		&ButtonPosition, 0x111);
+#endif
 }
 
 void 
@@ -74,6 +78,9 @@ Menu_Draw(ProgramState* State)
 	Platform_GetCursorPosition(&State->CursorPosition.x,
 		&State->CursorPosition.y);
 
+#if DATA_ORIENTED
+
+#else
 	int32 CollisionResult = 0;
 	for (uint32 Index = 0; Index < State->EntityCount; Index++)
 	{
@@ -95,6 +102,7 @@ Menu_Draw(ProgramState* State)
 	{
 		Platform_UpdateMouseState(0);
 	}
+#endif
 }
 
 void 
@@ -160,11 +168,15 @@ Menu_CollisionResolve(ProgramState* State, int32 CollisionResult)
 void
 Menu_Clean(ProgramState* State)
 {
+#if DATA_ORIENTED
+
+#else
 	Platform_UpdateMouseState(0);
 	Entity_DeleteBlock(&State->EntityBlocks[0]);
 	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
+#endif
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);

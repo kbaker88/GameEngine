@@ -39,6 +39,9 @@ Game_Loop()
 	{
 	case 0: // NOTE: Loading
 	{
+#if MEMORY_ON
+		Memory_Initialize(1);
+#endif
 		DEBUG_Initialize();
 
 		// TODO: Too general, need to make multiple loads
@@ -71,12 +74,20 @@ Game_Loop()
 			States[0].EntityBlocks = 0;
 			States[0].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
+#if DATA_ORIENTED
+
+#else
 			States[0].RenderObjBlocks = 0;
 			States[0].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
+#endif
 #else
 			States[0].EntityBlocks = new EntityBlock[2]{};
+#if DATA_ORIENTED
+
+#else
 			States[0].RenderObjBlocks = new RenderObjBlock[2]{};
+#endif
 #endif
 			State_CreateCameras(&States[0], 1);
 			State_CreateShaderVariables(&States[0], 5);
@@ -85,7 +96,11 @@ Game_Loop()
 			State_LinkToProgram(&States[0], &StateOfProgram);
 
 			Entity_CreateBlock(&States[0].EntityBlocks[0], 256);
+#if DATA_ORIENTED
+
+#else
 			RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
+#endif
 			States[0].NumEntityBlocks = 1;
 			States[0].NumObjectBlocks = 1;
 			
@@ -94,7 +109,7 @@ Game_Loop()
 
 #if MEMORY_ON
 			States[0].TextObjArray = 0;
-			States[0].RenderObjBlocks = (Text_Object*)Memory_GetMemPtr();
+			States[0].TextObjArray = (Text_Object*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(Text_Object) * TEXT_OBJECTS_PER_PROGSTATE);
 #else
 			States[0].TextObjArray = 
@@ -128,12 +143,20 @@ Game_Loop()
 			States[1].EntityBlocks = 0;
 			States[1].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
+#if DATA_ORIENTED
+			
+#else
 			States[1].RenderObjBlocks = 0;
 			States[1].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
+#endif
 #else
 			States[1].EntityBlocks = new EntityBlock[2]{};
+#if DATA_ORIENTED
+
+#else
 			States[1].RenderObjBlocks = new RenderObjBlock[2]{};
+#endif
 #endif
 			State_CreateCameras(&States[1], 1);
 			State_CreateTimers(&States[1], 1);
@@ -142,7 +165,11 @@ Game_Loop()
 			State_LinkToProgram(&States[1], &StateOfProgram);
 
 			Entity_CreateBlock(&States[1].EntityBlocks[0], 256);
+#if DATA_ORIENTED
+
+#else
 			RenderObj_CreateBlock(&States[1].RenderObjBlocks[0], 256);
+#endif
 			States[1].NumEntityBlocks = 1;
 			States[1].NumObjectBlocks = 1;
 			
@@ -177,12 +204,20 @@ Game_Loop()
 			States[2].EntityBlocks = 0;
 			States[2].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
+#if DATA_ORIENTED
+
+#else
 			States[2].RenderObjBlocks = 0;
 			States[2].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
+#endif
 #else
 			States[2].EntityBlocks = new EntityBlock[2]{};
+#if DATA_ORIENTED
+
+#else
 			States[2].RenderObjBlocks = new RenderObjBlock[2]{};
+#endif
 #endif
 			State_CreateCameras(&States[2], 1);
 			State_CreateShaderVariables(&States[2], 5);
@@ -190,7 +225,11 @@ Game_Loop()
 			State_LinkToProgram(&States[2], &StateOfProgram);
 
 			Entity_CreateBlock(&States[2].EntityBlocks[0], 256);
+#if DATA_ORIENTED
+
+#else
 			RenderObj_CreateBlock(&States[2].RenderObjBlocks[0], 256);
+#endif
 			States[2].NumEntityBlocks = 1;
 			States[2].NumObjectBlocks = 1;
 
@@ -220,6 +259,9 @@ Game_Loop()
 	case 4:
 	{
 		Platform_EndProgram();
+#if MEMORY_ON
+		Memory_Clean();
+#endif
 	} break;
 
 	default:

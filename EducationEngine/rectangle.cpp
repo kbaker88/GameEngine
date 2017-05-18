@@ -1,5 +1,8 @@
 #include "render_object.h"
 
+#if DATA_ORIENTED
+	// TODO: Delete this file.
+#else
 void MyRectangle::Init()
 {
 	ObjectDescription.NumberOfVertexHandles = 5;
@@ -278,3 +281,4 @@ void MyRectangle::Init(float width, float height, float depth)
 
 	Render_ObjectPipelineInit(&ObjectDescription);
 }
+#endif
