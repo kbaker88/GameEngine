@@ -10,6 +10,10 @@ static const char* VertexShader_Source =
 	"layout (location = 0) in vec3 position;						\n"
 	"layout (location = 1) in vec3 color;							\n"
 	"																\n"
+	"uniform mat4 model;											\n"
+	"uniform mat4 view;												\n"
+	"uniform mat4 projection;										\n"
+	"																\n"
 	"out VS_OUT														\n"
 	"{																\n"
 	"	vec3 color;													\n"
@@ -19,7 +23,7 @@ static const char* VertexShader_Source =
 	"{																\n"
 	"																\n"
 	"	vs_out.color = color;										\n"
-	"gl_Position = vec4(position, 1.0);								\n"
+	"gl_Position = projection * view * model * vec4(position, 1.0);	\n"
 	"}																\n"
 };
 

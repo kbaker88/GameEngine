@@ -3,20 +3,23 @@
 
 #include "utility.h"
 #include "opengl.h"
+#include <vulkan\vulkan.h>
 
 #define RENDER_OPENGL 1
+#define RENDER_VULKAN 0
+#define RENDER_DIRECTX12 0
 #define DATA_ORIENTED 0 //TODO: Temporary while transfering
 
 #if DATA_ORIENTED
 #if RENDER_OPENGL
 
-struct Model // Byte Total: 20
-{
-	float** Data;						// Bytes 4
-	uint32* IndiceData;					// Bytes 4
-	uint32* ArraySize; // (In Bytes)	// Bytes 4
-	uint32 NumAttribs, IndiceCount;		// Bytes 8
-};
+//struct Model // Byte Total: 20
+//{
+//	float** Data;						// Bytes 4
+//	uint32* IndiceData;					// Bytes 4
+//	uint32* ArraySize; // (In Bytes)	// Bytes 4
+//	uint32 NumAttribs, IndiceCount;		// Bytes 8
+//};
 
 struct RenderObj  // Byte Total: 26
 {

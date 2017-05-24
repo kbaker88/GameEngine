@@ -14,7 +14,8 @@ struct ProgramState
 		StateOfProgram(0), CursorPosition(0.0f, 0.0f),
 		ObjectCount(0), EntityCount(0), FontArr(0),
 		FontCount(0), ConsoleItr(0), ConsoleState(0),
-		LastKeyPress(0), TextObjArray(0), EntityBlocks(0) {}
+		LastKeyPress(0), TextObjArray(0), EntityBlocks(0),
+		RenderObjBlocks(0), ModelObjBlocks(0){}
 #else
 		ProgramState() : CameraArray(0), TimerArray(0),
 		GPUShaderVarArray(0), ShaderHandles(0),
@@ -30,11 +31,12 @@ struct ProgramState
 	Camera* CameraArray;
 	Timer* TimerArray;
 	EntityBlock* EntityBlocks;
-#if DATA_ORIENTED
-
-#else
 	RenderObjBlock* RenderObjBlocks;
-#endif 
+
+#if DATA_ORIENTED
+	ModelObjBlock* ModelObjBlocks;
+#endif
+
 	// TODO: Temporary System
 	Text_Object* TextObjArray;
 

@@ -168,6 +168,12 @@
     <ClCompile Include="camera_system.cpp">
       <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
+    <ClCompile Include="vulkan_layer.cpp">
+      <Filter>Source Files\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="model_object_system.cpp">
+      <Filter>Source Files\engine\systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="platform_layer.h">
@@ -253,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="render_object.h">
       <Filter>Header Files\engine\render_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="model_object_system.h">
+      <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

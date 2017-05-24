@@ -1,42 +1,53 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "render_layer.h"
-#include "asset_system.h"
+#include "model_object_system.h"
 
 #if DATA_ORIENTED 
 
+struct RenderObjBlock
+{
+	RenderObj** BlockObjects;
+	uint32 BlockSize;
+};
+
+void
+RenderObj_CreateBlock(RenderObjBlock* Block, 
+	uint32 Size);
+
+void
+RenderObj_DeleteBlock(RenderObjBlock* Block);
 // NOTE: Temporary function.
 // TODO: Deallocate all the Model and RenderObj data.
-void
-RenderObj_CreateModelObject(Model* ModelObj,
-	float* VerticeData, uint32 VerticeDataSize, float* ColorData,
-	uint32 ColorDataSize);
+//void
+//RenderObj_CreateModelObject(Model* ModelObj,
+//	float* VerticeData, uint32 VerticeDataSize, float* ColorData,
+//	uint32 ColorDataSize);
 void
 RenderObj_CreateRenderObject(RenderObj* RenderObject,
 	Model* ModelObj);
 
 // TODO: Place the model object in a different delete.
 void
-RenderObj_Delete(RenderObj* Object, Model* ModelObj);
-void
-RenderObj_CreateModelPoint(Model* ModelObj, v3 Position,
-	v3 Color);
-void
-RenderObj_CreateModelLine(Model* ModelObj, v3 PositionA, v3 PositionB,
-	v3 ColorP1, v3 ColorP2);
-void
-RenderObj_CreateModelRectangle(Model* ModelObj, float Width, 
-	float Height);
-void
-RenderObj_CreateModelBox(Model* ModelObj, float Width, float Height,
-	float Depth);
-void
-RenderObj_CreateModelPlane(Model* ModelObj, uint32 Width, 
-	uint32 Depth);
+RenderObj_Delete(RenderObj* Object);
+//void
+//RenderObj_CreateModelPoint(Model* ModelObj, v3 Position,
+//	v3 Color);
+//void
+//RenderObj_CreateModelLine(Model* ModelObj, v3 PositionA, v3 PositionB,
+//	v3 ColorP1, v3 ColorP2);
+//void
+//RenderObj_CreateModelRectangle(Model* ModelObj, float Width, 
+//	float Height);
+//void
+//RenderObj_CreateModelBox(Model* ModelObj, float Width, float Height,
+//	float Depth);
+//void
+//RenderObj_CreateModelPlane(Model* ModelObj, uint32 Width, 
+//	uint32 Depth);
 // TODO: Should be one of these texture and color.
-void
-RenderObj_CreateModelHeightmap(Model* ModelObj, Texture2D* ImageData);
+//void
+//RenderObj_CreateModelHeightmap(Model* ModelObj, Texture2D* ImageData);
 
 #else
 

@@ -37,11 +37,12 @@ Game_Loop()
 
 	switch (StateOfProgram)
 	{
-	case 0: // NOTE: Loading
+	// NOTE: Loading State
+	case 0: 
 	{
 #if MEMORY_ON
 		Memory_Initialize(1);
-#endif
+#endif // MEMORY_ON
 		DEBUG_Initialize();
 
 		// TODO: Too general, need to make multiple loads
@@ -55,7 +56,7 @@ Game_Loop()
 			Memory_AdvanceItr(sizeof(Font));
 #else
 			GlobalFont = new Font;
-#endif
+#endif // MEMORY_ON
 		}
 		Texture2D FontGlyphs[255];
 		Asset_LoadFont("arial\0", "c:/Windows/Fonts/arial.ttf\0",
@@ -66,7 +67,8 @@ Game_Loop()
 		StateOfProgram = 1;
 	} break;
 
-	case 1: // NOTE: Title Screen
+	// NOTE: Title Screen
+	case 1: 
 	{
 		if (States[0].Status == 0)
 		{
@@ -80,15 +82,14 @@ Game_Loop()
 			States[0].RenderObjBlocks = 0;
 			States[0].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
-#endif
+#endif // DATA_ORIENTED
 #else
 			States[0].EntityBlocks = new EntityBlock[2]{};
-#if DATA_ORIENTED
-
-#else
 			States[0].RenderObjBlocks = new RenderObjBlock[2]{};
-#endif
-#endif
+#if DATA_ORIENTED
+			States[0].ModelObjBlocks = new ModelObjBlock[2]{};
+#endif // DATA_ORIENTED
+#endif // MEMORY_ON
 			State_CreateCameras(&States[0], 1);
 			State_CreateShaderVariables(&States[0], 5);
 			State_CreateShaderHandles(&States[0], 2);
@@ -97,10 +98,11 @@ Game_Loop()
 
 			Entity_CreateBlock(&States[0].EntityBlocks[0], 256);
 #if DATA_ORIENTED
-
+			RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
+			ModelObj_CreateBlock(&States[0].ModelObjBlocks[0], 245);
 #else
 			RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
-#endif
+#endif // DATA_ORIENTED
 			States[0].NumEntityBlocks = 1;
 			States[0].NumObjectBlocks = 1;
 			
@@ -114,7 +116,7 @@ Game_Loop()
 #else
 			States[0].TextObjArray = 
 				new Text_Object[TEXT_OBJECTS_PER_PROGSTATE]{};
-#endif
+#endif // MEMORY_ON
 			States[0].Status = 1;
 			Title_Initialize(&States[0]);
 		}
@@ -135,7 +137,8 @@ Game_Loop()
 		}
 	} break;
 
-	case 2: // NOTE: Game
+	// NOTE: Game State
+	case 2:
 	{
 		if (States[1].Status == 0)
 		{
@@ -149,15 +152,15 @@ Game_Loop()
 			States[1].RenderObjBlocks = 0;
 			States[1].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
-#endif
+#endif // DATA_ORIENTED
 #else
 			States[1].EntityBlocks = new EntityBlock[2]{};
 #if DATA_ORIENTED
 
 #else
 			States[1].RenderObjBlocks = new RenderObjBlock[2]{};
-#endif
-#endif
+#endif // DATA_ORIENTED
+#endif // MEMORY_ON
 			State_CreateCameras(&States[1], 1);
 			State_CreateTimers(&States[1], 1);
 			State_CreateShaderVariables(&States[1], 7);
@@ -169,7 +172,7 @@ Game_Loop()
 
 #else
 			RenderObj_CreateBlock(&States[1].RenderObjBlocks[0], 256);
-#endif
+#endif // DATA_ORIENTED
 			States[1].NumEntityBlocks = 1;
 			States[1].NumObjectBlocks = 1;
 			
@@ -196,7 +199,8 @@ Game_Loop()
 		}
 	} break;
 
-	case 3: // NOTE: Menu Screen
+	// NOTE: Menu State
+	case 3: 
 	{
 		if (States[2].Status == 0)
 		{
@@ -210,15 +214,15 @@ Game_Loop()
 			States[2].RenderObjBlocks = 0;
 			States[2].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
-#endif
+#endif // DATA_ORIENTED
 #else
 			States[2].EntityBlocks = new EntityBlock[2]{};
 #if DATA_ORIENTED
 
 #else
 			States[2].RenderObjBlocks = new RenderObjBlock[2]{};
-#endif
-#endif
+#endif // DATA_ORIENTED
+#endif // MEMORY_ON
 			State_CreateCameras(&States[2], 1);
 			State_CreateShaderVariables(&States[2], 5);
 			State_CreateShaderHandles(&States[2], 2);
@@ -229,7 +233,7 @@ Game_Loop()
 
 #else
 			RenderObj_CreateBlock(&States[2].RenderObjBlocks[0], 256);
-#endif
+#endif // DATA_ORIENTED
 			States[2].NumEntityBlocks = 1;
 			States[2].NumObjectBlocks = 1;
 
@@ -261,7 +265,7 @@ Game_Loop()
 		Platform_EndProgram();
 #if MEMORY_ON
 		Memory_Clean();
-#endif
+#endif // MEMORY_ON
 	} break;
 
 	default:

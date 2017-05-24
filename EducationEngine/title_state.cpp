@@ -1,10 +1,5 @@
 #include "title_state.h"
 
-#if DATA_ORIENTED
-// TODO: Remove this, temporary var
-RenderObj TestRenderObj;
-#endif
-
 void 
 Title_Initialize(ProgramState* State)
 {
@@ -22,11 +17,18 @@ Title_Initialize(ProgramState* State)
 		Render_CompileShaders(VertexShader_Source,
 			FragmentShader_Source);
 
-	Model Rectangle;
-	RenderObj_CreateModelRectangle(&Rectangle, 0.5f, 0.5f);
-	RenderObj_CreateRenderObject(&TestRenderObj, &Rectangle);
-	TestRenderObj.NumVertices = 6;
+// TODO: Throw this part into an asset system
+#if MEMORY_ON
+
 #else
+	State->ModelObjBlocks[0].BlockObjects[0] = new Model;
+	State->RenderObjBlocks[0].BlockObjects[0] = new RenderObj;
+#endif
+	ModelObj_CreateRectangle(State->ModelObjBlocks[0].BlockObjects[0], 160.0f, 40.0f);
+	RenderObj_CreateRenderObject(State->RenderObjBlocks[0].BlockObjects[0],
+		State->ModelObjBlocks[0].BlockObjects[0]);
+	State->RenderObjBlocks[0].BlockObjects[0]->NumVertices = 6;
+#else // NOT DATA_ORIENTED
 
 	State->ShaderHandles[0] = 
 		Render_CompileShaders(MenuVertexShaderSource,
@@ -58,7 +60,7 @@ Title_Initialize(ProgramState* State)
 		16, &State->FontArr[0]);
 
 	State->TimerArray[0].Start();
-#endif
+#endif // DATA_ORIENTED
 }
 
 // TODO: Remove this, temporary testing
@@ -71,10 +73,25 @@ Title_Draw(ProgramState* State)
 
 #if DATA_ORIENTED
 	Render_BindShaders(State->ShaderHandles[0]);
+	State->GPUShaderVarArray[0] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "model");
+	State->GPUShaderVarArray[1] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "view");
+	State->GPUShaderVarArray[2] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
+
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
+		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
+		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
 
 	m4 ModelMatrix = Math_IdentityMatrix();
+	Math_TranslateMatrix(ModelMatrix, v3(0.0f, 0.0f, 0.0f));
 
-	Render_Draw(&TestRenderObj, TestRenderObj.NumVertices);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
+		&ModelMatrix.Rc[0][0], 1, 0);
+	Render_Draw(State->RenderObjBlocks[0].BlockObjects[0],
+		State->RenderObjBlocks[0].BlockObjects[0]->NumVertices);
 
 #else
 
@@ -250,7 +267,8 @@ void
 Title_Clean(ProgramState* State)
 {
 #if DATA_ORIENTED
-
+	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
+	ModelObj_DeleteBlock(&State->ModelObjBlocks[0]);
 #else
 	Platform_UpdateMouseState(0);
 	Entity_DeleteBlock(&State->EntityBlocks[0]);

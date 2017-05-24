@@ -169,7 +169,6 @@ Render_Init(window_properties *Window)
 	glVertexArrayAttribBinding = (gl_vertex_array_attrib_binding *)wglGetProcAddress("glVertexArrayAttribBinding");
 	glVertexArrayAttribFormat = (gl_vertex_array_attrib_ib_format *)wglGetProcAddress("glVertexArrayAttribFormat");
 	glCreateBuffers = (gl_create_buffers*)wglGetProcAddress("glCreateBuffers");
-
 }
 
 void 
