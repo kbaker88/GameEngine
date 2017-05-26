@@ -8,11 +8,31 @@
 //TODO: GetMousePosition once per frame and store it for use in state?
 //TODO: Add collision maximum distance
 
+#if DATA_ORIENTED
+struct CollisionObject
+{
+	v3 Position{};
+	v3 CollideNormal{};
+	float* VerticesPtr;
+	float Width, Height, Depth, HalfWidth, HalfHeight,
+		HalfDepth;
+	uint32 NumVertices;
+	int32 CollisionCode;
+};
+
+void
+Collision_FillObject(CollisionObject* CollObj, float Width,
+	float Height, float Depth, v3* Position);
+int
+Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj);
+
+#else
+
 struct CollisionObject
 {
 	CollisionObject(): NumVertices(0), VerticesPtr(0),
-		Position(0), Width(0), Height(0), Depth(0),
-		HalfWidth(0), HalfHeight(0), HalfDepth(0),
+		 Width(0), Height(0), Depth(0), HalfWidth(0),
+		Position(0), HalfHeight(0), HalfDepth(0),
 		CollisionCode(0) {}
 	
 	~CollisionObject() {}
@@ -192,4 +212,5 @@ v3
 Collision_GetNormal(CollisionObject* CollideObj, 
 	PhysicsObject* PhysObj);
 
+#endif // DATA_ORIENTED
 #endif

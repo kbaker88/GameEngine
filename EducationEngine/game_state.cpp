@@ -1,5 +1,9 @@
 #include "game_state.h"
 
+static GLuint TextureID[1];
+static v3 Position;
+static v3 PlayerCameraFacingVect;
+
 void 
 Game_Initialize(ProgramState* State)
 {
@@ -7,13 +11,45 @@ Game_Initialize(ProgramState* State)
 	float WindowHalfHeight = (float)WindowDimensions.Height * 0.5f;
 	float WindowHalfWidth = (float)WindowDimensions.Width * 0.5f;
 
-	State->CameraArray[0].SetPosition(&v3(-WindowHalfWidth,
-		-WindowHalfHeight, 1.0f));
-	State->CameraArray[0].SetProjectionMatrix(0);
+	//State->CameraArray[0].SetPosition(&v3(-WindowHalfWidth,
+	//	-WindowHalfHeight, 1.0f));
+	//State->CameraArray[0].SetProjectionMatrix(0);
+	State->CameraArray[0].SetPosition(&v3(0.0f, 0.0f, 3.0f));
+	State->CameraArray[0].SetProjectionMatrix(1);
 
 #if DATA_ORIENTED
+	State->ShaderHandles[0] =
+		Render_CompileShaders(VertexShader_Game,
+			FragmentShader_Game);
+
+#if MEMORY_ON
 
 #else
+	State->ModelObjBlocks[0].BlockObjects[0] = new Model;
+	State->RenderObjBlocks[0].BlockObjects[0] = new RenderObj;
+#endif // MEMORY_ON
+	ModelObj_CreateBox(State->ModelObjBlocks[0].BlockObjects[0],
+		1.0f, 1.0f, 1.0f);
+	
+	Position = v3(0.0f, 0.0f, 0.0f);
+	Texture2D* Textures[1];
+	Textures[0] = Asset_GetTexture(5);
+
+	for (uint32 Index = 0; Index < 1; Index++)
+	{
+		RenderObj_CreateRenderObject(State->RenderObjBlocks[0].BlockObjects[Index],
+			State->ModelObjBlocks[0].BlockObjects[0]);
+		State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices = 36;
+
+		Collision_FillObject(&State->CollisionObj[Index], 1.0f, 1.0f,
+			1.0f, &Position);
+		State->CollisionObj[Index].CollisionCode = Index * 10;
+
+		Render_BuildTexture(&TextureID[Index], Textures[Index]->Width,
+			Textures[Index]->Height, Textures[Index]->Data);
+	}
+
+#else // DATA_ORIENTED
 
 	State->ShaderHandles[0] = 
 		Render_CompileShaders(VertShaderForTextureAndLight,
@@ -78,16 +114,47 @@ Game_Draw(ProgramState* State)
 {
 	Render_ClearScreen(&v4(0.2f, 0.3f, 0.3f, 1.0f));
 
+#if DATA_ORIENTED
+	Input_UpdateMouseState(State);
+	Input_UpdateKeyStates(State);
+
+	Render_BindShaders(State->ShaderHandles[0]);
+	State->GPUShaderVarArray[0] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "model");
+	State->GPUShaderVarArray[1] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "view");
+	State->GPUShaderVarArray[2] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
+	State->GPUShaderVarArray[3] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
+
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
+		(float*)State->CameraArray[0].GetViewMatrix(),
+		1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
+		(float*)State->CameraArray[0].GetProjectionMatrix(),
+		1, 0);
+
+	m4 ModelMatrix = Math_IdentityMatrix();
+	ModelMatrix = Math_TranslateMatrix(ModelMatrix, Position);
+	ModelMatrix = Math_RotateMatrix(ModelMatrix, 45.0f, v3(1.0f, 0.0f, 0.0f));
+
+	uint32 Index = 0;
+	ModelMatrix = Math_TranslateMatrix(ModelMatrix, v3(0.0f, 0.0f, 0.0f));
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
+		&ModelMatrix.Rc[0][0], 1, 0);
+	Render_BindTexture(TextureID[Index]);
+	Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index],
+		State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices);
+	Render_BindTexture(0);
+
+#else
 	//TODO: Move into a shader struct?
-	v3 LightPosition = { 2.0f, 1.0f, -17.0f }; 
+	v3 LightPosition = { 2.0f, 1.0f, -17.0f };
 	v3 LightColor = { 1.0f, 1.0f, 1.0f };
 
 	Input_UpdateMouseState(State);
 	Input_UpdateKeyStates(State);
-
-#if DATA_ORIENTED
-
-#else
 	Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
 		0, 0));
 	Entity_GetCamera(&State->EntityBlocks[0], 0)->
@@ -96,7 +163,6 @@ Game_Draw(ProgramState* State)
 	v3 MouseRay = Collision_UpdateMousePickRay(
 		&Entity_GetCamera(&State->EntityBlocks[0], 0)->ProjectionMatrix,
 		&Entity_GetCamera(&State->EntityBlocks[0], 0)->ViewMatrix);
-#endif
 
 	// NOTE: Bind New Shaders
 	Render_BindShaders(State->ShaderHandles[0]);
@@ -112,14 +178,14 @@ Game_Draw(ProgramState* State)
 		Render_GetShaderVariable(State->ShaderHandles[0], "lightPos");
 	State->GPUShaderVarArray[5] =
 		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
-	State->GPUShaderVarArray[6] = 
+	State->GPUShaderVarArray[6] =
 		Render_GetShaderVariable(State->ShaderHandles[0], "isTextured");
 
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
 		(float*)Entity_GetCamera(&State->EntityBlocks[0], 0)->GetViewMatrix(),
 		1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
-		(float*)Entity_GetCamera(&State->EntityBlocks[0], 0)->GetProjectionMatrix(), 
+		(float*)Entity_GetCamera(&State->EntityBlocks[0], 0)->GetProjectionMatrix(),
 		1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[3],
 		LightColor.x, LightColor.y, LightColor.z);
@@ -134,9 +200,7 @@ Game_Draw(ProgramState* State)
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], IsTextured);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		(float*)&ModelMatrix, 1, 0);
-#if DATA_ORIENTED
 
-#else
 	Entity_DrawPolyGonMode(&State->EntityBlocks[0], 1,
 		State->GPUShaderVarArray[0]);
 
@@ -335,7 +399,7 @@ Game_Draw(ProgramState* State)
 		string(BufferZ4),
 		v3(Left + 20.0f, Top - 60.0f, 0.0f), 0.15f,
 		State->GPUShaderVarArray[0], State->FontArr);
-#endif
+#endif // DATA_ORIENTED
 }
 
 void 
@@ -348,7 +412,7 @@ Game_Clean(ProgramState* State)
 	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
-#endif
+#endif // DATA_ORIENTED
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);

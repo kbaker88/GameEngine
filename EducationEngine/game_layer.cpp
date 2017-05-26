@@ -94,6 +94,7 @@ Game_Loop()
 				new Text_Object[TEXT_OBJECTS_PER_PROGSTATE]{};
 #if DATA_ORIENTED
 			States[0].ModelObjBlocks = new ModelObjBlock[2]{};
+			States[0].CollisionObj = new CollisionObject[12];
 #endif // DATA_ORIENTED
 #endif // MEMORY_ON
 			State_CreateCameras(&States[0], 1);
@@ -103,11 +104,11 @@ Game_Loop()
 			State_LinkToProgram(&States[0], &StateOfProgram);
 
 			Entity_CreateBlock(&States[0].EntityBlocks[0], 256);
-#if DATA_ORIENTED
 			RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
+#if DATA_ORIENTED
 			ModelObj_CreateBlock(&States[0].ModelObjBlocks[0], 256);
 #else
-			RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
+			//RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
 #endif // DATA_ORIENTED
 			States[0].NumEntityBlocks = 1;
 			States[0].NumObjectBlocks = 1;
@@ -131,6 +132,13 @@ Game_Loop()
 
 		if ((StateOfProgram != 1) || (States[0].Status == -1))
 		{
+#if DATA_ORIENTED
+#if MEMORY_ON
+
+#else
+			delete[] States[0].CollisionObj;
+#endif // MEMORY_ON
+#endif // DATA_ORIENTED
 			State_Clean(&States[0]);
 		}
 	} break;
@@ -153,10 +161,13 @@ Game_Loop()
 #endif // DATA_ORIENTED
 #else
 			States[1].EntityBlocks = new EntityBlock[2]{};
+			States[1].RenderObjBlocks = new RenderObjBlock[2]{};
 #if DATA_ORIENTED
 
+			States[1].ModelObjBlocks = new ModelObjBlock[2]{};
+			States[1].CollisionObj = new CollisionObject[12];
 #else
-			States[1].RenderObjBlocks = new RenderObjBlock[2]{};
+
 #endif // DATA_ORIENTED
 #endif // MEMORY_ON
 			State_CreateCameras(&States[1], 1);
@@ -165,12 +176,13 @@ Game_Loop()
 			State_CreateShaderHandles(&States[1], 2);
 			State_LinkToProgram(&States[1], &StateOfProgram);
 
+			RenderObj_CreateBlock(&States[1].RenderObjBlocks[0], 256);
 			Entity_CreateBlock(&States[1].EntityBlocks[0], 256);
 #if DATA_ORIENTED
-
+			ModelObj_CreateBlock(&States[1].ModelObjBlocks[0], 256);
 #else
-			RenderObj_CreateBlock(&States[1].RenderObjBlocks[0], 256);
 #endif // DATA_ORIENTED
+
 			States[1].NumEntityBlocks = 1;
 			States[1].NumObjectBlocks = 1;
 			

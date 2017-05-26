@@ -1,5 +1,48 @@
 #include "collision_system.h"
 
+#if DATA_ORIENTED
+void
+Collision_FillObject(CollisionObject* CollObj, float Width,
+	float Height, float Depth,  v3* Position)
+{
+	CollObj->Width = Width;
+	CollObj->Height = Height;
+	CollObj->Depth = Depth;
+	CollObj->HalfWidth = Width * 0.5f;
+	CollObj->HalfHeight = Height * 0.5f;
+	CollObj->HalfDepth = Depth * 0.5f;
+	CollObj->Position = *Position;
+	CollObj->CollisionCode = 0;
+}
+
+int
+Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj)
+{
+	window_properties WindowDimensions = Render_GetWindowProperties();
+	v2 NewMousePosition;
+	NewMousePosition.x =
+		MousePosition->x - ((float)WindowDimensions.Width * 0.5f);
+	NewMousePosition.y =
+		((float)WindowDimensions.Height * 0.5f) - MousePosition->y;
+
+	if ((NewMousePosition.x > (CollObj->Position.x - (CollObj->HalfWidth))) &&
+		(NewMousePosition.x < (CollObj->Position.x + (CollObj->HalfWidth))))
+	{
+		if ((NewMousePosition.y >(CollObj->Position.y - (CollObj->HalfHeight))) &&
+			(NewMousePosition.y < (CollObj->Position.y + (CollObj->HalfHeight))))
+		{
+			if (Platform_GetMouseState())
+			{
+				return CollObj->CollisionCode + 2;
+			}
+			return CollObj->CollisionCode + 1;
+		}
+	}
+	return CollObj->CollisionCode;
+}
+
+#else
+
 int 
 Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj)
 {
@@ -824,15 +867,12 @@ v3 Collision_GetNormal(CollisionObject* CollideObj, PhysicsObject* PhysObj)
 		Normal = RightNormal;
 	}
 
-#if DATA_ORIENTED
-
-#else
 	Line Test;
 	Test.Init(CollideObj->Position->Arr, Normal.Arr, 10.0f);
 	Test.Draw();
 	Test.Delete();
 	Test.~Test();
-#endif
 
 	return Normal;
 }
+#endif // DATA_ORIENTED

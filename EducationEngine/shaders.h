@@ -3,7 +3,7 @@
 
 #if DATA_ORIENTED
 
-static const char* VertexShader_Source =
+static const char* VertexShader_Title =
 {
 	"#version 450 core												\n"
 	"																\n"
@@ -27,7 +27,7 @@ static const char* VertexShader_Source =
 	"}																\n"
 };
 
-static const char* FragmentShader_Source =
+static const char* FragmentShader_Title =
 {
 	"#version 450 core												\n"
 	"																\n"
@@ -42,7 +42,59 @@ static const char* FragmentShader_Source =
 	"void main(void)												\n"
 	"{																\n"
 	//"	FragColor = vec4(color, 1.0);								\n"
-	"	FragColor = texture2D(myTexture, TexPosition) * vec4(HoverColor, 1.0);\n"
+	"if (texture2D(myTexture, TexPosition).rgb == vec3(1.0, 1.0, 1.0))	\n"
+	"{																\n"
+	"	discard;													\n"
+	"}																\n"
+	"FragColor = texture2D(myTexture, TexPosition) * vec4(HoverColor, 1.0);\n"
+	"																\n"
+	"}																\n"
+};
+
+static const char* VertexShader_Game =
+{
+	"#version 450 core												\n"
+	"																\n"
+	"layout (location = 0) in vec3 PositionData;					\n"
+	"layout (location = 1) in vec3 ColorData;						\n"
+	"layout (location = 2) in vec2 TexturePos;						\n"
+	"																\n"
+	"uniform mat4 model;											\n"
+	"uniform mat4 view;												\n"
+	"uniform mat4 projection;										\n"
+	"																\n"
+	"out vec3 color;												\n"
+	"out vec2 TexPosition;											\n"
+	"																\n"
+	"void main(void)												\n"
+	"{																\n"
+	"																\n"
+	"color = ColorData;												\n"
+	"TexPosition = TexturePos;										\n"
+	"gl_Position = projection * view * model * vec4(PositionData, 1.0);	\n"
+	"}																\n"
+};
+
+static const char* FragmentShader_Game =
+{
+	"#version 450 core												\n"
+	"																\n"
+	"in vec3 color;													\n"
+	"in vec2 TexPosition;											\n"
+	"																\n"
+	"uniform sampler2D myTexture;									\n"
+	"																\n"
+	"out vec4 FragColor;											\n"
+	"																\n"
+	"void main(void)												\n"
+	"{																\n"
+	//"	FragColor = vec4(color, 1.0);								\n"
+	"if (texture2D(myTexture, TexPosition).rgb == vec3(1.0, 1.0, 1.0))	\n"
+	"{																\n"
+	"	discard;													\n"
+	"}																\n"
+	"FragColor = texture2D(myTexture, TexPosition);					\n"
+	"																\n"
 	"}																\n"
 };
 

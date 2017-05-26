@@ -514,6 +514,8 @@ Math_TranslateMatrix(m4 &Matrix, v3 &Vector);
 m4 
 Math_ScaleMatrix(m4 &Matrix, v3 &Vector);
 m4
+Math_RotateMatrix(m4 &Matrix, float Radians, v3 &Axis);
+m4
 Math_InvertMatrix(m4 *Matrix);
 //m4 MatrixInverse(m4 &Matrix); // expensive
 //float Determinant(m4 &Mat); // expensive

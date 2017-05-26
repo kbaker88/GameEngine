@@ -35,6 +35,7 @@ struct ProgramState
 
 #if DATA_ORIENTED
 	ModelObjBlock* ModelObjBlocks;
+	CollisionObject* CollisionObj;
 #endif
 
 	// TODO: Temporary System

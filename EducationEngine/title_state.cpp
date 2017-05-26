@@ -1,8 +1,7 @@
 #include "title_state.h"
 
-GLuint TextureID;
-CollisionObject CollideTest;
-v3 Position;
+static GLuint TextureID[3];
+static v3 Position;
 
 void 
 Title_Initialize(ProgramState* State)
@@ -18,8 +17,7 @@ Title_Initialize(ProgramState* State)
 	
 #if DATA_ORIENTED
 	State->ShaderHandles[0] =
-		Render_CompileShaders(VertexShader_Source,
-			FragmentShader_Source);
+		Render_CompileShaders(VertexShader_Title, FragmentShader_Title);
 
 // TODO: Throw this part into an asset system
 #if MEMORY_ON
@@ -27,24 +25,32 @@ Title_Initialize(ProgramState* State)
 #else
 	State->ModelObjBlocks[0].BlockObjects[0] = new Model;
 	State->RenderObjBlocks[0].BlockObjects[0] = new RenderObj;
-#endif
-	ModelObj_CreateRectangle(State->ModelObjBlocks[0].BlockObjects[0], 160.0f, 40.0f);
-	RenderObj_CreateRenderObject(State->RenderObjBlocks[0].BlockObjects[0],
-		State->ModelObjBlocks[0].BlockObjects[0]);
-	State->RenderObjBlocks[0].BlockObjects[0]->NumVertices = 6;
-	Position = v3(0.0f, 0.0f, 0.0f);
+	State->RenderObjBlocks[0].BlockObjects[1] = new RenderObj;
+	State->RenderObjBlocks[0].BlockObjects[2] = new RenderObj;
+#endif // MEMORY_ON
+	ModelObj_CreateRectangle(State->ModelObjBlocks[0].BlockObjects[0],
+		160.0f, 40.0f);
 
-	CollideTest.Width = 160.0f;
-	CollideTest.Height = 40.0f;
-	CollideTest.HalfWidth = CollideTest.Width * 0.5f;
-	CollideTest.HalfHeight = CollideTest.Height * 0.5f;
-	CollideTest.Position = &Position;
-	CollideTest.CollisionCode = 0;
+	Position = v3(0.0f, -160.0f, 0.0f);
+	Texture2D* Textures[3];
+	Textures[0] = Asset_GetTexture(0);
+	Textures[1] = Asset_GetTexture(1);
+	Textures[2] = Asset_GetTexture(2);
 
-	Texture2D* Test = Asset_GetTexture(0);
-	
-	Render_BuildTexture(&TextureID, Test->Width, Test->Height,
-		Test->Data);
+	for (uint32 Index = 0; Index < 3; Index++)
+	{
+		RenderObj_CreateRenderObject(State->RenderObjBlocks[0].BlockObjects[Index],
+			State->ModelObjBlocks[0].BlockObjects[0]);
+		State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices = 6;
+
+		Position.y -= 42.0f;
+		Collision_FillObject(&State->CollisionObj[Index], 160.0f, 40.0f,
+			0.0f, &Position);
+		State->CollisionObj[Index].CollisionCode = Index * 10;
+
+		Render_BuildTexture(&TextureID[Index], Textures[Index]->Width,
+			Textures[Index]->Height, Textures[Index]->Data);
+	}
 
 #else // NOT DATA_ORIENTED
 
@@ -111,18 +117,21 @@ Title_Draw(ProgramState* State)
 		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], 0);
 
+	Position = v3(0.0f, -160.0f, 0.0f);
 	m4 ModelMatrix = Math_IdentityMatrix();
-	Math_TranslateMatrix(ModelMatrix, v3(0.0f, 0.0f, 0.0f));
+	ModelMatrix = Math_TranslateMatrix(ModelMatrix, Position);
 
 	int32 CollisionResult = 0;
-	for (uint32 Index = 0; Index < 1; Index++)
+	for (uint32 Index = 0; Index < 3; Index++)
 	{
-		CollisionResult = Collision_ButtonClick(&State->CursorPosition, &CollideTest);
+		ModelMatrix = Math_TranslateMatrix(ModelMatrix, v3(0.0f, -42.0f, 0.0f));
+		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
+			&State->CollisionObj[Index]);
 		Title_CollisionResolve(State, CollisionResult);
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 			&ModelMatrix.Rc[0][0], 1, 0);
-		Render_BindTexture(TextureID);
+		Render_BindTexture(TextureID[Index]);
 		Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index],
 			State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices);
 		Render_BindTexture(0);
@@ -263,10 +272,14 @@ Title_CollisionResolve(ProgramState* State,
 	} break;
 	case 10:
 	{
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 1.0f,
+			1.0f, 1.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 1)->State = 0;
 	} break;
 	case 11:
 	{
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 0.0f,
+			1.0f, 0.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 1)->State = 1;
 	} break;
 	case 12:
@@ -276,10 +289,14 @@ Title_CollisionResolve(ProgramState* State,
 	} break;
 	case 20:
 	{
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 1.0f,
+			1.0f, 1.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 2)->State = 0;
 	} break;
 	case 21:
 	{
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 0.0f,
+			1.0f, 0.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 2)->State = 1;
 	} break;
 	case 22:

@@ -142,6 +142,51 @@ Math_TranslateMatrix(m4 &Matrix, v3 &Vector)
 	return Result;
 }
 
+m4
+Math_RotateMatrix(m4 &Matrix, float Radians, v3 &Axis)
+{
+	m4 RotationMatrix = Math_IdentityMatrix();
+
+	if (Axis.x == 1.0f)
+	{
+		RotationMatrix.Rc[1][1] = Math_Cosine(Radians);
+		RotationMatrix.Rc[1][2] = Math_Sine(Radians);
+		RotationMatrix.Rc[2][1] = -Math_Sine(Radians);
+		RotationMatrix.Rc[2][2] = Math_Cosine(Radians);
+	}
+	else if (Axis.y == 1.0f)
+	{
+		RotationMatrix.Rc[0][0] = Math_Cosine(Radians);
+		RotationMatrix.Rc[0][2] = -Math_Sine(Radians);
+		RotationMatrix.Rc[2][0] = Math_Sine(Radians);
+		RotationMatrix.Rc[2][2] = Math_Cosine(Radians);
+	}
+	else if (Axis.z == 1.0f)
+	{
+		RotationMatrix.Rc[0][0] = Math_Cosine(Radians);
+		RotationMatrix.Rc[0][1] = Math_Sine(Radians);
+		RotationMatrix.Rc[1][0] = -Math_Sine(Radians);
+		RotationMatrix.Rc[1][1] = Math_Cosine(Radians);
+	}
+
+	return Matrix * RotationMatrix;
+
+	//x
+	//1  0   0
+	//0 cos -sin
+	//0 sin cos
+	//
+	//y
+	//cos 0  sin
+	//0   1  0
+	//-sin 0 cos
+	//
+	//z
+	//cos -sin 0
+	//sin cos  0
+	//0    0   1
+}
+
 m4 
 Math_ScaleMatrix(m4 &Matrix, v3 &Vector)
 {
