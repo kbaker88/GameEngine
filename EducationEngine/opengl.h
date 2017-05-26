@@ -657,6 +657,9 @@ typedef void __stdcall gl_vertex_array_vertex_buffer(GLuint vaobj, GLuint bindin
 typedef void __stdcall gl_vertex_array_attrib_binding(GLuint vaobj, GLuint attribindex, GLuint bindingindex);
 typedef void __stdcall gl_vertex_array_attrib_ib_format(GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
 typedef void __stdcall gl_create_buffers(GLsizei n, GLuint *buffers);
+typedef void __stdcall gl_create_textures(GLenum target, GLsizei n, GLuint *textures);
+typedef void __stdcall gl_texture_storage_2d(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
+typedef void __stdcall gl_texture_sub_image_2d(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void* pixels);
 
 /* OpenGL 1.1
 typedef void __stdcall gl_point_size(GLfloat size);

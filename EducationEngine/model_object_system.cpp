@@ -19,7 +19,7 @@ ModelObj_CreateBlock(ModelObjBlock* Block, uint32 Size)
 #else
 			Block->BlockObjects = new Model*[Size] {};
 			Block->BlockSize = Size;
-#endif
+#endif // MEMORY_ON
 		}
 		else
 		{
@@ -39,25 +39,33 @@ ModelObj_DeleteBlock(ModelObjBlock* Block)
 		if (Block->BlockObjects)
 		{
 			for (uint32 i = 0;
-				i < Block->BlockSize; 
+				i < Block->BlockSize;
 				i++)
 			{
-				if (Block->BlockObjects[i]->Data)
+				if (Block->BlockObjects[i])
 				{
-					for (uint32 k = 0;
-						k < Block->BlockObjects[i]->NumAttribs;
-						k++)
+					if (Block->BlockObjects[i]->Data)
 					{
-						delete[] Block->BlockObjects[i]->Data[k];
-						Block->BlockObjects[i]->Data[k] = 0;
+						for (uint32 k = 0;
+							k < Block->BlockObjects[i]->NumAttribs;
+							k++)
+						{
+							delete[] Block->BlockObjects[i]->Data[k];
+							Block->BlockObjects[i]->Data[k] = 0;
+						}
+						delete[] Block->BlockObjects[i]->Data;
+						Block->BlockObjects[i]->Data = 0;
 					}
-					delete[] Block->BlockObjects[i]->Data;
-					Block->BlockObjects[i]->Data = 0;
-				}
-				if (Block->BlockObjects[i]->ArraySize)
-				{
-					delete[] Block->BlockObjects[i]->ArraySize;
-					Block->BlockObjects[i]->ArraySize = 0;
+					if (Block->BlockObjects[i]->ArraySize)
+					{
+						delete[] Block->BlockObjects[i]->ArraySize;
+						Block->BlockObjects[i]->ArraySize = 0;
+					}
+					if (Block->BlockObjects[i]->ArrayOffset)
+					{
+						delete[] Block->BlockObjects[i]->ArrayOffset;
+						Block->BlockObjects[i]->ArrayOffset = 0;
+					}
 				}
 			}
 			delete[] Block->BlockObjects;
@@ -66,7 +74,7 @@ ModelObj_DeleteBlock(ModelObjBlock* Block)
 		}
 		delete Block;
 		Block = 0;
-#endif
+#endif // MEMORY_ON
 	}
 }
 
@@ -85,7 +93,7 @@ ModelObj_Create(Model* ModelObj,
 #else
 	ModelObj->Data = new float*[ModelObj->NumAttribs];
 	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs];
-#endif
+#endif // MEMORY_ON
 	ModelObj->Data[0] = VerticeData;
 	ModelObj->ArraySize[0] = VerticeDataSize * sizeof(float);
 	ModelObj->Data[1] = ColorData;
@@ -112,18 +120,15 @@ ModelObj_Delete(Model* ModelObj)
 			delete[] ModelObj->Data;
 			ModelObj->Data = 0;
 		}
-		else
-		{
-			ModelObj->Data = 0;
-		}
 		if (ModelObj->ArraySize)
 		{
 			delete[] ModelObj->ArraySize;
 			ModelObj->ArraySize = 0;
 		}
-		else
+		if (ModelObj->ArrayOffset)
 		{
-			ModelObj->ArraySize = 0;
+			delete[] ModelObj->ArrayOffset;
+			ModelObj->ArrayOffset = 0;
 		}
 		delete ModelObj;
 		ModelObj = 0;
@@ -132,7 +137,7 @@ ModelObj_Delete(Model* ModelObj)
 	{
 		// TODO: Error System
 	}
-#endif
+#endif // MEMORY_ON
 }
 
 void
@@ -146,23 +151,29 @@ ModelObj_CreatePoint(Model* ModelObj, v3 Position,
 	ModelObj->ArraySize = 0;
 	ModelObj->ArraySize = Memory_Allocate(ModelObj->ArraySize,
 		ModelObj->NumAttribs);
+	ModelObj->ArrayOffset = 0;
+	ModelObj->ArrayOffset = Memory_Allocate(ModelObj->ArrayOffset,
+		ModelObj->NumAttribs);
 
 	ModelObj->Data[0] = Memory_Allocate(ModelObj->Data[0], 3);
 	ModelObj->Data[1] = Memory_Allocate(ModelObj->Data[1], 3);
 #else
 	ModelObj->Data = new float*[ModelObj->NumAttribs];
 	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs];
+	ModelObj->ArrayOffset = new uint32[ModelObj->NumAttribs];
 
 	ModelObj->Data[0] = new float[3]{};
 	ModelObj->Data[1] = new float[3]{};
-#endif
+#endif // MEMORY_ON
 	// NOTE: Vertice Data
 	ModelObj->ArraySize[0] = 3 * sizeof(float);
+	ModelObj->ArrayOffset[0] = 3;
 	ModelObj->Data[0][0] = Position.x, ModelObj->Data[0][1] = Position.y,
 		ModelObj->Data[0][2] = Position.z;
 
 	// NOTE: Color Data
 	ModelObj->ArraySize[1] = 3 * sizeof(float);
+	ModelObj->ArrayOffset[1] = 3;
 	ModelObj->Data[1][0] = Color.x, ModelObj->Data[1][1] = Color.y,
 		ModelObj->Data[1][2] = Color.z;
 }
@@ -178,18 +189,23 @@ ModelObj_CreateLine(Model* ModelObj, v3 PositionA,
 	ModelObj->ArraySize = 0;
 	ModelObj->ArraySize = Memory_Allocate(ModelObj->ArraySize,
 		ModelObj->NumAttribs);
+	ModelObj->ArrayOffset = 0;
+	ModelObj->ArrayOffset = Memory_Allocate(ModelObj->ArrayOffset,
+		ModelObj->NumAttribs);
 
 	ModelObj->Data[0] = Memory_Allocate(ModelObj->Data[0], 6);
 	ModelObj->Data[1] = Memory_Allocate(ModelObj->Data[1], 6);
 #else
 	ModelObj->Data = new float*[ModelObj->NumAttribs];
 	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs];
+	ModelObj->ArrayOffset = new uint32[ModelObj->NumAttribs];
 
 	ModelObj->Data[0] = new float[6]{};
 	ModelObj->Data[1] = new float[6]{};
-#endif
+#endif // MEMORY_ON
 	// NOTE: Vertice Data
 	ModelObj->ArraySize[0] = 6 * sizeof(float);
+	ModelObj->ArrayOffset[0] = 3;
 	ModelObj->Data[0][0] = PositionA.x, ModelObj->Data[0][1] = PositionA.y,
 		ModelObj->Data[0][2] = PositionA.z;
 	ModelObj->Data[0][3] = PositionB.x, ModelObj->Data[0][4] = PositionB.y,
@@ -197,6 +213,7 @@ ModelObj_CreateLine(Model* ModelObj, v3 PositionA,
 
 	// NOTE: Color Data
 	ModelObj->ArraySize[1] = 6 * sizeof(float);
+	ModelObj->ArrayOffset[1] = 3;
 	ModelObj->Data[1][0] = ColorP1.x, ModelObj->Data[1][1] = ColorP1.y,
 		ModelObj->Data[1][2] = ColorP1.z;
 	ModelObj->Data[1][3] = ColorP2.x, ModelObj->Data[1][4] = ColorP2.y,
@@ -210,7 +227,6 @@ ModelObj_CreateRectangle(Model* ModelObj,
 	float HalfWidth = Width * 0.5f;
 	float HalfHeight = Height * 0.5f;
 	ModelObj->NumAttribs = 4;
-	//	ModelObj->IndiceCount = 6;
 
 #if MEMORY_ON
 	ModelObj->Data = 0;
@@ -218,83 +234,63 @@ ModelObj_CreateRectangle(Model* ModelObj,
 	ModelObj->ArraySize = 0;
 	ModelObj->ArraySize = Memory_Allocate(ModelObj->ArraySize,
 		ModelObj->NumAttribs);
+	ModelObj->ArrayOffset = 0;
+	ModelObj->ArrayOffset = Memory_Allocate(ModelObj->ArrayOffset,
+		ModelObj->NumAttribs);
 
 	ModelObj->Data[0] = Memory_Allocate(ModelObj->Data[0], 18);
 	ModelObj->Data[1] = Memory_Allocate(ModelObj->Data[1], 18);
 	ModelObj->Data[2] = Memory_Allocate(ModelObj->Data[2], 8);
 	ModelObj->Data[3] = Memory_Allocate(ModelObj->Data[3], 18);
-	//	ModelObj->IndiceData = 0;
-	//	ModelObj->IndiceData = Memory_Allocate(ModelObj->IndiceData,
-	//		ModelObj->IndiceCount);
 #else
 	ModelObj->Data = new float*[ModelObj->NumAttribs]{};
 	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs]{};
+	ModelObj->ArrayOffset = new uint32[ModelObj->NumAttribs]{};
 
 	ModelObj->Data[0] = new float[18]{};
 	ModelObj->Data[1] = new float[18]{};
-	ModelObj->Data[2] = new float[8]{};
+	ModelObj->Data[2] = new float[12]{};
 	ModelObj->Data[3] = new float[18]{};
-
-	//ModelObj->IndiceData = new uint32[ModelObj->IndiceCount]{};
-#endif
+#endif // MEMORY_ON
 	// NOTE: Vertice Data
 	ModelObj->ArraySize[0] = 18 * sizeof(float);
-	ModelObj->Data[0][0] = -HalfWidth; ModelObj->Data[0][1] = HalfHeight;
-	ModelObj->Data[0][2] = 0.0f;
-	ModelObj->Data[0][3] = HalfWidth; ModelObj->Data[0][4] = HalfHeight;
-	ModelObj->Data[0][5] = 0.0f;
-	ModelObj->Data[0][6] = HalfWidth; ModelObj->Data[0][7] = -HalfHeight;
-	ModelObj->Data[0][8] = 0.0f;
-	ModelObj->Data[0][9] = HalfWidth; ModelObj->Data[0][10] = -HalfHeight;
-	ModelObj->Data[0][11] = 0.0f;
-	ModelObj->Data[0][12] = -HalfWidth; ModelObj->Data[0][13] = -HalfHeight;
-	ModelObj->Data[0][14] = 0.0f;
-	ModelObj->Data[0][15] = -HalfWidth; ModelObj->Data[0][16] = HalfHeight;
-	ModelObj->Data[0][17] = 0.0f;
+	ModelObj->ArrayOffset[0] = 3;
+	ModelObj->Data[0][0] = -HalfWidth; ModelObj->Data[0][1] = -HalfHeight; ModelObj->Data[0][2] = 0.0f;
+	ModelObj->Data[0][3] = HalfWidth; ModelObj->Data[0][4] = -HalfHeight; ModelObj->Data[0][5] = 0.0f;
+	ModelObj->Data[0][6] = HalfWidth; ModelObj->Data[0][7] = HalfHeight; ModelObj->Data[0][8] = 0.0f;
+	ModelObj->Data[0][9] = HalfWidth; ModelObj->Data[0][10] = HalfHeight;	ModelObj->Data[0][11] = 0.0f;
+	ModelObj->Data[0][12] = -HalfWidth; ModelObj->Data[0][13] = HalfHeight; ModelObj->Data[0][14] = 0.0f;
+	ModelObj->Data[0][15] = -HalfWidth; ModelObj->Data[0][16] = -HalfHeight; ModelObj->Data[0][17] = 0.0f;
 
 	// NOTE: Color Data
 	ModelObj->ArraySize[1] = 18 * sizeof(float);
-	ModelObj->Data[1][0] = 1.0f, ModelObj->Data[1][1] = 0.0f,
-		ModelObj->Data[1][2] = 0.0f;
-	ModelObj->Data[1][3] = 1.0f, ModelObj->Data[1][4] = 0.0f,
-		ModelObj->Data[1][5] = 0.0f;
-	ModelObj->Data[1][6] = 1.0f, ModelObj->Data[1][7] = 0.0f,
-		ModelObj->Data[1][8] = 0.0f;
-	ModelObj->Data[1][9] = 1.0f, ModelObj->Data[1][10] = 0.0f,
-		ModelObj->Data[1][11] = 0.0f;
-	ModelObj->Data[1][12] = 1.0f, ModelObj->Data[1][13] = 0.0f,
-		ModelObj->Data[1][14] = 0.0f;
-	ModelObj->Data[1][15] = 1.0f, ModelObj->Data[1][16] = 0.0f,
-		ModelObj->Data[1][17] = 0.0f;
+	ModelObj->ArrayOffset[1] = 3;
+	ModelObj->Data[1][0] = 1.0f; ModelObj->Data[1][1] = 0.0f;  ModelObj->Data[1][2] = 0.0f;
+	ModelObj->Data[1][3] = 0.0f; ModelObj->Data[1][4] = 1.0f;  ModelObj->Data[1][5] = 0.0f;
+	ModelObj->Data[1][6] = 1.0f; ModelObj->Data[1][7] = 0.0f;  ModelObj->Data[1][8] = 0.0f;
+	ModelObj->Data[1][9] = 1.0f; ModelObj->Data[1][10] = 0.0f; ModelObj->Data[1][11] = 0.0f;
+	ModelObj->Data[1][12] = 0.0f; ModelObj->Data[1][13] = 0.0f; ModelObj->Data[1][14] = 1.0f;
+	ModelObj->Data[1][15] = 1.0f; ModelObj->Data[1][16] = 0.0f; ModelObj->Data[1][17] = 0.0f;
 
 	// NOTE: Texture Coordinates
-	ModelObj->ArraySize[2] = 8 * sizeof(float);
-	ModelObj->Data[2][0] = 0.0f, ModelObj->Data[2][1] = 0.0f;
-	ModelObj->Data[2][2] = 1.0f, ModelObj->Data[2][3] = 0.0f;
-	ModelObj->Data[2][4] = 1.0f, ModelObj->Data[2][5] = 1.0f;
-	ModelObj->Data[2][6] = 0.0f, ModelObj->Data[2][7] = 1.0f;
+	ModelObj->ArraySize[2] = 12 * sizeof(float);
+	ModelObj->ArrayOffset[2] = 2;
+	ModelObj->Data[2][0] = 0.0f; ModelObj->Data[2][1] = 0.0f;
+	ModelObj->Data[2][2] = 1.0f; ModelObj->Data[2][3] = 0.0f;
+	ModelObj->Data[2][4] = 1.0f; ModelObj->Data[2][5] = 1.0f;
+	ModelObj->Data[2][6] = 1.0f; ModelObj->Data[2][7] = 1.0f;
+	ModelObj->Data[2][8] = 0.0f; ModelObj->Data[2][9] = 1.0f;
+	ModelObj->Data[2][10] = 0.0f; ModelObj->Data[2][11] = 0.0f;
 
 	// NOTE: Normal Data
 	ModelObj->ArraySize[3] = 18 * sizeof(float);
-	ModelObj->Data[3][0] = 0.0f, ModelObj->Data[3][1] = 0.0f,
-		ModelObj->Data[3][2] = 1.0f;
-	ModelObj->Data[3][3] = 0.0f, ModelObj->Data[3][4] = 0.0f,
-		ModelObj->Data[3][5] = 1.0f;
-	ModelObj->Data[3][6] = 0.0f, ModelObj->Data[3][7] = 0.0f,
-		ModelObj->Data[3][8] = 1.0f;
-	ModelObj->Data[3][9] = 0.0f, ModelObj->Data[3][10] = 0.0f,
-		ModelObj->Data[3][11] = 1.0f;
-	ModelObj->Data[3][12] = 0.0f, ModelObj->Data[3][13] = 0.0f,
-		ModelObj->Data[3][14] = 1.0f;
-	ModelObj->Data[3][15] = 0.0f, ModelObj->Data[3][16] = 0.0f,
-		ModelObj->Data[3][17] = 1.0f;
-
-	//ModelObj->IndiceCount = ModelObj->IndiceCount;
-	////ModelObj->IndiceData = Indices;
-	//ModelObj->IndiceData[0] = 0, ModelObj->IndiceData[1] = 1,
-	//	ModelObj->IndiceData[2] = 2;
-	//ModelObj->IndiceData[3] = 2, ModelObj->IndiceData[4] = 3,
-	//	ModelObj->IndiceData[5] = 0;
+	ModelObj->ArrayOffset[3] = 3;
+	ModelObj->Data[3][0] = 0.0f; ModelObj->Data[3][1] = 0.0f; ModelObj->Data[3][2] = 1.0f;
+	ModelObj->Data[3][3] = 0.0f; ModelObj->Data[3][4] = 0.0f; ModelObj->Data[3][5] = 1.0f;
+	ModelObj->Data[3][6] = 0.0f; ModelObj->Data[3][7] = 0.0f; ModelObj->Data[3][8] = 1.0f;
+	ModelObj->Data[3][9] = 0.0f; ModelObj->Data[3][10] = 0.0f; ModelObj->Data[3][11] = 1.0f;
+	ModelObj->Data[3][12] = 0.0f; ModelObj->Data[3][13] = 0.0f; ModelObj->Data[3][14] = 1.0f;
+	ModelObj->Data[3][15] = 0.0f; ModelObj->Data[3][16] = 0.0f; ModelObj->Data[3][17] = 1.0f;
 }
 
 void
@@ -312,6 +308,9 @@ ModelObj_CreateBox(Model* ModelObj, float Width,
 	ModelObj->ArraySize = 0;
 	ModelObj->ArraySize = Memory_Allocate(ModelObj->ArraySize,
 		ModelObj->NumAttribs);
+	ModelObj->ArrayOffset = 0;
+	ModelObj->ArrayOffset = Memory_Allocate(ModelObj->ArrayOffset,
+		ModelObj->NumAttribs);
 
 	ModelObj->Data[0] = Memory_Allocate(ModelObj->Data[0], 3 * 6 * 6);
 	ModelObj->Data[1] = Memory_Allocate(ModelObj->Data[1], 3 * 6 * 6);
@@ -320,13 +319,16 @@ ModelObj_CreateBox(Model* ModelObj, float Width,
 #else
 	ModelObj->Data = new float*[ModelObj->NumAttribs];
 	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs];
+	ModelObj->ArrayOffset = new uint32[ModelObj->NumAttribs];
+
 	ModelObj->Data[0] = new float[3 * 6 * 6];
 	ModelObj->Data[1] = new float[3 * 6 * 6];
 	ModelObj->Data[2] = new float[2 * 6 * 6];
 	ModelObj->Data[3] = new float[3 * 6 * 6];
-#endif
+#endif // MEMORY_ON
 	// NOTE: Vertice Data
 	ModelObj->ArraySize[0] = 108 * sizeof(float);
+	ModelObj->ArrayOffset[0] = 3;
 	// NOTE: Back
 	ModelObj->Data[0][0] = -HalfWidth; ModelObj->Data[0][1] = -HalfHeight; ModelObj->Data[0][2] = -HalfDepth;
 	ModelObj->Data[0][3] = HalfWidth; ModelObj->Data[0][4] = -HalfHeight; ModelObj->Data[0][5] = -HalfDepth;
@@ -372,6 +374,7 @@ ModelObj_CreateBox(Model* ModelObj, float Width,
 
 	// NOTE: Color Data
 	ModelObj->ArraySize[1] = 108 * sizeof(float);
+	ModelObj->ArrayOffset[1] = 3;
 	for (unsigned int Index = 0; Index < 108; Index++)
 	{
 		ModelObj->Data[1][Index] = 1.0f;
@@ -379,6 +382,7 @@ ModelObj_CreateBox(Model* ModelObj, float Width,
 
 	// NOTE: Texture Coordinates
 	ModelObj->ArraySize[2] = 72 * sizeof(float);
+	ModelObj->ArrayOffset[2] = 2;
 	ModelObj->Data[2][0] = 0.0f; ModelObj->Data[2][1] = 0.0f;
 	ModelObj->Data[2][2] = 1.0f; ModelObj->Data[2][3] = 0.0f;
 	ModelObj->Data[2][4] = 1.0f; ModelObj->Data[2][5] = 1.0f;
@@ -423,6 +427,7 @@ ModelObj_CreateBox(Model* ModelObj, float Width,
 
 	// NOTE: Normal Data
 	ModelObj->ArraySize[3] = 108 * sizeof(float);
+	ModelObj->ArrayOffset[3] = 3;
 	// NOTE: Back
 	ModelObj->Data[3][0] = 0.0f; ModelObj->Data[3][1] = 0.0f; ModelObj->Data[3][2] = -1.0f;
 	ModelObj->Data[3][3] = 0.0f; ModelObj->Data[3][4] = 0.0f; ModelObj->Data[3][5] = -1.0f;
@@ -494,8 +499,8 @@ ModelObj_CreatePlane(Model* ModelObj,
 	float *ColorData = new float[Size] {};
 	float *TextureCoords = new float[12 * NumberOfSquares]{};
 	float *NormalData = new float[Size] {};
-#endif;
-
+#endif // MEMORY_ON
+	 
 	for (uint32 i = 0; i < Width; i++)
 	{
 		if (i % 2 == 0)
@@ -705,18 +710,26 @@ ModelObj_CreatePlane(Model* ModelObj,
 	ModelObj->ArraySize = 0;
 	ModelObj->ArraySize = Memory_Allocate(ModelObj->ArraySize,
 		ModelObj->NumAttribs);
+	ModelObj->ArrayOffset = 0;
+	ModelObj->ArrayOffset = Memory_Allocate(ModelObj->ArrayOffset,
+		ModelObj->NumAttribs);
 #else
 	ModelObj->Data = new float*[ModelObj->NumAttribs];
 	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs];
-#endif
+	ModelObj->ArrayOffset = new uint32[ModelObj->NumAttribs];
+#endif // MEMORY_ON
 	ModelObj->Data[0] = VerticeData;
 	ModelObj->ArraySize[0] = Size * sizeof(float);
+	ModelObj->ArrayOffset[0] = 3;
 	ModelObj->Data[1] = ColorData;
 	ModelObj->ArraySize[1] = Size * sizeof(float);
+	ModelObj->ArrayOffset[1] = 3;
 	ModelObj->Data[2] = TextureCoords;
 	ModelObj->ArraySize[2] = 12 * NumberOfSquares * sizeof(float);
+	ModelObj->ArrayOffset[2] = 2;
 	ModelObj->Data[3] = NormalData;
 	ModelObj->ArraySize[3] = Size * sizeof(float);
+	ModelObj->ArrayOffset[3] = 3;
 }
 
 void
@@ -749,7 +762,7 @@ ModelObj_CreateHeightmap(Model* ModelObj, Texture2D* ImageData)
 	float *TextureCoords = new float[8 * TotalVertices]{};
 	float *NormalData = new float[3 * TotalVertices]{};
 	uint32 *Indices = new uint32[NumberOfIndices]{};
-#endif
+#endif // MEMORY_ON
 	uint32 VertexIndex = 0;
 	uint32 ImagePixelIndex = 0;
 	for (uint32 Row = 0; Row < ImageData->Width; Row++)
@@ -921,18 +934,26 @@ ModelObj_CreateHeightmap(Model* ModelObj, Texture2D* ImageData)
 	ModelObj->ArraySize = 0;
 	ModelObj->ArraySize = Memory_Allocate(ModelObj->ArraySize,
 		ModelObj->NumAttribs);
+	ModelObj->ArrayOffset = 0;
+	ModelObj->ArrayOffset = Memory_Allocate(ModelObj->ArrayOffset,
+		ModelObj->NumAttribs);
 #else
 	ModelObj->Data = new float*[ModelObj->NumAttribs];
 	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs];
-#endif
+	ModelObj->ArrayOffset = new uint32[ModelObj->NumAttribs];
+#endif // MEMORY_ON
 	ModelObj->Data[0] = VerticeData;
 	ModelObj->ArraySize[0] = 3 * TotalVertices * sizeof(float);
+	ModelObj->ArrayOffset[0] = 3;
 	ModelObj->Data[1] = ColorData;
 	ModelObj->ArraySize[1] = 3 * TotalVertices * sizeof(float);
+	ModelObj->ArrayOffset[1] = 3;
 	ModelObj->Data[2] = TextureCoords;
 	ModelObj->ArraySize[2] = 8 * TotalVertices * sizeof(float);
+	ModelObj->ArrayOffset[2] = 2;
 	ModelObj->Data[3] = NormalData;
 	ModelObj->ArraySize[3] = 3 * TotalVertices * sizeof(float);
+	ModelObj->ArrayOffset[3] = 3;
 
 	ModelObj->IndiceData = Indices;
 	ModelObj->IndiceCount = NumberOfIndices;

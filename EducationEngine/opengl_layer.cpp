@@ -79,6 +79,9 @@ static gl_vertex_array_vertex_buffer* glVertexArrayVertexBuffer;
 static gl_vertex_array_attrib_binding* glVertexArrayAttribBinding;
 static gl_vertex_array_attrib_ib_format* glVertexArrayAttribFormat;
 static gl_create_buffers* glCreateBuffers;
+static gl_create_textures* glCreateTextures;
+static gl_texture_storage_2d* glTextureStorage2D;
+static gl_texture_sub_image_2d* glTextureSubImage2D;
 
 void 
 Render_Init(window_properties *Window)
@@ -169,6 +172,9 @@ Render_Init(window_properties *Window)
 	glVertexArrayAttribBinding = (gl_vertex_array_attrib_binding *)wglGetProcAddress("glVertexArrayAttribBinding");
 	glVertexArrayAttribFormat = (gl_vertex_array_attrib_ib_format *)wglGetProcAddress("glVertexArrayAttribFormat");
 	glCreateBuffers = (gl_create_buffers*)wglGetProcAddress("glCreateBuffers");
+	glCreateTextures = (gl_create_textures *)wglGetProcAddress("glCreateTextures");
+	glTextureStorage2D = (gl_texture_storage_2d *)wglGetProcAddress("glTextureStorage2D");
+	glTextureSubImage2D = (gl_texture_sub_image_2d *)wglGetProcAddress("glTextureSubImage2D");
 }
 
 void 
@@ -580,17 +586,21 @@ Render_FillVertexArrayIndices(RenderObj* RenderObject)
 {
 	glBindVertexArray(RenderObject->VertexArrayID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, RenderObject->IndiceID);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+	//	RenderObject->IndiceCount * sizeof(unsigned int),
+	//	RenderObject->IndiceData,
+	//	GL_STATIC_DRAW);
 	glBindVertexArray(0);
 }
 
 void 
 Render_FillVetexArrayObject(RenderObj* RenderObject,
-	uint32 NumberAttribs)
+	uint32 NumberAttribs, uint32* Offsets)
 {
 	for (uint32 i = 0; i < NumberAttribs; i++)
 	{
 		Render_FillVertexArrayData(RenderObject->VertexArrayID,
-			0, 0, RenderObject->BufferID[0], 3, 0);
+			i, i, RenderObject->BufferID[i], Offsets[i], 0);
 	}
 }
 
@@ -598,6 +608,30 @@ void
 Render_BindVertexArray(uint32 VertexArrayObject)
 {
 	glBindVertexArray(VertexArrayObject);
+}
+
+void
+Render_BuildTexture(uint32* TextureID, uint32 Width,
+	uint32 Height, uint8* TextureData)
+{
+	glCreateTextures(GL_TEXTURE_2D, 1, TextureID);
+
+	glTextureStorage2D(*TextureID, 1, GL_RGBA8, Width,
+		Height);
+	glTextureSubImage2D(*TextureID, 0, 0, 0,
+		Width, Height,
+		GL_RGBA, GL_UNSIGNED_BYTE, TextureData);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+		GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+		GL_NEAREST);
+}
+
+void
+Render_BindTexture(uint32 TextureID)
+{
+	glBindTexture(GL_TEXTURE_2D, TextureID);
 }
 
 void 

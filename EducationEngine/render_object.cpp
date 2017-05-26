@@ -93,7 +93,6 @@ RenderObj_CreateRenderObject(RenderObj* RenderObject, Model* ModelObj)
 #else
 	RenderObject->BufferID = new uint32[ModelObj->NumAttribs];
 #endif
-
 	//TODO: Think about creating many VAO's at once.
 	Render_CreateVertexArrays(1, &RenderObject->VertexArrayID);
 	Render_CreateBuffers(ModelObj->NumAttribs,
@@ -103,7 +102,8 @@ RenderObj_CreateRenderObject(RenderObj* RenderObject, Model* ModelObj)
 		Render_FillBuffer(RenderObject->BufferID[Index],
 			ModelObj->ArraySize[Index], ModelObj->Data[Index], 0);
 	}
-	Render_FillVetexArrayObject(RenderObject, ModelObj->NumAttribs);
+	Render_FillVetexArrayObject(RenderObject, ModelObj->NumAttribs,
+		ModelObj->ArrayOffset);
 }
 
 void

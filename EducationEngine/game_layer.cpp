@@ -76,6 +76,10 @@ Game_Loop()
 			States[0].EntityBlocks = 0;
 			States[0].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
+
+			States[0].TextObjArray = 0;
+			States[0].TextObjArray = (Text_Object*)Memory_GetMemPtr();
+			Memory_AdvanceItr(sizeof(Text_Object) * TEXT_OBJECTS_PER_PROGSTATE);
 #if DATA_ORIENTED
 
 #else
@@ -86,6 +90,8 @@ Game_Loop()
 #else
 			States[0].EntityBlocks = new EntityBlock[2]{};
 			States[0].RenderObjBlocks = new RenderObjBlock[2]{};
+			States[0].TextObjArray =
+				new Text_Object[TEXT_OBJECTS_PER_PROGSTATE]{};
 #if DATA_ORIENTED
 			States[0].ModelObjBlocks = new ModelObjBlock[2]{};
 #endif // DATA_ORIENTED
@@ -99,7 +105,7 @@ Game_Loop()
 			Entity_CreateBlock(&States[0].EntityBlocks[0], 256);
 #if DATA_ORIENTED
 			RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
-			ModelObj_CreateBlock(&States[0].ModelObjBlocks[0], 245);
+			ModelObj_CreateBlock(&States[0].ModelObjBlocks[0], 256);
 #else
 			RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
 #endif // DATA_ORIENTED
@@ -108,16 +114,8 @@ Game_Loop()
 			
 			States[0].FontArr = GlobalFont;
 			States[0].FontCount = 1;
-
-#if MEMORY_ON
-			States[0].TextObjArray = 0;
-			States[0].TextObjArray = (Text_Object*)Memory_GetMemPtr();
-			Memory_AdvanceItr(sizeof(Text_Object) * TEXT_OBJECTS_PER_PROGSTATE);
-#else
-			States[0].TextObjArray = 
-				new Text_Object[TEXT_OBJECTS_PER_PROGSTATE]{};
-#endif // MEMORY_ON
 			States[0].Status = 1;
+
 			Title_Initialize(&States[0]);
 		}
 		else

@@ -48,11 +48,17 @@ void
 Render_FillVertexArrayIndices(RenderObj* RenderObject);
 void 
 Render_FillVetexArrayObject(RenderObj* RenderObject, 
-	uint32 NumberAttribs);
+	uint32 NumberAttribs, uint32* Offsets);
 
 void 
 Render_BindVertexArray(uint32 VertexArrayObject);
 
+void
+Render_BuildTexture(uint32* TextureID, uint32 Width, uint32 Height,
+	uint8* TextureData);
+
+void
+Render_BindTexture(uint32 TextureID);
 void
 Render_Draw(RenderObj *RenderObject, uint32 VerticeCount);
 

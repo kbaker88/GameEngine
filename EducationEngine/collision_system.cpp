@@ -1,7 +1,7 @@
 #include "collision_system.h"
 
 int 
-Collision_ButtonClick(v2* MousePosition, CollisionObject* Object)
+Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj)
 {
 	window_properties WindowDimensions = Render_GetWindowProperties();
 	v2 NewMousePosition;
@@ -10,20 +10,20 @@ Collision_ButtonClick(v2* MousePosition, CollisionObject* Object)
 	NewMousePosition.y =
 		((float)WindowDimensions.Height * 0.5f) - MousePosition->y;
 
-	if ((NewMousePosition.x > (Object->Position->x - (Object->HalfWidth))) &&
-		(NewMousePosition.x < (Object->Position->x + (Object->HalfWidth))))
+	if ((NewMousePosition.x > (CollObj->Position->x - (CollObj->HalfWidth))) &&
+		(NewMousePosition.x < (CollObj->Position->x + (CollObj->HalfWidth))))
 	{
-		if ((NewMousePosition.y >(Object->Position->y - (Object->HalfHeight))) &&
-			(NewMousePosition.y < (Object->Position->y + (Object->HalfHeight))))
+		if ((NewMousePosition.y >(CollObj->Position->y - (CollObj->HalfHeight))) &&
+			(NewMousePosition.y < (CollObj->Position->y + (CollObj->HalfHeight))))
 		{
 			if (Platform_GetMouseState())
 			{
-				return Object->CollisionCode + 2;
+				return CollObj->CollisionCode + 2;
 			}
-			return Object->CollisionCode + 1;
+			return CollObj->CollisionCode + 1;
 		}
 	}
-	return Object->CollisionCode;
+	return CollObj->CollisionCode;
 }
 
 bool 

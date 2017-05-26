@@ -1,5 +1,9 @@
 #include "title_state.h"
 
+GLuint TextureID;
+CollisionObject CollideTest;
+v3 Position;
+
 void 
 Title_Initialize(ProgramState* State)
 {
@@ -28,6 +32,20 @@ Title_Initialize(ProgramState* State)
 	RenderObj_CreateRenderObject(State->RenderObjBlocks[0].BlockObjects[0],
 		State->ModelObjBlocks[0].BlockObjects[0]);
 	State->RenderObjBlocks[0].BlockObjects[0]->NumVertices = 6;
+	Position = v3(0.0f, 0.0f, 0.0f);
+
+	CollideTest.Width = 160.0f;
+	CollideTest.Height = 40.0f;
+	CollideTest.HalfWidth = CollideTest.Width * 0.5f;
+	CollideTest.HalfHeight = CollideTest.Height * 0.5f;
+	CollideTest.Position = &Position;
+	CollideTest.CollisionCode = 0;
+
+	Texture2D* Test = Asset_GetTexture(0);
+	
+	Render_BuildTexture(&TextureID, Test->Width, Test->Height,
+		Test->Data);
+
 #else // NOT DATA_ORIENTED
 
 	State->ShaderHandles[0] = 
@@ -72,6 +90,9 @@ Title_Draw(ProgramState* State)
 	Render_ClearScreen(&v4(1.0f, 1.0f, 1.0f, 1.0f));
 
 #if DATA_ORIENTED
+	Platform_GetCursorPosition(&State->CursorPosition.x,
+		&State->CursorPosition.y);
+
 	Render_BindShaders(State->ShaderHandles[0]);
 	State->GPUShaderVarArray[0] =
 		Render_GetShaderVariable(State->ShaderHandles[0], "model");
@@ -79,20 +100,42 @@ Title_Draw(ProgramState* State)
 		Render_GetShaderVariable(State->ShaderHandles[0], "view");
 	State->GPUShaderVarArray[2] =
 		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
+	State->GPUShaderVarArray[3] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
+	State->GPUShaderVarArray[4] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "HoverColor");
 
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
 		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
 		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], 0);
 
 	m4 ModelMatrix = Math_IdentityMatrix();
 	Math_TranslateMatrix(ModelMatrix, v3(0.0f, 0.0f, 0.0f));
 
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
-		&ModelMatrix.Rc[0][0], 1, 0);
-	Render_Draw(State->RenderObjBlocks[0].BlockObjects[0],
-		State->RenderObjBlocks[0].BlockObjects[0]->NumVertices);
+	int32 CollisionResult = 0;
+	for (uint32 Index = 0; Index < 1; Index++)
+	{
+		CollisionResult = Collision_ButtonClick(&State->CursorPosition, &CollideTest);
+		Title_CollisionResolve(State, CollisionResult);
 
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
+			&ModelMatrix.Rc[0][0], 1, 0);
+		Render_BindTexture(TextureID);
+		Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index],
+			State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices);
+		Render_BindTexture(0);
+	}
+
+	if (State->Status == -1)
+	{
+		Title_Clean(State);
+	}
+	else
+	{
+		Platform_UpdateMouseState(0);
+	}
 #else
 
 	Render_BindShaders(State->ShaderHandles[0]);
@@ -203,10 +246,14 @@ Title_CollisionResolve(ProgramState* State,
 	{
 	case 0:
 	{
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 1.0f,
+			1.0f, 1.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 0)->State = 0;
 	} break;
 	case 1:
 	{
+		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 0.0f,
+			1.0f, 0.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 0)->State = 1;
 	} break;
 	case 2:
@@ -270,12 +317,12 @@ Title_Clean(ProgramState* State)
 	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
 	ModelObj_DeleteBlock(&State->ModelObjBlocks[0]);
 #else
-	Platform_UpdateMouseState(0);
 	Entity_DeleteBlock(&State->EntityBlocks[0]);
 	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
 	State->ObjectCount = 0;
 	State->EntityCount = 0;
 #endif
+	Platform_UpdateMouseState(0);
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);

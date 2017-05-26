@@ -54,7 +54,9 @@ Entity_DeleteBlock(EntityBlock* Block);
 //		 8-11 : Collision Objects
 //		 12-15: Camera Objects
 #if DATA_ORIENTED
-
+int32
+Entity_Create(EntityBlock* Block, uint32 IDNumber,
+	RenderObj* RenderObjects , v3 *Position, uint64 TypesOfObjects);
 #else
 int32 
 Entity_Create(EntityBlock* Block, uint32 IDNumber,

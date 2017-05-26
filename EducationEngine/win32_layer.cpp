@@ -1,9 +1,6 @@
 #include "game_layer.h"
 #include <Windows.h>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
 // Accepted values for attribute names for the OpenGL Context(WGL)
 #define WGL_CONTEXT_MAJOR_VERSION_ARB				0x2091
 #define WGL_CONTEXT_MINOR_VERSION_ARB				0x2092
@@ -107,34 +104,20 @@ Platform_DoesFileExist(char* FileName)
 unsigned char*
 Platform_ReadFile(char* FileName)
 {
-	struct stat buffer;
-	stat(FileName, &buffer);
-
+	HANDLE ImageFile;
+	ImageFile = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	DWORD FileSize = GetFileSize(ImageFile, 0);
 #if MEMORY_ON
-	uint8* ReturnValues = 0;
-	ReturnValues = Memory_Allocate(ReturnValues, buffer.st_size);
+	uint8* Buffer = 0;
+	Buffer = Memory_Allocate(Buffer, FileSize);
 #else
-	uint8* ReturnValues = new uint8[buffer.st_size]();
+	uint8* Buffer = new uint8[FileSize] {};
 #endif
-	FILE* OpenFile;
-	// NOTE: rb = Read Binary
-	fopen_s(&OpenFile, FileName, "rb");
-
-	if (OpenFile != 0)
-	{
-		size_t NumberOfElementsRead = fread(ReturnValues, 
-			sizeof(uint8), buffer.st_size, OpenFile);
-
-		fclose(OpenFile);
-	}
-	else
-	{
-		// TODO: Error
-		Platform_TemporaryError("Failed to open file");
-		return 0; 
-	}
-
-	return ReturnValues;
+	LPDWORD BytesRead = 0;
+	ReadFile(ImageFile, (LPVOID)Buffer, FileSize, BytesRead, 0);
+	CloseHandle(ImageFile);
+	return Buffer;
 }
 
 void 
