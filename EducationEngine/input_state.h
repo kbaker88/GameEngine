@@ -14,8 +14,9 @@ struct Cursor_State
 };
 
 void 
-Input_UpdateMouseState(ProgramState* State);
+Input_UpdateMouseState(ProgramState* State, Camera* PlayerCamera);
 void 
-Input_UpdateKeyStates(ProgramState* State);
+Input_UpdateKeyStates(ProgramState* State, Camera* PlayerCamera,
+	v3* Direction);
 
 #endif

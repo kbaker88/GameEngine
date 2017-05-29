@@ -8,12 +8,16 @@ struct PhysicsObject
 	PhysicsObject() : AccelerationRate(0.0f), Mass(1.0f),
 		Force(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f),
 		Acceleration(0.0f, 0.0f, 0.0f), ForceSum(0.0f, 0.0f, 0.0f), 
-		MoveDirection(0), Position(0), ModelMatrix(0) {}
+		ModelMatrix(0) {}
 	
 	~PhysicsObject() {}
 
 	m4 *ModelMatrix;
+#if DATA_ORIENTED
+	v3 Position, MoveDirection;
+#else
 	v3 *Position, *MoveDirection;
+#endif // DATA_ORIENTED
 	v3 Velocity, Force, ForceSum, Acceleration, PrevPosition;
 	float AccelerationRate;
 	float Mass;

@@ -17,7 +17,8 @@ Title_Initialize(ProgramState* State)
 	
 #if DATA_ORIENTED
 	State->ShaderHandles[0] =
-		Render_CompileShaders(VertexShader_Title, FragmentShader_Title);
+		Render_CompileShaders(
+			VertexShader_Title, FragmentShader_Title);
 
 // TODO: Throw this part into an asset system
 #if MEMORY_ON
@@ -28,8 +29,8 @@ Title_Initialize(ProgramState* State)
 	State->RenderObjBlocks[0].BlockObjects[1] = new RenderObj;
 	State->RenderObjBlocks[0].BlockObjects[2] = new RenderObj;
 #endif // MEMORY_ON
-	ModelObj_CreateRectangle(State->ModelObjBlocks[0].BlockObjects[0],
-		160.0f, 40.0f);
+	ModelObj_CreateRectangle(
+		State->ModelObjBlocks[0].BlockObjects[0], 160.0f, 40.0f);
 
 	Position = v3(0.0f, -160.0f, 0.0f);
 	Texture2D* Textures[3];
@@ -39,7 +40,8 @@ Title_Initialize(ProgramState* State)
 
 	for (uint32 Index = 0; Index < 3; Index++)
 	{
-		RenderObj_CreateRenderObject(State->RenderObjBlocks[0].BlockObjects[Index],
+		RenderObj_CreateRenderObject(
+			State->RenderObjBlocks[0].BlockObjects[Index],
 			State->ModelObjBlocks[0].BlockObjects[0]);
 		State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices = 6;
 
@@ -80,8 +82,8 @@ Title_Initialize(ProgramState* State)
 	Utility_CreateButton(State, 400, 40, &v3(0.0f, 0.0f, 0.0f),
 		Asset_GetTexture(8));
 
-	Text_CreateObj(&State->TextObjArray[0], 0.3f, &v3(-60.0f, 3.0f, 0.1f),
-		16, &State->FontArr[0]);
+	Text_CreateObj(&State->TextObjArray[0], 0.3f,
+		&v3(-60.0f, 3.0f, 0.1f), 16, &State->FontArr[0]);
 
 	State->TimerArray[0].Start();
 #endif // DATA_ORIENTED
@@ -124,7 +126,8 @@ Title_Draw(ProgramState* State)
 	int32 CollisionResult = 0;
 	for (uint32 Index = 0; Index < 3; Index++)
 	{
-		ModelMatrix = Math_TranslateMatrix(ModelMatrix, v3(0.0f, -42.0f, 0.0f));
+		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
+			v3(0.0f, -42.0f, 0.0f));
 		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
 			&State->CollisionObj[Index]);
 		Title_CollisionResolve(State, CollisionResult);
@@ -163,7 +166,8 @@ Title_Draw(ProgramState* State)
 		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
 		(float*)State->CameraArray[0].GetProjectionMatrix(), 1, 0);
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], (int32)0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[3],
+		(int32)0);
 
 	Platform_GetCursorPosition(&State->CursorPosition.x,
 		&State->CursorPosition.y);
@@ -172,7 +176,8 @@ Title_Draw(ProgramState* State)
 	for (uint32 Index = 0; Index < State->EntityCount; Index++)
 	{
 		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
-			Entity_GetCollisionObjPtr(&State->EntityBlocks[0], Index, 0));
+			Entity_GetCollisionObjPtr(&State->EntityBlocks[0],
+				Index, 0));
 		Title_CollisionResolve(State, CollisionResult);
 
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 
@@ -225,7 +230,8 @@ Title_Draw(ProgramState* State)
 		}
 		Text_InputBoxUpdate(&State->TextObjArray[0],
 			(uint16)State->LastKeyPress, TempPing);
-		Text_Draw(&State->TextObjArray[0], State->GPUShaderVarArray[0]);
+		Text_Draw(&State->TextObjArray[0], 
+			State->GPUShaderVarArray[0]);
 
 		if (State->ConsoleState)
 		{
@@ -255,14 +261,14 @@ Title_CollisionResolve(ProgramState* State,
 	{
 	case 0:
 	{
-		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 1.0f,
-			1.0f, 1.0f);
+		Render_UpdateShaderVariable(
+			State->GPUShaderVarArray[4], 1.0f, 1.0f, 1.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 0)->State = 0;
 	} break;
 	case 1:
 	{
-		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 0.0f,
-			1.0f, 0.0f);
+		Render_UpdateShaderVariable(
+			State->GPUShaderVarArray[4], 0.0f, 1.0f, 0.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 0)->State = 1;
 	} break;
 	case 2:
@@ -272,14 +278,14 @@ Title_CollisionResolve(ProgramState* State,
 	} break;
 	case 10:
 	{
-		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 1.0f,
-			1.0f, 1.0f);
+		Render_UpdateShaderVariable(
+			State->GPUShaderVarArray[4], 1.0f, 1.0f, 1.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 1)->State = 0;
 	} break;
 	case 11:
 	{
-		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 0.0f,
-			1.0f, 0.0f);
+		Render_UpdateShaderVariable(
+			State->GPUShaderVarArray[4], 0.0f, 1.0f, 0.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 1)->State = 1;
 	} break;
 	case 12:
@@ -289,14 +295,14 @@ Title_CollisionResolve(ProgramState* State,
 	} break;
 	case 20:
 	{
-		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 1.0f,
-			1.0f, 1.0f);
+		Render_UpdateShaderVariable(
+			State->GPUShaderVarArray[4], 1.0f, 1.0f, 1.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 2)->State = 0;
 	} break;
 	case 21:
 	{
-		Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 0.0f,
-			1.0f, 0.0f);
+		Render_UpdateShaderVariable(
+			State->GPUShaderVarArray[4], 0.0f, 1.0f, 0.0f);
 		Entity_Ptr(&State->EntityBlocks[0], 2)->State = 1;
 	} break;
 	case 22:

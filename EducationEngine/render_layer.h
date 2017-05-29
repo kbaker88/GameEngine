@@ -8,7 +8,6 @@
 #define RENDER_OPENGL 1
 #define RENDER_VULKAN 0
 #define RENDER_DIRECTX12 0
-#define DATA_ORIENTED 0 //TODO: Temporary while transfering
 
 #if DATA_ORIENTED
 #if RENDER_OPENGL

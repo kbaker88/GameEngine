@@ -1,13 +1,18 @@
 #include "game_state.h"
 
+#if DATA_ORIENTED
 static GLuint TextureID[1];
 static v3 Position;
 static v3 PlayerCameraFacingVect;
+static PhysicsObject PlayerPhysObj;
+static m4 PlayerMatrix;
+#endif
 
 void 
 Game_Initialize(ProgramState* State)
 {
-	window_properties WindowDimensions = Render_GetWindowProperties();
+	window_properties WindowDimensions = 
+		Render_GetWindowProperties();
 	float WindowHalfHeight = (float)WindowDimensions.Height * 0.5f;
 	float WindowHalfWidth = (float)WindowDimensions.Width * 0.5f;
 
@@ -16,6 +21,7 @@ Game_Initialize(ProgramState* State)
 	//State->CameraArray[0].SetProjectionMatrix(0);
 	State->CameraArray[0].SetPosition(&v3(0.0f, 0.0f, 3.0f));
 	State->CameraArray[0].SetProjectionMatrix(1);
+	State->CameraArray[0].DirectionVector = v3(0.0f, 0.0f, -1.0f);
 
 #if DATA_ORIENTED
 	State->ShaderHandles[0] =
@@ -27,27 +33,54 @@ Game_Initialize(ProgramState* State)
 #else
 	State->ModelObjBlocks[0].BlockObjects[0] = new Model;
 	State->RenderObjBlocks[0].BlockObjects[0] = new RenderObj;
+
+	State->ModelObjBlocks[0].BlockObjects[1] = new Model;
+	State->RenderObjBlocks[0].BlockObjects[1] = new RenderObj;
 #endif // MEMORY_ON
 	ModelObj_CreateBox(State->ModelObjBlocks[0].BlockObjects[0],
 		1.0f, 1.0f, 1.0f);
+	ModelObj_CreatePlane(State->ModelObjBlocks[0].BlockObjects[1],
+		5, 5);
 	
 	Position = v3(0.0f, 0.0f, 0.0f);
-	Texture2D* Textures[1];
+	Texture2D* Textures[2];
 	Textures[0] = Asset_GetTexture(5);
+	Textures[1] = Asset_GetTexture(4);
 
-	for (uint32 Index = 0; Index < 1; Index++)
-	{
-		RenderObj_CreateRenderObject(State->RenderObjBlocks[0].BlockObjects[Index],
-			State->ModelObjBlocks[0].BlockObjects[0]);
-		State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices = 36;
+	uint32 Index = 0;
+	RenderObj_CreateRenderObject(
+		State->RenderObjBlocks[0].BlockObjects[Index],
+		State->ModelObjBlocks[0].BlockObjects[Index]);
+	State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices = 36;
 
-		Collision_FillObject(&State->CollisionObj[Index], 1.0f, 1.0f,
-			1.0f, &Position);
-		State->CollisionObj[Index].CollisionCode = Index * 10;
+	//Collision_FillObject(&State->CollisionObj[Index], 1.0f, 1.0f,
+	//	1.0f, &Position);
+	//State->CollisionObj[Index].CollisionCode = Index * 10;
 
-		Render_BuildTexture(&TextureID[Index], Textures[Index]->Width,
-			Textures[Index]->Height, Textures[Index]->Data);
-	}
+	Render_BuildTexture(&TextureID[Index], Textures[Index]->Width,
+		Textures[Index]->Height, Textures[Index]->Data);
+	
+	Index = 1;
+	RenderObj_CreateRenderObject(
+		State->RenderObjBlocks[0].BlockObjects[Index],
+		State->ModelObjBlocks[0].BlockObjects[Index]);
+	State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices = 150;
+
+	//Collision_FillObject(&State->CollisionObj[Index], 1.0f, 1.0f,
+	//	1.0f, &Position);
+	//State->CollisionObj[Index].CollisionCode = Index * 10;
+
+	Render_BuildTexture(&TextureID[Index], Textures[Index]->Width,
+		Textures[Index]->Height, Textures[Index]->Data);
+
+
+
+	PlayerMatrix = Math_IdentityMatrix();
+	PlayerPhysObj.AccelerationRate = 10.0f;
+	PlayerPhysObj.Position = v3(0.0f, 0.0f, 3.0f);
+	PlayerPhysObj.MoveDirection =
+		State->CameraArray[0].DirectionVector;
+	PlayerPhysObj.ModelMatrix = &PlayerMatrix;
 
 #else // DATA_ORIENTED
 
@@ -59,51 +92,64 @@ Game_Initialize(ProgramState* State)
 		TextFragmentShaderSource);
 
 	// NOTE: Player's Model 0
-	uint32 PlayerBox = Utility_CreateBox(State, 0.25f, 0.25f, 0.25f);
-	uint32 PlayerEntity = Utility_CreateEntity(State, &v3(0.0f, 6.0f, 20.0f), 
+	uint32 PlayerBox =
+		Utility_CreateBox(State, 0.25f, 0.25f, 0.25f);
+	uint32 PlayerEntity =
+		Utility_CreateEntity(State, &v3(0.0f, 6.0f, 20.0f), 
 		PlayerBox, 0x1111);
-	Phys_SetAccelerationRate(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+	Phys_SetAccelerationRate(
+		Entity_GetPhysObjPtr(&State->EntityBlocks[0],
 		PlayerEntity, 0), 1000.0f);
 
 	// NOTE: Terrain 1
-	uint32 Terrain = Utility_CreateHeightMap(State, Asset_GetTexture(7),
+	uint32 Terrain = 
+		Utility_CreateHeightMap(State, Asset_GetTexture(7),
 		Asset_GetTexture(4));
-	uint32 TerrainEntity = Utility_CreateEntity(State, &v3(0.0f, 0.0f, 0.0f), 
+	uint32 TerrainEntity = 
+		Utility_CreateEntity(State, &v3(0.0f, 0.0f, 0.0f), 
 		Terrain, 0x111);
 
 	// NOTE: Wood Floor 2
-	uint32 WoodFloor = Utility_CreatePlane(State, 10, 10, Asset_GetTexture(6));
-	uint32 PlaneEntity = Utility_CreateEntity(State, &v3(0.0f, 0.0f, 20.0f), 
+	uint32 WoodFloor =
+		Utility_CreatePlane(State, 10, 10, Asset_GetTexture(6));
+	uint32 PlaneEntity = 
+		Utility_CreateEntity(State, &v3(0.0f, 0.0f, 20.0f), 
 		WoodFloor, 0x111);
 
 	// NOTE: Light Box 3
-	uint32 LightBox = Utility_CreateBox(State, 0.25f, 0.25f, 0.25f);
-	uint32 LightEntity = Utility_CreateEntity(State, &v3(2.0f, 1.0f, 17.0f), 
+	uint32 LightBox = 
+		Utility_CreateBox(State, 0.25f, 0.25f, 0.25f);
+	uint32 LightEntity = 
+		Utility_CreateEntity(State, &v3(2.0f, 1.0f, 17.0f), 
 		LightBox, 0x111);
 
 	// NOTE: Wood Box 4
-	uint32 WoodBox = Utility_CreateBox(State, 1.0f, 1.0f, 1.0f, 
+	uint32 WoodBox =
+		Utility_CreateBox(State, 1.0f, 1.0f, 1.0f, 
 		Asset_GetTexture(5));
-	uint32 BoxEntity1 = Utility_CreateEntity(State, &v3(3.0f, 0.5f, 15.0f), 
+	uint32 BoxEntity1 =
+		Utility_CreateEntity(State, &v3(3.0f, 0.5f, 15.0f), 
 		WoodBox, 0x111);
 
 	// NOTE: Wood Box 5
-	uint32 BoxEntity2 = Utility_CreateEntity(State, &v3(0.0f, 0.5f, 10.0f), 
+	uint32 BoxEntity2 =
+		Utility_CreateEntity(State, &v3(0.0f, 0.5f, 10.0f), 
 		WoodBox, 0x111);
 	
 	// NOTE: Wood Box 6
-	uint32 BoxEntity3 = Utility_CreateEntity(State, &v3(6.0f, 0.5f, 10.0f), 
+	uint32 BoxEntity3 = 
+		Utility_CreateEntity(State, &v3(6.0f, 0.5f, 10.0f), 
 		WoodBox, 0x111);
 
-	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0], PlayerEntity, 0),
-		&Gravity);
+	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+		PlayerEntity, 0), &Gravity);
 
 	//Phys_SetAccelerationRate(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
 	//	BoxEntity3, 0), 10000.0f);
-	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0], BoxEntity3,
-		0), &v3(-1.0f, 0.0f, 0.0f));
-	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0], BoxEntity2,
-		0), &v3(1.0f, 0.0f, 0.0f));
+	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+		BoxEntity3,	0), &v3(-1.0f, 0.0f, 0.0f));
+	Phys_AddForce(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+		BoxEntity2, 0), &v3(1.0f, 0.0f, 0.0f));
 	
 #endif
 	State->TimerArray[0].Start();
@@ -115,18 +161,26 @@ Game_Draw(ProgramState* State)
 	Render_ClearScreen(&v4(0.2f, 0.3f, 0.3f, 1.0f));
 
 #if DATA_ORIENTED
-	Input_UpdateMouseState(State);
-	Input_UpdateKeyStates(State);
+	Input_UpdateMouseState(State, &State->CameraArray[0]);
+	Input_UpdateKeyStates(State, &State->CameraArray[0],
+		&PlayerPhysObj.MoveDirection);
+	Phys_CalculatePosition(&PlayerPhysObj);
+	State->CameraArray[0].SetPosition(
+		&PlayerPhysObj.Position);
 
 	Render_BindShaders(State->ShaderHandles[0]);
 	State->GPUShaderVarArray[0] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "model");
+		Render_GetShaderVariable(State->ShaderHandles[0],
+			"model");
 	State->GPUShaderVarArray[1] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "view");
+		Render_GetShaderVariable(State->ShaderHandles[0],
+			"view");
 	State->GPUShaderVarArray[2] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
+		Render_GetShaderVariable(State->ShaderHandles[0], 
+			"projection");
 	State->GPUShaderVarArray[3] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
+		Render_GetShaderVariable(State->ShaderHandles[0], 
+			"myTexture");
 
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
 		(float*)State->CameraArray[0].GetViewMatrix(),
@@ -137,10 +191,18 @@ Game_Draw(ProgramState* State)
 
 	m4 ModelMatrix = Math_IdentityMatrix();
 	ModelMatrix = Math_TranslateMatrix(ModelMatrix, Position);
-	ModelMatrix = Math_RotateMatrix(ModelMatrix, 45.0f, v3(1.0f, 0.0f, 0.0f));
+	//ModelMatrix = Math_RotateMatrix(ModelMatrix, 45.0f,
+	//	v3(1.0f, 0.0f, 0.0f));
 
 	uint32 Index = 0;
-	ModelMatrix = Math_TranslateMatrix(ModelMatrix, v3(0.0f, 0.0f, 0.0f));
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
+		&ModelMatrix.Rc[0][0], 1, 0);
+	Render_BindTexture(TextureID[Index]);
+	Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index],
+		State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices);
+	Render_BindTexture(0);
+
+	Index = 1;
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		&ModelMatrix.Rc[0][0], 1, 0);
 	Render_BindTexture(TextureID[Index]);
@@ -153,10 +215,14 @@ Game_Draw(ProgramState* State)
 	v3 LightPosition = { 2.0f, 1.0f, -17.0f };
 	v3 LightColor = { 1.0f, 1.0f, 1.0f };
 
-	Input_UpdateMouseState(State);
-	Input_UpdateKeyStates(State);
-	Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
-		0, 0));
+	Input_UpdateMouseState(
+		State, Entity_GetCamera(&State->EntityBlocks[0], 0));
+	Input_UpdateKeyStates(
+		State, Entity_GetCamera(&State->EntityBlocks[0], 0),
+		&Entity_Ptr(&State->EntityBlocks[0], 0)->DirectionVector);
+
+	Phys_CalculatePosition(Entity_GetPhysObjPtr(
+		&State->EntityBlocks[0], 0, 0));
 	Entity_GetCamera(&State->EntityBlocks[0], 0)->
 		SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
 
@@ -182,22 +248,24 @@ Game_Draw(ProgramState* State)
 		Render_GetShaderVariable(State->ShaderHandles[0], "isTextured");
 
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
-		(float*)Entity_GetCamera(&State->EntityBlocks[0], 0)->GetViewMatrix(),
-		1, 0);
+		(float*)Entity_GetCamera(&State->EntityBlocks[0], 
+			0)->GetViewMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
-		(float*)Entity_GetCamera(&State->EntityBlocks[0], 0)->GetProjectionMatrix(),
-		1, 0);
+		(float*)Entity_GetCamera(&State->EntityBlocks[0],
+			0)->GetProjectionMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[3],
 		LightColor.x, LightColor.y, LightColor.z);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[4],
 		LightPosition.x, LightPosition.y, LightPosition.z);
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[5], (int32)0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[5],
+		(int32)0);
 
 	// NOTE: Draw terrain below
 	m4 ModelMatrix = Math_IdentityMatrix();
 
 	bool IsTextured = 0;
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], IsTextured);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], 
+		IsTextured);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		(float*)&ModelMatrix, 1, 0);
 
@@ -215,10 +283,12 @@ Game_Draw(ProgramState* State)
 		// NOTE: If collision with floor
 		if (Position.y <= 1.0f)
 		{
-			Phys_WallSlide(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+			Phys_WallSlide(
+				Entity_GetPhysObjPtr(&State->EntityBlocks[0],
 				0, 0), &v3(0.0f, 1.0f, 0.0f));
 			Entity_GetCamera(&State->EntityBlocks[0], 0)->
-				SetPosition(&Entity_GetPosition(&State->EntityBlocks[0], 0));
+				SetPosition(&Entity_GetPosition(
+					&State->EntityBlocks[0], 0));
 		}
 		else
 		{
@@ -243,8 +313,8 @@ Game_Draw(ProgramState* State)
 			v3(0.0f, 0.0f, 1.0f).Arr);
 		Render_UnmapShaderDataPtr();
 
-		if (Collision_HeightMap(Entity_GetCollisionObjPtr(&State->EntityBlocks[0],
-			1, 0), Position))
+		if (Collision_HeightMap(Entity_GetCollisionObjPtr(
+			&State->EntityBlocks[0], 1, 0), Position))
 		{
 			Phys_WallSlide(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
 				0, 0), &Entity_GetCollisionObjPtr(&State->EntityBlocks[0],
@@ -263,7 +333,8 @@ Game_Draw(ProgramState* State)
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[6], IsTextured);
 	for (uint32 Index = 2; Index < State->EntityCount; Index++) 
 	{
-		Entity_Draw(&State->EntityBlocks[0], Index, State->GPUShaderVarArray[0]);
+		Entity_Draw(&State->EntityBlocks[0], Index,
+			State->GPUShaderVarArray[0]);
 	}
 
 	//NOTE: Draw UI Below
@@ -293,10 +364,13 @@ Game_Draw(ProgramState* State)
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], 0);
 
 	//TODO: Remove this, testing only
-	Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 6, 0));
-	Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0], 5, 0));
+	Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+		6, 0));
+	Phys_CalculatePosition(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
+		5, 0));
 
-	if (Collision_GJK(Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 5, 0),
+	if (Collision_GJK(Entity_GetCollisionObjPtr(&State->EntityBlocks[0],
+		5, 0),
 		Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 6, 0)))
 	{
 		Phys_BounceBack(Entity_GetPhysObjPtr(&State->EntityBlocks[0],
@@ -305,7 +379,8 @@ Game_Draw(ProgramState* State)
 			6, 0), &v3(1.0f, 0.0f, 0.0f));
 	}
 
-	if (Collision_GJK(Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 0, 0),
+	if (Collision_GJK(Entity_GetCollisionObjPtr(&State->EntityBlocks[0],
+		0, 0),
 		Entity_GetCollisionObjPtr(&State->EntityBlocks[0], 6, 0)))
 	{
 		Phys_BounceBack(Entity_GetPhysObjPtr(&State->EntityBlocks[0],

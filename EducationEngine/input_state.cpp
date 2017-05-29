@@ -3,18 +3,23 @@
 static Cursor_State CursorState;
 
 void 
-Input_UpdateMouseState(ProgramState* State)
+Input_UpdateMouseState(ProgramState* State, Camera* PlayerCamera)
 {
 	//TODO: This MousePosition might be the cause of error in mouse picking
 	//TODO: Maybe only do the mouse position calculation once.
 	Platform_GetCursorPosition(&State->CursorPosition.x,
 		&State->CursorPosition.y);
 
-	window_properties WindowDimensions = Render_GetWindowProperties();
-	float WindowHalfWidth = (float)WindowDimensions.Width * 0.5f;
-	float WindowHalfHeight = (float)WindowDimensions.Height * 0.5f;
-	CursorState.Position.x = State->CursorPosition.x - WindowHalfWidth;
-	CursorState.Position.y = WindowHalfHeight - State->CursorPosition.y;
+	window_properties WindowDimensions =
+		Render_GetWindowProperties();
+	float WindowHalfWidth = 
+		(float)WindowDimensions.Width * 0.5f;
+	float WindowHalfHeight =
+		(float)WindowDimensions.Height * 0.5f;
+	CursorState.Position.x =
+		State->CursorPosition.x - WindowHalfWidth;
+	CursorState.Position.y =
+		WindowHalfHeight - State->CursorPosition.y;
 
 	if (CursorState.Position.x > WindowHalfWidth)
 	{
@@ -40,12 +45,8 @@ Input_UpdateMouseState(ProgramState* State)
 	float Sensitivity = 0.05f;
 	CursorState.PositionOffset *= Sensitivity;
 
-	float* YawPtr = 
-		&State->CameraArray[0].Yaw;
-		//&Entity_GetCamera(&State->EntityBlocks[0], 0)->Yaw;
-	float* PitchPtr = 
-		&State->CameraArray[0].Pitch;
-		//&Entity_GetCamera(&State->EntityBlocks[0], 0)->Pitch;
+	float* YawPtr = &PlayerCamera->Yaw;
+	float* PitchPtr = &PlayerCamera->Pitch;
 
 	*YawPtr += CursorState.PositionOffset.x;
 	*PitchPtr += CursorState.PositionOffset.y;
@@ -61,30 +62,20 @@ Input_UpdateMouseState(ProgramState* State)
 		Math_Sine(Math_ConvertToRadians(*PitchPtr)),
 		Math_Sine(Math_ConvertToRadians(*YawPtr)) *
 		Math_Cosine(Math_ConvertToRadians(*PitchPtr)));
-	//Entity_GetCamera(&State->EntityBlocks[0], 0)->FacingVector =
-	State->CameraArray[0].FacingVector =
-		Math_Normalize(PlayerFront);
+
+	PlayerCamera->FacingVector = Math_Normalize(PlayerFront);
 }
 
 void 
-Input_UpdateKeyStates(ProgramState* State)
+Input_UpdateKeyStates(ProgramState* State, Camera* PlayerCamera, 
+	v3* Direction)
 {
-	float* YawPtr =
-		&State->CameraArray[0].Yaw;
-		//&Entity_GetCamera(&State->EntityBlocks[0], 0)->Yaw;
-	float* PitchPtr =
-		&State->CameraArray[0].Pitch;
-		//&Entity_GetCamera(&State->EntityBlocks[0], 0)->Pitch;
+	float* YawPtr = &PlayerCamera->Yaw;
+	float* PitchPtr = &PlayerCamera->Pitch;
 
-	v3* DirectionVector = 
-		&State->CameraArray[0].DirectionVector;
-		//&Entity_Ptr(&State->EntityBlocks[0], 0)->DirectionVector;
-	v3* FacingVector =
-		&State->CameraArray[0].FacingVector;
-		//&Entity_GetCamera(&State->EntityBlocks[0], 0)->FacingVector;
-	v3* RelativeUpVector =
-		&State->CameraArray[0].UpVector;
-		//&Entity_GetCamera(&State->EntityBlocks[0], 0)->UpVector;
+	v3* DirectionVector = Direction;
+	v3* FacingVector = &PlayerCamera->FacingVector;
+	v3* RelativeUpVector = &PlayerCamera->UpVector;
 	
 	if (Platform_GetStateOfKey('Q') == 1)
 	{
@@ -96,38 +87,45 @@ Input_UpdateKeyStates(ProgramState* State)
 	}
 
 	v3 UserFacingVector = 
-		v3(Math_Cosine(Math_ConvertToRadians(*YawPtr)) * Math_Cosine(Math_ConvertToRadians(*PitchPtr)),
+		v3(Math_Cosine(Math_ConvertToRadians(*YawPtr)) * 
+			Math_Cosine(Math_ConvertToRadians(*PitchPtr)),
 			Math_Sine(Math_ConvertToRadians(*PitchPtr)),
-			Math_Sine(Math_ConvertToRadians(*YawPtr)) * Math_Cosine(Math_ConvertToRadians(*PitchPtr)));
+			Math_Sine(Math_ConvertToRadians(*YawPtr)) *
+			Math_Cosine(Math_ConvertToRadians(*PitchPtr)));
 	*FacingVector = Math_Normalize(UserFacingVector);
 
 	if ((Platform_GetStateOfKey('W') == 1) && 
 		(Platform_GetStateOfKey('A') == 1))
 	{
-		*DirectionVector = -Math_Normalize(Math_CrossProduct(*FacingVector,
+		*DirectionVector =
+			-Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector)) + *FacingVector;
 	}
 	else if ((Platform_GetStateOfKey('W') == 1) && 
 		(Platform_GetStateOfKey('D') == 1))
 	{
-		*DirectionVector = Math_Normalize(Math_CrossProduct(*FacingVector,
+		*DirectionVector =
+			Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector)) + *FacingVector;
 	}
 	else if ((Platform_GetStateOfKey('S') == 1) && 
 		(Platform_GetStateOfKey('A') == 1))
 	{
-		*DirectionVector = -Math_Normalize(Math_CrossProduct(*FacingVector,
+		*DirectionVector =
+			-Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector)) - *FacingVector;
 	}
 	else if ((Platform_GetStateOfKey('S') == 1) && 
 		(Platform_GetStateOfKey('D') == 1))
 	{
-		*DirectionVector = Math_Normalize(Math_CrossProduct(*FacingVector,
+		*DirectionVector = 
+			Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector)) - *FacingVector;
 	}
 	else if (Platform_GetStateOfKey('A') == 1)
 	{
-		*DirectionVector = -Math_Normalize(Math_CrossProduct(*FacingVector,
+		*DirectionVector = 
+			-Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector));
 	}
 	else if (Platform_GetStateOfKey('W') == 1)
@@ -140,7 +138,8 @@ Input_UpdateKeyStates(ProgramState* State)
 	}
 	else if (Platform_GetStateOfKey('D') == 1)
 	{
-		*DirectionVector = Math_Normalize(Math_CrossProduct(*FacingVector,
+		*DirectionVector =
+			Math_Normalize(Math_CrossProduct(*FacingVector,
 			*RelativeUpVector));
 	}
 	else

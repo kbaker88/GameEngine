@@ -352,11 +352,11 @@ ModelObj_CreateBox(Model* ModelObj, float Width,
 	ModelObj->Data[0][51] = -HalfWidth; ModelObj->Data[0][52] = HalfHeight; ModelObj->Data[0][53] = HalfDepth;
 	// NOTE: Right
 	ModelObj->Data[0][54] = HalfWidth; ModelObj->Data[0][55] = HalfHeight; ModelObj->Data[0][56] = HalfDepth;
-	ModelObj->Data[0][57] = HalfWidth; ModelObj->Data[0][58] = HalfHeight; ModelObj->Data[0][59] = HalfDepth;
+	ModelObj->Data[0][57] = HalfWidth; ModelObj->Data[0][58] = HalfHeight; ModelObj->Data[0][59] = -HalfDepth;
 	ModelObj->Data[0][60] = HalfWidth; ModelObj->Data[0][61] = -HalfHeight; ModelObj->Data[0][62] = -HalfDepth;
 	ModelObj->Data[0][63] = HalfWidth; ModelObj->Data[0][64] = -HalfHeight; ModelObj->Data[0][65] = -HalfDepth;
 	ModelObj->Data[0][66] = HalfWidth; ModelObj->Data[0][67] = -HalfHeight; ModelObj->Data[0][68] = HalfDepth;
-	ModelObj->Data[0][69] = HalfWidth; ModelObj->Data[0][70] = -HalfHeight; ModelObj->Data[0][71] = HalfDepth;
+	ModelObj->Data[0][69] = HalfWidth; ModelObj->Data[0][70] = HalfHeight; ModelObj->Data[0][71] = HalfDepth;
 	// NOTE: Bottom
 	ModelObj->Data[0][72] = -HalfWidth; ModelObj->Data[0][73] = -HalfHeight; ModelObj->Data[0][74] = -HalfDepth;
 	ModelObj->Data[0][75] = HalfWidth; ModelObj->Data[0][76] = -HalfHeight; ModelObj->Data[0][77] = -HalfDepth;

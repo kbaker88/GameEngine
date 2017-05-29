@@ -8,6 +8,8 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#define DATA_ORIENTED 0 //TODO: Temporary while transfering
+
 #define DEBUG_MODE 1
 
 #define Assert(Expression) / if (!(Expression)) {*(int *)0 = 0;}
