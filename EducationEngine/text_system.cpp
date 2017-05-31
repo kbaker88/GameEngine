@@ -1,13 +1,45 @@
 #include "text_system.h"
 
+#if DATA_ORIENTED
+// TODO: Make this more robust to support unicode
+void
+Text_BuildFont(char* FontName, Font* FontPtr)
+{
+	FontPtr->Name = FontName;
+	FontPtr->GlyphsCount = 255;
+	Texture2D GlyphImage[255];
+	Asset_LoadFont(FontName, "c:/Windows/Fonts/arial.ttf\0", GlyphImage);
+
+	for (uint32 Character = 32; Character < 126; Character++)
+	{
+	Model GlyphRectangle;
+		ModelObj_CreateRectangle(&GlyphRectangle,
+			(float)GlyphImage[Character].Width,
+			(float)GlyphImage[Character].Height);
+
+		RenderObj_CreateRenderObject(
+			&FontPtr->Glyph[Character], &GlyphRectangle);
+
+		Render_BuildTexture(&FontPtr->GlyphImageID[Character],
+			GlyphImage[Character].Width, GlyphImage[Character].Height,
+			GlyphImage[Character].Data);
+
+		FontPtr->Width[Character] = (float)GlyphImage[Character].Width;
+#if MEMORY_ON
+		// TODO: Make cleanup system
+#else
+		delete[] GlyphImage[Character].Data;
+#endif // MEMORY_ON
+	}
+
+}
+#else
 void 
 Text_BuildFont(char* FontName, Texture2D* GlyphArray, Font* FontPtr)
 {
 	FontPtr->Name = FontName;
 	FontPtr->GlyphsCount = 255;
-#if DATA_ORIENTED
 
-#else
 	for (uint32 Character = 32; Character < 126; Character++)
 	{
 		FontPtr->Glyph[Character].Init((float)GlyphArray[Character].Width,
@@ -18,10 +50,10 @@ Text_BuildFont(char* FontName, Texture2D* GlyphArray, Font* FontPtr)
 		// TODO: Make cleanup system
 #else
 		delete[] GlyphArray[Character].Data;
-#endif
+#endif // MEMORY_ON
 	}
-#endif
 }
+#endif // DATA_ORIENTED
 
 void 
 Text_DeleteFont(Font* FontPtr)
@@ -40,13 +72,13 @@ Text_DeleteFont(Font* FontPtr)
 		// TODO: Make cleanup system
 #else
 		delete FontPtr;
-#endif
+#endif // MEMORY_ON
 	}
 	else
 	{
 		// TODO: Error
 	}
-#endif
+#endif // DATA_ORIENTED
 }
 
 void
@@ -58,7 +90,7 @@ Text_CreateObj(Text_Object* TextObj, float Scale,
 	TextObj->Buffer = Memory_Allocate(TextObj->Buffer, MaxLength);
 #else
 	TextObj->Buffer = new uint16[MaxLength];
-#endif
+#endif // MEMORY_ON
 	TextObj->Length = MaxLength;
 	TextObj->Font = Font;
 	TextObj->XScale = Scale;
@@ -133,7 +165,7 @@ Text_Draw(Text_Object* TextObj, uint32 ShaderID)
 
 #else
 			TextObj->Font->Glyph[TextObj->Buffer[i]].Draw();
-#endif
+#endif // DATA_ORIENTED
 			Width = Text_SpacingWidth(TextObj->Font, 
 				TextObj->Buffer[i], TextObj->Buffer[i + 1]);
 
@@ -164,7 +196,7 @@ Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
 
 #else
 		Font->Glyph[ConsoleBuffer[i]].Draw();
-#endif
+#endif // DATA_ORIENTED
 		Width = Text_SpacingWidth(Font, ConsoleBuffer[i], ConsoleBuffer[i + 1]);
 
 		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
@@ -186,10 +218,12 @@ Text_DrawCharLine(string &Text, v3 &Position, float Scale,
 			&ModelMatrix.Rc[0][0], 1, 0);
 
 #if DATA_ORIENTED
-
+		Render_BindTexture(Font->GlyphImageID[Text.CharStr[i]]);
+		Render_Draw(&Font->Glyph[Text.CharStr[i]]);
+		Render_BindTexture(0);
 #else
 		Font->Glyph[Text.CharStr[i]].Draw();
-#endif
+#endif// DATA_ORIENTED
 
 		Width = Text_SpacingWidth(Font, Text.CharStr[i], Text.CharStr[i + 1]);
 
@@ -206,20 +240,22 @@ Text_SpacingWidth(Font* Font, uint16 A, uint16 B)
 		if (A && (B < 256) && B)
 		{
 #if DATA_ORIENTED
-
+			float Width = (float)Font->Width[A];
+			float NextWidth = (float)Font->Width[B];
+			return (Width * 0.5f + NextWidth * 0.5f);
 #else
 			float Width = (float)Font->Glyph[A].Width;
 			float NextWidth = (float)Font->Glyph[B].Width;
 			return (Width * 0.5f + NextWidth * 0.5f);
-#endif
+#endif // DATA_ORIENTED
 		}
 		else if (A)
 		{
 #if DATA_ORIENTED
-
+			return (float)Font->Width[A];
 #else
 			return (float)Font->Glyph[A].Width;
-#endif
+#endif // DATA_ORIENTED
 		}
 		else
 		{
@@ -235,7 +271,7 @@ Text_SpacingWidth(Font* Font, uint16 A, uint16 B)
 
 #if DATA_ORIENTED
 	return 0;
-#endif
+#endif // DATA_ORIENTED
 }
 
 

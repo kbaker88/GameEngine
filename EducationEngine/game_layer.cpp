@@ -58,11 +58,14 @@ Game_Loop()
 			GlobalFont = new Font;
 #endif // MEMORY_ON
 		}
+#if DATA_ORIENTED
+		Text_BuildFont("arial\0", GlobalFont);
+#else
 		Texture2D FontGlyphs[255];
 		Asset_LoadFont("arial\0", "c:/Windows/Fonts/arial.ttf\0",
 			FontGlyphs);
 		Text_BuildFont("arial\0", FontGlyphs, GlobalFont);
-
+#endif
 		//Network_Init();
 		StateOfProgram = 1;
 	} break;

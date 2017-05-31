@@ -4,7 +4,19 @@
 #include "linear_algebra.h" // TODO: fix the linkage here. 
 #include "render_layer.h"
 
-// TODO: Change this to data-oriented
+#if DATA_ORIENTED	
+
+struct Camera
+{
+	m4 ViewMatrix, ProjectionMatrix;
+	v3 Position, UpVector, ForwardVector;
+	float Yaw, Pitch;
+};
+
+void 
+Camera_SetPosition(Camera* CameraPtr, v3* NewPosition);
+
+#else
 struct Camera
 {
 	Camera() : Yaw(-90.0f), Pitch(0.0f), Position(0.0f, 0.0f, 0.0f),
@@ -30,8 +42,6 @@ struct Camera
 	uint32 ID;
 
 };
-
-//void Camera_LinkToEntity();
-//void Camera_Link(Camera* Camera1, Camera* Camera2);
+#endif // DATA_ORIENTED
 
 #endif

@@ -1,5 +1,18 @@
 #include "camera_system.h"
 
+#if DATA_ORIENTED
+
+void 
+Camera_SetPosition(Camera* CameraPtr, v3* NewPosition)
+{
+	CameraPtr->Position = *NewPosition;
+
+	CameraPtr->ViewMatrix = Math_LookAtMatrix(CameraPtr->Position,
+		CameraPtr->Position + CameraPtr->ForwardVector,
+		CameraPtr->UpVector);
+}
+
+#else
 void 
 Camera::SetPosition(v3* NewPosition) //TODO: Make sure this is only called once per frame
 {
@@ -79,7 +92,4 @@ Camera::GetProjectionMatrix()
 	return &ProjectionMatrix;
 }
 
-//void Camera_Link(Camera* Camera1, Camera* Camera2)
-//{
-//	Camera2 = Camera1;
-//}
+#endif // DATA_ORIENTED

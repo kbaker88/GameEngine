@@ -1,7 +1,7 @@
 #include "game_state.h"
 
 #if DATA_ORIENTED
-static GLuint TextureID[1];
+static GLuint TextureID[1]; 
 static v3 Position;
 static v3 PlayerCameraFacingVect;
 static PhysicsObject PlayerPhysObj;
@@ -16,17 +16,21 @@ Game_Initialize(ProgramState* State)
 	float WindowHalfHeight = (float)WindowDimensions.Height * 0.5f;
 	float WindowHalfWidth = (float)WindowDimensions.Width * 0.5f;
 
-	//State->CameraArray[0].SetPosition(&v3(-WindowHalfWidth,
-	//	-WindowHalfHeight, 1.0f));
-	//State->CameraArray[0].SetProjectionMatrix(0);
-	State->CameraArray[0].SetPosition(&v3(0.0f, 0.0f, 3.0f));
-	State->CameraArray[0].SetProjectionMatrix(1);
-	State->CameraArray[0].DirectionVector = v3(0.0f, 0.0f, -1.0f);
+	State->CameraArray[0].Yaw = -90.0f;
+	State->CameraArray[0].Pitch = 0.0f;
+	State->CameraArray[0].UpVector = v3(0.0f, 1.0f, 0.0f);
+
+	// TODO: calculate the ratio once only on screen size changes and save value.
+	State->CameraArray[0].ProjectionMatrix = Math_PerspectiveMatrix(45.0f,
+		(float)WindowDimensions.Width / (float)WindowDimensions.Height,
+		0.01f, 1000.0f);
 
 #if DATA_ORIENTED
 	State->ShaderHandles[0] =
 		Render_CompileShaders(VertexShader_Game,
 			FragmentShader_Game);
+
+	State->CameraArray[0].ForwardVector = v3(0.0f, 0.0f, -1.0f);
 
 #if MEMORY_ON
 
@@ -36,11 +40,16 @@ Game_Initialize(ProgramState* State)
 
 	State->ModelObjBlocks[0].BlockObjects[1] = new Model;
 	State->RenderObjBlocks[0].BlockObjects[1] = new RenderObj;
+
+	State->ModelObjBlocks[0].BlockObjects[2] = new Model;
+	State->RenderObjBlocks[0].BlockObjects[2] = new RenderObj;
 #endif // MEMORY_ON
 	ModelObj_CreateBox(State->ModelObjBlocks[0].BlockObjects[0],
 		1.0f, 1.0f, 1.0f);
 	ModelObj_CreatePlane(State->ModelObjBlocks[0].BlockObjects[1],
-		5, 5);
+		20, 20);
+	ModelObj_CreateHeightmap(State->ModelObjBlocks[0].BlockObjects[2],
+		Asset_GetTexture(7));
 	
 	Position = v3(0.0f, 0.0f, 0.0f);
 	Texture2D* Textures[2];
@@ -51,8 +60,6 @@ Game_Initialize(ProgramState* State)
 	RenderObj_CreateRenderObject(
 		State->RenderObjBlocks[0].BlockObjects[Index],
 		State->ModelObjBlocks[0].BlockObjects[Index]);
-	State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices = 36;
-
 	//Collision_FillObject(&State->CollisionObj[Index], 1.0f, 1.0f,
 	//	1.0f, &Position);
 	//State->CollisionObj[Index].CollisionCode = Index * 10;
@@ -64,8 +71,6 @@ Game_Initialize(ProgramState* State)
 	RenderObj_CreateRenderObject(
 		State->RenderObjBlocks[0].BlockObjects[Index],
 		State->ModelObjBlocks[0].BlockObjects[Index]);
-	State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices = 150;
-
 	//Collision_FillObject(&State->CollisionObj[Index], 1.0f, 1.0f,
 	//	1.0f, &Position);
 	//State->CollisionObj[Index].CollisionCode = Index * 10;
@@ -73,15 +78,17 @@ Game_Initialize(ProgramState* State)
 	Render_BuildTexture(&TextureID[Index], Textures[Index]->Width,
 		Textures[Index]->Height, Textures[Index]->Data);
 
-
+	Index = 2;
+	RenderObj_CreateRenderObject(
+		State->RenderObjBlocks[0].BlockObjects[Index],
+		State->ModelObjBlocks[0].BlockObjects[Index]);
 
 	PlayerMatrix = Math_IdentityMatrix();
 	PlayerPhysObj.AccelerationRate = 10.0f;
-	PlayerPhysObj.Position = v3(0.0f, 0.0f, 3.0f);
-	PlayerPhysObj.MoveDirection =
-		State->CameraArray[0].DirectionVector;
+	PlayerPhysObj.Position = v3(2.0f, 3.0f, -2.0f);
 	PlayerPhysObj.ModelMatrix = &PlayerMatrix;
 
+	Phys_AddForce(&PlayerPhysObj, &Gravity);
 #else // DATA_ORIENTED
 
 	State->ShaderHandles[0] = 
@@ -165,8 +172,7 @@ Game_Draw(ProgramState* State)
 	Input_UpdateKeyStates(State, &State->CameraArray[0],
 		&PlayerPhysObj.MoveDirection);
 	Phys_CalculatePosition(&PlayerPhysObj);
-	State->CameraArray[0].SetPosition(
-		&PlayerPhysObj.Position);
+	Camera_SetPosition(&State->CameraArray[0], &PlayerPhysObj.Position);
 
 	Render_BindShaders(State->ShaderHandles[0]);
 	State->GPUShaderVarArray[0] =
@@ -183,10 +189,10 @@ Game_Draw(ProgramState* State)
 			"myTexture");
 
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
-		(float*)State->CameraArray[0].GetViewMatrix(),
+		(float*)&State->CameraArray[0].ViewMatrix,
 		1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
-		(float*)State->CameraArray[0].GetProjectionMatrix(),
+		(float*)&State->CameraArray[0].ProjectionMatrix,
 		1, 0);
 
 	m4 ModelMatrix = Math_IdentityMatrix();
@@ -198,17 +204,34 @@ Game_Draw(ProgramState* State)
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		&ModelMatrix.Rc[0][0], 1, 0);
 	Render_BindTexture(TextureID[Index]);
-	Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index],
-		State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices);
+	Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index]);
 	Render_BindTexture(0);
-
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	Index = 1;
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		&ModelMatrix.Rc[0][0], 1, 0);
 	Render_BindTexture(TextureID[Index]);
-	Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index],
-		State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices);
+	Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index]);
 	Render_BindTexture(0);
+
+	ModelMatrix = Math_TranslateMatrix(ModelMatrix, v3(20.0f, 0.0f, -20.0f));
+	Index = 2;
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
+		&ModelMatrix.Rc[0][0], 1, 0);
+	//Render_BindTexture(TextureID[Index]);
+	Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index]);
+	//Render_BindTexture(0);
+
+	if (PlayerPhysObj.Position.y <= 1.0f)
+	{
+		Phys_WallSlide(&PlayerPhysObj, &v3(0.0f, 1.0f, 0.0f));
+		Camera_SetPosition(&State->CameraArray[0], &PlayerPhysObj.Position);
+	}
+	else
+	{
+
+	}
 
 #else
 	//TODO: Move into a shader struct?

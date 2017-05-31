@@ -51,7 +51,9 @@ Render_BuildTexture(uint32* TextureID, uint32 Width, uint32 Height,
 void
 Render_BindTexture(uint32 TextureID);
 void
-Render_Draw(RenderObj *RenderObject, uint32 VerticeCount);
+Render_Draw(RenderObj *RenderObject);
+void
+Render_DrawIndices(RenderObj* RenderObject);
 
 #endif
 #else

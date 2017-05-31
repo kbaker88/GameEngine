@@ -145,6 +145,7 @@ ModelObj_CreatePoint(Model* ModelObj, v3 Position,
 	v3 Color)
 {
 	ModelObj->NumAttribs = 2;
+	ModelObj->NumVertices = 1;
 #if MEMORY_ON
 	ModelObj->Data = 0;
 	ModelObj->Data = Memory_Allocate(ModelObj->Data, ModelObj->NumAttribs);
@@ -183,6 +184,7 @@ ModelObj_CreateLine(Model* ModelObj, v3 PositionA,
 	v3 PositionB, v3 ColorP1, v3 ColorP2)
 {
 	ModelObj->NumAttribs = 2;
+	ModelObj->NumVertices = 2;
 #if MEMORY_ON
 	ModelObj->Data = 0;
 	ModelObj->Data = Memory_Allocate(ModelObj->Data, ModelObj->NumAttribs);
@@ -227,6 +229,7 @@ ModelObj_CreateRectangle(Model* ModelObj,
 	float HalfWidth = Width * 0.5f;
 	float HalfHeight = Height * 0.5f;
 	ModelObj->NumAttribs = 4;
+	ModelObj->NumVertices = 6;
 
 #if MEMORY_ON
 	ModelObj->Data = 0;
@@ -301,6 +304,7 @@ ModelObj_CreateBox(Model* ModelObj, float Width,
 	float HalfHeight = Height * 0.5f;
 	float HalfDepth = Depth * 0.5f;
 	ModelObj->NumAttribs = 4;
+	ModelObj->NumVertices = 36;
 
 #if MEMORY_ON
 	ModelObj->Data = 0;
@@ -476,6 +480,7 @@ void
 ModelObj_CreatePlane(Model* ModelObj,
 	uint32 Width, uint32 Depth)
 {
+	ModelObj->NumVertices = Width * Depth * 6;
 	// TODO: Remove the verticedata, colordata, etc memory allocs
 	//		and directly use the Model Obj's ptrs to alloc to.
 	uint32 index = 0;
@@ -735,12 +740,238 @@ ModelObj_CreatePlane(Model* ModelObj,
 void
 ModelObj_CreateHeightmap(Model* ModelObj, Texture2D* ImageData)
 {
+	ModelObj->NumAttribs = 4;
+	ModelObj->NumVertices = ImageData->Width * ImageData->Height * 6;
+	float Width = (float)ImageData->Width;
+	float Depth = (float)ImageData->Height;
+
+	float *VerticeData = new float[3 * ModelObj->NumVertices]{};
+	float *ColorData = new float[3 * ModelObj->NumVertices]{};
+	float *TextureCoords = new float[2 * ModelObj->NumVertices]{};
+	float *NormalData = new float[3 * ModelObj->NumVertices]{};
+
+	uint32 HeightValue;
+	uint32 PixelIndex = 0;
+
+	bool flip = false;
+	uint32 index = 0;
+	for (uint32 i = 0;
+		i < Width - 1;
+		i++)
+	{
+		if (i % 2 == 0)
+			flip = true;
+		else
+			flip = false;
+
+		for (uint32 j = 0;
+			j < Depth - 1;
+			j++)
+		{
+			if (!flip)
+			{
+				HeightValue = ImageData->Data[(2 * i * ImageData->Height) + (2 * j)] << 8 |
+					ImageData->Data[(2 * i * ImageData->Height) + (2 * j) + 1];
+				float Height1 = (float)HeightValue / 1000.0f;
+				HeightValue = ImageData->Data[(2 * (i + 1) * ImageData->Height) + (2 * j)] << 8 |
+					ImageData->Data[(2 * (i + 1) * ImageData->Height) + (2 * j) + 1];
+				float Height2 = (float)HeightValue / 1000.0f;
+				HeightValue = ImageData->Data[(2 * i * ImageData->Height) + (2 * (j + 1))] << 8 |
+					ImageData->Data[(2 * i * ImageData->Height) + (2 * (j + 1)) + 1];
+				float Height3 = (float)HeightValue / 1000.0f;
+				HeightValue = ImageData->Data[(2 * (i + 1) * ImageData->Height) + (2 * (j + 1))] << 8 |
+					ImageData->Data[(2 * (i + 1) * ImageData->Height) + (2 * (j + 1)) + 1];
+				float Height4 = (float)HeightValue / 1000.0f;
+
+				float XAxis = (float)i;
+				float ZAxis = -(float)j;
+				VerticeData[index + 0] = XAxis;
+				VerticeData[index + 1] = Height3;
+				VerticeData[index + 2] = ZAxis - 1.0f;
+
+				VerticeData[index + 3] = XAxis + 1.0f;
+				VerticeData[index + 4] = Height4;
+				VerticeData[index + 5] = ZAxis - 1.0f;
+
+				VerticeData[index + 6] = XAxis + 1.0f;
+				VerticeData[index + 7] = Height2;
+				VerticeData[index + 8] = ZAxis;
+
+				VerticeData[index + 9] = XAxis + 1.0f;
+				VerticeData[index + 10] = Height2;
+				VerticeData[index + 11] = ZAxis;
+
+				VerticeData[index + 12] = XAxis;
+				VerticeData[index + 13] = Height1;
+				VerticeData[index + 14] = ZAxis;
+
+				VerticeData[index + 15] = XAxis;
+				VerticeData[index + 16] = Height3;
+				VerticeData[index + 17] = ZAxis - 1.0f;
+
+				index = index + 18;
+
+				flip = true;
+			}
+			else
+			{
+				HeightValue = ImageData->Data[(2 * i * ImageData->Height) + (2 * j)] << 8 |
+					ImageData->Data[(2 * i * ImageData->Height) + (2 * j) + 1];
+				float Height1 = (float)HeightValue / 1000.0f;
+				HeightValue = ImageData->Data[(2 * (i + 1) * ImageData->Height) + (2 * j)] << 8 |
+					ImageData->Data[(2 * (i + 1) * ImageData->Height) + (2 * j) + 1];
+				float Height2 = (float)HeightValue / 1000.0f;
+				HeightValue = ImageData->Data[(2 * i * ImageData->Height) + (2 * (j + 1))] << 8 |
+					ImageData->Data[(2 * i * ImageData->Height) + (2 * (j + 1)) + 1];
+				float Height3 = (float)HeightValue / 1000.0f;
+				HeightValue = ImageData->Data[(2 * (i + 1) * ImageData->Height) + (2 * (j + 1))] << 8 |
+					ImageData->Data[(2 * (i + 1) * ImageData->Height) + (2 * (j + 1)) + 1];
+				float Height4 = (float)HeightValue / 1000.0f;
+
+
+				float XAxis = (float)i;
+				float ZAxis = -(float)j;
+				VerticeData[index + 0] = XAxis; // f left
+				VerticeData[index + 1] = Height1;
+				VerticeData[index + 2] = ZAxis;
+
+				VerticeData[index + 3] = XAxis; // b left
+				VerticeData[index + 4] = Height3;
+				VerticeData[index + 5] = ZAxis - 1.0f;
+
+				VerticeData[index + 6] = XAxis + 1.0f; // b right
+				VerticeData[index + 7] = Height4;
+				VerticeData[index + 8] = ZAxis - 1.0f;
+
+				VerticeData[index + 9] = XAxis + 1.0f; // b right
+				VerticeData[index + 10] = Height4;
+				VerticeData[index + 11] = ZAxis - 1.0f;
+
+				VerticeData[index + 12] = XAxis + 1.0f; // f right
+				VerticeData[index + 13] = Height2;
+				VerticeData[index + 14] = ZAxis;
+
+				VerticeData[index + 15] = XAxis; // f left
+				VerticeData[index + 16] = Height1;
+				VerticeData[index + 17] = ZAxis;
+
+				index = index + 18;
+				flip = false;
+			}
+		}
+	}
+
+	index = 0;
+
+	for (uint32 i = 0; i < Width; i++)
+	{
+		for (uint32 j = 0; j < Depth; j++)
+		{
+			ColorData[index + 0] = 1;
+			ColorData[index + 1] = 1;
+			ColorData[index + 2] = 1;
+			index = index + 3;
+		}
+	}
+
+	index = 0;
+	for (uint32 i = 0; i < Width; i++)
+	{
+		if (i % 2 == 0)
+			flip = false;
+		else
+			flip = true;
+
+		for (uint32 j = 0; j < Depth; j++)
+		{
+			if (!flip)
+			{
+				TextureCoords[index + 0] = 0.0f;
+				TextureCoords[index + 1] = 1.0f;
+
+				TextureCoords[index + 2] = 1.0f;
+				TextureCoords[index + 3] = 1.0f;
+
+				TextureCoords[index + 4] = 1.0f;
+				TextureCoords[index + 5] = 0.0f;
+
+				TextureCoords[index + 6] = 1.0f;
+				TextureCoords[index + 7] = 0.0f;
+
+				TextureCoords[index + 8] = 0.0f;
+				TextureCoords[index + 9] = 0.0f;
+
+				TextureCoords[index + 10] = 0.0f;
+				TextureCoords[index + 11] = 1.0f;
+
+				index = index + 12;
+				flip = true;
+			}
+			else
+			{
+				TextureCoords[index + 0] = 0.0f;
+				TextureCoords[index + 1] = 0.0f;
+
+				TextureCoords[index + 2] = 0.0f;
+				TextureCoords[index + 3] = 1.0f;
+
+				TextureCoords[index + 4] = 1.0f;
+				TextureCoords[index + 5] = 1.0f;
+
+				TextureCoords[index + 6] = 1.0f;
+				TextureCoords[index + 7] = 1.0f;
+
+				TextureCoords[index + 8] = 1.0f;
+				TextureCoords[index + 9] = 0.0f;
+
+				TextureCoords[index + 10] = 0.0f;
+				TextureCoords[index + 11] = 0.0f;
+
+				index = index + 12;
+				flip = false;
+			}
+		}
+	}
+
+#if MEMORY_ON
+	ModelObj->Data = 0;
+	ModelObj->Data = Memory_Allocate(ModelObj->Data, ModelObj->NumAttribs);
+	ModelObj->ArraySize = 0;
+	ModelObj->ArraySize = Memory_Allocate(ModelObj->ArraySize,
+		ModelObj->NumAttribs);
+	ModelObj->ArrayOffset = 0;
+	ModelObj->ArrayOffset = Memory_Allocate(ModelObj->ArrayOffset,
+		ModelObj->NumAttribs);
+#else
+	ModelObj->Data = new float*[ModelObj->NumAttribs];
+	ModelObj->ArraySize = new uint32[ModelObj->NumAttribs];
+	ModelObj->ArrayOffset = new uint32[ModelObj->NumAttribs];
+#endif // MEMORY_ON
+	ModelObj->Data[0] = VerticeData;
+	ModelObj->ArraySize[0] = 3 * ModelObj->NumVertices * sizeof(float);
+	ModelObj->ArrayOffset[0] = 3;
+	ModelObj->Data[1] = ColorData;
+	ModelObj->ArraySize[1] = 3 * ModelObj->NumVertices * sizeof(float);
+	ModelObj->ArrayOffset[1] = 3;
+	ModelObj->Data[2] = TextureCoords;
+	ModelObj->ArraySize[2] = 2 * ModelObj->NumVertices * sizeof(float);
+	ModelObj->ArrayOffset[2] = 2;
+	ModelObj->Data[3] = NormalData;
+	ModelObj->ArraySize[3] = 3 * ModelObj->NumVertices * sizeof(float);
+	ModelObj->ArrayOffset[3] = 3;
+}
+/* INDICE HIGHTMAP
+void
+ModelObj_CreateHeightmap(Model* ModelObj, Texture2D* ImageData)
+{
 	uint32 TotalVertices = ImageData->Width * ImageData->Height;
+	ModelObj->NumVertices = TotalVertices;
 	uint32 NumberOfVertices = TotalVertices;
 	float Width = (float)ImageData->Width;
 	float Depth = (float)ImageData->Height;
 
 	uint32 NumberOfIndices = 6 * TotalVertices;
+	ModelObj->IndiceCount = NumberOfIndices;
 
 	uint32 Pixel = 0;
 
@@ -958,5 +1189,6 @@ ModelObj_CreateHeightmap(Model* ModelObj, Texture2D* ImageData)
 	ModelObj->IndiceData = Indices;
 	ModelObj->IndiceCount = NumberOfIndices;
 }
+*/
 
 #endif // DATA_ORIENTED

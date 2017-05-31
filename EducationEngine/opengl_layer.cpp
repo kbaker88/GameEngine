@@ -615,13 +615,13 @@ Render_BuildTexture(uint32* TextureID, uint32 Width,
 	uint32 Height, uint8* TextureData)
 {
 	glCreateTextures(GL_TEXTURE_2D, 1, TextureID);
-
+	
 	glTextureStorage2D(*TextureID, 1, GL_RGBA8, Width,
 		Height);
 	glTextureSubImage2D(*TextureID, 0, 0, 0,
 		Width, Height,
 		GL_RGBA, GL_UNSIGNED_BYTE, TextureData);
-
+	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 		GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
@@ -635,14 +635,24 @@ Render_BindTexture(uint32 TextureID)
 }
 
 void 
-Render_Draw(RenderObj* RenderObject, uint32 VerticeCount)
+Render_Draw(RenderObj* RenderObject)
 {
 	glBindVertexArray(RenderObject->VertexArrayID);
 	//glBindTexture(GL_TEXTURE_2D, Texture);
 
-	glDrawArrays(GL_TRIANGLES, 0, VerticeCount);
+	glDrawArrays(GL_TRIANGLES, 0, RenderObject->NumVertices);
 
 	//glBindTexture(GL_TEXTURE_2D, 0);
+	glBindVertexArray(0);
+}
+
+void
+Render_DrawIndices(RenderObj* RenderObject)
+{
+	glBindVertexArray(RenderObject->VertexArrayID);
+	glDrawElements(GL_TRIANGLES, RenderObject->IndiceID, GL_UNSIGNED_INT,
+		(void*)0);
+	//glDrawArrays(GL_TRIANGLES, 0, RenderObject->NumVertices);
 	glBindVertexArray(0);
 }
 

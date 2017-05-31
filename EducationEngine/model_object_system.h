@@ -6,14 +6,15 @@
 
 #if DATA_ORIENTED
 
-struct Model // Byte Total: 40
+struct Model // Byte Total: 44
 {
 	float** Data;						// Bytes 8
 	uint32* IndiceData;					// Bytes 8
 	// NOTE: ArraySize is the size in bytes.
 	uint32* ArraySize;					// Bytes 8
 	uint32* ArrayOffset;				// Bytes 8
-	uint32 NumAttribs, IndiceCount;		// Bytes 8
+	uint32 NumAttribs, IndiceCount,
+		NumVertices;					// Bytes 12
 };
 
 struct ModelObjBlock // Byte Total: 12

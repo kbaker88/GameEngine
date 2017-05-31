@@ -7,13 +7,24 @@ Menu_Initialize(ProgramState* State)
 	float HalfScreenWidth = 0.5f * (float)WindowSize.Width;
 	float HalfScreenHeight = 0.5f * (float)WindowSize.Height;
 
+
+#if DATA_ORIENTED
+	State->CameraArray[0].Yaw = -90.0f;
+	State->CameraArray[0].Pitch = 0.0f;
+	State->CameraArray[0].UpVector = v3(0.0f, 1.0f, 0.0f);
+	State->CameraArray[0].ForwardVector = v3(0.0f, 0.0f, -1.0f);
+	State->CameraArray[0].ProjectionMatrix =
+		Math_OrthographicMarix(0.0f, (float)WindowSize.Width,
+			0.0f, (float)WindowSize.Height,
+			0.1f, 100.0f);
+
+	Camera_SetPosition(&State->CameraArray[0], &v3(-HalfScreenWidth,
+		-HalfScreenHeight, 1.0f));
+
+#else
 	State->CameraArray[0].SetPosition(&v3(-HalfScreenWidth,
 		-HalfScreenHeight, 1.0f));
 	State->CameraArray[0].SetProjectionMatrix(0);
-
-#if DATA_ORIENTED
-
-#else
 
 	State->ShaderHandles[0] = 
 		Render_CompileShaders(MenuVertexShaderSource,
@@ -69,6 +80,16 @@ Menu_Draw(ProgramState* State)
 	State->GPUShaderVarArray[4] =
 		Render_GetShaderVariable(State->ShaderHandles[0], "mouseOver");
 
+#if DATA_ORIENTED
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
+		(float*)&State->CameraArray[0].ViewMatrix, 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
+		(float*)&State->CameraArray[0].ProjectionMatrix, 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], (int32)0);
+
+	Platform_GetCursorPosition(&State->CursorPosition.x,
+		&State->CursorPosition.y);
+#else
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
 		(float*)State->CameraArray[0].GetViewMatrix(), 1, 0);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
@@ -78,9 +99,6 @@ Menu_Draw(ProgramState* State)
 	Platform_GetCursorPosition(&State->CursorPosition.x,
 		&State->CursorPosition.y);
 
-#if DATA_ORIENTED
-
-#else
 	int32 CollisionResult = 0;
 	for (uint32 Index = 0; Index < State->EntityCount; Index++)
 	{

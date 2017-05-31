@@ -49,6 +49,7 @@ RenderObj_DeleteBlock(RenderObjBlock* Block)
 						Block->BlockObjects[i]->BufferID = 0;
 					}
 					delete Block->BlockObjects[i];
+					Block->BlockObjects[i] = 0;
 				}
 			}
 			delete[] Block->BlockObjects;
@@ -93,6 +94,7 @@ RenderObj_CreateRenderObject(RenderObj* RenderObject, Model* ModelObj)
 #else
 	RenderObject->BufferID = new uint32[ModelObj->NumAttribs];
 #endif
+	RenderObject->NumVertices = ModelObj->NumVertices;
 	//TODO: Think about creating many VAO's at once.
 	Render_CreateVertexArrays(1, &RenderObject->VertexArrayID);
 	Render_CreateBuffers(ModelObj->NumAttribs,

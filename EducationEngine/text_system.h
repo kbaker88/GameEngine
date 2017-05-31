@@ -16,7 +16,10 @@ struct Font
 	// TODO: Dynamically allocate Glyph array size
 	//		 to allow for more languages
 #if DATA_ORIENTED
-
+	//Model GlyphRects[255];
+	RenderObj Glyph[255];
+	uint32 GlyphImageID[255];
+	float Width[255];
 #else
 	MyRectangle Glyph[255]; 
 #endif
@@ -40,9 +43,14 @@ struct Text_Object
 
 // TODO: Make sure Data is deleted and Glypharray
 //	     is deleted if it was dynamically allocated
+#if DATA_ORIENTED
+void
+Text_BuildFont(char* FontName, Font* FontPtr);
+#else
 void
 Text_BuildFont(char* FontName, 
 	Texture2D* GlyphArray, Font* FontPtr);
+#endif
 void
 Text_DeleteFont(Font* FontPtr);
 
