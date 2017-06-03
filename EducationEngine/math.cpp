@@ -1,20 +1,21 @@
 #include "math.h"
 
 //NOTE: Math_Floor() is only for 32-bit floats on Little-Endian Machines
+
 float 
 Math_Floor(float Value)
 {
 	 //Shortest Method
-	return Value - ((int)Value % 1);
+	//return Value - ((int)Value % 1);
 	
-	/* Short Method
+	// Short Method
 	int Result = (int)Value;
 	if (Value < 0)
 	{
 		Result -= 1;
 	}
 	return Result;
-	*/
+	
 
 	/* Long Method
 	float Result = 0.0f;

@@ -23,7 +23,8 @@ static const char* VertexShader_Title =
 	"																\n"
 	"color = ColorData;												\n"
 	"TexPosition = TexturePos;										\n"
-	"gl_Position = projection * view * model * vec4(PositionData, 1.0);	\n"
+	"gl_Position = projection * view * model *						\n"
+	"	vec4(PositionData, 1.0);									\n"
 	"}																\n"
 };
 
@@ -41,12 +42,13 @@ static const char* FragmentShader_Title =
 	"																\n"
 	"void main(void)												\n"
 	"{																\n"
-	//"	FragColor = vec4(color, 1.0);								\n"
-	"if (texture2D(myTexture, TexPosition).rgb == vec3(1.0, 1.0, 1.0))	\n"
+	"if (texture2D(myTexture, TexPosition).rgb ==					\n"
+	"								vec3(1.0, 1.0, 1.0))			\n"
 	"{																\n"
 	"	discard;													\n"
 	"}																\n"
-	"FragColor = texture2D(myTexture, TexPosition) * vec4(HoverColor, 1.0);\n"
+	"FragColor = texture2D(myTexture, TexPosition) *				\n"
+	"	vec4(HoverColor, 1.0);										\n"
 	"																\n"
 	"}																\n"
 };
@@ -71,7 +73,8 @@ static const char* VertexShader_Game =
 	"																\n"
 	"color = ColorData;												\n"
 	"TexPosition = TexturePos;										\n"
-	"gl_Position = projection * view * model * vec4(PositionData, 1.0);	\n"
+	"gl_Position = projection * view * model *						\n"
+	"	vec4(PositionData, 1.0);									\n"
 	"}																\n"
 };
 
@@ -83,18 +86,14 @@ static const char* FragmentShader_Game =
 	"in vec2 TexPosition;											\n"
 	"																\n"
 	"uniform sampler2D myTexture;									\n"
+	"uniform float TextureFlag;										\n"
 	"																\n"
 	"out vec4 FragColor;											\n"
 	"																\n"
 	"void main(void)												\n"
 	"{																\n"
-	//"	FragColor = vec4(color, 1.0);								\n"
-	"if (texture2D(myTexture, TexPosition).rgb == vec3(1.0, 1.0, 1.0))	\n"
-	"{																\n"
-	"	discard;													\n"
-	"}																\n"
-	"FragColor = texture2D(myTexture, TexPosition);					\n"
-	"																\n"
+	"FragColor = TextureFlag * texture2D(myTexture, TexPosition) *  \n"
+	"	vec4(color, 1.0) +	(1 - TextureFlag) * vec4(color, 1.0);	\n"
 	"}																\n"
 };
 

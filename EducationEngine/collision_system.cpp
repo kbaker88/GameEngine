@@ -41,6 +41,104 @@ Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj)
 	return CollObj->CollisionCode;
 }
 
+bool 
+Collision_HeightMap(CollisionObject* HeightMapCollObj, float* Normals,
+	CollisionObject* OtherCollObj)
+{
+	v3 RelativePos = OtherCollObj->Position -
+		HeightMapCollObj->Position;
+
+	if ((RelativePos.x >= 0) &&
+		(RelativePos.z <= 0) &&
+		(RelativePos.x < HeightMapCollObj->Width - 1) &&
+		(RelativePos.z > -HeightMapCollObj->Depth + 1))
+	{
+		float XFloor = (float)((int32)RelativePos.x);
+		float ZFloor = (float)((int32)RelativePos.z);
+
+		float BottomLeft = (XFloor * (HeightMapCollObj->Depth - 1)) - 
+			ZFloor;
+		float TopLeft = (XFloor * (HeightMapCollObj->Depth - 1)) -
+			ZFloor + 1;
+		float BottomRight = ((XFloor + 1) * (HeightMapCollObj->Depth - 1)) -
+			ZFloor;
+		float TopRight = ((XFloor + 1) * (HeightMapCollObj->Depth - 1)) -
+			ZFloor + 1;
+
+		bool FlipX = (uint32)XFloor % 2;
+		bool FlipZ = (uint32)ZFloor % 2;
+
+		float XPosOrigin = Math_AbsVal(RelativePos.x) -
+			(float)Math_AbsVal(XFloor);
+		float ZPosOrigin = Math_AbsVal(RelativePos.z) - 
+			(float)Math_AbsVal(ZFloor);
+		
+		uint32 Position = (uint32)BottomLeft * 18;
+
+		v3 RightTopVertice(
+			HeightMapCollObj->VerticesPtr[Position + 9],
+			HeightMapCollObj->VerticesPtr[Position + 10],
+			HeightMapCollObj->VerticesPtr[Position + 11]);
+
+		v3 RightBottomVertice(
+			HeightMapCollObj->VerticesPtr[Position + 12],
+			HeightMapCollObj->VerticesPtr[Position + 13],
+			HeightMapCollObj->VerticesPtr[Position + 14]);
+
+		v3 LeftTopVertice(
+			HeightMapCollObj->VerticesPtr[Position + 3],
+			HeightMapCollObj->VerticesPtr[Position + 4],
+			HeightMapCollObj->VerticesPtr[Position + 5]);
+
+		v3 LeftBottomVertice(
+			HeightMapCollObj->VerticesPtr[Position + 0],
+			HeightMapCollObj->VerticesPtr[Position + 1],
+			HeightMapCollObj->VerticesPtr[Position + 2]);
+
+		if ((FlipX && !FlipZ) || (!FlipX && FlipZ))
+		{
+			float Side = ZPosOrigin - 1.0f + XPosOrigin;
+			if (Side < 0)
+			{
+				// NOTE: Left Side
+				HeightMapCollObj->CollideNormal.x = Normals[Position + 0];
+				HeightMapCollObj->CollideNormal.y = Normals[Position + 1];
+				HeightMapCollObj->CollideNormal.z = Normals[Position + 2];
+				return 1;
+			}
+			else
+			{
+				// NOTE: Right Side
+				HeightMapCollObj->CollideNormal.x = Normals[Position + 9];
+				HeightMapCollObj->CollideNormal.y = Normals[Position + 10];
+				HeightMapCollObj->CollideNormal.z = Normals[Position + 11];
+				return 1;
+			}
+		}
+		else
+		{ 
+			float Side = ZPosOrigin - XPosOrigin;
+			if (Side > 0)
+			{
+				// NOTE: Left Side
+				HeightMapCollObj->CollideNormal.x = Normals[Position + 3];
+				HeightMapCollObj->CollideNormal.y = Normals[Position + 4];
+				HeightMapCollObj->CollideNormal.z = Normals[Position + 5];
+				return 1;
+			}
+			else
+			{
+				// NOTE: Right Side
+				HeightMapCollObj->CollideNormal.x = Normals[Position + 12];
+				HeightMapCollObj->CollideNormal.y = Normals[Position + 13];
+				HeightMapCollObj->CollideNormal.z = Normals[Position + 14];
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
 #else
 
 int 

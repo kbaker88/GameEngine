@@ -647,6 +647,22 @@ Render_Draw(RenderObj* RenderObject)
 }
 
 void
+Render_DrawPoints(RenderObj* RenderObject)
+{
+	glBindVertexArray(RenderObject->VertexArrayID);
+	glDrawArrays(GL_POINTS, 0, RenderObject->NumVertices);
+	glBindVertexArray(0);
+}
+
+void
+Render_DrawLines(RenderObj* RenderObject)
+{
+	glBindVertexArray(RenderObject->VertexArrayID);
+	glDrawArrays(GL_LINES, 0, RenderObject->NumVertices);
+	glBindVertexArray(0);
+}
+
+void
 Render_DrawIndices(RenderObj* RenderObject)
 {
 	glBindVertexArray(RenderObject->VertexArrayID);

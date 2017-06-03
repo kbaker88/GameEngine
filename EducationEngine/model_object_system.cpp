@@ -755,6 +755,9 @@ ModelObj_CreateHeightmap(Model* ModelObj, Texture2D* ImageData)
 
 	bool flip = false;
 	uint32 index = 0;
+
+	v3 LineA, LineB, Normal;
+
 	for (uint32 i = 0;
 		i < Width - 1;
 		i++)
@@ -785,32 +788,136 @@ ModelObj_CreateHeightmap(Model* ModelObj, Texture2D* ImageData)
 
 				float XAxis = (float)i;
 				float ZAxis = -(float)j;
+#if 1
 				VerticeData[index + 0] = XAxis;
-				VerticeData[index + 1] = Height3;
-				VerticeData[index + 2] = ZAxis - 1.0f;
+				VerticeData[index + 1] = Height1;
+				VerticeData[index + 2] = ZAxis;
+				ColorData[index + 0] = 1.0f;
+				ColorData[index + 1] = ((float)HeightValue / 255.0f);
+				ColorData[index + 2] = 0.0f;
 
-				VerticeData[index + 3] = XAxis + 1.0f;
-				VerticeData[index + 4] = Height4;
+				VerticeData[index + 3] = XAxis;
+				VerticeData[index + 4] = Height3;
 				VerticeData[index + 5] = ZAxis - 1.0f;
+				ColorData[index + 3] = 1.0f;
+				ColorData[index + 4] = ((float)HeightValue / 255.0f);
+				ColorData[index + 5] = 0.0f;
 
 				VerticeData[index + 6] = XAxis + 1.0f;
 				VerticeData[index + 7] = Height2;
 				VerticeData[index + 8] = ZAxis;
+				ColorData[index + 6] = 1.0f;
+				ColorData[index + 7] = ((float)HeightValue / 255.0f);
+				ColorData[index + 8] = 0.0f;
+
+				LineA = v3(VerticeData[index + 6] - VerticeData[index + 0],
+						   VerticeData[index + 7] - VerticeData[index + 1],
+						   VerticeData[index + 8] - VerticeData[index + 2]);
+
+				LineB = v3(VerticeData[index + 3] - VerticeData[index + 0],
+						   VerticeData[index + 4] - VerticeData[index + 1],
+						   VerticeData[index + 5] - VerticeData[index + 2]);
+				
+				Normal = Math_Normalize(Math_CrossProduct(LineA, LineB));
+				NormalData[index + 0] = Normal.x;
+				NormalData[index + 1] = Normal.y;
+				NormalData[index + 2] = Normal.z;
+				NormalData[index + 3] = Normal.x;
+				NormalData[index + 4] = Normal.y;
+				NormalData[index + 5] = Normal.z;
+				NormalData[index + 6] = Normal.x;
+				NormalData[index + 7] = Normal.y;
+				NormalData[index + 8] = Normal.z;
+
 
 				VerticeData[index + 9] = XAxis + 1.0f;
-				VerticeData[index + 10] = Height2;
-				VerticeData[index + 11] = ZAxis;
+				VerticeData[index + 10] = Height4;
+				VerticeData[index + 11] = ZAxis - 1.0f;
+				ColorData[index + 9] = 1.0f;
+				ColorData[index + 10] = ((float)HeightValue / 255.0f);
+				ColorData[index + 11] = 0.0f;
 
-				VerticeData[index + 12] = XAxis;
-				VerticeData[index + 13] = Height1;
+				VerticeData[index + 12] = XAxis + 1;
+				VerticeData[index + 13] = Height2;
 				VerticeData[index + 14] = ZAxis;
+				ColorData[index + 12] = 1.0f;
+				ColorData[index + 13] = ((float)HeightValue / 255.0f);
+				ColorData[index + 14] = 0.0f;
 
 				VerticeData[index + 15] = XAxis;
 				VerticeData[index + 16] = Height3;
 				VerticeData[index + 17] = ZAxis - 1.0f;
+				ColorData[index + 15] = 1.0f;
+				ColorData[index + 16] = ((float)HeightValue / 255.0f);
+				ColorData[index + 17] = 0.0f;
+
+				LineA = v3(VerticeData[index + 15] - VerticeData[index + 9],
+						   VerticeData[index + 16] - VerticeData[index + 10],
+						   VerticeData[index + 17] - VerticeData[index + 11]);
+
+				LineB = v3(VerticeData[index + 12] - VerticeData[index + 9],
+						   VerticeData[index + 13] - VerticeData[index + 10],
+						   VerticeData[index + 14] - VerticeData[index + 11]);
+
+				Normal = Math_Normalize(Math_CrossProduct(LineA, LineB));
+				NormalData[index + 9]  = Normal.x;
+				NormalData[index + 10] = Normal.y;
+				NormalData[index + 11] = Normal.z;
+				NormalData[index + 12] = Normal.x;
+				NormalData[index + 13] = Normal.y;
+				NormalData[index + 14] = Normal.z;
+				NormalData[index + 15] = Normal.x;
+				NormalData[index + 16] = Normal.y;
+				NormalData[index + 17] = Normal.z;
 
 				index = index + 18;
-
+#endif
+#if 0
+				////////////////////////////////////
+				VerticeData[index + 0] = XAxis;
+				VerticeData[index + 1] = Height3;
+				VerticeData[index + 2] = ZAxis - 1.0f;
+				ColorData[index + 0] = 1.0f;
+				ColorData[index + 1] = ((float)HeightValue / 255.0f);
+				ColorData[index + 2] = 0.0f;
+				
+				VerticeData[index + 3] = XAxis + 1.0f;
+				VerticeData[index + 4] = Height4;
+				VerticeData[index + 5] = ZAxis - 1.0f;
+				ColorData[index + 3] = 1.0f;
+				ColorData[index + 4] = ((float)HeightValue / 255.0f);
+				ColorData[index + 5] = 0.0f;
+				
+				VerticeData[index + 6] = XAxis + 1.0f;
+				VerticeData[index + 7] = Height2;
+				VerticeData[index + 8] = ZAxis;
+				ColorData[index + 6] = 1.0f;
+				ColorData[index + 7] = ((float)HeightValue / 255.0f);
+				ColorData[index + 8] = 0.0f;
+				
+				VerticeData[index + 9] = XAxis + 1.0f;
+				VerticeData[index + 10] = Height2;
+				VerticeData[index + 11] = ZAxis;
+				ColorData[index + 9] = 1.0f;
+				ColorData[index + 10] = ((float)HeightValue / 255.0f);
+				ColorData[index + 11] = 0.0f;
+				
+				VerticeData[index + 12] = XAxis;
+				VerticeData[index + 13] = Height1;
+				VerticeData[index + 14] = ZAxis;
+				ColorData[index + 12] = 1.0f;
+				ColorData[index + 13] = ((float)HeightValue / 255.0f);
+				ColorData[index + 14] = 0.0f;
+				
+				VerticeData[index + 15] = XAxis;
+				VerticeData[index + 16] = Height3;
+				VerticeData[index + 17] = ZAxis - 1.0f;
+				ColorData[index + 15] = 1.0f;
+				ColorData[index + 16] = ((float)HeightValue / 255.0f);
+				ColorData[index + 17] = 0.0f;
+				
+				index = index + 18;
+#endif
 				flip = true;
 			}
 			else
@@ -834,26 +941,82 @@ ModelObj_CreateHeightmap(Model* ModelObj, Texture2D* ImageData)
 				VerticeData[index + 0] = XAxis; // f left
 				VerticeData[index + 1] = Height1;
 				VerticeData[index + 2] = ZAxis;
+				ColorData[index + 0] = 1.0f;
+				ColorData[index + 1] = ((float)HeightValue / 255.0f);
+				ColorData[index + 2] = 0.0f;
 
 				VerticeData[index + 3] = XAxis; // b left
 				VerticeData[index + 4] = Height3;
 				VerticeData[index + 5] = ZAxis - 1.0f;
+				ColorData[index + 3] = 1.0f;
+				ColorData[index + 4] = ((float)HeightValue / 255.0f);
+				ColorData[index + 5] = 0.0f;
 
 				VerticeData[index + 6] = XAxis + 1.0f; // b right
 				VerticeData[index + 7] = Height4;
 				VerticeData[index + 8] = ZAxis - 1.0f;
+				ColorData[index + 6] = 1.0f;
+				ColorData[index + 7] = ((float)HeightValue / 255.0f);
+				ColorData[index + 8] = 0.0f;
+
+				LineA = v3(VerticeData[index + 6] - VerticeData[index + 0],
+						   VerticeData[index + 7] - VerticeData[index + 1],
+						   VerticeData[index + 8] - VerticeData[index + 2]);
+
+				LineB = v3(VerticeData[index + 3] - VerticeData[index + 0],
+						   VerticeData[index + 4] - VerticeData[index + 1],
+						   VerticeData[index + 5] - VerticeData[index + 2]);
+
+				Normal = Math_Normalize(Math_CrossProduct(LineA, LineB));
+				NormalData[index + 0] = Normal.x;
+				NormalData[index + 1] = Normal.y;
+				NormalData[index + 2] = Normal.z;
+				NormalData[index + 3] = Normal.x;
+				NormalData[index + 4] = Normal.y;
+				NormalData[index + 5] = Normal.z;
+				NormalData[index + 6] = Normal.x;
+				NormalData[index + 7] = Normal.y;
+				NormalData[index + 8] = Normal.z;
 
 				VerticeData[index + 9] = XAxis + 1.0f; // b right
 				VerticeData[index + 10] = Height4;
 				VerticeData[index + 11] = ZAxis - 1.0f;
+				ColorData[index + 9] = 1.0f;
+				ColorData[index + 10] = ((float)HeightValue / 255.0f);
+				ColorData[index + 11] = 0.0f;
 
 				VerticeData[index + 12] = XAxis + 1.0f; // f right
 				VerticeData[index + 13] = Height2;
 				VerticeData[index + 14] = ZAxis;
+				ColorData[index + 12] = 1.0f;
+				ColorData[index + 13] = ((float)HeightValue / 255.0f);
+				ColorData[index + 14] = 0.0f;
 
 				VerticeData[index + 15] = XAxis; // f left
 				VerticeData[index + 16] = Height1;
 				VerticeData[index + 17] = ZAxis;
+				ColorData[index + 15] = 1.0f;
+				ColorData[index + 16] = ((float)HeightValue / 255.0f);
+				ColorData[index + 17] = 0.0f;
+
+				LineA = v3(VerticeData[index + 15] - VerticeData[index + 9],
+					VerticeData[index + 16] - VerticeData[index + 10],
+					VerticeData[index + 17] - VerticeData[index + 11]);
+
+				LineB = v3(VerticeData[index + 12] - VerticeData[index + 9],
+					VerticeData[index + 13] - VerticeData[index + 10],
+					VerticeData[index + 14] - VerticeData[index + 11]);
+
+				Normal = Math_Normalize(Math_CrossProduct(LineA, LineB));
+				NormalData[index + 9] = Normal.x;
+				NormalData[index + 10] = Normal.y;
+				NormalData[index + 11] = Normal.z;
+				NormalData[index + 12] = Normal.x;
+				NormalData[index + 13] = Normal.y;
+				NormalData[index + 14] = Normal.z;
+				NormalData[index + 15] = Normal.x;
+				NormalData[index + 16] = Normal.y;
+				NormalData[index + 17] = Normal.z;
 
 				index = index + 18;
 				flip = false;
@@ -861,18 +1024,18 @@ ModelObj_CreateHeightmap(Model* ModelObj, Texture2D* ImageData)
 		}
 	}
 
-	index = 0;
+	//index = 0;
 
-	for (uint32 i = 0; i < Width; i++)
-	{
-		for (uint32 j = 0; j < Depth; j++)
-		{
-			ColorData[index + 0] = 1;
-			ColorData[index + 1] = 1;
-			ColorData[index + 2] = 1;
-			index = index + 3;
-		}
-	}
+	//for (uint32 i = 0; i < Width; i++)
+	//{
+	//	for (uint32 j = 0; j < Depth; j++)
+	//	{
+	//		ColorData[index + 0] = 1;
+	//		ColorData[index + 1] = 1;
+	//		ColorData[index + 2] = 1;
+	//		index = index + 3;
+	//	}
+	//}
 
 	index = 0;
 	for (uint32 i = 0; i < Width; i++)

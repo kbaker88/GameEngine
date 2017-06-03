@@ -26,6 +26,12 @@ Collision_FillObject(CollisionObject* CollObj, float Width,
 int
 Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj);
 
+// TODO: Change to OBB instead of just a point for other collide obj
+// TODO: Take into account rotations.
+bool
+Collision_HeightMap(CollisionObject* HeightMapCollObj, float* Normals,
+	CollisionObject* OtherCollObj);
+
 #else
 
 struct CollisionObject

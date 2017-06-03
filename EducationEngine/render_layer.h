@@ -53,6 +53,12 @@ Render_BindTexture(uint32 TextureID);
 void
 Render_Draw(RenderObj *RenderObject);
 void
+Render_DrawLines(RenderObj* RenderObject);
+void
+Render_DrawPoints(RenderObj* RenderObject);
+
+
+void
 Render_DrawIndices(RenderObj* RenderObject);
 
 #endif
