@@ -1,6 +1,5 @@
 #include "collision_system.h"
 
-#if DATA_ORIENTED
 void
 Collision_FillObject(CollisionObject* CollObj, float Width,
 	float Height, float Depth,  v3* Position)
@@ -16,20 +15,28 @@ Collision_FillObject(CollisionObject* CollObj, float Width,
 }
 
 int
-Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj)
+Collision_ButtonClick(v2* MousePosition, 
+	CollisionObject* CollObj)
 {
-	window_properties WindowDimensions = Render_GetWindowProperties();
+	window_properties WindowDimensions =
+		Render_GetWindowProperties();
 	v2 NewMousePosition;
 	NewMousePosition.x =
-		MousePosition->x - ((float)WindowDimensions.Width * 0.5f);
+		MousePosition->x - 
+		((float)WindowDimensions.Width * 0.5f);
 	NewMousePosition.y =
-		((float)WindowDimensions.Height * 0.5f) - MousePosition->y;
+		((float)WindowDimensions.Height * 0.5f) - 
+		MousePosition->y;
 
-	if ((NewMousePosition.x > (CollObj->Position.x - (CollObj->HalfWidth))) &&
-		(NewMousePosition.x < (CollObj->Position.x + (CollObj->HalfWidth))))
+	if ((NewMousePosition.x > (CollObj->Position.x - 
+		(CollObj->HalfWidth))) &&
+		(NewMousePosition.x < (CollObj->Position.x +
+		(CollObj->HalfWidth))))
 	{
-		if ((NewMousePosition.y >(CollObj->Position.y - (CollObj->HalfHeight))) &&
-			(NewMousePosition.y < (CollObj->Position.y + (CollObj->HalfHeight))))
+		if ((NewMousePosition.y >(CollObj->Position.y - 
+			(CollObj->HalfHeight))) &&
+			(NewMousePosition.y < (CollObj->Position.y + 
+			(CollObj->HalfHeight))))
 		{
 			if (Platform_GetMouseState())
 			{
@@ -41,9 +48,14 @@ Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj)
 	return CollObj->CollisionCode;
 }
 
+// NOTE: Finds the smallest x,z vertice point in a quad that the
+// colliding object is in, determines which of the two triangles
+// of the quad that the object lies using (x1 - x0)(y2 - y0) - 
+// (x2 - x0)(y1 - y0) adjusted to the origin. Sets the normal
+// value and confirms collision.
 bool 
-Collision_HeightMap(CollisionObject* HeightMapCollObj, float* Normals,
-	CollisionObject* OtherCollObj)
+Collision_HeightMap(CollisionObject* HeightMapCollObj,
+	float* Normals, CollisionObject* OtherCollObj)
 {
 	v3 RelativePos = OtherCollObj->Position -
 		HeightMapCollObj->Position;
@@ -56,14 +68,9 @@ Collision_HeightMap(CollisionObject* HeightMapCollObj, float* Normals,
 		float XFloor = (float)((int32)RelativePos.x);
 		float ZFloor = (float)((int32)RelativePos.z);
 
-		float BottomLeft = (XFloor * (HeightMapCollObj->Depth - 1)) - 
+		float BottomLeft =
+			(XFloor * (HeightMapCollObj->Depth - 1)) - 
 			ZFloor;
-		float TopLeft = (XFloor * (HeightMapCollObj->Depth - 1)) -
-			ZFloor + 1;
-		float BottomRight = ((XFloor + 1) * (HeightMapCollObj->Depth - 1)) -
-			ZFloor;
-		float TopRight = ((XFloor + 1) * (HeightMapCollObj->Depth - 1)) -
-			ZFloor + 1;
 
 		bool FlipX = (uint32)XFloor % 2;
 		bool FlipZ = (uint32)ZFloor % 2;
@@ -101,17 +108,23 @@ Collision_HeightMap(CollisionObject* HeightMapCollObj, float* Normals,
 			if (Side < 0)
 			{
 				// NOTE: Left Side
-				HeightMapCollObj->CollideNormal.x = Normals[Position + 0];
-				HeightMapCollObj->CollideNormal.y = Normals[Position + 1];
-				HeightMapCollObj->CollideNormal.z = Normals[Position + 2];
+				HeightMapCollObj->CollideNormal.x =
+					Normals[Position + 0];
+				HeightMapCollObj->CollideNormal.y =
+					Normals[Position + 1];
+				HeightMapCollObj->CollideNormal.z = 
+					Normals[Position + 2];
 				return 1;
 			}
 			else
 			{
 				// NOTE: Right Side
-				HeightMapCollObj->CollideNormal.x = Normals[Position + 9];
-				HeightMapCollObj->CollideNormal.y = Normals[Position + 10];
-				HeightMapCollObj->CollideNormal.z = Normals[Position + 11];
+				HeightMapCollObj->CollideNormal.x =
+					Normals[Position + 9];
+				HeightMapCollObj->CollideNormal.y = 
+					Normals[Position + 10];
+				HeightMapCollObj->CollideNormal.z =
+					Normals[Position + 11];
 				return 1;
 			}
 		}
@@ -121,17 +134,23 @@ Collision_HeightMap(CollisionObject* HeightMapCollObj, float* Normals,
 			if (Side > 0)
 			{
 				// NOTE: Left Side
-				HeightMapCollObj->CollideNormal.x = Normals[Position + 3];
-				HeightMapCollObj->CollideNormal.y = Normals[Position + 4];
-				HeightMapCollObj->CollideNormal.z = Normals[Position + 5];
+				HeightMapCollObj->CollideNormal.x =
+					Normals[Position + 3];
+				HeightMapCollObj->CollideNormal.y =
+					Normals[Position + 4];
+				HeightMapCollObj->CollideNormal.z = 
+					Normals[Position + 5];
 				return 1;
 			}
 			else
 			{
 				// NOTE: Right Side
-				HeightMapCollObj->CollideNormal.x = Normals[Position + 12];
-				HeightMapCollObj->CollideNormal.y = Normals[Position + 13];
-				HeightMapCollObj->CollideNormal.z = Normals[Position + 14];
+				HeightMapCollObj->CollideNormal.x = 
+					Normals[Position + 12];
+				HeightMapCollObj->CollideNormal.y =
+					Normals[Position + 13];
+				HeightMapCollObj->CollideNormal.z =
+					Normals[Position + 14];
 				return 1;
 			}
 		}
@@ -139,7 +158,654 @@ Collision_HeightMap(CollisionObject* HeightMapCollObj, float* Normals,
 	return 0;
 }
 
-#else
+
+v3
+GetFurthestPoint(CollisionObject* Object, v3 *Direction)
+{
+	v3 FurthestPoint = { 0.0f, 0.0f, 0.0f };
+	float MaxDot = -100000.0f;
+
+	// NOTE: This is checking all points twice, fix?
+	for (uint32 i = 0; i < Object->NumVertices; i++)
+	{
+		v3 Vertex = { Object->VerticesPtr[i * 3],
+			Object->VerticesPtr[i * 3 + 1],
+			Object->VerticesPtr[i * 3 + 2] };
+		Vertex += Object->Position;
+		float Dot = Math_InnerProduct(&Vertex, Direction);
+
+		if (Dot > MaxDot)
+		{
+			MaxDot = Dot;
+			FurthestPoint = Vertex;
+		}
+	}
+
+	return FurthestPoint;
+}
+
+SupportPoint
+Collision_MinkowskiSupport(CollisionObject* ObjectA,
+	CollisionObject* ObjectB, v3 *Direction)
+{
+	SupportPoint Result;
+	Result.ObjAPoint = GetFurthestPoint(ObjectA, Direction);
+	Result.ObjBPoint = GetFurthestPoint(ObjectB, &(-*Direction));
+	Result.MinkowskiPoint = Result.ObjAPoint - Result.ObjBPoint;
+
+	// NOTE: Max point in Direction.
+	return Result;
+}
+
+bool
+GJK_LineSimplex(SupportPoint* PList, v3* Direction, 
+	uint32* PointCount)
+{
+	SupportPoint A = PList[1];
+	SupportPoint B = PList[0];
+	v3 AB = B.MinkowskiPoint - A.MinkowskiPoint;
+	v3 AO = -A.MinkowskiPoint;
+
+	if (Math_InnerProduct(&AB, &AO) > 0)
+	{
+		*Direction = 
+			Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
+		*PointCount = 2;
+		return true;
+	}
+	else
+	{
+		*Direction = AO;
+		PList[0] = A;
+		*PointCount = 1;
+		return false;
+	}
+}
+
+bool
+GJK_PlaneSimplex(SupportPoint* PList, v3* Direction,
+	uint32* PointCount)
+{
+	SupportPoint A = PList[2];
+	SupportPoint B = PList[1];
+	SupportPoint C = PList[0];
+	v3 AC = C.MinkowskiPoint - A.MinkowskiPoint;
+	v3 AB = B.MinkowskiPoint - A.MinkowskiPoint;
+	v3 AO = -A.MinkowskiPoint;
+	v3 ABC = Math_CrossProduct(AB, AC);
+
+	if (Math_InnerProduct(&Math_CrossProduct(ABC, AC), &AO) > 0)
+	{
+		if (Math_InnerProduct(&AC, &AO) > 0)
+		{
+			*Direction = 
+				Math_CrossProduct(Math_CrossProduct(AC, AO), AC);
+			PList[0] = C;
+			PList[1] = A;
+			*PointCount = 2;
+			return false;
+		}
+		else
+		{
+			if (Math_InnerProduct(&AB, &AO) > 0)
+			{
+				*Direction =
+					Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
+				PList[0] = B;
+				PList[1] = A;
+				*PointCount = 2;
+				return true;
+			}
+			else
+			{
+				*Direction = AO;
+				PList[0] = A;
+				*PointCount = 1;
+				return false;
+			}
+		}
+	}
+	else
+	{
+		if (Math_InnerProduct(&Math_CrossProduct(AB, ABC), &AO) > 0)
+		{
+			if (Math_InnerProduct(&AB, &AO) > 0)
+			{
+				*Direction = 
+					Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
+				PList[0] = B;
+				PList[1] = A;
+				*PointCount = 2;
+				return true;
+			}
+			else
+			{
+				*Direction = AO;
+				PList[0] = A;
+				*PointCount = 1;
+				return false;
+			}
+		}
+		else
+		{
+			if (Math_InnerProduct(&ABC, &AO) > 0)
+			{
+				*Direction = ABC;
+				*PointCount = 3;
+				return true;
+			}
+			else
+			{
+				*Direction = -ABC;
+				PList[0] = B;
+				PList[1] = C;
+				*PointCount = 3;
+				return true;
+			}
+		}
+	}
+}
+
+bool
+GJK_TetrahedronSimplex(SupportPoint* PList, v3 *Direction,
+	uint32* PointCount)
+{
+	SupportPoint A = PList[3];
+	SupportPoint B = PList[2];
+	SupportPoint C = PList[1];
+	SupportPoint D = PList[0];
+	v3 AB = B.MinkowskiPoint - A.MinkowskiPoint;
+	v3 AC = C.MinkowskiPoint - A.MinkowskiPoint;
+	v3 AD = D.MinkowskiPoint - A.MinkowskiPoint;
+	v3 AO = -A.MinkowskiPoint;
+	v3 ABC = Math_CrossProduct(AB, AC);
+	v3 ACD = Math_CrossProduct(AC, AD);
+	v3 ADB = Math_CrossProduct(AD, AB);
+
+	if (Math_InnerProduct(&ABC, &AO) > 0)
+	{
+		if (Math_InnerProduct(&AB, &AO) > 0)
+		{
+			*Direction =
+				Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
+			PList[0] = B;
+			PList[1] = A;
+			*PointCount = 2;
+			return false;
+		}
+		else if (Math_InnerProduct(&AC, &AO) > 0)
+		{
+			*Direction = 
+				Math_CrossProduct(Math_CrossProduct(AC, AO), AC);
+			PList[0] = C;
+			PList[1] = A;
+			*PointCount = 2;
+			return false;
+		}
+		else
+		{
+			*Direction = ABC;
+			PList[0] = C;
+			PList[1] = B;
+			PList[2] = A;
+			*PointCount = 3;
+			return false;
+		}
+	}
+	else if (Math_InnerProduct(&ACD, &AO) > 0)
+	{
+		if (Math_InnerProduct(&AC, &AO) > 0)
+		{
+			*Direction =
+				Math_CrossProduct(Math_CrossProduct(AC, AO), AC);
+			PList[0] = C;
+			PList[1] = A;
+			*PointCount = 2;
+			return false;
+		}
+		else if (Math_InnerProduct(&AD, &AO) > 0)
+		{
+			*Direction = 
+				Math_CrossProduct(Math_CrossProduct(AD, AO), AD);
+			PList[0] = D;
+			PList[1] = A;
+			*PointCount = 2;
+			return false;
+		}
+		else
+		{
+			*Direction = ACD;
+			PList[0] = D;
+			PList[1] = C;
+			PList[2] = A;
+			*PointCount = 3;
+			return false;
+		}
+	}
+	else if (Math_InnerProduct(&ADB, &AO) > 0)
+	{
+		if (Math_InnerProduct(&AB, &AO) > 0)
+		{
+			*Direction = 
+				Math_CrossProduct(Math_CrossProduct(AB, AO), AB);
+			PList[0] = B;
+			PList[1] = A;
+			*PointCount = 2;
+			return false;
+		}
+		else if (Math_InnerProduct(&AD, &AO) > 0)
+		{
+			*Direction =
+				Math_CrossProduct(Math_CrossProduct(AC, AO), AC);
+			PList[0] = C;
+			PList[1] = A;
+			*PointCount = 2;
+			return false;
+		}
+		else
+		{
+			*Direction = ADB;
+			PList[0] = B;
+			PList[1] = D;
+			PList[2] = A;
+			*PointCount = 3;
+			return false;
+		}
+	}
+	else
+	{
+		return true;
+	}
+}
+
+// TODO: Temporary variable
+SupportPoint PointList[4];
+
+bool
+Collision_GJK(CollisionObject* ObjectA, CollisionObject* ObjectB)
+{
+	SupportPoint A;
+	uint32 PointCount = 1;
+
+	v3 RandomDirection = { 1.0f, 0.0f, 0.0f };
+	SupportPoint StartingPoint = 
+		Collision_MinkowskiSupport(ObjectA, ObjectB,
+		&RandomDirection);
+
+	PointList[0] = StartingPoint;
+	// NOTE: Origin - StartPoint.
+	v3 Direction = -StartingPoint.MinkowskiPoint; 
+
+	uint32 EmergencyExit = 0;
+
+	while (1)
+	{
+		A = Collision_MinkowskiSupport(ObjectA, ObjectB, 
+			&Direction);
+
+		// NOTE: No Intersection
+		if (Math_InnerProduct(&A.MinkowskiPoint, 
+			&Direction) < 0) 
+		{
+			return 0;
+		}
+
+		PointList[PointCount] = A;
+		PointCount++;
+
+		// NOTE: InterSection
+		switch (PointCount) 
+		{
+		case 2:
+		{
+			if (GJK_LineSimplex(PointList, &Direction, 
+				&PointCount))
+			{
+				//PCount++;
+			}
+		} break;
+		case 3:
+		{
+			if (GJK_PlaneSimplex(PointList, &Direction, 
+				&PointCount))
+			{
+				//PCount++;
+			}
+		} break;
+		case 4:
+		{
+			if (GJK_TetrahedronSimplex(PointList, &Direction,
+				&PointCount))
+			{
+				return true;
+			}
+		} break;
+		default: break;
+		}
+
+		EmergencyExit++; // Infinit Loop break
+		if (EmergencyExit > 100)
+		{
+			return true;
+		}
+	}
+	return true;
+}
+
+float
+Collision_PointDistanceFromPlane(v3* Point,
+	v3* PointOnPlane, v3* Normal)
+{
+	// NOTE: If we gaurantee Normal is a unit vector, 
+	//	the division can be removed.
+	return Math_InnerProduct(Normal,
+		&(*Point - *PointOnPlane));// /
+		//Math_InnerProduct(Normal, Normal);
+}
+
+struct Face
+{
+	v3 Point[3];
+	v3 Normal;
+//	uint8 Status;
+};
+
+#include <vector>
+
+v3
+Collision_EPA(CollisionObject* CollisionObjA,
+	CollisionObject* CollisionObjB)
+{
+	std::vector<Face> Rebuild;
+	std::vector<Face> GoodFaces;
+	std::vector<v3> NewPointList;
+
+	//v3 Normal[4];
+	//v3 Triangle[4][3];
+	Face Faces[4]{};
+	uint32 FaceCount = 4;
+	uint32 ChosenFace = 0;
+
+	//Faces[0].Point[0] = PointList[0].MinkowskiPoint;
+	//Faces[0].Point[1] = PointList[1].MinkowskiPoint;
+	//Faces[0].Point[2] = PointList[2].MinkowskiPoint;
+	//
+	//Faces[0].Normal = Math_CrossProduct(
+	//	Faces[0].Point[0] - Faces[0].Point[1],
+	//	Faces[0].Point[2] - Faces[0].Point[1]);
+	//Faces[0].Normal = Math_Normalize(Faces[0].Normal);
+	//Faces[0].Status = 1;
+	//
+	//Faces[1].Point[0] = PointList[1].MinkowskiPoint;
+	//Faces[1].Point[1] = PointList[2].MinkowskiPoint;
+	//Faces[1].Point[2] = PointList[3].MinkowskiPoint;
+	//
+	//Faces[1].Normal = -Math_CrossProduct(
+	//	Faces[1].Point[0] - Faces[1].Point[1],
+	//	Faces[1].Point[2] - Faces[1].Point[1]);
+	//Faces[1].Normal = Math_Normalize(Faces[1].Normal);
+	//Faces[1].Status = 1;
+	//
+	//Faces[2].Point[0] = PointList[2].MinkowskiPoint;
+	//Faces[2].Point[1] = PointList[3].MinkowskiPoint;
+	//Faces[2].Point[2] = PointList[0].MinkowskiPoint;
+	//
+	//Faces[2].Normal = Math_CrossProduct(
+	//	Faces[2].Point[0] - Faces[2].Point[1],
+	//	Faces[2].Point[2] - Faces[2].Point[1]);
+	//Faces[2].Normal = Math_Normalize(Faces[2].Normal);
+	//Faces[2].Status = 1;
+	//
+	//Faces[3].Point[0] = PointList[0].MinkowskiPoint;
+	//Faces[3].Point[1] = PointList[3].MinkowskiPoint;
+	//Faces[3].Point[2] = PointList[1].MinkowskiPoint;
+	//
+	//Faces[3].Normal = Math_CrossProduct(
+	//	Faces[3].Point[0] - Faces[3].Point[1],
+	//	Faces[3].Point[2] - Faces[3].Point[1]);
+	//Faces[3].Normal = Math_Normalize(Faces[3].Normal);
+	//Faces[3].Status = 1;
+
+	Faces[0].Point[0] = PointList[0].MinkowskiPoint;
+	Faces[0].Point[1] = PointList[1].MinkowskiPoint;
+	Faces[0].Point[2] = PointList[2].MinkowskiPoint;
+		
+	Faces[1].Point[0] = PointList[0].MinkowskiPoint;
+	Faces[1].Point[1] = PointList[2].MinkowskiPoint;
+	Faces[1].Point[2] = PointList[3].MinkowskiPoint;
+
+	Faces[2].Point[0] = PointList[0].MinkowskiPoint;
+	Faces[2].Point[1] = PointList[3].MinkowskiPoint;
+	Faces[2].Point[2] = PointList[1].MinkowskiPoint;
+
+	Faces[3].Point[0] = PointList[1].MinkowskiPoint;
+	Faces[3].Point[1] = PointList[3].MinkowskiPoint;
+	Faces[3].Point[2] = PointList[2].MinkowskiPoint;
+
+	for (uint32 Index = 0;
+		Index < 4;
+		Index++)
+	{
+		Faces[Index].Normal = Math_CrossProduct(
+			Faces[Index].Point[1] - Faces[Index].Point[0],
+			Faces[Index].Point[2] - Faces[Index].Point[0]);
+		Faces[Index].Normal = Math_Normalize(Faces[Index].Normal);
+	}
+
+	GoodFaces.push_back(Faces[0]);
+	GoodFaces.push_back(Faces[1]);
+	GoodFaces.push_back(Faces[2]);
+	GoodFaces.push_back(Faces[3]);
+
+	uint32 EmergencyCount = 0;
+
+	float SmallestDistance = 100000.0f;
+	float PrevSmallestDistance = SmallestDistance;
+	while (1)
+	{
+		SmallestDistance = 100000.0f;
+ 		for (uint32 Index = 0;
+			Index < GoodFaces.size();
+			Index++)
+		{
+			float Distance =
+				-Collision_PointDistanceFromPlane(&v3(0.0f, 0.0f, 0.0f),
+					&GoodFaces[Index].Point[0], &GoodFaces[Index].Normal);
+		//	Distance = Math_AbsVal(Distance);
+
+			if (Distance < SmallestDistance)
+			{
+				SmallestDistance = Distance;
+				ChosenFace = Index;
+			}
+		}
+
+		if (SmallestDistance >= (PrevSmallestDistance + 0.000001f))
+		{
+			return GoodFaces[ChosenFace].Normal;
+		}
+		else
+		{
+			SupportPoint NewPoint =
+				Collision_MinkowskiSupport(CollisionObjB,
+					CollisionObjB, &GoodFaces[ChosenFace].Normal);
+
+			for (uint32 Index = 0;
+				Index < GoodFaces.size(); 
+				Index++)
+			{
+				if (Math_InnerProduct(&GoodFaces[Index].Normal,
+					&(NewPoint.MinkowskiPoint - 
+						GoodFaces[Index].Point[0])) > 0)
+				{
+						//Rebuild.push_back(Faces[Index]);
+
+						for (uint32 j = 0;
+							j < 3;
+							j++)
+						{
+							bool Add = true;
+							for (uint32 k = 0;
+								k < NewPointList.size();
+								k++)
+							{
+								if (Faces[Index].Point[j] == NewPointList[k])
+								{
+									Add = false;
+								}
+							}
+							if (Add == true)
+							{
+								NewPointList.push_back(Faces[Index].Point[j]);
+							}
+						}
+						GoodFaces.erase(GoodFaces.begin() + Index);
+					// push face to rebuild
+					// remove face from list
+				}
+			}
+
+			for (uint32 Index = 0;
+				Index < NewPointList.size();
+				Index++)
+			{
+				//Face NewFace;
+				//NewFace.Point[0] = NewPointList[Index];
+				//NewFace.Point[1] = NewPoint.MinkowskiPoint;
+				//
+				//if (Index == NewPointList.size() - 1)
+				//{
+				//	NewFace.Point[2] = NewPointList[0];
+				//	NewFace.Normal = -Math_CrossProduct(
+				//		NewFace.Point[0] - NewFace.Point[1],
+				//		NewFace.Point[2] - NewFace.Point[1]);
+				//	NewFace.Normal = Math_Normalize(NewFace.Normal);
+			//	//	NewFace.Status = 1;
+				//}
+				//else
+				//{
+				//	NewFace.Point[2] = NewPointList[Index + 1];
+				//	NewFace.Normal = Math_CrossProduct(
+				//		NewFace.Point[0] - NewFace.Point[1],
+				//		NewFace.Point[2] - NewFace.Point[1]);
+				//	NewFace.Normal = Math_Normalize(NewFace.Normal);
+				////	NewFace.Status = 1;
+				//}
+				//
+				////NewFace.Normal = Math_CrossProduct(
+				////	NewFace.Point[0] - NewFace.Point[1],
+				////	NewFace.Point[2] - NewFace.Point[1]);
+				////NewFace.Normal = Math_Normalize(NewFace.Normal);
+				////NewFace.Status = 1;
+
+				Face NewFace;
+				NewFace.Point[0] = NewPoint.MinkowskiPoint;
+				NewFace.Point[1] = NewPointList[Index];
+				if (Index == NewPointList.size() - 1)
+				{
+					NewFace.Point[2] = NewPointList[0];
+				}
+				else
+				{
+					NewFace.Point[2] = NewPointList[Index + 1];
+				}
+				NewFace.Normal = Math_CrossProduct(
+					NewFace.Point[1] - NewFace.Point[0],
+					NewFace.Point[2] - NewFace.Point[0]);
+				NewFace.Normal = Math_Normalize(NewFace.Normal);
+
+				GoodFaces.push_back(NewFace);
+			}
+
+#if 0
+			// TODO: Fix the issue of double faces
+			for (uint32 Index = 0;
+				Index < Rebuild.size();
+				Index++)
+			{
+				Face NewFaceA;
+				NewFaceA.Point[0] = Rebuild[Index].Point[0];
+				NewFaceA.Point[1] = NewPoint.MinkowskiPoint;
+				NewFaceA.Point[2] = Rebuild[Index].Point[1];
+
+				NewFaceA.Normal = Math_CrossProduct(
+					Rebuild[Index].Point[0] - Rebuild[Index].Point[1],
+					Rebuild[Index].Point[2] - Rebuild[Index].Point[1]);
+				NewFaceA.Status = 1;
+
+				GoodFaces.push_back(NewFaceA);
+
+				Face NewFaceB;
+				NewFaceB.Point[0] = Rebuild[Index].Point[1];
+				NewFaceB.Point[1] = NewPoint.MinkowskiPoint;
+				NewFaceB.Point[2] = Rebuild[Index].Point[2];
+
+				NewFaceB.Normal = Math_CrossProduct(
+					Rebuild[Index].Point[0] - Rebuild[Index].Point[1],
+					Rebuild[Index].Point[2] - Rebuild[Index].Point[1]);
+				NewFaceB.Status = 1;
+
+				GoodFaces.push_back(NewFaceB);
+
+				Face NewFaceC;
+				NewFaceC.Point[0] = Rebuild[Index].Point[2];
+				NewFaceC.Point[1] = NewPoint.MinkowskiPoint;
+				NewFaceC.Point[2] = Rebuild[Index].Point[0];
+
+				NewFaceC.Normal = Math_CrossProduct(
+					Rebuild[Index].Point[0] - Rebuild[Index].Point[1],
+					Rebuild[Index].Point[2] - Rebuild[Index].Point[1]);
+				NewFaceC.Status = 1;
+
+				GoodFaces.push_back(NewFaceC);
+			}
+#endif
+		}
+		EmergencyCount++;
+		if (EmergencyCount > 10)
+		{
+			return Faces[ChosenFace].Normal;
+		}
+		PrevSmallestDistance = SmallestDistance;
+	}
+}
+
+/*
+Take over the simplex from GJK when GJK terminated, and “blow up” the simplex
+to a tetrahedron if it contains less than 4 vertices.
+
+Use the 4 faces (triangles) of the tetrahedron to construct an initial polytope.
+
+Pick the closest face of the polytope to the origin.
+- requires, 3 vertices of the face, normal of the face,
+
+If the closest face is no closer (by a certain threshold) to the origin than
+the previously picked one, go to 8.
+
+Remove the closest face, use the face normal (outward pointing) as the search
+direction to find a support point on the Minkowski Difference.
+
+Remove all faces from the polytope that can be “seen” by this new support point,
+and add new faces to cover up the “hole” on the polytope, where all new faces
+share the new support point as a common vertex (this is the expanding part of
+the algorithm).
+
+Go to 3.
+
+Project the origin onto the closest triangle. This is our closest point to the
+origin on the CSO’s boundary. Compute the barycentric coordinates of this closest
+point with respect to the vertices from the closest triangle. The barycentric
+coordinates are coefficients of linear combination of vertices from the closest
+triangle. Linearly combining the individual support points (original results
+from individual colliders) corresponding to the vertices from the closest triangle,
+with the same barycentric coordinates as coefficients, gives us contact
+points on both colliders in their own local space. We can then convert these
+contact points to world space.
+
+End EPA.
+*/
+
+#if 0
 
 int 
 Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj)

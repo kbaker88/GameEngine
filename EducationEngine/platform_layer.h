@@ -8,7 +8,7 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#define DATA_ORIENTED 1 //TODO: Temporary while transfering
+//#define DATA_ORIENTED 1 //TODO: Temporary while transfering
 
 #define DEBUG_MODE 1
 
@@ -46,7 +46,6 @@ struct Texture2D
 	uint32 Width;
 	uint32 Height;
 };
-
 
 void* 
 Platform_AllocateMemory(unsigned long long *Size);

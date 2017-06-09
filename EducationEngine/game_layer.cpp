@@ -1,7 +1,7 @@
 #include "game_layer.h"
 
 static uint8 StateOfProgram = 0;
-ProgramState States[3];
+ProgramState States[3]{};
 
 // TODO: Temporary placement, put into state system
 Font *GlobalFont;
@@ -23,7 +23,6 @@ Game_Main(int32 CommandShow)
 
 	// TODO: Temporary, remove this later.
 	Asset_DeleteAll(); 
-	// TODO: Temporary, remove this later.
 	Text_DeleteFont(GlobalFont); 
 
 	Platform_Cleanup();
@@ -44,9 +43,17 @@ Game_Loop()
 		Memory_Initialize(1);
 #endif // MEMORY_ON
 		DEBUG_Initialize();
+		//Asset_LoadTextures(); 
 
-		// TODO: Too general, need to make multiple loads
-		Asset_LoadTextures(); 
+		Asset_LoadBMP("Images/startbutton.bmp"); // 0
+		Asset_LoadBMP("Images/menubutton.bmp"); // 1
+		Asset_LoadBMP("Images/exitbutton.bmp"); // 2
+		Asset_LoadBMP("Images/titlebutton.bmp"); // 3
+		Asset_LoadBMP("Images/grass2.bmp"); // 4
+		Asset_LoadBMP("Images/container.bmp"); // 5
+		Asset_LoadBMP("Images/woodfloor.bmp"); // 6
+		Asset_LoadPNG("Images/StartHeightMap.png"); // 7
+		Asset_LoadBMP("Images/inputbar.bmp"); // 8
 
 		if (!GlobalFont)
 		{
@@ -58,14 +65,7 @@ Game_Loop()
 			GlobalFont = new Font;
 #endif // MEMORY_ON
 		}
-#if DATA_ORIENTED
 		Text_BuildFont("arial\0", GlobalFont);
-#else
-		Texture2D FontGlyphs[255];
-		Asset_LoadFont("arial\0", "c:/Windows/Fonts/arial.ttf\0",
-			FontGlyphs);
-		Text_BuildFont("arial\0", FontGlyphs, GlobalFont);
-#endif
 		//Network_Init();
 		StateOfProgram = 1;
 	} break;
@@ -75,46 +75,22 @@ Game_Loop()
 	{
 		if (States[0].Status == 0)
 		{
-#if MEMORY_ON
-			States[0].EntityBlocks = 0;
-			States[0].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
-			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
+			States[0].NumRenderObjBlocks = 2;
+			States[0].NumModelObjBlocks = 2;
 
-			States[0].TextObjArray = 0;
-			States[0].TextObjArray = (Text_Object*)Memory_GetMemPtr();
-			Memory_AdvanceItr(sizeof(Text_Object) * TEXT_OBJECTS_PER_PROGSTATE);
-#if DATA_ORIENTED
-
-#else
-			States[0].RenderObjBlocks = 0;
-			States[0].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
-			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
-#endif // DATA_ORIENTED
-#else
-			States[0].EntityBlocks = new EntityBlock[2]{};
-			States[0].RenderObjBlocks = new RenderObjBlock[2]{};
-			States[0].TextObjArray =
-				new Text_Object[TEXT_OBJECTS_PER_PROGSTATE]{};
-#if DATA_ORIENTED
-			States[0].ModelObjBlocks = new ModelObjBlock[2]{};
-			States[0].CollisionObj = new CollisionObject[12];
-#endif // DATA_ORIENTED
-#endif // MEMORY_ON
+			State_CreateRenderObjectBlocks(&States[0],
+				States[0].NumRenderObjBlocks, 256);
+			State_CreateModelObjectBlocks(&States[0],
+				States[0].NumModelObjBlocks, 256);
+			State_CreateCollisionObjects(&States[0],
+				12);
+			State_CreateTextObjs(&States[0],
+				TEXT_OBJECTS_PER_PROGSTATE);
 			State_CreateCameras(&States[0], 1);
 			State_CreateShaderVariables(&States[0], 5);
 			State_CreateShaderHandles(&States[0], 2);
 			State_CreateTimers(&States[0], 2);
 			State_LinkToProgram(&States[0], &StateOfProgram);
-
-			Entity_CreateBlock(&States[0].EntityBlocks[0], 256);
-			RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
-#if DATA_ORIENTED
-			ModelObj_CreateBlock(&States[0].ModelObjBlocks[0], 256);
-#else
-			//RenderObj_CreateBlock(&States[0].RenderObjBlocks[0], 256);
-#endif // DATA_ORIENTED
-			States[0].NumEntityBlocks = 1;
-			States[0].NumObjectBlocks = 1;
 			
 			States[0].FontArr = GlobalFont;
 			States[0].FontCount = 1;
@@ -135,13 +111,6 @@ Game_Loop()
 
 		if ((StateOfProgram != 1) || (States[0].Status == -1))
 		{
-#if DATA_ORIENTED
-#if MEMORY_ON
-
-#else
-			delete[] States[0].CollisionObj;
-#endif // MEMORY_ON
-#endif // DATA_ORIENTED
 			State_Clean(&States[0]);
 		}
 	} break;
@@ -151,43 +120,21 @@ Game_Loop()
 	{
 		if (States[1].Status == 0)
 		{
-#if MEMORY_ON
-			States[1].EntityBlocks = 0;
-			States[1].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
-			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
-#if DATA_ORIENTED
-			
-#else
-			States[1].RenderObjBlocks = 0;
-			States[1].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
-			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
-#endif // DATA_ORIENTED
-#else
-			States[1].EntityBlocks = new EntityBlock[2]{};
-			States[1].RenderObjBlocks = new RenderObjBlock[2]{};
-#if DATA_ORIENTED
-
-			States[1].ModelObjBlocks = new ModelObjBlock[2]{};
-			States[1].CollisionObj = new CollisionObject[12];
-#else
-
-#endif // DATA_ORIENTED
-#endif // MEMORY_ON
+			State_CreateRenderObjectBlocks(&States[1],
+				2, 256);
+			State_CreateModelObjectBlocks(&States[1],
+				2, 256);
+			State_CreateCollisionObjects(&States[1],
+				12);
+			State_CreatePhysicsObjects(&States[1],
+				12);
+			State_CreateTextObjs(&States[1],
+				TEXT_OBJECTS_PER_PROGSTATE);
 			State_CreateCameras(&States[1], 1);
 			State_CreateTimers(&States[1], 1);
 			State_CreateShaderVariables(&States[1], 7);
 			State_CreateShaderHandles(&States[1], 2);
 			State_LinkToProgram(&States[1], &StateOfProgram);
-
-			RenderObj_CreateBlock(&States[1].RenderObjBlocks[0], 256);
-			Entity_CreateBlock(&States[1].EntityBlocks[0], 256);
-#if DATA_ORIENTED
-			ModelObj_CreateBlock(&States[1].ModelObjBlocks[0], 256);
-#else
-#endif // DATA_ORIENTED
-
-			States[1].NumEntityBlocks = 1;
-			States[1].NumObjectBlocks = 1;
 			
 			States[1].FontArr = GlobalFont;
 			States[1].FontCount = 1;
@@ -217,38 +164,18 @@ Game_Loop()
 	{
 		if (States[2].Status == 0)
 		{
-#if MEMORY_ON
-			States[2].EntityBlocks = 0;
-			States[2].EntityBlocks = (EntityBlock*)Memory_GetMemPtr();
-			Memory_AdvanceItr(sizeof(EntityBlock) * 2);
-#if DATA_ORIENTED
-
-#else
-			States[2].RenderObjBlocks = 0;
-			States[2].RenderObjBlocks = (RenderObjBlock*)Memory_GetMemPtr();
-			Memory_AdvanceItr(sizeof(RenderObjBlock) * 2);
-#endif // DATA_ORIENTED
-#else
-			States[2].EntityBlocks = new EntityBlock[2]{};
-#if DATA_ORIENTED
-
-#else
-			States[2].RenderObjBlocks = new RenderObjBlock[2]{};
-#endif // DATA_ORIENTED
-#endif // MEMORY_ON
+			State_CreateRenderObjectBlocks(&States[2],
+				2, 256);
+			State_CreateModelObjectBlocks(&States[2],
+				2, 256);
+			State_CreateCollisionObjects(&States[2],
+				12);
+			State_CreateTextObjs(&States[2],
+				TEXT_OBJECTS_PER_PROGSTATE);
 			State_CreateCameras(&States[2], 1);
 			State_CreateShaderVariables(&States[2], 5);
 			State_CreateShaderHandles(&States[2], 2);
 			State_LinkToProgram(&States[2], &StateOfProgram);
-
-			Entity_CreateBlock(&States[2].EntityBlocks[0], 256);
-#if DATA_ORIENTED
-
-#else
-			RenderObj_CreateBlock(&States[2].RenderObjBlocks[0], 256);
-#endif // DATA_ORIENTED
-			States[2].NumEntityBlocks = 1;
-			States[2].NumObjectBlocks = 1;
 
 			States[2].FontArr = GlobalFont;
 			States[2].FontCount = 1;

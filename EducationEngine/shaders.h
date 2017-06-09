@@ -1,8 +1,6 @@
 #ifndef SHADERS_H
 #define SHADERS_H
 
-#if DATA_ORIENTED
-
 static const char* VertexShader_Title =
 {
 	"#version 450 core												\n"
@@ -127,7 +125,7 @@ static const char* TextFragmentShaderSource = "#version 430 core\n"
 "FragColor = texture2D(myTexture, TexCoord) * vec4(1.0, 0.0, 0.0, 1.0);\n" //* vec4(Color, 1.0);\n"
 "}\0";
 
-#else
+#if 0
 // TODO: Temporary file until shaders are pre-compiled.
 //TODO: Include shader header with shader version defined
 static const char* MenuVertexShaderSource = "#version 430 core\n"
@@ -315,6 +313,6 @@ static const char* TestFragShader = "#version 430 core\n"
 "color = vec4(Color, 1.0f);\n"
 
 "}\n\0";
-#endif
+#endif // 0
 
 #endif

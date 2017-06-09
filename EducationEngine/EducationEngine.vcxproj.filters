@@ -70,34 +70,19 @@
     <Filter Include="Source Files\engine\render_objects">
       <UniqueIdentifier>{864b6d70-9340-44f4-822e-eb5015561576}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine\modules">
+      <UniqueIdentifier>{7c416835-33f0-484c-a84f-3fadb1cf8a36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\modules">
+      <UniqueIdentifier>{ede95ab5-73ed-4f02-b823-3d2bdbdf5f79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="box.cpp">
-      <Filter>Source Files\engine\render_objects</Filter>
-    </ClCompile>
-    <ClCompile Include="rectangle.cpp">
-      <Filter>Source Files\engine\render_objects</Filter>
-    </ClCompile>
-    <ClCompile Include="sphere.cpp">
-      <Filter>Source Files\engine\render_objects</Filter>
-    </ClCompile>
     <ClCompile Include="linear_algebra.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
-    <ClCompile Include="plane2d.cpp">
-      <Filter>Source Files\engine\render_objects</Filter>
-    </ClCompile>
     <ClCompile Include="math.cpp">
       <Filter>Source Files\math</Filter>
-    </ClCompile>
-    <ClCompile Include="line.cpp">
-      <Filter>Source Files\engine\render_objects</Filter>
-    </ClCompile>
-    <ClCompile Include="point.cpp">
-      <Filter>Source Files\engine\render_objects</Filter>
-    </ClCompile>
-    <ClCompile Include="heightmap.cpp">
-      <Filter>Source Files\engine\render_objects</Filter>
     </ClCompile>
     <ClCompile Include="win32_layer.cpp">
       <Filter>Source Files\layers</Filter>
@@ -138,9 +123,6 @@
     <ClCompile Include="utility.cpp">
       <Filter>Source Files\engine\utility</Filter>
     </ClCompile>
-    <ClCompile Include="entity_utility.cpp">
-      <Filter>Source Files\engine\utility</Filter>
-    </ClCompile>
     <ClCompile Include="memory_system.cpp">
       <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
@@ -149,9 +131,6 @@
     </ClCompile>
     <ClCompile Include="render_object.cpp">
       <Filter>Source Files\engine\render_objects</Filter>
-    </ClCompile>
-    <ClCompile Include="renderobject_system.cpp">
-      <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
     <ClCompile Include="debug_system.cpp">
       <Filter>Source Files\engine\systems</Filter>
@@ -173,6 +152,9 @@
     </ClCompile>
     <ClCompile Include="model_object_system.cpp">
       <Filter>Source Files\engine\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="module_math.cpp">
+      <Filter>Source Files\engine\modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="model_object_system.h">
       <Filter>Header Files\engine\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="module_math.h">
+      <Filter>Header Files\engine\modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

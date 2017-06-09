@@ -13,11 +13,7 @@ struct PhysicsObject
 	~PhysicsObject() {}
 
 	m4 *ModelMatrix;
-#if DATA_ORIENTED
 	v3 Position, MoveDirection;
-#else
-	v3 *Position, *MoveDirection;
-#endif // DATA_ORIENTED
 	v3 Velocity, Force, ForceSum, Acceleration, PrevPosition;
 	float AccelerationRate;
 	float Mass;

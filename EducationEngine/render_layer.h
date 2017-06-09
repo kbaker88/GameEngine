@@ -9,7 +9,6 @@
 #define RENDER_VULKAN 0
 #define RENDER_DIRECTX12 0
 
-#if DATA_ORIENTED
 #if RENDER_OPENGL
 
 struct RenderObj  // Byte Total: 34
@@ -61,36 +60,6 @@ Render_DrawPoints(RenderObj* RenderObject);
 void
 Render_DrawIndices(RenderObj* RenderObject);
 
-#endif
-#else
-
-struct VBODescription
-{
-	VBODescription() : Data(0), Size(0), Offset(0) {}
-	~VBODescription() {}
-
-	void* Data;
-	uint32 Size;
-	uint32 Offset;
-};
-
-struct PipelineObjectDescription
-{
-	PipelineObjectDescription() : VertexArrayObjectID(0),
-		NumberOfVertexHandles(0), VertexBufferObjectHandleIDs(0),
-		VertexBufferDescriptions(0) {}
-
-	~PipelineObjectDescription() {}
-
-	uint32 VertexArrayObjectID;
-	uint32 NumberOfVertexHandles;
-	uint32* VertexBufferObjectHandleIDs; 
-	VBODescription IndiceDescription;
-	VBODescription* VertexBufferDescriptions; 
-};
-
-void
-Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription);
 #endif
 
 static window_properties WindowProperties;

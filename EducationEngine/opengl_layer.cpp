@@ -543,8 +543,6 @@ Render_UpdateShaderVariable(int32 Location, int32 MatrixSize,
 	}
 }
 
-#if DATA_ORIENTED
-
 void 
 Render_CreateVertexArrays(uint32 Amount,
 	uint32* IDArray)
@@ -671,57 +669,6 @@ Render_DrawIndices(RenderObj* RenderObject)
 	//glDrawArrays(GL_TRIANGLES, 0, RenderObject->NumVertices);
 	glBindVertexArray(0);
 }
-
-#else
-void 
-Render_ObjectPipelineInit(PipelineObjectDescription* ObjectDescription)
-{
-	glGenBuffers(ObjectDescription->NumberOfVertexHandles,
-		ObjectDescription->VertexBufferObjectHandleIDs);
-	glGenVertexArrays(1, &ObjectDescription->VertexArrayObjectID);
-	glBindVertexArray(ObjectDescription->VertexArrayObjectID);
-
-	uint32 LoopCount = ObjectDescription->NumberOfVertexHandles;
-
-	if (ObjectDescription->IndiceDescription.Data)
-	{
-		LoopCount--;
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
-			ObjectDescription->VertexBufferObjectHandleIDs[LoopCount]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			ObjectDescription->IndiceDescription.Size,
-			ObjectDescription->IndiceDescription.Data,
-			GL_STATIC_DRAW);
-	}
-
-	for (uint32 Index = 0; Index < LoopCount; Index++)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER,
-			ObjectDescription->VertexBufferObjectHandleIDs[Index]);
-		glBufferData(GL_ARRAY_BUFFER, 
-			ObjectDescription->VertexBufferDescriptions[Index].Size,
-			ObjectDescription->VertexBufferDescriptions[Index].Data,
-			GL_STATIC_DRAW);
-		
-		glEnableVertexAttribArray(Index);
-		glBindVertexBuffer(Index, 
-			ObjectDescription->VertexBufferObjectHandleIDs[Index],
-			0, sizeof(GLfloat) * 
-			ObjectDescription->VertexBufferDescriptions[Index].Offset);
-		glVertexAttribFormat(Index,
-			ObjectDescription->VertexBufferDescriptions[Index].Offset,
-			GL_FLOAT, GL_FALSE, 0);
-		glVertexAttribBinding(Index, Index);
-	}
-	// TODO: Should i be disabling the vertex attribute arrays? 
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	// NOTE: Do not unbind the EBO, keep it bound to this VAO
-	glBindVertexArray(0); 
-}
-
-#endif
 
 void* 
 Render_GetObjectShaderDataPtr(uint32* VertexObjectHandleIDArray,

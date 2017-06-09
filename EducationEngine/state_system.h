@@ -4,45 +4,20 @@
 #include "entity_system.h"
 
 // TODO: Try to reduce size to save space.
-// TODO: Change to data-oriented design
 struct ProgramState
 {
-#if DATA_ORIENTED
-	ProgramState() : CameraArray(0), TimerArray(0),
-		GPUShaderVarArray(0), ShaderHandles(0),
-		Status(0), NumEntityBlocks(0), NumObjectBlocks(0),
-		StateOfProgram(0), CursorPosition(0.0f, 0.0f),
-		ObjectCount(0), EntityCount(0), FontArr(0),
-		FontCount(0), ConsoleItr(0), ConsoleState(0),
-		LastKeyPress(0), TextObjArray(0), EntityBlocks(0),
-		RenderObjBlocks(0), ModelObjBlocks(0){}
-#else
-		ProgramState() : CameraArray(0), TimerArray(0),
-		GPUShaderVarArray(0), ShaderHandles(0),
-		Status(0), NumEntityBlocks(0), NumObjectBlocks(0),
-		StateOfProgram(0), CursorPosition(0.0f, 0.0f),
-		ObjectCount(0), EntityCount(0), FontArr(0),
-		FontCount(0), ConsoleItr(0), ConsoleState(0),
-		LastKeyPress(0), TextObjArray(0), EntityBlocks(0),
-		RenderObjBlocks (0) {}
-#endif	
-	~ProgramState() {}
-
 	Camera* CameraArray;
 	Timer* TimerArray;
-	EntityBlock* EntityBlocks;
 	RenderObjBlock* RenderObjBlocks;
-
-#if DATA_ORIENTED
 	ModelObjBlock* ModelObjBlocks;
 	CollisionObject* CollisionObj;
-#endif
-
-	// TODO: Temporary System
+	PhysicsObject* PhysicsObj;
+	// TODO: Temporary system
 	Text_Object* TextObjArray;
-
 	Font *FontArr;
-	uint32 FontCount;
+
+	uint32 FontCount, NumRenderObjBlocks,
+		NumModelObjBlocks;
 	
 	uint16 ConsoleGlyph[CONSOLE_BUFFER_LENGTH]{};
 	int32 ConsoleItr;
@@ -54,21 +29,40 @@ struct ProgramState
 	int32* GPUShaderVarArray;
 	uint32* ShaderHandles;
 	int32 Status;
-	uint32 NumEntityBlocks, NumObjectBlocks, ObjectCount,
-		EntityCount;
 	uint8* StateOfProgram;
 };
 
 void
-State_CreateCameras(ProgramState* State, uint32 NumberOfCameras);
+State_CreateCameras(ProgramState* State, 
+	uint32 NumberOfCameras);
 void 
-State_CreateTimers(ProgramState* State, uint32 NumberOfTimers);
+State_CreateTimers(ProgramState* State, 
+	uint32 NumberOfTimers);
 void
-State_CreateShaderVariables(ProgramState* State, uint32 NumberOfVars);
+State_CreateShaderVariables(ProgramState* State, 
+	uint32 NumberOfVars);
 void 
-State_CreateShaderHandles(ProgramState* State, uint32 NumberOfHandles);
+State_CreateShaderHandles(ProgramState* State,
+	uint32 NumberOfHandles);
 void
-State_LinkToProgram(ProgramState* State, uint8* StateOfProgramPtr);
+State_CreateRenderObjectBlocks(ProgramState* State,
+	uint32 NumberOfBlocks, uint32 BlockSize);
+void
+State_CreateModelObjectBlocks(ProgramState* State,
+	uint32 NumberOfBlocks, uint32 BlockSize);
+void
+State_CreateCollisionObjects(ProgramState* State,
+	uint32 NumOfObjs);
+void
+State_CreatePhysicsObjects(ProgramState* State,
+	uint32 NumOfObjs);
+void
+State_CreateTextObjs(ProgramState* State,
+	uint32 NumOfObjs);
+
+void
+State_LinkToProgram(ProgramState* State, 
+	uint8* StateOfProgramPtr);
 
 void 
 State_Clean(ProgramState* State);

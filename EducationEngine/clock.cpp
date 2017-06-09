@@ -1,5 +1,7 @@
 #include "clock.h"
 
+
+#if 1
 Clock GlobalClock;
 
 float Clock_GetCurrentTime()
@@ -49,3 +51,4 @@ float Timer::GetTime()
 		return EndTime;
 	}
 }
+#endif

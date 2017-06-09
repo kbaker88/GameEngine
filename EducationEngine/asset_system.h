@@ -4,11 +4,6 @@
 #include "bmp.h"
 #include "png.h"
 
-static Texture2D Textures[512];
-static uint32 TextureCount;
-
-void 
-Asset_LoadTextures();
 void 
 Asset_LoadFont(char* FontName, char* FilePath,
 	Texture2D* GlyphArray);

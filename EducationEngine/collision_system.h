@@ -8,7 +8,6 @@
 //TODO: GetMousePosition once per frame and store it for use in state?
 //TODO: Add collision maximum distance
 
-#if DATA_ORIENTED
 struct CollisionObject
 {
 	v3 Position{};
@@ -20,19 +19,82 @@ struct CollisionObject
 	int32 CollisionCode;
 };
 
+struct SupportPoint
+{
+	SupportPoint() : MinkowskiPoint(0.0f, 0.0f, 0.0f),
+		ObjAPoint(0.0f, 0.0f, 0.0f),
+		ObjBPoint(0.0f, 0.0f, 0.0f) {}
+
+	~SupportPoint() {}
+
+	v3 MinkowskiPoint;
+	v3 ObjAPoint;
+	v3 ObjBPoint;
+
+	SupportPoint & operator=(SupportPoint& B)
+	{
+		MinkowskiPoint = B.MinkowskiPoint;
+		ObjAPoint = B.ObjAPoint;
+		ObjBPoint = B.ObjBPoint;
+		return *this;
+	}
+
+	bool operator==(SupportPoint& B)
+	{
+		if (MinkowskiPoint == B.MinkowskiPoint)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool operator==(const SupportPoint& B)
+	{
+		if (MinkowskiPoint == B.MinkowskiPoint)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+};
+
 void
-Collision_FillObject(CollisionObject* CollObj, float Width,
-	float Height, float Depth, v3* Position);
+Collision_FillObject(CollisionObject* CollObj,
+	float Width, float Height, float Depth,
+	v3* Position);
+
+float
+Collision_PointDistanceFromPlane(v3* Point,
+	v3* PointOnPlane, v3* Normal);
+
 int
-Collision_ButtonClick(v2* MousePosition, CollisionObject* CollObj);
+Collision_ButtonClick(v2* MousePosition, 
+	CollisionObject* CollObj);
 
 // TODO: Change to OBB instead of just a point for other collide obj
 // TODO: Take into account rotations.
+// TODO: Find a better way to pass the Heightmap normals
 bool
-Collision_HeightMap(CollisionObject* HeightMapCollObj, float* Normals,
-	CollisionObject* OtherCollObj);
+Collision_HeightMap(CollisionObject* HeightMapCollObj,
+	float* Normals, CollisionObject* OtherCollObj);
 
-#else
+SupportPoint
+Collision_MinkowskiSupport(CollisionObject* ObjectA,
+	CollisionObject* ObjectB, v3 *Direction);
+
+bool
+Collision_GJK(CollisionObject* ObjectA,
+	CollisionObject* ObjectB);
+v3
+Collision_EPA(CollisionObject* CollisionObjA,
+	CollisionObject* CollisionObjB);
+#if 0
 
 struct CollisionObject
 {

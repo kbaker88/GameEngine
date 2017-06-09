@@ -46,6 +46,13 @@ WndProc(HWND hwnd, UINT msg, WPARAM wParam,
 uint32 MouseState;
 uint8 MouseLeftClickToggle = 0;
 
+int WINAPI
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+	LPSTR lpCmdLine, int CommandShow)
+{
+	return Game_Main(CommandShow);
+}
+
 void 
 Platform_UpdateWindowSize(uint32 Width, uint32 Height)
 {
@@ -326,13 +333,6 @@ void
 Platform_EndProgram()
 {
 	PostQuitMessage(0);
-}
-
-int WINAPI 
-WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int CommandShow)
-{
-	return Game_Main(CommandShow);
 }
 
 void 
@@ -645,15 +645,6 @@ WndProc(HWND Window, UINT Message,
 	}	break;
 	case WM_CHAR:
 	{
-		//switch (wParam)
-		//{
-		//case VK_ESCAPE:
-		//{
-		//	PostQuitMessage(0);
-		//} break;
-		//default:
-		//	break;
-		//}
 	} break;
 	case WM_LBUTTONUP:
 	{

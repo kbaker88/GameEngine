@@ -63,11 +63,7 @@ Input_UpdateMouseState(ProgramState* State, Camera* PlayerCamera)
 		Math_Sine(Math_ConvertToRadians(*YawPtr)) *
 		Math_Cosine(Math_ConvertToRadians(*PitchPtr)));
 
-#if DATA_ORIENTED
 	PlayerCamera->ForwardVector = Math_Normalize(PlayerFront);
-#else
-	PlayerCamera->FacingVector = Math_Normalize(PlayerFront);
-#endif // DATA_ORIENTED
 }
 
 void 
@@ -78,11 +74,7 @@ Input_UpdateKeyStates(ProgramState* State, Camera* PlayerCamera,
 	float* PitchPtr = &PlayerCamera->Pitch;
 
 	v3* DirectionVector = Direction;
-#if DATA_ORIENTED
 	v3* FacingVector = &PlayerCamera->ForwardVector;
-#else
-	v3* FacingVector = &PlayerCamera->FacingVector;
-#endif // DATA_ORIENTED
 	v3* RelativeUpVector = &PlayerCamera->UpVector;
 	
 	if (Platform_GetStateOfKey('Q') == 1)

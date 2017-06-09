@@ -1,20 +1,7 @@
 #include "asset_system.h"
 
-void 
-Asset_LoadTextures()
-{
-	TextureCount = 0;
-
-	Asset_LoadBMP("Images/startbutton.bmp"); // 0
-	Asset_LoadBMP("Images/menubutton.bmp"); // 1
-	Asset_LoadBMP("Images/exitbutton.bmp"); // 2
-	Asset_LoadBMP("Images/titlebutton.bmp"); // 3
-	Asset_LoadBMP("Images/grass2.bmp"); // 4
-	Asset_LoadBMP("Images/container.bmp"); // 5
-	Asset_LoadBMP("Images/woodfloor.bmp"); // 6
-	Asset_LoadPNG("Images/StartHeightMap.png"); // 7
-	Asset_LoadBMP("Images/inputbar.bmp"); // 8
-}
+static Texture2D Textures[512];
+static uint32 TextureCount = 0;
 
 void 
 Asset_LoadFont(char* FontName, char* FilePath, Texture2D* GlyphArray)

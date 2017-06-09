@@ -1,6 +1,5 @@
 #include "text_system.h"
 
-#if DATA_ORIENTED
 // TODO: Make this more robust to support unicode
 void
 Text_BuildFont(char* FontName, Font* FontPtr)
@@ -33,7 +32,7 @@ Text_BuildFont(char* FontName, Font* FontPtr)
 	}
 
 }
-#else
+#if 0
 void 
 Text_BuildFont(char* FontName, Texture2D* GlyphArray, Font* FontPtr)
 {
@@ -53,14 +52,12 @@ Text_BuildFont(char* FontName, Texture2D* GlyphArray, Font* FontPtr)
 #endif // MEMORY_ON
 	}
 }
-#endif // DATA_ORIENTED
+#endif // 0
 
 void 
 Text_DeleteFont(Font* FontPtr)
 {
-#if DATA_ORIENTED
-
-#else
+#if 0
 	if (FontPtr)
 	{
 		for (unsigned int Index = 0; Index < FontPtr->GlyphsCount; Index++)
@@ -78,7 +75,7 @@ Text_DeleteFont(Font* FontPtr)
 	{
 		// TODO: Error
 	}
-#endif // DATA_ORIENTED
+#endif // 0
 }
 
 void
@@ -161,11 +158,9 @@ Text_Draw(Text_Object* TextObj, uint32 ShaderID)
 			Render_UpdateShaderVariable(ShaderID, 44,
 				&ModelMatrix.Rc[0][0], 1, 0);
 
-#if DATA_ORIENTED
-
-#else
+#if 0
 			TextObj->Font->Glyph[TextObj->Buffer[i]].Draw();
-#endif // DATA_ORIENTED
+#endif // 0
 			Width = Text_SpacingWidth(TextObj->Font, 
 				TextObj->Buffer[i], TextObj->Buffer[i + 1]);
 
@@ -192,11 +187,9 @@ Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
 		Render_UpdateShaderVariable(ShaderID, 44,
 			&ModelMatrix.Rc[0][0], 1, 0);
 
-#if DATA_ORIENTED
-
-#else
+#if 0
 		Font->Glyph[ConsoleBuffer[i]].Draw();
-#endif // DATA_ORIENTED
+#endif // 0
 		Width = Text_SpacingWidth(Font, ConsoleBuffer[i], ConsoleBuffer[i + 1]);
 
 		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
@@ -217,13 +210,10 @@ Text_DrawCharLine(string &Text, v3 &Position, float Scale,
 		Render_UpdateShaderVariable(ShaderID, 44,
 			&ModelMatrix.Rc[0][0], 1, 0);
 
-#if DATA_ORIENTED
 		Render_BindTexture(Font->GlyphImageID[Text.CharStr[i]]);
 		Render_Draw(&Font->Glyph[Text.CharStr[i]]);
 		Render_BindTexture(0);
-#else
-		Font->Glyph[Text.CharStr[i]].Draw();
-#endif// DATA_ORIENTED
+
 
 		Width = Text_SpacingWidth(Font, Text.CharStr[i], Text.CharStr[i + 1]);
 
@@ -239,23 +229,13 @@ Text_SpacingWidth(Font* Font, uint16 A, uint16 B)
 	{
 		if (A && (B < 256) && B)
 		{
-#if DATA_ORIENTED
 			float Width = (float)Font->Width[A];
 			float NextWidth = (float)Font->Width[B];
 			return (Width * 0.5f + NextWidth * 0.5f);
-#else
-			float Width = (float)Font->Glyph[A].Width;
-			float NextWidth = (float)Font->Glyph[B].Width;
-			return (Width * 0.5f + NextWidth * 0.5f);
-#endif // DATA_ORIENTED
 		}
 		else if (A)
 		{
-#if DATA_ORIENTED
 			return (float)Font->Width[A];
-#else
-			return (float)Font->Glyph[A].Width;
-#endif // DATA_ORIENTED
 		}
 		else
 		{
@@ -269,9 +249,8 @@ Text_SpacingWidth(Font* Font, uint16 A, uint16 B)
 		return 0;
 	}
 
-#if DATA_ORIENTED
 	return 0;
-#endif // DATA_ORIENTED
+
 }
 
 

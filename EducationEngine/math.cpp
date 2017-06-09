@@ -14,7 +14,7 @@ Math_Floor(float Value)
 	{
 		Result -= 1;
 	}
-	return Result;
+	return (float)Result;
 	
 
 	/* Long Method
