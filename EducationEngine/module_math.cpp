@@ -31,11 +31,52 @@ Module_Math_Load(ProgramState* State)
 void
 Module_Math_Run(ProgramState* State)
 {
+	Render_ClearScreen(&v4(1.0f, 1.0f, 1.0f, 1.0f));
 
+	Platform_GetCursorPosition(&State->CursorPosition.x,
+		&State->CursorPosition.y);
+
+	Render_BindShaders(State->ShaderHandles[0]);
+	State->GPUShaderVarArray[0] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "model");
+	State->GPUShaderVarArray[1] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "view");
+	State->GPUShaderVarArray[2] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
+	State->GPUShaderVarArray[3] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
+	State->GPUShaderVarArray[4] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "HoverColor");
+
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
+		(float*)&State->CameraArray[0].ViewMatrix, 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
+		(float*)&State->CameraArray[0].ProjectionMatrix, 1, 0);
+	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], 0);
+
+	m4 ModelMatrix = Math_IdentityMatrix();
+
+
+	Text_DrawCharLine(string("MOUSE COLLISION \0"),
+		v3(20.0f, 10.0f, 0.0f), 1.0f,
+		State->GPUShaderVarArray[0], State->FontArr);
+
+	if (State->Status == -1)
+	{
+		// Clean
+	}
+	else
+	{
+		Platform_UpdateMouseState(0);
+	}
+	
 }
 
 void
-Module_Math_Clean()
+Module_Math_Clean(ProgramState* State)
 {
-
+	Platform_UpdateMouseState(0);
+	Render_ClearCurrentShaderProgram();
+	Render_DeleteShaderProgram(State->ShaderHandles[0]);
+	Render_DeleteShaderProgram(State->ShaderHandles[1]);
 }

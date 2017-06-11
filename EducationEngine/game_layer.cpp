@@ -1,8 +1,22 @@
 #include "game_layer.h"
 
+// TODO: Temporary. For testing purposes.
 static uint8 StateOfProgram = 0;
 ProgramState States[3]{};
 
+#if MODULE_MODE
+typedef void Module_State(ProgramState* State);
+
+struct ModuleCalls
+{
+	Module_State* Load;
+	Module_State* Run;
+	Module_State* Clean;
+};
+
+ModuleCalls Modules[3];
+uint32 CurrentModuleID;
+#endif
 // TODO: Temporary placement, put into state system
 Font *GlobalFont;
 
@@ -17,6 +31,28 @@ Game_Main(int32 CommandShow)
 	Platform_InitRenderer();
 	Render_Init(&WindowDimensions);
 	Platform_ShowWindow(CommandShow);
+
+#if MODULE_MODE
+#if MEMORY_ON
+	Memory_Initialize(1);
+#endif // MEMORY_ON
+	DEBUG_Initialize();
+
+	Modules[0].Load = (Module_State*)Title_Initialize;
+	Modules[0].Run = (Module_State*)Title_Draw;
+	Modules[0].Clean = (Module_State*)Title_Clean;
+
+	Modules[1].Load = (Module_State*)Game_Initialize;
+	Modules[1].Run = (Module_State*)Game_Draw;
+	Modules[1].Clean = (Module_State*)Game_Clean;
+
+	//Network_Init();
+	StateOfProgram = 0;
+	CurrentModuleID = 0;
+	States[0].StateOfProgram = &StateOfProgram;
+	States[1].StateOfProgram = &StateOfProgram;
+	States[2].StateOfProgram = &StateOfProgram;
+#endif // MODULE_MODE
 
 	// NOTE: Platform_MessageLoop() also calls Game_Loop() internally
 	uint32 Message = Platform_MessageLoop();
@@ -34,6 +70,22 @@ Game_Loop()
 {
 	int64 LastCounter = Platform_GetCPUCounter();
 
+	CurrentModuleID = (uint32)*States[StateOfProgram].StateOfProgram;
+#if MODULE_MODE
+	if (States[CurrentModuleID].Status == 1)
+	{
+		Modules[CurrentModuleID].Run(&States[CurrentModuleID]);
+	}
+	else if (States[CurrentModuleID].Status == 0)
+	{
+		Modules[CurrentModuleID].Load(&States[CurrentModuleID]);
+	}
+	else
+	{
+		Modules[CurrentModuleID].Clean(&States[CurrentModuleID]);
+	}
+
+#else
 	switch (StateOfProgram)
 	{
 	// NOTE: Loading State
@@ -43,7 +95,6 @@ Game_Loop()
 		Memory_Initialize(1);
 #endif // MEMORY_ON
 		DEBUG_Initialize();
-		//Asset_LoadTextures(); 
 
 		Asset_LoadBMP("Images/startbutton.bmp"); // 0
 		Asset_LoadBMP("Images/menubutton.bmp"); // 1
@@ -96,7 +147,8 @@ Game_Loop()
 			States[0].FontCount = 1;
 			States[0].Status = 1;
 
-			Title_Initialize(&States[0]);
+			//Title_Initialize(&States[0]);
+			TestCalls[0].Init(&States[0]);
 		}
 		else
 		{
@@ -213,6 +265,7 @@ Game_Loop()
 
 	} break;
 	}
+#endif // MODULE_MODE
 
 	// NOTE: Cap at 60FPS
 	int64 CounterElapsed = Platform_GetCPUCounter() - LastCounter;

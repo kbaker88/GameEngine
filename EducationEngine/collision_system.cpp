@@ -520,51 +520,9 @@ Collision_EPA(CollisionObject* CollisionObjA,
 	std::vector<Face> GoodFaces;
 	std::vector<v3> NewPointList;
 
-	//v3 Normal[4];
-	//v3 Triangle[4][3];
 	Face Faces[4]{};
 	uint32 FaceCount = 4;
 	uint32 ChosenFace = 0;
-
-	//Faces[0].Point[0] = PointList[0].MinkowskiPoint;
-	//Faces[0].Point[1] = PointList[1].MinkowskiPoint;
-	//Faces[0].Point[2] = PointList[2].MinkowskiPoint;
-	//
-	//Faces[0].Normal = Math_CrossProduct(
-	//	Faces[0].Point[0] - Faces[0].Point[1],
-	//	Faces[0].Point[2] - Faces[0].Point[1]);
-	//Faces[0].Normal = Math_Normalize(Faces[0].Normal);
-	//Faces[0].Status = 1;
-	//
-	//Faces[1].Point[0] = PointList[1].MinkowskiPoint;
-	//Faces[1].Point[1] = PointList[2].MinkowskiPoint;
-	//Faces[1].Point[2] = PointList[3].MinkowskiPoint;
-	//
-	//Faces[1].Normal = -Math_CrossProduct(
-	//	Faces[1].Point[0] - Faces[1].Point[1],
-	//	Faces[1].Point[2] - Faces[1].Point[1]);
-	//Faces[1].Normal = Math_Normalize(Faces[1].Normal);
-	//Faces[1].Status = 1;
-	//
-	//Faces[2].Point[0] = PointList[2].MinkowskiPoint;
-	//Faces[2].Point[1] = PointList[3].MinkowskiPoint;
-	//Faces[2].Point[2] = PointList[0].MinkowskiPoint;
-	//
-	//Faces[2].Normal = Math_CrossProduct(
-	//	Faces[2].Point[0] - Faces[2].Point[1],
-	//	Faces[2].Point[2] - Faces[2].Point[1]);
-	//Faces[2].Normal = Math_Normalize(Faces[2].Normal);
-	//Faces[2].Status = 1;
-	//
-	//Faces[3].Point[0] = PointList[0].MinkowskiPoint;
-	//Faces[3].Point[1] = PointList[3].MinkowskiPoint;
-	//Faces[3].Point[2] = PointList[1].MinkowskiPoint;
-	//
-	//Faces[3].Normal = Math_CrossProduct(
-	//	Faces[3].Point[0] - Faces[3].Point[1],
-	//	Faces[3].Point[2] - Faces[3].Point[1]);
-	//Faces[3].Normal = Math_Normalize(Faces[3].Normal);
-	//Faces[3].Status = 1;
 
 	Faces[0].Point[0] = PointList[0].MinkowskiPoint;
 	Faces[0].Point[1] = PointList[1].MinkowskiPoint;

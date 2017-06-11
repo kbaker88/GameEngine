@@ -3,12 +3,13 @@
 
 //TODO: Remove LEAN AND MEAN later, find a better solution.
 //NOTE: LEAN AND MEAN is here for include redundancies in WinSock2.h
-//		in the network layer.
+//		which is included in the network layer.
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-//#define DATA_ORIENTED 1 //TODO: Temporary while transfering
+// REMOVE: Only for transfering purposes.
+#define MODULE_MODE 1
 
 #define DEBUG_MODE 1
 

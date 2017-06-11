@@ -9,9 +9,44 @@ static CollisionObject PlayerCollObj;
 static m4 BoxA, BoxB;
 static v3 BoxAPos, BoxBPos;
 
+#if MODULE_MODE
+Font *ThatFont;
+#endif
+
 void 
 Game_Initialize(ProgramState* State)
 {
+#if MODULE_MODE
+	Asset_LoadBMP("Images/grass2.bmp"); // 4
+	Asset_LoadBMP("Images/container.bmp"); // 5
+	Asset_LoadBMP("Images/woodfloor.bmp"); // 6
+	Asset_LoadPNG("Images/StartHeightMap.png"); // 7
+
+	ThatFont = new Font;
+	Text_BuildFont("arial\0", ThatFont);
+
+	State_CreateRenderObjectBlocks(State,
+		2, 256);
+	State_CreateModelObjectBlocks(State,
+		2, 256);
+	State_CreateCollisionObjects(State,
+		12);
+	State_CreatePhysicsObjects(State,
+		12);
+	State_CreateTextObjs(State,
+		TEXT_OBJECTS_PER_PROGSTATE);
+	State_CreateCameras(State, 1);
+	State_CreateTimers(State, 1);
+	State_CreateShaderVariables(State, 7);
+	State_CreateShaderHandles(State, 2);
+
+	State->FontArr = ThatFont;
+	State->FontCount = 1;
+
+	State->Status = 1;
+
+#endif
+
 	window_properties WindowDimensions = 
 		Render_GetWindowProperties();
 	float WindowHalfHeight = (float)WindowDimensions.Height * 0.5f;
@@ -309,4 +344,7 @@ Game_Clean(ProgramState* State)
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
+#if MODULE_MODE
+	delete ThatFont;
+#endif
 }

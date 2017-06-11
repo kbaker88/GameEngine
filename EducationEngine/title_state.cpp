@@ -3,9 +3,44 @@
 static GLuint TextureID[3];
 static v3 Position;
 
+#if MODULE_MODE
+Font *ThisFont;
+#endif
+
 void 
 Title_Initialize(ProgramState* State)
 {
+#if MODULE_MODE
+	Asset_LoadBMP("Images/startbutton.bmp"); // 0
+	Asset_LoadBMP("Images/menubutton.bmp"); // 1
+	Asset_LoadBMP("Images/exitbutton.bmp"); // 2
+	Asset_LoadBMP("Images/titlebutton.bmp"); // 3
+	Asset_LoadBMP("Images/inputbar.bmp"); // 8
+
+	ThisFont = new Font;
+	Text_BuildFont("arial\0", ThisFont);
+
+	State->NumRenderObjBlocks = 2;
+	State->NumModelObjBlocks = 2;
+
+	State_CreateRenderObjectBlocks(State,
+		State->NumRenderObjBlocks, 256);
+	State_CreateModelObjectBlocks(State,
+		State->NumModelObjBlocks, 256);
+	State_CreateCollisionObjects(State,
+		12);
+	State_CreateTextObjs(State,
+		TEXT_OBJECTS_PER_PROGSTATE);
+	State_CreateCameras(State, 1);
+	State_CreateShaderVariables(State, 5);
+	State_CreateShaderHandles(State, 2);
+	State_CreateTimers(State, 2);
+
+	State->FontArr = ThisFont;
+	State->FontCount = 1;
+	State->Status = 1;
+#endif
+
 	window_properties WindowDimensions =
 		Render_GetWindowProperties();
 	float HalfScreenWidth = (float)WindowDimensions.Width * 0.5f;
@@ -173,7 +208,11 @@ Title_CollisionResolve(ProgramState* State,
 	case 2:
 	{
 		State->Status = -1;
+#if MODULE_MODE
+		*State->StateOfProgram = 1;
+#else
 		*State->StateOfProgram = 2;
+#endif
 	} break;
 	case 10:
 	{
@@ -231,8 +270,6 @@ Title_CollisionResolve(ProgramState* State,
 void
 Title_Clean(ProgramState* State)
 {
-	//RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
-	//ModelObj_DeleteBlock(&State->ModelObjBlocks[0]);
 #if 0
 	Entity_DeleteBlock(&State->EntityBlocks[0]);
 	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
@@ -243,4 +280,7 @@ Title_Clean(ProgramState* State)
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
+#if MODULE_MODE
+	delete ThisFont;
+#endif
 }
