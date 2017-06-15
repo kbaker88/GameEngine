@@ -1,7 +1,8 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
-#include "platform_layer.h"
+#include "utility.h"
+
 // TODO: Limit all functions here to one call to platform per frame. meaning
 // global time keeping and using the global to calculate all others.
 

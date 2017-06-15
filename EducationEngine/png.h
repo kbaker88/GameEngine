@@ -1,8 +1,7 @@
 #ifndef PNG_H
 #define PNG_H
 
-#include "utility.h"
-#include "math.h"
+#include "bmp.h"
 
 //TODO: Make more robust. 
 //NOTE: Only handles 16-bit greyscale right now.

@@ -1,31 +1,3 @@
 ﻿  title_state.cpp
-  game_state.cpp
-  game_layer.cpp
-  Generating Code...
-  Compiling...
-  winsock_layer.cpp
-  win32_layer.cpp
-  vulkan_layer.cpp
-  utility.cpp
-  text_system.cpp
-  state_system.cpp
-  render_object.cpp
-  png.cpp
-  physics_system.cpp
-  opengl_layer.cpp
-  module_math.cpp
-  model_object_system.cpp
-  menu_state.cpp
-  memory_system.cpp
-  input_state.cpp
-  entity_system.cpp
-  debug_system.cpp
-  collision_system.cpp
-  clock.cpp
-  camera_system.cpp
-  Generating Code...
-  Compiling...
-  asset_system.cpp
-  Generating Code...
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.exe
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.pdb (Partial PDB)

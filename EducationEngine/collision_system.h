@@ -1,8 +1,7 @@
 #ifndef COLLISION_SYSTEM_H
 #define COLLISION_SYSTEM_H
 
-#include "physics_system.h"
-#include "text_system.h"
+#include "render_object.h"
 #include <list>
 
 //TODO: GetMousePosition once per frame and store it for use in state?

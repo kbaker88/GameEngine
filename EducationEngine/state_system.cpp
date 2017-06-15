@@ -140,13 +140,6 @@ State_CreateTextObjs(ProgramState* State,
 #endif
 }
 
-void 
-State_LinkToProgram(ProgramState* State, 
-	uint8* StateOfProgramPtr)
-{
-	State->StateOfProgram = StateOfProgramPtr;
-}
-
 void
 State_Clean(ProgramState* State)
 {
@@ -221,6 +214,5 @@ State_Clean(ProgramState* State)
 		State->ModelObjBlocks = 0;
 	}
 #endif
-	State->StateOfProgram = 0;
 	State->Status = 0;
 }

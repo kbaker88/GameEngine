@@ -1,34 +1,41 @@
 #include "title_state.h"
 
+// NOTE: Temporary
 static GLuint TextureID[3];
-static v3 Position;
-
-#if MODULE_MODE
 Font *ThisFont;
-#endif
+static uint32 TextureIDs[5];
+static uint32 FontID;
+uint32 AssetID[5];
+
+// TODO: Create asset control for shaders
+uint32 ShaderVarArray1[5];
+uint32 ShaderVarArray2[5];
+// ENDNOTE
 
 void 
 Title_Initialize(ProgramState* State)
 {
-#if MODULE_MODE
-	Asset_LoadBMP("Images/startbutton.bmp"); // 0
-	Asset_LoadBMP("Images/menubutton.bmp"); // 1
-	Asset_LoadBMP("Images/exitbutton.bmp"); // 2
-	Asset_LoadBMP("Images/titlebutton.bmp"); // 3
-	Asset_LoadBMP("Images/inputbar.bmp"); // 8
+	State->StateID = 0;
 
-	ThisFont = new Font;
-	Text_BuildFont("arial\0", ThisFont);
+	TextureIDs[0] = Asset_LoadBMP("Images/startbutton.bmp"); 
+	TextureIDs[1] = Asset_LoadBMP("Images/menubutton.bmp"); 
+	TextureIDs[2] = Asset_LoadBMP("Images/exitbutton.bmp"); 
+	TextureIDs[3] = Asset_LoadBMP("Images/titlebutton.bmp");
+	TextureIDs[4] = Asset_LoadBMP("Images/inputbar.bmp"); 
 
-	State->NumRenderObjBlocks = 2;
-	State->NumModelObjBlocks = 2;
+	FontID = Asset_LoadFont("arial\0",
+		"c:/Windows/Fonts/arial.ttf\0");
+	Text_SetFont(FontID);
+	Text_SetFontSize(0.2f);
+
+	State->NumRenderObjBlocks = 1;
+	State->NumModelObjBlocks = 1;
 
 	State_CreateRenderObjectBlocks(State,
 		State->NumRenderObjBlocks, 256);
 	State_CreateModelObjectBlocks(State,
 		State->NumModelObjBlocks, 256);
-	State_CreateCollisionObjects(State,
-		12);
+	State_CreateCollisionObjects(State, 12);
 	State_CreateTextObjs(State,
 		TEXT_OBJECTS_PER_PROGSTATE);
 	State_CreateCameras(State, 1);
@@ -36,118 +43,120 @@ Title_Initialize(ProgramState* State)
 	State_CreateShaderHandles(State, 2);
 	State_CreateTimers(State, 2);
 
-	State->FontArr = ThisFont;
-	State->FontCount = 1;
 	State->Status = 1;
-#endif
 
 	window_properties WindowDimensions =
 		Render_GetWindowProperties();
 	float HalfScreenWidth = (float)WindowDimensions.Width * 0.5f;
 	float HalfScreenHeight = (float)WindowDimensions.Height * 0.5f;
-	
-	State->CameraArray[0].Yaw = -90.0f;
-	State->CameraArray[0].Pitch = 0.0f;
-	State->CameraArray[0].UpVector = v3(0.0f, 1.0f, 0.0f);
-	State->CameraArray[0].ForwardVector = v3(0.0f, 0.0f, -1.0f);
-	State->CameraArray[0].ProjectionMatrix =
-		Math_OrthographicMarix(0.0f, (float)WindowDimensions.Width,
-			0.0f, (float)WindowDimensions.Height,
-			0.1f, 100.0f);
 
-	Camera_SetPosition(&State->CameraArray[0], &v3(-HalfScreenWidth,
-		-HalfScreenHeight, 1.0f));
+	Camera_SetDefaultOrtho(&State->CameraArray[0],
+		(float)WindowDimensions.Width,
+		(float)WindowDimensions.Height,
+		&v3(-HalfScreenWidth, -HalfScreenHeight, 1.0f));
+
+	Texture2D* Textures[3];
+
+	for (uint32 Index = 0; Index < 3; Index++)
+	{
+		Textures[Index] = Asset_GetTexture(TextureIDs[Index]);
+		Render_BuildTexture(&TextureID[Index], Textures[Index]->Width,
+			Textures[Index]->Height, Textures[Index]->Data);
+	}
+	AssetID[0] = Asset_CreateRect(160.0f, 40.0f);
+	AssetID[1] = Asset_CreateRect(200.0f, 60.0f);
 
 	State->ShaderHandles[0] =
 		Render_CompileShaders(
 			VertexShader_Title, FragmentShader_Title);
 	State->ShaderHandles[1] =
-		Render_CompileShaders(TextVertexShaderSource,
-			TextFragmentShaderSource);
+		Render_CompileShaders(VertexShader_Text,
+			FragmentShader_Text);
 
-// TODO: Throw this part into an asset system
-#if MEMORY_ON
+	Render_BindShaders(State->ShaderHandles[0]);
+	ShaderVarArray1[0] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "model");
+	ShaderVarArray1[1] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "view");
+	ShaderVarArray1[2] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
+	ShaderVarArray1[3] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
+	ShaderVarArray1[4] =
+		Render_GetShaderVariable(State->ShaderHandles[0], "HoverColor");
 
-#else
-	State->ModelObjBlocks[0].BlockObjects[0] = new Model;
-	State->RenderObjBlocks[0].BlockObjects[0] = new RenderObj;
-	State->RenderObjBlocks[0].BlockObjects[1] = new RenderObj;
-	State->RenderObjBlocks[0].BlockObjects[2] = new RenderObj;
-#endif // MEMORY_ON
-	ModelObj_CreateRectangle(
-		State->ModelObjBlocks[0].BlockObjects[0], 160.0f, 40.0f);
-
-	Position = v3(0.0f, -160.0f, 0.0f);
-	Texture2D* Textures[3];
-	Textures[0] = Asset_GetTexture(0);
-	Textures[1] = Asset_GetTexture(1);
-	Textures[2] = Asset_GetTexture(2);
-
-	for (uint32 Index = 0; Index < 3; Index++)
-	{
-		RenderObj_CreateRenderObject(
-			State->RenderObjBlocks[0].BlockObjects[Index],
-			State->ModelObjBlocks[0].BlockObjects[0]);
-		//State->RenderObjBlocks[0].BlockObjects[Index]->NumVertices = 6;
-
-		Position.y -= 42.0f;
-		Collision_FillObject(&State->CollisionObj[Index], 160.0f, 40.0f,
-			0.0f, &Position);
-		State->CollisionObj[Index].CollisionCode = Index * 10;
-
-		Render_BuildTexture(&TextureID[Index], Textures[Index]->Width,
-			Textures[Index]->Height, Textures[Index]->Data);
-	}
+	Render_BindShaders(State->ShaderHandles[1]);
+	ShaderVarArray2[0] =
+		Render_GetShaderVariable(State->ShaderHandles[1], "model");
+	ShaderVarArray2[1] =
+		Render_GetShaderVariable(State->ShaderHandles[1], "view");
+	ShaderVarArray2[2] =
+		Render_GetShaderVariable(State->ShaderHandles[1],
+			"projection");
+	ShaderVarArray2[3] =
+		Render_GetShaderVariable(State->ShaderHandles[1],
+			"myTexture");
+	ShaderVarArray2[4] =
+		Render_GetShaderVariable(State->ShaderHandles[1],
+			"TextColor");
 }
-
-// TODO: Remove this, temporary testing
-static bool TempPing = false;
 
 void 
 Title_Draw(ProgramState* State)
 {
 	Render_ClearScreen(&v4(1.0f, 1.0f, 1.0f, 1.0f));
+	Render_BindShaders(State->ShaderHandles[0]);
 
 	Platform_GetCursorPosition(&State->CursorPosition.x,
 		&State->CursorPosition.y);
 
-	Render_BindShaders(State->ShaderHandles[0]);
-	State->GPUShaderVarArray[0] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "model");
-	State->GPUShaderVarArray[1] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "view");
-	State->GPUShaderVarArray[2] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
-	State->GPUShaderVarArray[3] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
-	State->GPUShaderVarArray[4] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "HoverColor");
-
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
+	Render_UpdateShaderVariable(ShaderVarArray1[1], 44,
 		(float*)&State->CameraArray[0].ViewMatrix, 1, 0);
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
+	Render_UpdateShaderVariable(ShaderVarArray1[2], 44,
 		(float*)&State->CameraArray[0].ProjectionMatrix, 1, 0);
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], 0);
+	Render_UpdateShaderVariable(ShaderVarArray1[3], 0);
 
-	Position = v3(0.0f, -160.0f, 0.0f);
-	m4 ModelMatrix = Math_IdentityMatrix();
-	ModelMatrix = Math_TranslateMatrix(ModelMatrix, Position);
-
-	int32 CollisionResult = 0;
 	for (uint32 Index = 0; Index < 3; Index++)
 	{
-		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
-			v3(0.0f, -42.0f, 0.0f));
-		CollisionResult = Collision_ButtonClick(&State->CursorPosition,
-			&State->CollisionObj[Index]);
-		Title_CollisionResolve(State, CollisionResult);
+		m4 ModelMatrix = *Asset_GetModelMatrix(AssetID[0]);
+		ModelMatrix = Math_IdentityMatrix();
+		*Asset_GetModelMatrix(AssetID[0]) =
+			Math_TranslateMatrix(ModelMatrix,
+				v3(0.0f, Index * -42.0f, 0.0f));
 
-		Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
-			&ModelMatrix.Rc[0][0], 1, 0);
+		Asset_GetCollisionObj(AssetID[0])->Position =
+			v3(0.0f, Index * -42.0f, 0.0f);
+		uint32 CollisionResult =
+			Collision_ButtonClick(&State->CursorPosition,
+			Asset_GetCollisionObj(AssetID[0]));
+
+		float ShaderVarMultiplier = (1 - CollisionResult) * 1.0f;
+		Render_UpdateShaderVariable(ShaderVarArray1[4],
+			ShaderVarMultiplier, 1.0f, ShaderVarMultiplier);
+
+		if (CollisionResult == 2)
+		{
+			State->Status = -1;
+			State->StateID = Index + 1;
+		}
+
 		Render_BindTexture(TextureID[Index]);
-		Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index]);
+		Render_UpdateShaderVariable(ShaderVarArray1[0], 44,
+			&Asset_GetModelMatrix(AssetID[0])->Rc[0][0], 1, 0);
+		Render_Draw(Asset_GetRenderObj(AssetID[0]));
 		Render_BindTexture(0);
 	}
+	Render_UpdateShaderVariable(ShaderVarArray1[4],
+		1.0F, 1.0f, 1.0F);
+
+	m4 ModelMatrix = *Asset_GetModelMatrix(AssetID[1]);
+	ModelMatrix = Math_IdentityMatrix();
+	ModelMatrix = Math_TranslateMatrix(ModelMatrix, v3(-200.0f,
+		0.0f, 0.0f));
+
+	Render_UpdateShaderVariable(ShaderVarArray1[0], 44,
+		&ModelMatrix.Rc[0][0], 1, 0);
+	Render_Draw(Asset_GetRenderObj(AssetID[1]));
 
 	if (State->Status == -1)
 	{
@@ -155,28 +164,20 @@ Title_Draw(ProgramState* State)
 	}
 	else
 	{
+		Render_BindShaders(State->ShaderHandles[1]);
+		
+		Render_UpdateShaderVariable(ShaderVarArray2[1], 44,
+			(float*)&State->CameraArray[0].ViewMatrix, 1, 0);
+		Render_UpdateShaderVariable(ShaderVarArray2[2], 44,
+			(float*)&State->CameraArray[0].ProjectionMatrix, 1, 0);
+		Render_UpdateShaderVariable(ShaderVarArray2[3], 0);
+		Render_UpdateShaderVariable(ShaderVarArray2[4],
+			0.0f, 1.0f, 0.0f);
 
-		//Render_BindShaders(State->ShaderHandles[1]);
-		//State->GPUShaderVarArray[0] =
-		//	Render_GetShaderVariable(State->ShaderHandles[1], "model");
-		//State->GPUShaderVarArray[1] =
-		//	Render_GetShaderVariable(State->ShaderHandles[1], "view");
-		//State->GPUShaderVarArray[2] =
-		//	Render_GetShaderVariable(State->ShaderHandles[1],
-		//		"projection");
-		//State->GPUShaderVarArray[3] =
-		//	Render_GetShaderVariable(State->ShaderHandles[1],
-		//		"myTexture");
-		//
-		//Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
-		//	(float*)&State->CameraArray[0].ViewMatrix, 1, 0);
-		//Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
-		//	(float*)&State->CameraArray[0].ProjectionMatrix, 1, 0);
-		//Render_UpdateShaderVariable(State->GPUShaderVarArray[3], 0);
+		Text_SetShaderVarID(ShaderVarArray2[0]);
 
-		Text_DrawCharLine(string("MOUSE COLLISION \0"),
-			v3(20.0f, 10.0f, 0.0f), 1.0f,
-			State->GPUShaderVarArray[0], State->FontArr);
+		Text_DrawCharLine(string("Game\0"),
+			v3(-300.0f, 10.0f, 0.0f));
 
 		if (State->Status == -1)
 		{
@@ -189,98 +190,34 @@ Title_Draw(ProgramState* State)
 	}
 }
 
-void 
-Title_CollisionResolve(ProgramState* State, 
-	int32 CollisionResult)
-{
-	switch (CollisionResult)
-	{
-	case 0:
-	{
-		Render_UpdateShaderVariable(
-			State->GPUShaderVarArray[4], 1.0f, 1.0f, 1.0f);
-	} break;
-	case 1:
-	{
-		Render_UpdateShaderVariable(
-			State->GPUShaderVarArray[4], 0.0f, 1.0f, 0.0f);
-	} break;
-	case 2:
-	{
-		State->Status = -1;
-#if MODULE_MODE
-		*State->StateOfProgram = 1;
-#else
-		*State->StateOfProgram = 2;
-#endif
-	} break;
-	case 10:
-	{
-		Render_UpdateShaderVariable(
-			State->GPUShaderVarArray[4], 1.0f, 1.0f, 1.0f);
-	} break;
-	case 11:
-	{
-		Render_UpdateShaderVariable(
-			State->GPUShaderVarArray[4], 0.0f, 1.0f, 0.0f);
-	} break;
-	case 12:
-	{
-		State->Status = -1;
-		*State->StateOfProgram = 3;
-	} break;
-	case 20:
-	{
-		Render_UpdateShaderVariable(
-			State->GPUShaderVarArray[4], 1.0f, 1.0f, 1.0f);
-	} break;
-	case 21:
-	{
-		Render_UpdateShaderVariable(
-			State->GPUShaderVarArray[4], 0.0f, 1.0f, 0.0f);
-	} break;
-	case 22:
-	{
-		State->Status = -1;
-		*State->StateOfProgram = 4;
-	} break;
-	case 30:
-	{
-
-	} break;
-	case 31:
-	{
-
-	} break;
-	case 32:
-	{
-		if (State->TextObjArray[0].CollisionResult)
-		{
-			State->TextObjArray[0].CollisionResult = 0;
-		}
-		else
-		{
-			State->TextObjArray[0].CollisionResult = 1;
-		}
-	} break;
-	default: {} break;
-	}
-}
-
 void
 Title_Clean(ProgramState* State)
 {
-#if 0
-	Entity_DeleteBlock(&State->EntityBlocks[0]);
-	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
-	State->ObjectCount = 0;
-	State->EntityCount = 0;
-#endif
+	Asset_Delete(TextureIDs[0]);
+	Asset_Delete(TextureIDs[1]);
+	Asset_Delete(TextureIDs[2]);
+	Asset_Delete(TextureIDs[3]);
+	Asset_Delete(TextureIDs[4]);
+	Asset_DeleteFont(FontID);
+
+	Asset_DeleteObj(AssetID[0]);
+
 	Platform_UpdateMouseState(0);
-	Render_ClearCurrentShaderProgram();
+	Render_ClearCurrentShaderProgram(); 
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
-#if MODULE_MODE
-	delete ThisFont;
-#endif
+
+	ModelObj_DeleteBlock(&State->ModelObjBlocks[0]);
+	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
+	State->NumModelObjBlocks = 0;
+	State->NumRenderObjBlocks = 0;
+}
+
+int64
+Title_Message_Handler(void* Window, uint32 Message,
+	uint64 wParam, int64 lParam)
+{
+	int64 Result = 0;
+
+	return Result;
 }

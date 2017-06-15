@@ -95,6 +95,56 @@ static const char* FragmentShader_Game =
 	"}																\n"
 };
 
+static const char* VertexShader_Text =
+{
+	"#version 450 core												\n"
+	"																\n"
+	"layout (location = 0) in vec3 PositionData;					\n"
+	"layout (location = 1) in vec3 ColorData;						\n"
+	"layout (location = 2) in vec2 TexturePos;						\n"
+	"																\n"
+	"uniform mat4 model;											\n"
+	"uniform mat4 view;												\n"
+	"uniform mat4 projection;										\n"
+	"																\n"
+	"out vec3 color;												\n"
+	"out vec2 TexPosition;											\n"
+	"																\n"
+	"void main(void)												\n"
+	"{																\n"
+	"																\n"
+	"color = ColorData;												\n"
+	"TexPosition = TexturePos;										\n"
+	"gl_Position = projection * view * model *						\n"
+	"	vec4(PositionData, 1.0);									\n"
+	"}																\n"
+};
+
+static const char* FragmentShader_Text =
+{
+	"#version 450 core												\n"
+	"																\n"
+	"in vec3 color;													\n"
+	"in vec2 TexPosition;											\n"
+	"																\n"
+	"uniform sampler2D myTexture;									\n"
+	"uniform vec3 TextColor;										\n"
+	"																\n"
+	"out vec4 FragColor;											\n"
+	"																\n"
+	"void main(void)												\n"
+	"{																\n"
+	"if (texture2D(myTexture, TexPosition).rgb ==					\n"
+	"								vec3(0.0, 0.0, 0.0))			\n"
+	"{																\n"
+	"	discard;													\n"
+	"}																\n"
+	"FragColor = texture2D(myTexture, TexPosition) *				\n"
+	"	vec4(TextColor, 1.0);										\n"
+	"																\n"
+	"}																\n"
+};
+
 static const char* TextVertexShaderSource = "#version 430 core\n"
 "layout (location = 0) in vec3 VertexPosition;\n"
 "layout (location = 1) in vec3 VertexColor;\n"

@@ -99,9 +99,6 @@
     <ClCompile Include="physics_system.cpp">
       <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
-    <ClCompile Include="entity_system.cpp">
-      <Filter>Source Files\engine\systems</Filter>
-    </ClCompile>
     <ClCompile Include="game_state.cpp">
       <Filter>Source Files\engine\program_states</Filter>
     </ClCompile>
@@ -185,9 +182,6 @@
     <ClInclude Include="collision_system.h">
       <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
-    <ClInclude Include="entity_system.h">
-      <Filter>Header Files\engine\systems</Filter>
-    </ClInclude>
     <ClInclude Include="physics_system.h">
       <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
@@ -212,17 +206,11 @@
     <ClInclude Include="utility.h">
       <Filter>Header Files\engine\utility</Filter>
     </ClInclude>
-    <ClInclude Include="entity_utility.h">
-      <Filter>Header Files\engine\utility</Filter>
-    </ClInclude>
     <ClInclude Include="memory_system.h">
       <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
     <ClInclude Include="game_layer.h">
       <Filter>Header Files\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="renderobject_system.h">
-      <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
     <ClInclude Include="debug_system.h">
       <Filter>Header Files\engine\systems</Filter>

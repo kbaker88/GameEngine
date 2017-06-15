@@ -1,24 +1,34 @@
 #include "menu_state.h"
 
+// TODO: Temporary, delete this
+static uint32 TextureIDs[5];
+
 void
 Menu_Initialize(ProgramState* State)
 {
-	window_properties WindowSize = Render_GetWindowProperties();
-	float HalfScreenWidth = 0.5f * (float)WindowSize.Width;
-	float HalfScreenHeight = 0.5f * (float)WindowSize.Height;
+	State->StateID = 2;
 
+	State_CreateRenderObjectBlocks(State, 1, 256);
+	State_CreateModelObjectBlocks(State, 1, 256);
+	State_CreateCollisionObjects(State, 12);
 
-	State->CameraArray[0].Yaw = -90.0f;
-	State->CameraArray[0].Pitch = 0.0f;
-	State->CameraArray[0].UpVector = v3(0.0f, 1.0f, 0.0f);
-	State->CameraArray[0].ForwardVector = v3(0.0f, 0.0f, -1.0f);
-	State->CameraArray[0].ProjectionMatrix =
-		Math_OrthographicMarix(0.0f, (float)WindowSize.Width,
-			0.0f, (float)WindowSize.Height,
-			0.1f, 100.0f);
+	State_CreateTextObjs(State,
+		TEXT_OBJECTS_PER_PROGSTATE);
+	State_CreateCameras(State, 1);
+	State_CreateShaderVariables(State, 5);
+	State_CreateShaderHandles(State, 2);
 
-	Camera_SetPosition(&State->CameraArray[0], &v3(-HalfScreenWidth,
-		-HalfScreenHeight, 1.0f));
+	State->Status = 1;
+
+	window_properties WindowDimensions = 
+		Render_GetWindowProperties();
+	float HalfScreenWidth = 0.5f * (float)WindowDimensions.Width;
+	float HalfScreenHeight = 0.5f * (float)WindowDimensions.Height;
+
+	Camera_SetDefaultOrtho(&State->CameraArray[0],
+		(float)WindowDimensions.Width, 
+		(float)WindowDimensions.Height,
+		&v3(-HalfScreenWidth, -HalfScreenHeight, 1.0f));
 }
 
 void 
@@ -61,8 +71,6 @@ Menu_CollisionResolve(ProgramState* State, int32 CollisionResult)
 	} break;
 	case 2:
 	{
-		State->Status = -1;
-		*State->StateOfProgram = 2;
 	} break;
 	case 10:
 	{
@@ -72,8 +80,6 @@ Menu_CollisionResolve(ProgramState* State, int32 CollisionResult)
 	} break;
 	case 12:
 	{
-		State->Status = -1;
-		*State->StateOfProgram = 1;
 	} break;
 	case 20:
 	{
@@ -83,8 +89,6 @@ Menu_CollisionResolve(ProgramState* State, int32 CollisionResult)
 	} break;
 	case 22:
 	{
-		State->Status = -1;
-		*State->StateOfProgram = 4;
 	} break;
 	case 30:
 	{
@@ -108,4 +112,13 @@ Menu_Clean(ProgramState* State)
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
+}
+
+int64
+Menu_Message_Handler(void* Window, uint32 Message,
+	uint64 wParam, int64 lParam)
+{
+	int64 Result = 0;
+
+	return Result;
 }

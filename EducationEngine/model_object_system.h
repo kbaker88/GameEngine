@@ -2,7 +2,6 @@
 #define MODEL_OBJECT_SYSTEM_H
 
 #include "render_layer.h"
-#include "asset_system.h"
 
 struct Model // Byte Total: 44
 {

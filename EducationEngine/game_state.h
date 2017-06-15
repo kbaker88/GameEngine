@@ -15,6 +15,9 @@ void
 Game_Draw(ProgramState* State);
 void 
 Game_Clean(ProgramState* State);
+int64
+Game_Message_Handler(void* Window, uint32 Message,
+	uint64 wParam, int64 lParam);
 
 #endif
 

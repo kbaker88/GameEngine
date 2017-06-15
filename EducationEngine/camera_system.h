@@ -1,8 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "linear_algebra.h" // TODO: fix the linkage here. 
-#include "render_layer.h"
+#include "collision_system.h"
 
 struct Camera
 {
@@ -13,5 +12,10 @@ struct Camera
 
 void 
 Camera_SetPosition(Camera* CameraPtr, v3* NewPosition);
-
+void
+Camera_SetDefaultOrtho(Camera* CameraPtr, float Width,
+	float Height, v3* Position);
+void
+Camera_SetDefaultProjection(Camera* CameraPtr, float Width,
+	float Height, v3* Position);
 #endif

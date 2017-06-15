@@ -61,6 +61,7 @@ static gl_gen_vertex_arrays *glGenVertexArrays;
 static gl_bind_vertex_array *glBindVertexArray;
 static gl_delete_vertex_arrays *glDeleteVertexArrays;
 static gl_map_buffer_range *glMapBufferRange;
+static gl_clear_buffer_fv* glClearBufferfv;
 
 // OpenGL 4.2
 static gl_tex_storage_2d *glTexStorage2D;
@@ -92,6 +93,7 @@ Render_Init(window_properties *Window)
 	Render_UpdateWindow(WindowProperties);
 
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	// OpenGL 2
 	glCreateShader = (gl_create_shader *)wglGetProcAddress("glCreateShader");
@@ -154,7 +156,8 @@ Render_Init(window_properties *Window)
 	glBindVertexArray = (gl_bind_vertex_array *)wglGetProcAddress("glBindVertexArray");
 	glDeleteVertexArrays = (gl_delete_vertex_arrays *)wglGetProcAddress("glDeleteVertexArrays");
 	glMapBufferRange = (gl_map_buffer_range *)wglGetProcAddress("glMapBufferRange");
-	
+	glClearBufferfv = (gl_clear_buffer_fv *)wglGetProcAddress("glClearBufferfv");
+
 	// OpenGL 4.2
 	glTexStorage2D = (gl_tex_storage_2d *)wglGetProcAddress("glTexStorage2D");
 
@@ -197,8 +200,10 @@ Render_UpdateWindow(uint32 Width, uint32 Height)
 void 
 Render_ClearScreen(v4* Color)
 {
-	glClearColor(Color->x, Color->y, Color->z, Color->w);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearBufferfv(GL_COLOR, 0,
+		v4(Color->x, Color->y, Color->z, Color->w).Arr);
+	float Depth = 1.0f;
+	glClearBufferfv(GL_DEPTH, 0, &Depth);
 }
 
 window_properties 
@@ -580,10 +585,10 @@ Render_FillVertexArrayData(uint32 VertexArrayObject,
 }
 
 void 
-Render_FillVertexArrayIndices(RenderObj* RenderObject)
+Render_FillVertexArrayIndices(RenderObject* RenderObj)
 {
-	glBindVertexArray(RenderObject->VertexArrayID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, RenderObject->IndiceID);
+	glBindVertexArray(RenderObj->VertexArrayID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, RenderObj->IndiceID);
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER,
 	//	RenderObject->IndiceCount * sizeof(unsigned int),
 	//	RenderObject->IndiceData,
@@ -592,13 +597,13 @@ Render_FillVertexArrayIndices(RenderObj* RenderObject)
 }
 
 void 
-Render_FillVetexArrayObject(RenderObj* RenderObject,
+Render_FillVetexArrayObject(RenderObject* RenderObj,
 	uint32 NumberAttribs, uint32* Offsets)
 {
 	for (uint32 i = 0; i < NumberAttribs; i++)
 	{
-		Render_FillVertexArrayData(RenderObject->VertexArrayID,
-			i, i, RenderObject->BufferID[i], Offsets[i], 0);
+		Render_FillVertexArrayData(RenderObj->VertexArrayID,
+			i, i, RenderObj->BufferID[i], Offsets[i], 0);
 	}
 }
 
@@ -633,38 +638,38 @@ Render_BindTexture(uint32 TextureID)
 }
 
 void 
-Render_Draw(RenderObj* RenderObject)
+Render_Draw(RenderObject* RenderObj)
 {
-	glBindVertexArray(RenderObject->VertexArrayID);
+	glBindVertexArray(RenderObj->VertexArrayID);
 	//glBindTexture(GL_TEXTURE_2D, Texture);
 
-	glDrawArrays(GL_TRIANGLES, 0, RenderObject->NumVertices);
+	glDrawArrays(GL_TRIANGLES, 0, RenderObj->NumVertices);
 
 	//glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 }
 
 void
-Render_DrawPoints(RenderObj* RenderObject)
+Render_DrawPoints(RenderObject* RenderObj)
 {
-	glBindVertexArray(RenderObject->VertexArrayID);
-	glDrawArrays(GL_POINTS, 0, RenderObject->NumVertices);
+	glBindVertexArray(RenderObj->VertexArrayID);
+	glDrawArrays(GL_POINTS, 0, RenderObj->NumVertices);
 	glBindVertexArray(0);
 }
 
 void
-Render_DrawLines(RenderObj* RenderObject)
+Render_DrawLines(RenderObject* RenderObj)
 {
-	glBindVertexArray(RenderObject->VertexArrayID);
-	glDrawArrays(GL_LINES, 0, RenderObject->NumVertices);
+	glBindVertexArray(RenderObj->VertexArrayID);
+	glDrawArrays(GL_LINES, 0, RenderObj->NumVertices);
 	glBindVertexArray(0);
 }
 
 void
-Render_DrawIndices(RenderObj* RenderObject)
+Render_DrawIndices(RenderObject* RenderObj)
 {
-	glBindVertexArray(RenderObject->VertexArrayID);
-	glDrawElements(GL_TRIANGLES, RenderObject->IndiceID, GL_UNSIGNED_INT,
+	glBindVertexArray(RenderObj->VertexArrayID);
+	glDrawElements(GL_TRIANGLES, RenderObj->IndiceID, GL_UNSIGNED_INT,
 		(void*)0);
 	//glDrawArrays(GL_TRIANGLES, 0, RenderObject->NumVertices);
 	glBindVertexArray(0);

@@ -1,7 +1,7 @@
 #ifndef DEBUG_SYSTEM_H
 #define DEBUG_SYSTEM_H
 
-#include "platform_layer.h"
+#include "clock.h"
 
 void 
 DEBUG_Initialize();

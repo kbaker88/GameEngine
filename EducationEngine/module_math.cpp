@@ -57,9 +57,6 @@ Module_Math_Run(ProgramState* State)
 	m4 ModelMatrix = Math_IdentityMatrix();
 
 
-	Text_DrawCharLine(string("MOUSE COLLISION \0"),
-		v3(20.0f, 10.0f, 0.0f), 1.0f,
-		State->GPUShaderVarArray[0], State->FontArr);
 
 	if (State->Status == -1)
 	{
@@ -79,4 +76,13 @@ Module_Math_Clean(ProgramState* State)
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
+}
+
+int64
+Module_Math_Message_Handler(void* Window, uint32 Message,
+	uint64 wParam, int64 lParam)
+{
+	int64 Result = 0;
+
+	return Result;
 }

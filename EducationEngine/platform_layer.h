@@ -8,9 +8,6 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-// REMOVE: Only for transfering purposes.
-#define MODULE_MODE 1
-
 #define DEBUG_MODE 1
 
 #define Assert(Expression) / if (!(Expression)) {*(int *)0 = 0;}

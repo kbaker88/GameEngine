@@ -1,7 +1,8 @@
 #ifndef BMP_H
 #define BMP_H
 
-#include "utility.h"
+#include "network_layer.h"
+
 /*#pragma pack(push, 1)
 
 #pragma pack(pop)*/

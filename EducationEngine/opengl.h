@@ -1,7 +1,6 @@
 #ifndef OPENGL_H
 #define OPENGL_H
 
-#include <Windows.h>
 #include <gl/gl.h>
 
 typedef ptrdiff_t GLintptr;
@@ -639,6 +638,7 @@ typedef void __stdcall gl_gen_vertex_arrays(GLsizei n, GLuint *arrays);
 typedef void __stdcall gl_bind_vertex_array(GLuint arr);
 typedef void __stdcall gl_delete_vertex_arrays(GLsizei n, const GLuint *arrays);
 typedef void* __stdcall gl_map_buffer_range(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
+typedef void __stdcall gl_clear_buffer_fv(GLenum buffer, GLint drawbuffer, const GLfloat* value);
 
 // OpenGL 4.2
 typedef void __stdcall gl_tex_storage_2d(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);

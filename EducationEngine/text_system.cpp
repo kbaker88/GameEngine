@@ -1,81 +1,27 @@
 #include "text_system.h"
 
-// TODO: Make this more robust to support unicode
+// NOTE: Temporary?
+Font* TextFont;
+float TextScale;
+uint32 ShaderVarID;
+
+
 void
-Text_BuildFont(char* FontName, Font* FontPtr)
+Text_SetFont(uint32 FontID)
 {
-	FontPtr->Name = FontName;
-	FontPtr->GlyphsCount = 255;
-	Texture2D GlyphImage[255];
-	Asset_LoadFont(FontName, "c:/Windows/Fonts/arial.ttf\0", GlyphImage);
-
-	for (uint32 Character = 32; Character < 126; Character++)
-	{
-	Model GlyphRectangle;
-		ModelObj_CreateRectangle(&GlyphRectangle,
-			(float)GlyphImage[Character].Width,
-			(float)GlyphImage[Character].Height);
-
-		RenderObj_CreateRenderObject(
-			&FontPtr->Glyph[Character], &GlyphRectangle);
-
-		Render_BuildTexture(&FontPtr->GlyphImageID[Character],
-			GlyphImage[Character].Width, GlyphImage[Character].Height,
-			GlyphImage[Character].Data);
-
-		FontPtr->Width[Character] = (float)GlyphImage[Character].Width;
-#if MEMORY_ON
-		// TODO: Make cleanup system
-#else
-		delete[] GlyphImage[Character].Data;
-#endif // MEMORY_ON
-	}
-
+	TextFont = Asset_GetFont(FontID);
 }
-#if 0
-void 
-Text_BuildFont(char* FontName, Texture2D* GlyphArray, Font* FontPtr)
-{
-	FontPtr->Name = FontName;
-	FontPtr->GlyphsCount = 255;
 
-	for (uint32 Character = 32; Character < 126; Character++)
-	{
-		FontPtr->Glyph[Character].Init((float)GlyphArray[Character].Width,
-			(float)GlyphArray[Character].Height);
-		FontPtr->Glyph[Character].InputTexture(&GlyphArray[Character]);
-	
-#if MEMORY_ON
-		// TODO: Make cleanup system
-#else
-		delete[] GlyphArray[Character].Data;
-#endif // MEMORY_ON
-	}
+void
+Text_SetFontSize(float Size)
+{
+	TextScale = Size;
 }
-#endif // 0
 
-void 
-Text_DeleteFont(Font* FontPtr)
+void
+Text_SetShaderVarID(uint32 ShaderVariableID)
 {
-#if 0
-	if (FontPtr)
-	{
-		for (unsigned int Index = 0; Index < FontPtr->GlyphsCount; Index++)
-		{
-			FontPtr->Glyph[Index].Delete();
-		}
-		// NOTE: This only deletes one font for now
-#if MEMORY_ON
-		// TODO: Make cleanup system
-#else
-		delete FontPtr;
-#endif // MEMORY_ON
-	}
-	else
-	{
-		// TODO: Error
-	}
-#endif // 0
+	ShaderVarID = ShaderVariableID;
 }
 
 void
@@ -158,9 +104,6 @@ Text_Draw(Text_Object* TextObj, uint32 ShaderID)
 			Render_UpdateShaderVariable(ShaderID, 44,
 				&ModelMatrix.Rc[0][0], 1, 0);
 
-#if 0
-			TextObj->Font->Glyph[TextObj->Buffer[i]].Draw();
-#endif // 0
 			Width = Text_SpacingWidth(TextObj->Font, 
 				TextObj->Buffer[i], TextObj->Buffer[i + 1]);
 
@@ -178,7 +121,8 @@ void
 Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
 	Font *Font, uint16* ConsoleBuffer, uint32 BufferLength)
 {
-	m4 ModelMatrix = Math_ScaleMatrix(Math_IdentityMatrix(), v3(Scale, Scale, 1.0f));
+	m4 ModelMatrix = Math_ScaleMatrix(Math_IdentityMatrix(),
+		v3(Scale, Scale, 1.0f));
 	ModelMatrix = Math_TranslateMatrix(ModelMatrix, *Position);
 
 	float Width = 0;
@@ -187,85 +131,65 @@ Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
 		Render_UpdateShaderVariable(ShaderID, 44,
 			&ModelMatrix.Rc[0][0], 1, 0);
 
-#if 0
-		Font->Glyph[ConsoleBuffer[i]].Draw();
-#endif // 0
-		Width = Text_SpacingWidth(Font, ConsoleBuffer[i], ConsoleBuffer[i + 1]);
+		Width = Text_SpacingWidth(Font, ConsoleBuffer[i], 
+			ConsoleBuffer[i + 1]);
 
 		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
 			v3(Width * Scale, 0.0f, 0.0f));
 	}
 }
 
-void 
-Text_DrawCharLine(string &Text, v3 &Position, float Scale,
-	uint32 ShaderID, Font *Font)
+void
+Text_DrawCharLine(string &Text, v3 &Position)
 {
-	m4 ModelMatrix = Math_ScaleMatrix(Math_IdentityMatrix(), v3(Scale, Scale, 1.0f));
+	m4 ModelMatrix = Math_ScaleMatrix(Math_IdentityMatrix(),
+		v3(TextScale, TextScale, 0.0f));
 	ModelMatrix = Math_TranslateMatrix(ModelMatrix, Position);
 
+	uint32 TextEndingIndex = Text.Size - 1;
 	float Width = 0;
-	for (uint32 i = 0; i < Text.Size; i++)
+	for (uint32 i = 0; i < TextEndingIndex; i++)
 	{
-		Render_UpdateShaderVariable(ShaderID, 44,
+		Render_UpdateShaderVariable(ShaderVarID, 44,
 			&ModelMatrix.Rc[0][0], 1, 0);
 
-		Render_BindTexture(Font->GlyphImageID[Text.CharStr[i]]);
-		Render_Draw(&Font->Glyph[Text.CharStr[i]]);
+		Render_BindTexture(
+			TextFont->GlyphImageID[Text.CharStr[i] - 32]);
+		Render_Draw(&TextFont->Glyph[Text.CharStr[i] - 32]);
 		Render_BindTexture(0);
 
-
-		Width = Text_SpacingWidth(Font, Text.CharStr[i], Text.CharStr[i + 1]);
+		Width = Text_SpacingWidth(TextFont, Text.CharStr[i] - 32,
+			Text.CharStr[i + 1] - 32);
 
 		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
-			v3(Width * Scale, 0.0f, 0.0f) );
+			v3(Width * TextScale, 0.0f, 0.0f) );
 	}
+	Render_UpdateShaderVariable(ShaderVarID, 44,
+		&ModelMatrix.Rc[0][0], 1, 0);
+
+	Render_BindTexture(
+		TextFont->GlyphImageID[Text.CharStr[TextEndingIndex] - 32]);
+	Render_Draw(&TextFont->Glyph[Text.CharStr[TextEndingIndex] - 32]);
+	Render_BindTexture(0);
+
+	Width = TextFont->Width[Text.CharStr[TextEndingIndex] - 32] * 0.5f;
+
+	ModelMatrix = Math_TranslateMatrix(ModelMatrix,
+		v3(Width * TextScale, 0.0f, 0.0f));
 }
 
 float 
-Text_SpacingWidth(Font* Font, uint16 A, uint16 B)
+Text_SpacingWidth(Font* TextFont, uint16 A, uint16 B)
 {
-	if (Font)
+	if (TextFont)
 	{
-		if (A && (B < 256) && B)
-		{
-			float Width = (float)Font->Width[A];
-			float NextWidth = (float)Font->Width[B];
-			return (Width * 0.5f + NextWidth * 0.5f);
-		}
-		else if (A)
-		{
-			return (float)Font->Width[A];
-		}
-		else
-		{
-			// TODO: Error
-			return 0;
-		}
+		float Width = (float)TextFont->Width[A];
+		float NextWidth = (float)TextFont->Width[B];
+		return (Width * 0.5f + NextWidth * 0.5f);
 	}
 	else
 	{
 		// TODO: Error
 		return 0;
 	}
-
-	return 0;
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

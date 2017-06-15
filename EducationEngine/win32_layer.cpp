@@ -1,5 +1,37 @@
 #include "game_layer.h"
+
+/* INCLUDE ORDER
+#include "platform_layer.h"
+#include "memory_system.h"
+#include "math.h"
+#include "linear_algebra.h"
+#include "utility.h"
+#include "clock.h"
+#include "debug_system.h"
+#include "network_layer.h"
+#include "bmp.h"
+#include "png.h"
+#include "physics_system.h"
+#include "opengl.h"
+#include "shaders.h"
+#include "render_layer.h"
+#include "model_object_system.h"
+#include "render_object.h"
+#include "collision_system.h"
+#include "camera_system.h"
+#include "asset_system.h"
+#include "text_system.h"
+#include "state_system.h"
+#include "input_state.h"
+#include "module_math.h"
+#include "menu_state.h"
+#include "game_state.h"
+#include "title_state.h"
+#include "game_layer.h"
+*/
+
 #include <Windows.h>
+
 
 // Accepted values for attribute names for the OpenGL Context(WGL)
 #define WGL_CONTEXT_MAJOR_VERSION_ARB				0x2091

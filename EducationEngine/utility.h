@@ -1,10 +1,8 @@
 #ifndef UTILITY_H
 #define UTILITY_H	
 
-#include "platform_layer.h"
-#include "linear_algebra.h"
 #include "memory_system.h"
-#include "debug_system.h"
+#include "linear_algebra.h"
 
 // TODO: Fix the error of displaying both INTEGER.0 and INTEGER. 
 // TODO: Add NaN's and other error values

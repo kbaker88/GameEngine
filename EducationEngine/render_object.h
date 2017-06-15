@@ -5,7 +5,7 @@
 
 struct RenderObjBlock
 {
-	RenderObj** BlockObjects;
+	RenderObject** BlockObjects;
 	uint32 BlockSize;
 };
 
@@ -16,9 +16,9 @@ void
 RenderObj_DeleteBlock(RenderObjBlock* Block);
 
 void
-RenderObj_CreateRenderObject(RenderObj* RenderObject,
+RenderObj_CreateRenderObject(RenderObject* RenderObj,
 	Model* ModelObj);
 void
-RenderObj_Delete(RenderObj* Object);
+RenderObj_Delete(RenderObject* RenderObj);
 
 #endif

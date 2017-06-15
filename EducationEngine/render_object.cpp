@@ -15,7 +15,7 @@ RenderObj_CreateBlock(RenderObjBlock* Block, uint32 Size)
 			Block->BlockObjects = (RenderObject*)Memory_GetMemPtr();
 			Memory_AdvanceItr(sizeof(RenderObject) * Size);
 #else
-			Block->BlockObjects = new RenderObj*[Size] {};
+			Block->BlockObjects = new RenderObject*[Size] {};
 			Block->BlockSize = Size;
 #endif
 		}
@@ -61,46 +61,46 @@ RenderObj_DeleteBlock(RenderObjBlock* Block)
 }
 
 void
-RenderObj_CreateRenderObject(RenderObj* RenderObject, Model* ModelObj)
+RenderObj_CreateRenderObject(RenderObject* RenderObj, Model* ModelObj)
 {
 #if MEMORY_ON
 	RenderObject->BufferID = 0;
 	RenderObject->BufferID = Memory_Allocate(RenderObject->BufferID,
 		ModelObj->NumAttribs);
 #else
-	RenderObject->BufferID = new uint32[ModelObj->NumAttribs];
+	RenderObj->BufferID = new uint32[ModelObj->NumAttribs];
 #endif
-	RenderObject->NumVertices = ModelObj->NumVertices;
+	RenderObj->NumVertices = ModelObj->NumVertices;
 	//TODO: Think about creating many VAO's at once.
-	Render_CreateVertexArrays(1, &RenderObject->VertexArrayID);
+	Render_CreateVertexArrays(1, &RenderObj->VertexArrayID);
 	Render_CreateBuffers(ModelObj->NumAttribs,
-		RenderObject->BufferID);
+		RenderObj->BufferID);
 	for (uint32 Index = 0; 
 		Index < ModelObj->NumAttribs; 
 		Index++)
 	{
-		Render_FillBuffer(RenderObject->BufferID[Index],
+		Render_FillBuffer(RenderObj->BufferID[Index],
 			ModelObj->ArraySize[Index], ModelObj->Data[Index], 0);
 	}
-	Render_FillVetexArrayObject(RenderObject, ModelObj->NumAttribs,
+	Render_FillVetexArrayObject(RenderObj, ModelObj->NumAttribs,
 		ModelObj->ArrayOffset);
 }
 
 void
-RenderObj_Delete(RenderObj* Object)
+RenderObj_Delete(RenderObject* RenderObj)
 {
 #if MEMORY_ON
 	// TODO: Implement memory management
 #else
-	if (Object)
+	if (RenderObj)
 	{
-		if (Object->BufferID)
+		if (RenderObj->BufferID)
 		{
-			delete[] Object->BufferID;
-			Object->BufferID = 0;
+			delete[] RenderObj->BufferID;
+			RenderObj->BufferID = 0;
 		}
-		delete Object;
-		Object = 0;
+		delete RenderObj;
+		RenderObj = 0;
 	}
 	else
 	{

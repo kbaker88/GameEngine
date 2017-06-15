@@ -1,8 +1,10 @@
 #ifndef RENDER_LAYER_H
 #define RENDER_LAYER_H
 
-#include "utility.h"
+#include "physics_system.h"
+#include "shaders.h"
 #include "opengl.h"
+
 #include <vulkan\vulkan.h>
 
 #define RENDER_OPENGL 1
@@ -11,7 +13,7 @@
 
 #if RENDER_OPENGL
 
-struct RenderObj  // Byte Total: 34
+struct RenderObject  // Byte Total: 34
 {
 	// TODO: Is it better to pass as one big buffer?
 	uint32* BufferID;					// Bytes 8
@@ -35,9 +37,9 @@ Render_FillVertexArrayData(uint32 VertexArrayObject,
 	uint32 BindingIndex, uint32 AttribIndex, uint32 Buffer,
 	uint32 SpaceOffset, uint32 StartOffset);
 void 
-Render_FillVertexArrayIndices(RenderObj* RenderObject);
+Render_FillVertexArrayIndices(RenderObject* RenderObj);
 void 
-Render_FillVetexArrayObject(RenderObj* RenderObject, 
+Render_FillVetexArrayObject(RenderObject* RenderObj,
 	uint32 NumberAttribs, uint32* Offsets);
 
 void 
@@ -50,15 +52,15 @@ Render_BuildTexture(uint32* TextureID, uint32 Width, uint32 Height,
 void
 Render_BindTexture(uint32 TextureID);
 void
-Render_Draw(RenderObj *RenderObject);
+Render_Draw(RenderObject *RenderObj);
 void
-Render_DrawLines(RenderObj* RenderObject);
+Render_DrawLines(RenderObject* RenderObj);
 void
-Render_DrawPoints(RenderObj* RenderObject);
+Render_DrawPoints(RenderObject* RenderObj);
 
 
 void
-Render_DrawIndices(RenderObj* RenderObject);
+Render_DrawIndices(RenderObject* RenderObj);
 
 #endif
 

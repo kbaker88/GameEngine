@@ -9,30 +9,22 @@ static CollisionObject PlayerCollObj;
 static m4 BoxA, BoxB;
 static v3 BoxAPos, BoxBPos;
 
-#if MODULE_MODE
-Font *ThatFont;
-#endif
+// TODO: Temporary
+static uint32 TextureIDs[4];
 
 void 
 Game_Initialize(ProgramState* State)
 {
-#if MODULE_MODE
-	Asset_LoadBMP("Images/grass2.bmp"); // 4
-	Asset_LoadBMP("Images/container.bmp"); // 5
-	Asset_LoadBMP("Images/woodfloor.bmp"); // 6
-	Asset_LoadPNG("Images/StartHeightMap.png"); // 7
+	State->StateID = 1;
+	TextureIDs[0] = Asset_LoadBMP("Images/grass2.bmp"); 
+	TextureIDs[1] = Asset_LoadBMP("Images/container.bmp"); 
+	TextureIDs[2] = Asset_LoadBMP("Images/woodfloor.bmp"); 
+	TextureIDs[3] = Asset_LoadPNG("Images/StartHeightMap.png"); 
 
-	ThatFont = new Font;
-	Text_BuildFont("arial\0", ThatFont);
-
-	State_CreateRenderObjectBlocks(State,
-		2, 256);
-	State_CreateModelObjectBlocks(State,
-		2, 256);
-	State_CreateCollisionObjects(State,
-		12);
-	State_CreatePhysicsObjects(State,
-		12);
+	State_CreateRenderObjectBlocks(State, 1, 256);
+	State_CreateModelObjectBlocks(State, 1, 256);
+	State_CreateCollisionObjects(State, 12);
+	State_CreatePhysicsObjects(State, 12);
 	State_CreateTextObjs(State,
 		TEXT_OBJECTS_PER_PROGSTATE);
 	State_CreateCameras(State, 1);
@@ -40,60 +32,45 @@ Game_Initialize(ProgramState* State)
 	State_CreateShaderVariables(State, 7);
 	State_CreateShaderHandles(State, 2);
 
-	State->FontArr = ThatFont;
-	State->FontCount = 1;
-
 	State->Status = 1;
-
-#endif
-
-	window_properties WindowDimensions = 
-		Render_GetWindowProperties();
-	float WindowHalfHeight = (float)WindowDimensions.Height * 0.5f;
-	float WindowHalfWidth = (float)WindowDimensions.Width * 0.5f;
-
-	State->CameraArray[0].Yaw = -90.0f;
-	State->CameraArray[0].Pitch = 0.0f; 
-	State->CameraArray[0].UpVector = v3(0.0f, 1.0f, 0.0f);
-
-	// TODO: calculate the ratio once only on screen size
-	//	changes and save value.
-	State->CameraArray[0].ProjectionMatrix = 
-		Math_PerspectiveMatrix(45.0f,
-		(float)WindowDimensions.Width / 
-			(float)WindowDimensions.Height,
-		0.01f, 1000.0f);
-
-	State->ShaderHandles[0] =
-		Render_CompileShaders(VertexShader_Game,
-			FragmentShader_Game);
-
-	State->CameraArray[0].ForwardVector = v3(0.0f, 0.0f, -1.0f);
 
 #if MEMORY_ON
 
 #else
 	State->ModelObjBlocks[0].BlockObjects[0] = new Model;
-	State->RenderObjBlocks[0].BlockObjects[0] = new RenderObj;
+	State->RenderObjBlocks[0].BlockObjects[0] = new RenderObject;
 
 	State->ModelObjBlocks[0].BlockObjects[1] = new Model;
-	State->RenderObjBlocks[0].BlockObjects[1] = new RenderObj;
+	State->RenderObjBlocks[0].BlockObjects[1] = new RenderObject;
 
 	State->ModelObjBlocks[0].BlockObjects[2] = new Model;
-	State->RenderObjBlocks[0].BlockObjects[2] = new RenderObj;
+	State->RenderObjBlocks[0].BlockObjects[2] = new RenderObject;
 #endif // MEMORY_ON
+
+	window_properties WindowDimensions = 
+		Render_GetWindowProperties();
+
+	Camera_SetDefaultProjection(&State->CameraArray[0],
+		(float)WindowDimensions.Width,
+		(float)WindowDimensions.Height,
+		&v3(0.0f, 0.0f, 0.0f));
+
+	State->ShaderHandles[0] =
+		Render_CompileShaders(VertexShader_Game,
+			FragmentShader_Game);
+
 	ModelObj_CreateBox(State->ModelObjBlocks[0].BlockObjects[0],
 		1.0f, 1.0f, 1.0f);
 	ModelObj_CreatePlane(State->ModelObjBlocks[0].BlockObjects[1],
 		20, 20);
 	ModelObj_CreateHeightmap(
 		State->ModelObjBlocks[0].BlockObjects[2],
-		Asset_GetTexture(7));
+		Asset_GetTexture(TextureIDs[3]));
 	
 	Position = v3(0.0f, 0.0f, 0.0f);
 	Texture2D* Textures[2];
-	Textures[0] = Asset_GetTexture(5);
-	Textures[1] = Asset_GetTexture(4);
+	Textures[0] = Asset_GetTexture(TextureIDs[1]);
+	Textures[1] = Asset_GetTexture(TextureIDs[0]);
 
 	// NOTE: Box
 	uint32 Index = 0;
@@ -118,8 +95,8 @@ Game_Initialize(ProgramState* State)
 		State->ModelObjBlocks[0].BlockObjects[Index]);
 	HeightMapPos = v3(20.0f, 0.0f, -20.0f);
 	Collision_FillObject(&State->CollisionObj[Index], 
-		(float)Asset_GetTexture(7)->Width, 0.0f,
-		(float)Asset_GetTexture(7)->Height, &HeightMapPos);
+		(float)Asset_GetTexture(TextureIDs[3])->Width, 0.0f,
+		(float)Asset_GetTexture(TextureIDs[3])->Height, &HeightMapPos);
 	State->CollisionObj[Index].VerticesPtr = 
 		State->ModelObjBlocks[0].BlockObjects[Index]->Data[0];
 
@@ -303,7 +280,6 @@ Game_Draw(ProgramState* State)
 	}
 
 #if 0
-
 		Render_UpdateColorVertice(
 			Entity_GetObjectPtr(&State->EntityBlocks[0], 1, 0)->
 			ObjectDescription.VertexBufferObjectHandleIDs, 
@@ -327,24 +303,32 @@ Game_Draw(ProgramState* State)
 		v3(Right - 200.0f, Top - 20.0f,
 			0.0f), 0.15f, State->GPUShaderVarArray[0],
 		State->FontArr);
-
 #endif
 }
 
 void 
 Game_Clean(ProgramState* State)
 {
+	Asset_Delete(TextureIDs[0]);
+	Asset_Delete(TextureIDs[1]);
+	Asset_Delete(TextureIDs[2]);
+	Asset_Delete(TextureIDs[3]);
 
-#if 0
-	Entity_DeleteBlock(&State->EntityBlocks[0]);
-	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
-	State->ObjectCount = 0;
-	State->EntityCount = 0;
-#endif 
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);
-#if MODULE_MODE
-	delete ThatFont;
-#endif
+
+	ModelObj_DeleteBlock(&State->ModelObjBlocks[0]);
+	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
+	State->NumModelObjBlocks = 0;
+	State->NumRenderObjBlocks = 0;
+}
+
+int64
+Game_Message_Handler(void* Window, uint32 Message,
+	uint64 wParam, int64 lParam)
+{
+	int64 Result = 0;
+
+	return Result;
 }
