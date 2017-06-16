@@ -222,8 +222,6 @@ void
 ModelObj_CreateRectangle(Model* ModelObj,
 	float Width, float Height)
 {
-	float HalfWidth = Width * 0.5f;
-	float HalfHeight = Height * 0.5f;
 	ModelObj->NumAttribs = 4;
 	ModelObj->NumVertices = 6;
 
@@ -254,12 +252,12 @@ ModelObj_CreateRectangle(Model* ModelObj,
 	// NOTE: Vertice Data
 	ModelObj->ArraySize[0] = 18 * sizeof(float);
 	ModelObj->ArrayOffset[0] = 3;
-	ModelObj->Data[0][0] = -HalfWidth; ModelObj->Data[0][1] = -HalfHeight; ModelObj->Data[0][2] = 0.0f;
-	ModelObj->Data[0][3] = HalfWidth; ModelObj->Data[0][4] = -HalfHeight; ModelObj->Data[0][5] = 0.0f;
-	ModelObj->Data[0][6] = HalfWidth; ModelObj->Data[0][7] = HalfHeight; ModelObj->Data[0][8] = 0.0f;
-	ModelObj->Data[0][9] = HalfWidth; ModelObj->Data[0][10] = HalfHeight;	ModelObj->Data[0][11] = 0.0f;
-	ModelObj->Data[0][12] = -HalfWidth; ModelObj->Data[0][13] = HalfHeight; ModelObj->Data[0][14] = 0.0f;
-	ModelObj->Data[0][15] = -HalfWidth; ModelObj->Data[0][16] = -HalfHeight; ModelObj->Data[0][17] = 0.0f;
+	ModelObj->Data[0][0] = 0.0f; ModelObj->Data[0][1] = 0.0f; ModelObj->Data[0][2] = 0.0f;
+	ModelObj->Data[0][3] = Width; ModelObj->Data[0][4] = 0.0f; ModelObj->Data[0][5] = 0.0f;
+	ModelObj->Data[0][6] = Width; ModelObj->Data[0][7] = Height; ModelObj->Data[0][8] = 0.0f;
+	ModelObj->Data[0][9] = Width; ModelObj->Data[0][10] = Height; ModelObj->Data[0][11] = 0.0f;
+	ModelObj->Data[0][12] = 0.0f; ModelObj->Data[0][13] = Height; ModelObj->Data[0][14] = 0.0f;
+	ModelObj->Data[0][15] = 0.0f; ModelObj->Data[0][16] = 0.0f; ModelObj->Data[0][17] = 0.0f;
 
 	// NOTE: Color Data
 	ModelObj->ArraySize[1] = 18 * sizeof(float);

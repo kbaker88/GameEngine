@@ -49,4 +49,9 @@ Asset_GetCollisionObj(uint32 AssetID);
 void
 Asset_DeleteObj(uint32 AssetID);
 
+// NOTE: Test Functions
+uint32
+Asset_CreateDropBox(uint32 Width, uint32 LineHeight,
+	v3* Position);
+
 #endif

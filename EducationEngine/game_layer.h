@@ -7,6 +7,8 @@ uint32
 Game_Main(int32 CommandShow);
 void 
 Game_Loop();
+void
+Game_Exit(ProgramState* State);
 
 // NOTE: This is assuming #if defined(_WIN64)
 int64

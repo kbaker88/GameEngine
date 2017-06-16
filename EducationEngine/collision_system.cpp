@@ -18,6 +18,9 @@ int
 Collision_ButtonClick(v2* MousePosition, 
 	CollisionObject* CollObj)
 {
+	// TODO: Remove mouse position calculations from here,
+	// it should be pre-calculated because it can only change
+	// once per frame.
 	window_properties WindowDimensions =
 		Render_GetWindowProperties();
 	v2 NewMousePosition;
@@ -28,15 +31,13 @@ Collision_ButtonClick(v2* MousePosition,
 		((float)WindowDimensions.Height * 0.5f) - 
 		MousePosition->y;
 
-	if ((NewMousePosition.x > (CollObj->Position.x - 
-		(CollObj->HalfWidth))) &&
-		(NewMousePosition.x < (CollObj->Position.x +
-		(CollObj->HalfWidth))))
+	if ((NewMousePosition.x > CollObj->Position.x) &&
+		(NewMousePosition.x < (CollObj->Position.x + 
+			CollObj->Width)))
 	{
-		if ((NewMousePosition.y >(CollObj->Position.y - 
-			(CollObj->HalfHeight))) &&
-			(NewMousePosition.y < (CollObj->Position.y + 
-			(CollObj->HalfHeight))))
+		if ((NewMousePosition.y > CollObj->Position.y) &&
+			(NewMousePosition.y < (CollObj->Position.y +
+				CollObj->Height)))
 		{
 			if (Platform_GetMouseState())
 			{

@@ -1,7 +1,7 @@
 #include "game_layer.h"
 
 // NOTE: Temporary placement
-ProgramState States[4]{};
+ProgramState States[5]{};
 typedef void 
 Module_State(ProgramState* State);
 typedef int64
@@ -57,10 +57,16 @@ Game_Main(int32 CommandShow)
 	Modules[2].MsgHandler =
 		(Module_Message_Handler*)Menu_Message_Handler;
 
-	Modules[3].Load = (Module_State*)Module_Math_Load;
-	Modules[3].Run = (Module_State*)Module_Math_Run;
-	Modules[3].Clean = (Module_State*)Module_Math_Clean;
-	Modules[3].MsgHandler =
+	Modules[3].Load = (Module_State*)Game_Exit;
+	Modules[3].Run = 0;
+	Modules[3].Clean = 0;
+	Modules[3].MsgHandler = 
+		(Module_Message_Handler*)Title_Message_Handler;
+
+	Modules[4].Load = (Module_State*)Module_Math_Load;
+	Modules[4].Run = (Module_State*)Module_Math_Run;
+	Modules[4].Clean = (Module_State*)Module_Math_Clean;
+	Modules[4].MsgHandler =
 		(Module_Message_Handler*)Module_Math_Message_Handler;
 
 
@@ -103,6 +109,15 @@ Game_Loop()
 
 	CurrentModuleID = States[CurrentModuleID].StateID;
 }
+
+void
+Game_Exit(ProgramState* State)
+{
+	State->Status = 0;
+	State->StateID = 3;
+	Platform_EndProgram();
+}
+
 
 int64
 Game_MessageProcessor(void* Window, uint32 Message,

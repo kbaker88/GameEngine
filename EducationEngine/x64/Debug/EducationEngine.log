@@ -1,3 +1,16 @@
-﻿  title_state.cpp
+﻿  asset_system.cpp
+c:\users\kevin\documents\github\gameengine\educationengine\asset_system.cpp(321): warning C4244: 'argument': conversion from 'uint32' to 'float', possible loss of data
+  Generating Code...
+  Compiling...
+  win32_layer.cpp
+  title_state.cpp
+  text_system.cpp
+  state_system.cpp
+  module_math.cpp
+  menu_state.cpp
+  input_state.cpp
+  game_state.cpp
+  game_layer.cpp
+  Generating Code...
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.exe
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.pdb (Partial PDB)

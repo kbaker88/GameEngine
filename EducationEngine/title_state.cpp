@@ -177,7 +177,7 @@ Title_Draw(ProgramState* State)
 		Text_SetShaderVarID(ShaderVarArray2[0]);
 
 		Text_DrawCharLine(string("Game\0"),
-			v3(-300.0f, 10.0f, 0.0f));
+			v3(-300.0f, 10.0f, 0.1f));
 
 		if (State->Status == -1)
 		{

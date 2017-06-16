@@ -285,3 +285,47 @@ Asset_DeleteObj(uint32 AssetID)
 	AssetLinks[AssetID] = 0;
 #endif
 }
+
+
+// NOTE: Test Functions
+uint32
+Asset_CreateDropBox(uint32 Width, uint32 LineHeight,
+	v3* Position)
+{
+
+
+#if MEMORY_ON
+
+#else
+	AssetLinks[AssetLinkCount] = new AssetLink;
+	ModelData[ModelCount] = new Model;
+	RenderObj[RenderObjCount] = new RenderObject;
+	CollisionObj[CollisionObjCount] = new CollisionObject;
+	ModelMatrix[ModelMatrixCount] = new m4;
+	AssetLinks[AssetLinkCount]->ID = new uint32[4];
+#endif
+
+	AssetLinks[AssetLinkCount]->ID[0] = ModelCount;
+	AssetLinks[AssetLinkCount]->ID[1] = RenderObjCount;
+	AssetLinks[AssetLinkCount]->ID[2] = CollisionObjCount;
+	AssetLinks[AssetLinkCount]->ID[3] = ModelMatrixCount;
+
+
+	ModelObj_CreateRectangle(ModelData[ModelCount],
+		160.0f, 40.0f);
+
+	RenderObj_CreateRenderObject(RenderObj[RenderObjCount],
+		ModelData[ModelCount]);
+
+	Collision_FillObject(CollisionObj[CollisionObjCount],
+		Width, LineHeight, 0.0f, &v3(0.0f, 0.0f, 0.0f));
+	CollisionObj[CollisionObjCount]->CollisionCode = 0;
+
+	AssetLinkCount++;
+	ModelCount++;
+	RenderObjCount++;
+	CollisionObjCount++;
+	ModelMatrixCount++;
+
+	return(AssetLinkCount - 1);
+}
