@@ -1,16 +1,4 @@
 ﻿  asset_system.cpp
-c:\users\kevin\documents\github\gameengine\educationengine\asset_system.cpp(321): warning C4244: 'argument': conversion from 'uint32' to 'float', possible loss of data
-  Generating Code...
-  Compiling...
-  win32_layer.cpp
-  title_state.cpp
-  text_system.cpp
-  state_system.cpp
-  module_math.cpp
-  menu_state.cpp
-  input_state.cpp
-  game_state.cpp
-  game_layer.cpp
-  Generating Code...
+c:\users\kevin\documents\github\gameengine\educationengine\asset_system.cpp(456): warning C4715: 'Asset_ScrollBarCollision': not all control paths return a value
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.exe
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.pdb (Partial PDB)

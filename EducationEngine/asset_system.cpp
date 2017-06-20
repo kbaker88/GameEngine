@@ -289,7 +289,7 @@ Asset_DeleteObj(uint32 AssetID)
 
 // NOTE: Test Functions
 uint32
-Asset_CreateDropBox(uint32 Width, uint32 LineHeight,
+Asset_CreateDropMenu(float Width, float LineHeight,
 	v3* Position)
 {
 
@@ -312,8 +312,7 @@ Asset_CreateDropBox(uint32 Width, uint32 LineHeight,
 
 
 	ModelObj_CreateRectangle(ModelData[ModelCount],
-		160.0f, 40.0f);
-
+		20.0f, 20.0f);
 	RenderObj_CreateRenderObject(RenderObj[RenderObjCount],
 		ModelData[ModelCount]);
 
@@ -328,4 +327,172 @@ Asset_CreateDropBox(uint32 Width, uint32 LineHeight,
 	ModelMatrixCount++;
 
 	return(AssetLinkCount - 1);
+}
+
+uint32 ScrollBarCount = 0;
+
+struct ScrollBar
+{
+	Model* ModelData[3];
+	RenderObject* RenderData[3];
+	CollisionObject* Collision[3];
+	m4* ModelMatrix[4];
+	v3 Position;
+};
+
+ScrollBar* ScrollBars[2];
+
+// TODO: Set a minimum height and width;
+uint32
+Asset_CreateScrollBar(v3* ScrollBarPosition, float Width,
+	float Height)
+{
+	ScrollBars[ScrollBarCount] = new ScrollBar;
+
+	for (uint8 Index = 0;
+		Index < 3;
+		Index++)
+	{
+		ScrollBars[ScrollBarCount]->ModelData[Index] = 
+			new Model;
+		ScrollBars[ScrollBarCount]->RenderData[Index] =
+			new RenderObject;
+		ScrollBars[ScrollBarCount]->Collision[Index] =
+			new CollisionObject;
+		ScrollBars[ScrollBarCount]->ModelMatrix[Index] =
+			new m4;
+
+		*ScrollBars[ScrollBarCount]->ModelMatrix[Index] =
+			Math_IdentityMatrix();
+	}
+	ScrollBars[ScrollBarCount]->ModelMatrix[3] =
+		new m4;
+	*ScrollBars[ScrollBarCount]->ModelMatrix[3] =
+		Math_IdentityMatrix();
+
+	ScrollBars[ScrollBarCount]->Position =
+		*ScrollBarPosition;
+
+	ModelObj_CreateRectangle(
+		ScrollBars[ScrollBarCount]->ModelData[0],
+		20.0f, 20.0f);
+	RenderObj_CreateRenderObject(
+		ScrollBars[ScrollBarCount]->RenderData[0],
+		ScrollBars[ScrollBarCount]->ModelData[0]);
+
+	ModelObj_CreateRectangle(
+		ScrollBars[ScrollBarCount]->ModelData[1],
+		20.0f, Height - 40.0f);
+	RenderObj_CreateRenderObject(
+		ScrollBars[ScrollBarCount]->RenderData[1],
+		ScrollBars[ScrollBarCount]->ModelData[1]);
+
+	ModelObj_CreateRectangle(
+		ScrollBars[ScrollBarCount]->ModelData[2],
+		20.0f, 60.0f);
+	RenderObj_CreateRenderObject(
+		ScrollBars[ScrollBarCount]->RenderData[2],
+		ScrollBars[ScrollBarCount]->ModelData[2]);
+
+	ScrollBarPosition->z = 0.9f;
+	*ScrollBars[ScrollBarCount]->ModelMatrix[0] =
+		Math_TranslateMatrix(
+			ScrollBars[ScrollBarCount]->ModelMatrix[0],
+			ScrollBarPosition);
+	Collision_FillObject(
+		ScrollBars[ScrollBarCount]->Collision[0],
+		20.0f, 20.0f, 0.0f, ScrollBarPosition);
+	ScrollBars[ScrollBarCount]->
+		Collision[0]->CollisionCode = 0;
+
+	ScrollBarPosition->y += 20.0f;
+	ScrollBarPosition->z = 0.8f;
+	*ScrollBars[ScrollBarCount]->ModelMatrix[1] =
+		Math_TranslateMatrix(
+			ScrollBars[ScrollBarCount]->ModelMatrix[1],
+			ScrollBarPosition);
+	Collision_FillObject(
+		ScrollBars[ScrollBarCount]->Collision[1],
+		20.0f, Height - 40.0f, 0.0f, ScrollBarPosition);
+	ScrollBars[ScrollBarCount]->
+		Collision[1]->CollisionCode = 0;
+
+	ScrollBarPosition->y += Height - 80.0f;
+	ScrollBarPosition->z = 0.9f;
+	*ScrollBars[ScrollBarCount]->ModelMatrix[2] =
+		Math_TranslateMatrix(
+			ScrollBars[ScrollBarCount]->ModelMatrix[2],
+			ScrollBarPosition);
+	Collision_FillObject(
+		ScrollBars[ScrollBarCount]->Collision[2],
+		20.0f, 60.0f, 0.0f, ScrollBarPosition);
+	ScrollBars[ScrollBarCount]->
+		Collision[2]->CollisionCode = 0;
+
+	ScrollBarPosition->z = 0.9f;
+	ScrollBarPosition->y += 60.0f;
+	*ScrollBars[ScrollBarCount]->ModelMatrix[3] =
+		Math_TranslateMatrix(
+			ScrollBars[ScrollBarCount]->ModelMatrix[3],
+			ScrollBarPosition);
+	Collision_FillObject(
+		ScrollBars[ScrollBarCount]->Collision[0],
+		20.0f, 20.0f, 0.0f, ScrollBarPosition);
+	ScrollBars[ScrollBarCount]->
+		Collision[0]->CollisionCode = 0;
+
+	ScrollBarCount++;
+
+	return(ScrollBarCount - 1);
+}
+
+uint32
+Asset_ScrollBarCollision(uint32 ScrollBarID)
+{
+	if (ScrollBars[ScrollBarCount]->Collision[1])
+	{
+		return 0;
+	}
+}
+
+void
+Asset_DrawScrollBar(uint32 ScrollBarID, int32 ShaderVar)
+{
+	Render_UpdateShaderVariable(ShaderVar, 44,
+		&ScrollBars[ScrollBarID]->ModelMatrix[0]->Rc[0][0],
+		1, 0);
+	Render_Draw(ScrollBars[ScrollBarID]->RenderData[0]);
+
+	Render_UpdateShaderVariable(ShaderVar, 44,
+		&ScrollBars[ScrollBarID]->ModelMatrix[1]->Rc[0][0],
+		1, 0);
+	Render_Draw(ScrollBars[ScrollBarID]->RenderData[1]);
+	
+	Render_UpdateShaderVariable(ShaderVar, 44,
+		&ScrollBars[ScrollBarID]->ModelMatrix[2]->Rc[0][0],
+		1, 0);
+	Render_Draw(ScrollBars[ScrollBarID]->RenderData[2]);
+	
+	Render_UpdateShaderVariable(ShaderVar, 44,
+		&ScrollBars[ScrollBarID]->ModelMatrix[3]->Rc[0][0],
+		1, 0);
+	Render_Draw(ScrollBars[ScrollBarID]->RenderData[0]);
+
+}
+
+void
+Asset_DeleteScrollBar(uint32 ScrollBarID)
+{
+	for (uint8 Index = 0;
+		Index < 3;
+		Index++)
+	{
+		delete ScrollBars[ScrollBarID]->ModelData[Index];
+		delete ScrollBars[ScrollBarID]->RenderData[Index];
+		delete ScrollBars[ScrollBarID]->Collision[Index];
+		delete ScrollBars[ScrollBarID]->ModelMatrix[Index];
+	}
+	delete ScrollBars[ScrollBarID]->ModelMatrix[3];
+	delete ScrollBars[ScrollBarID];
+	ScrollBars[ScrollBarID] = 0;
 }

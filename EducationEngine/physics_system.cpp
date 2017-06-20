@@ -24,7 +24,7 @@ Phys_CalculatePosition(PhysicsObject* PhysObject)
 		SecondsPerFrame + PhysObject->Velocity;
 
 	*PhysObject->ModelMatrix = Math_TranslateMatrix(
-		Math_IdentityMatrix(), PhysObject->Position);
+		&Math_IdentityMatrix(), &PhysObject->Position);
 }
 
 void
@@ -58,7 +58,7 @@ Phys_BounceBack(PhysicsObject* PhysObject, v3* CollisionNormal)
 		PhysObject->Position;
 
 	*PhysObject->ModelMatrix = Math_TranslateMatrix(
-		Math_IdentityMatrix(), PhysObject->Position);
+		&Math_IdentityMatrix(), &PhysObject->Position);
 }
 
 void
@@ -78,7 +78,7 @@ Phys_WallSlide(PhysicsObject* PhysObject, v3* CollisionNormal)
 		PhysObject->Position;
 
 	*PhysObject->ModelMatrix = Math_TranslateMatrix(
-		Math_IdentityMatrix(), PhysObject->Position);
+		&Math_IdentityMatrix(), &PhysObject->Position);
 }
 
 void 
@@ -86,5 +86,5 @@ Phys_StopObject(PhysicsObject* PhysObject)
 {
 	PhysObject->Position = PhysObject->PrevPosition;
 	*PhysObject->ModelMatrix = Math_TranslateMatrix(
-		Math_IdentityMatrix(), PhysObject->Position);
+		&Math_IdentityMatrix(), &PhysObject->Position);
 }

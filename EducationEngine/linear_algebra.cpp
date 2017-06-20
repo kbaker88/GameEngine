@@ -131,13 +131,13 @@ Math_OrthographicMarix(float Left, float Right, float Bottom, float Top,
 }
 
 m4
-Math_TranslateMatrix(m4 &Matrix, v3 &Vector)
+Math_TranslateMatrix(m4 *Matrix, v3 *Vector)
 {
-	m4 Result = Matrix;
+	m4 Result = *Matrix;
 
-	Result.Rc[3][0] += Vector.Arr[0];
-	Result.Rc[3][1] += Vector.Arr[1];
-	Result.Rc[3][2] += Vector.Arr[2];
+	Result.Rc[3][0] += Vector->Arr[0];
+	Result.Rc[3][1] += Vector->Arr[1];
+	Result.Rc[3][2] += Vector->Arr[2];
 
 	return Result;
 }

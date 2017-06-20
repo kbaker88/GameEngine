@@ -90,8 +90,8 @@ Text_Draw(Text_Object* TextObj, uint32 ShaderID)
 	{
 		m4 ModelMatrix = Math_ScaleMatrix(Math_IdentityMatrix(),
 			v3(TextObj->XScale, TextObj->YScale, 1.0f));
-		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
-			TextObj->Position);
+		ModelMatrix = Math_TranslateMatrix(&ModelMatrix,
+			&TextObj->Position);
 
 		float Width = 0;
 		uint32 ItrLength = TextObj->Itr;
@@ -107,8 +107,8 @@ Text_Draw(Text_Object* TextObj, uint32 ShaderID)
 			Width = Text_SpacingWidth(TextObj->Font, 
 				TextObj->Buffer[i], TextObj->Buffer[i + 1]);
 
-			ModelMatrix = Math_TranslateMatrix(ModelMatrix,
-				v3(Width * TextObj->XScale, 0.0f, 0.0f));
+			ModelMatrix = Math_TranslateMatrix(&ModelMatrix,
+				&v3(Width * TextObj->XScale, 0.0f, 0.0f));
 		}
 	}
 	else
@@ -123,7 +123,7 @@ Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
 {
 	m4 ModelMatrix = Math_ScaleMatrix(Math_IdentityMatrix(),
 		v3(Scale, Scale, 1.0f));
-	ModelMatrix = Math_TranslateMatrix(ModelMatrix, *Position);
+	ModelMatrix = Math_TranslateMatrix(&ModelMatrix, Position);
 
 	float Width = 0;
 	for (uint32 i = 0; i < BufferLength; i++)
@@ -134,8 +134,8 @@ Text_DrawConsole(v3* Position, float Scale, uint32 ShaderID,
 		Width = Text_SpacingWidth(Font, ConsoleBuffer[i], 
 			ConsoleBuffer[i + 1]);
 
-		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
-			v3(Width * Scale, 0.0f, 0.0f));
+		ModelMatrix = Math_TranslateMatrix(&ModelMatrix,
+			&v3(Width * Scale, 0.0f, 0.0f));
 	}
 }
 
@@ -144,7 +144,7 @@ Text_DrawCharLine(string &Text, v3 &Position)
 {
 	m4 ModelMatrix = Math_ScaleMatrix(Math_IdentityMatrix(),
 		v3(TextScale, TextScale, 0.0f));
-	ModelMatrix = Math_TranslateMatrix(ModelMatrix, Position);
+	ModelMatrix = Math_TranslateMatrix(&ModelMatrix, &Position);
 
 	uint32 TextEndingIndex = Text.Size - 1;
 	float Width = 0;
@@ -161,8 +161,8 @@ Text_DrawCharLine(string &Text, v3 &Position)
 		Width = Text_SpacingWidth(TextFont, Text.CharStr[i] - 32,
 			Text.CharStr[i + 1] - 32);
 
-		ModelMatrix = Math_TranslateMatrix(ModelMatrix,
-			v3(Width * TextScale, 0.0f, 0.0f) );
+		ModelMatrix = Math_TranslateMatrix(&ModelMatrix,
+			&v3(Width * TextScale, 0.0f, 0.0f) );
 	}
 	Render_UpdateShaderVariable(ShaderVarID, 44,
 		&ModelMatrix.Rc[0][0], 1, 0);
@@ -174,8 +174,8 @@ Text_DrawCharLine(string &Text, v3 &Position)
 
 	Width = TextFont->Width[Text.CharStr[TextEndingIndex] - 32] * 0.5f;
 
-	ModelMatrix = Math_TranslateMatrix(ModelMatrix,
-		v3(Width * TextScale, 0.0f, 0.0f));
+	ModelMatrix = Math_TranslateMatrix(&ModelMatrix,
+		&v3(Width * TextScale, 0.0f, 0.0f));
 }
 
 float 

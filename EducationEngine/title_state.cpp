@@ -7,6 +7,7 @@ static uint32 TextureIDs[5];
 static uint32 FontID;
 uint32 AssetID[5];
 
+uint32 ScrollBarID = 0;
 // TODO: Create asset control for shaders
 uint32 ShaderVarArray1[5];
 uint32 ShaderVarArray2[5];
@@ -47,13 +48,13 @@ Title_Initialize(ProgramState* State)
 
 	window_properties WindowDimensions =
 		Render_GetWindowProperties();
-	float HalfScreenWidth = (float)WindowDimensions.Width * 0.5f;
-	float HalfScreenHeight = (float)WindowDimensions.Height * 0.5f;
 
 	Camera_SetDefaultOrtho(&State->CameraArray[0],
 		(float)WindowDimensions.Width,
 		(float)WindowDimensions.Height,
-		&v3(-HalfScreenWidth, -HalfScreenHeight, 1.0f));
+		&v3(-(float)WindowDimensions.Width * 0.5f,
+			-(float)WindowDimensions.Height * 0.5f,
+			1.0f));
 
 	Texture2D* Textures[3];
 
@@ -99,6 +100,8 @@ Title_Initialize(ProgramState* State)
 	ShaderVarArray2[4] =
 		Render_GetShaderVariable(State->ShaderHandles[1],
 			"TextColor");
+
+	ScrollBarID = Asset_CreateScrollBar(&v3(200.0f, -30.0f, 0.0f), 20.0f, 300.0f);
 }
 
 void 
@@ -121,8 +124,8 @@ Title_Draw(ProgramState* State)
 		m4 ModelMatrix = *Asset_GetModelMatrix(AssetID[0]);
 		ModelMatrix = Math_IdentityMatrix();
 		*Asset_GetModelMatrix(AssetID[0]) =
-			Math_TranslateMatrix(ModelMatrix,
-				v3(0.0f, Index * -42.0f, 0.0f));
+			Math_TranslateMatrix(&ModelMatrix,
+				&v3(0.0f, Index * -42.0f, 0.0f));
 
 		Asset_GetCollisionObj(AssetID[0])->Position =
 			v3(0.0f, Index * -42.0f, 0.0f);
@@ -151,12 +154,14 @@ Title_Draw(ProgramState* State)
 
 	m4 ModelMatrix = *Asset_GetModelMatrix(AssetID[1]);
 	ModelMatrix = Math_IdentityMatrix();
-	ModelMatrix = Math_TranslateMatrix(ModelMatrix, v3(-200.0f,
+	ModelMatrix = Math_TranslateMatrix(&ModelMatrix, &v3(-200.0f,
 		0.0f, 0.0f));
 
 	Render_UpdateShaderVariable(ShaderVarArray1[0], 44,
 		&ModelMatrix.Rc[0][0], 1, 0);
 	Render_Draw(Asset_GetRenderObj(AssetID[1]));
+
+	Asset_DrawScrollBar(ScrollBarID, ShaderVarArray1[0]);
 
 	if (State->Status == -1)
 	{
@@ -201,6 +206,7 @@ Title_Clean(ProgramState* State)
 	Asset_DeleteFont(FontID);
 
 	Asset_DeleteObj(AssetID[0]);
+	Asset_DeleteScrollBar(ScrollBarID);
 
 	Platform_UpdateMouseState(0);
 	Render_ClearCurrentShaderProgram(); 

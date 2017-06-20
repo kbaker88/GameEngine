@@ -181,7 +181,7 @@ Game_Draw(ProgramState* State)
 
 	// NOTE: Box
 	uint32 Index = 0;
-	ModelMatrix = Math_TranslateMatrix(ModelMatrix, Position);
+	ModelMatrix = Math_TranslateMatrix(&ModelMatrix, &Position);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		&ModelMatrix.Rc[0][0], 1, 0);
 	Render_BindTexture(TextureID[Index]);
@@ -209,14 +209,14 @@ Game_Draw(ProgramState* State)
 
 		BoxAPos = State->PhysicsObj[0].Position;
 		BoxA = Math_IdentityMatrix();
-		BoxA = Math_TranslateMatrix(BoxA, BoxAPos);
+		BoxA = Math_TranslateMatrix(&BoxA, &BoxAPos);
 		Render_UpdateShaderVariable(
 			State->GPUShaderVarArray[0], 44, &BoxA.Rc[0][0], 1, 0);
 		Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index]);
 
 		BoxBPos = State->PhysicsObj[1].Position;
 		BoxB = Math_IdentityMatrix();
-		BoxB = Math_TranslateMatrix(BoxB, BoxBPos);
+		BoxB = Math_TranslateMatrix(&BoxB, &BoxBPos);
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 			&BoxB.Rc[0][0], 1, 0);
 		Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index]);
@@ -226,7 +226,7 @@ Game_Draw(ProgramState* State)
 		//Phys_CalculatePosition(&State->PhysicsObj[0]);
 		BoxAPos = State->PhysicsObj[0].Position;
 		BoxA = Math_IdentityMatrix();
-		BoxA = Math_TranslateMatrix(BoxA, BoxAPos);
+		BoxA = Math_TranslateMatrix(&BoxA, &BoxAPos);
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 			&BoxA.Rc[0][0], 1, 0);
 		Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index]);
@@ -234,7 +234,7 @@ Game_Draw(ProgramState* State)
 		//Phys_CalculatePosition(&State->PhysicsObj[1]);
 		BoxBPos = State->PhysicsObj[1].Position;
 		BoxB = Math_IdentityMatrix();
-		BoxB = Math_TranslateMatrix(BoxB, BoxBPos);
+		BoxB = Math_TranslateMatrix(&BoxB, &BoxBPos);
 		Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 			&BoxB.Rc[0][0], 1, 0);
 		Render_Draw(State->RenderObjBlocks[0].BlockObjects[Index]);
@@ -264,7 +264,7 @@ Game_Draw(ProgramState* State)
 			&PlayerPhysObj.Position);
 	}
 
-	ModelMatrix = Math_TranslateMatrix(ModelMatrix, HeightMapPos);
+	ModelMatrix = Math_TranslateMatrix(&ModelMatrix, &HeightMapPos);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[4], 0.0f);
 	Render_UpdateShaderVariable(State->GPUShaderVarArray[0], 44,
 		&ModelMatrix.Rc[0][0], 1, 0);
@@ -313,7 +313,7 @@ Game_Clean(ProgramState* State)
 	Asset_Delete(TextureIDs[1]);
 	Asset_Delete(TextureIDs[2]);
 	Asset_Delete(TextureIDs[3]);
-
+	
 	Render_ClearCurrentShaderProgram();
 	Render_DeleteShaderProgram(State->ShaderHandles[0]);
 	Render_DeleteShaderProgram(State->ShaderHandles[1]);

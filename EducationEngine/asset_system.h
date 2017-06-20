@@ -18,6 +18,15 @@ struct AssetLink
 	uint32* ID;
 };
 
+struct DropMenu
+{
+	//AssetLink*;
+	Model** Models;
+	RenderObject** RenderObj;
+	CollisionObject** CollisionObj;
+	m4* ModelMatrix;
+};
+
 // TODO: Add Support for UNICODE
 uint32
 Asset_LoadFont(char* FontName, char* FilePath);
@@ -51,7 +60,14 @@ Asset_DeleteObj(uint32 AssetID);
 
 // NOTE: Test Functions
 uint32
-Asset_CreateDropBox(uint32 Width, uint32 LineHeight,
+Asset_CreateDropMenu(float Width, float LineHeight,
 	v3* Position);
+uint32
+Asset_CreateScrollBar(v3* ScrollBarPosition, float Width,
+	float Height);
+void
+Asset_DrawScrollBar(uint32 ScrollBarID, int32 ShaderVar);
+void
+Asset_DeleteScrollBar(uint32 ScrollBarID);
 
 #endif

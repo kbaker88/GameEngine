@@ -510,7 +510,7 @@ m4
 Math_OrthographicMarix(float Left, float Right, float Bottom,
 	float Top, float Near, float Far);
 m4
-Math_TranslateMatrix(m4 &Matrix, v3 &Vector);
+Math_TranslateMatrix(m4 *Matrix, v3 *Vector);
 m4 
 Math_ScaleMatrix(m4 &Matrix, v3 &Vector);
 m4
