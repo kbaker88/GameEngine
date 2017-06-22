@@ -1,6 +1,8 @@
 #include "asset_system.h"
 
 // NOTE: Temporary variables
+static Camera* Cameras[8];
+
 static Texture2D* Texture[512];
 static uint32 TextureCount = 0;
 
@@ -423,11 +425,7 @@ Asset_CreateScrollBar(v3* ScrollBarPosition, float Width,
 		Math_TranslateMatrix(
 			ScrollBars[ScrollBarCount]->ModelMatrix[2],
 			ScrollBarPosition);
-	Collision_FillObject(
-		ScrollBars[ScrollBarCount]->Collision[2],
-		20.0f, 60.0f, 0.0f, ScrollBarPosition);
-	ScrollBars[ScrollBarCount]->
-		Collision[2]->CollisionCode = 0;
+	
 
 	ScrollBarPosition->z = 0.9f;
 	ScrollBarPosition->y += 60.0f;
@@ -436,23 +434,19 @@ Asset_CreateScrollBar(v3* ScrollBarPosition, float Width,
 			ScrollBars[ScrollBarCount]->ModelMatrix[3],
 			ScrollBarPosition);
 	Collision_FillObject(
-		ScrollBars[ScrollBarCount]->Collision[0],
+		ScrollBars[ScrollBarCount]->Collision[2],
 		20.0f, 20.0f, 0.0f, ScrollBarPosition);
 	ScrollBars[ScrollBarCount]->
 		Collision[0]->CollisionCode = 0;
 
+	Collision_CreateScrollBarCollision(ScrollBarCount,
+		ScrollBars[ScrollBarCount]->Collision[0], 
+		ScrollBars[ScrollBarCount]->Collision[1], 
+		ScrollBars[ScrollBarCount]->Collision[2]);
+
 	ScrollBarCount++;
 
 	return(ScrollBarCount - 1);
-}
-
-uint32
-Asset_ScrollBarCollision(uint32 ScrollBarID)
-{
-	if (ScrollBars[ScrollBarCount]->Collision[1])
-	{
-		return 0;
-	}
 }
 
 void

@@ -3,12 +3,13 @@
 static Cursor_State CursorState;
 
 void 
-Input_UpdateMouseState(ProgramState* State, Camera* PlayerCamera)
+Input_UpdateMouseState(Camera* PlayerCamera)
 {
 	//TODO: This MousePosition might be the cause of error in mouse picking
 	//TODO: Maybe only do the mouse position calculation once.
-	Platform_GetCursorPosition(&State->CursorPosition.x,
-		&State->CursorPosition.y);
+	v2 CursorPosition;
+	Platform_GetCursorPosition(&CursorPosition.x,
+		&CursorPosition.y);
 
 	window_properties WindowDimensions =
 		Render_GetWindowProperties();
@@ -17,9 +18,9 @@ Input_UpdateMouseState(ProgramState* State, Camera* PlayerCamera)
 	float WindowHalfHeight =
 		(float)WindowDimensions.Height * 0.5f;
 	CursorState.Position.x =
-		State->CursorPosition.x - WindowHalfWidth;
+		CursorPosition.x - WindowHalfWidth;
 	CursorState.Position.y =
-		WindowHalfHeight - State->CursorPosition.y;
+		WindowHalfHeight - CursorPosition.y;
 
 	if (CursorState.Position.x > WindowHalfWidth)
 	{
@@ -67,7 +68,7 @@ Input_UpdateMouseState(ProgramState* State, Camera* PlayerCamera)
 }
 
 void 
-Input_UpdateKeyStates(ProgramState* State, Camera* PlayerCamera, 
+Input_UpdateKeyStates(Camera* PlayerCamera, 
 	v3* Direction)
 {
 	float* YawPtr = &PlayerCamera->Yaw;

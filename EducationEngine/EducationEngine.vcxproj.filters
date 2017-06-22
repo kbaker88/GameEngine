@@ -138,9 +138,6 @@
     <ClCompile Include="text_system.cpp">
       <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
-    <ClCompile Include="state_system.cpp">
-      <Filter>Source Files\engine\systems</Filter>
-    </ClCompile>
     <ClCompile Include="camera_system.cpp">
       <Filter>Source Files\engine\systems</Filter>
     </ClCompile>
@@ -219,9 +216,6 @@
       <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
     <ClInclude Include="text_system.h">
-      <Filter>Header Files\engine\systems</Filter>
-    </ClInclude>
-    <ClInclude Include="state_system.h">
       <Filter>Header Files\engine\systems</Filter>
     </ClInclude>
     <ClInclude Include="camera_system.h">

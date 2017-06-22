@@ -3,6 +3,13 @@
 
 #include "camera_system.h"
 
+// TODO: Move this
+struct ProgramState
+{
+	int32 Status;
+	uint32 StateID;
+};
+
 struct Font
 {
 	// NOTE: Must be NULL terminated.

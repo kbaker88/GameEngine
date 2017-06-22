@@ -1,5 +1,12 @@
 #include "collision_system.h"
 
+struct ScrollBarCollisionObject
+{
+	CollisionObject* CollisionObjs[3];
+};
+
+ScrollBarCollisionObject ScrollBarCollisionObjs[8];
+
 void
 Collision_FillObject(CollisionObject* CollObj, float Width,
 	float Height, float Depth,  v3* Position)
@@ -49,6 +56,54 @@ Collision_ButtonClick(v2* MousePosition,
 	return CollObj->CollisionCode;
 }
 
+void
+Collision_CreateScrollBarCollision(uint32 ScrollBarID,
+	CollisionObject* UpArrow, CollisionObject* Slider,
+	CollisionObject* DownArrow)
+{
+	ScrollBarCollisionObjs[ScrollBarID].CollisionObjs[0] =
+		UpArrow;
+	ScrollBarCollisionObjs[ScrollBarID].CollisionObjs[1] =
+		Slider;
+	ScrollBarCollisionObjs[ScrollBarID].CollisionObjs[2] =
+		DownArrow;
+}
+
+uint32
+Collision_ScrollBar(uint32 ScrollBarID, v2* MousePos)
+{
+	if (Collision_ButtonClick(MousePos,
+		ScrollBarCollisionObjs[ScrollBarID].CollisionObjs[0]))
+	{
+		return 1;
+	}
+	else if (Collision_ButtonClick(MousePos,
+		ScrollBarCollisionObjs[ScrollBarID].CollisionObjs[1]))
+	{
+		return 0;
+	}
+	else if (Collision_ButtonClick(MousePos,
+		ScrollBarCollisionObjs[ScrollBarID].CollisionObjs[2]))
+	{
+		return 2;
+	}
+}
+
+
+uint32
+Collision_AABB(AABB* CollideA, AABB* CollideB)
+{
+	if ((CollideA->Position.x <= CollideB->Position.x + CollideB->Width &&
+		CollideA->Position.x + CollideA->Width >= CollideB->Position.x) &&
+		(CollideA->Position.y <= CollideB->Position.y + CollideB->Height &&
+		CollideA->Position.y + CollideA->Height >= CollideB->Position.y) &&
+		(CollideA->Position.z <= CollideB->Position.z + CollideB->Depth &&
+		CollideA->Position.z + CollideA->Depth >= CollideB->Position.z))
+	{
+		return 1;
+	}
+	return 0;
+}
 // NOTE: Finds the smallest x,z vertice point in a quad that the
 // colliding object is in, determines which of the two triangles
 // of the quad that the object lies using (x1 - x0)(y2 - y0) - 

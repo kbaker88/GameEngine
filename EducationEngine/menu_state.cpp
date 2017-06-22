@@ -2,21 +2,16 @@
 
 // TODO: Temporary, delete this
 static uint32 TextureIDs[5];
+static uint32 ShaderVars[5];
+static uint32 ShaderHandles[2];
+
+static Camera MainCamera;
+static v2 CursorPos;
 
 void
 Menu_Initialize(ProgramState* State)
 {
 	State->StateID = 2;
-
-	State_CreateRenderObjectBlocks(State, 1, 256);
-	State_CreateModelObjectBlocks(State, 1, 256);
-	State_CreateCollisionObjects(State, 12);
-
-	State_CreateTextObjs(State,
-		TEXT_OBJECTS_PER_PROGSTATE);
-	State_CreateCameras(State, 1);
-	State_CreateShaderVariables(State, 5);
-	State_CreateShaderHandles(State, 2);
 
 	State->Status = 1;
 
@@ -25,10 +20,22 @@ Menu_Initialize(ProgramState* State)
 	float HalfScreenWidth = 0.5f * (float)WindowDimensions.Width;
 	float HalfScreenHeight = 0.5f * (float)WindowDimensions.Height;
 
-	Camera_SetDefaultOrtho(&State->CameraArray[0],
+	Camera_SetDefaultOrtho(&MainCamera,
 		(float)WindowDimensions.Width, 
 		(float)WindowDimensions.Height,
 		&v3(-HalfScreenWidth, -HalfScreenHeight, 1.0f));
+
+	Render_BindShaders(ShaderHandles[0]);
+	ShaderVars[0] =
+		Render_GetShaderVariable(ShaderHandles[0], "model");
+	ShaderVars[1] =
+		Render_GetShaderVariable(ShaderHandles[0], "view");
+	ShaderVars[2] =
+		Render_GetShaderVariable(ShaderHandles[0], "projection");
+	ShaderVars[3] =
+		Render_GetShaderVariable(ShaderHandles[0], "myTexture");
+	ShaderVars[4] =
+		Render_GetShaderVariable(ShaderHandles[0], "mouseOver");
 }
 
 void 
@@ -36,26 +43,16 @@ Menu_Draw(ProgramState* State)
 {
 	Render_ClearScreen(&v4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	Render_BindShaders(State->ShaderHandles[0]);
-	State->GPUShaderVarArray[0] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "model");
-	State->GPUShaderVarArray[1] = 
-		Render_GetShaderVariable(State->ShaderHandles[0], "view");
-	State->GPUShaderVarArray[2] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
-	State->GPUShaderVarArray[3] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
-	State->GPUShaderVarArray[4] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "mouseOver");
+	Render_BindShaders(ShaderHandles[0]);
 
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[1], 44,
-		(float*)&State->CameraArray[0].ViewMatrix, 1, 0);
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[2], 44,
-		(float*)&State->CameraArray[0].ProjectionMatrix, 1, 0);
-	Render_UpdateShaderVariable(State->GPUShaderVarArray[3], (int32)0);
+	Render_UpdateShaderVariable(ShaderVars[1], 44,
+		(float*)&MainCamera.ViewMatrix, 1, 0);
+	Render_UpdateShaderVariable(ShaderVars[2], 44,
+		(float*)&MainCamera.ProjectionMatrix, 1, 0);
+	Render_UpdateShaderVariable(ShaderVars[3], (int32)0);
 
-	Platform_GetCursorPosition(&State->CursorPosition.x,
-		&State->CursorPosition.y);
+	Platform_GetCursorPosition(&CursorPos.x,
+		&CursorPos.y);
 }
 
 void 
@@ -110,8 +107,8 @@ void
 Menu_Clean(ProgramState* State)
 {
 	Render_ClearCurrentShaderProgram();
-	Render_DeleteShaderProgram(State->ShaderHandles[0]);
-	Render_DeleteShaderProgram(State->ShaderHandles[1]);
+	Render_DeleteShaderProgram(ShaderHandles[0]);
+	Render_DeleteShaderProgram(ShaderHandles[1]);
 }
 
 int64

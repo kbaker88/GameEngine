@@ -11,6 +11,9 @@ uint32 ScrollBarID = 0;
 // TODO: Create asset control for shaders
 uint32 ShaderVarArray1[5];
 uint32 ShaderVarArray2[5];
+uint32 ShaderHandles[2];
+v2 CursorPos;
+Camera MainCamera;
 // ENDNOTE
 
 void 
@@ -29,27 +32,12 @@ Title_Initialize(ProgramState* State)
 	Text_SetFont(FontID);
 	Text_SetFontSize(0.2f);
 
-	State->NumRenderObjBlocks = 1;
-	State->NumModelObjBlocks = 1;
-
-	State_CreateRenderObjectBlocks(State,
-		State->NumRenderObjBlocks, 256);
-	State_CreateModelObjectBlocks(State,
-		State->NumModelObjBlocks, 256);
-	State_CreateCollisionObjects(State, 12);
-	State_CreateTextObjs(State,
-		TEXT_OBJECTS_PER_PROGSTATE);
-	State_CreateCameras(State, 1);
-	State_CreateShaderVariables(State, 5);
-	State_CreateShaderHandles(State, 2);
-	State_CreateTimers(State, 2);
-
 	State->Status = 1;
 
 	window_properties WindowDimensions =
 		Render_GetWindowProperties();
 
-	Camera_SetDefaultOrtho(&State->CameraArray[0],
+	Camera_SetDefaultOrtho(&MainCamera,
 		(float)WindowDimensions.Width,
 		(float)WindowDimensions.Height,
 		&v3(-(float)WindowDimensions.Width * 0.5f,
@@ -67,56 +55,57 @@ Title_Initialize(ProgramState* State)
 	AssetID[0] = Asset_CreateRect(160.0f, 40.0f);
 	AssetID[1] = Asset_CreateRect(200.0f, 60.0f);
 
-	State->ShaderHandles[0] =
+	ShaderHandles[0] =
 		Render_CompileShaders(
 			VertexShader_Title, FragmentShader_Title);
-	State->ShaderHandles[1] =
+	ShaderHandles[1] =
 		Render_CompileShaders(VertexShader_Text,
 			FragmentShader_Text);
 
-	Render_BindShaders(State->ShaderHandles[0]);
+	Render_BindShaders(ShaderHandles[0]);
 	ShaderVarArray1[0] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "model");
+		Render_GetShaderVariable(ShaderHandles[0], "model");
 	ShaderVarArray1[1] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "view");
+		Render_GetShaderVariable(ShaderHandles[0], "view");
 	ShaderVarArray1[2] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "projection");
+		Render_GetShaderVariable(ShaderHandles[0], "projection");
 	ShaderVarArray1[3] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "myTexture");
+		Render_GetShaderVariable(ShaderHandles[0], "myTexture");
 	ShaderVarArray1[4] =
-		Render_GetShaderVariable(State->ShaderHandles[0], "HoverColor");
+		Render_GetShaderVariable(ShaderHandles[0], "HoverColor");
 
-	Render_BindShaders(State->ShaderHandles[1]);
+	Render_BindShaders(ShaderHandles[1]);
 	ShaderVarArray2[0] =
-		Render_GetShaderVariable(State->ShaderHandles[1], "model");
+		Render_GetShaderVariable(ShaderHandles[1], "model");
 	ShaderVarArray2[1] =
-		Render_GetShaderVariable(State->ShaderHandles[1], "view");
+		Render_GetShaderVariable(ShaderHandles[1], "view");
 	ShaderVarArray2[2] =
-		Render_GetShaderVariable(State->ShaderHandles[1],
+		Render_GetShaderVariable(ShaderHandles[1],
 			"projection");
 	ShaderVarArray2[3] =
-		Render_GetShaderVariable(State->ShaderHandles[1],
+		Render_GetShaderVariable(ShaderHandles[1],
 			"myTexture");
 	ShaderVarArray2[4] =
-		Render_GetShaderVariable(State->ShaderHandles[1],
+		Render_GetShaderVariable(ShaderHandles[1],
 			"TextColor");
 
-	ScrollBarID = Asset_CreateScrollBar(&v3(200.0f, -30.0f, 0.0f), 20.0f, 300.0f);
+	ScrollBarID = Asset_CreateScrollBar(&v3(200.0f, -30.0f, 0.0f), 
+		20.0f, 300.0f);
 }
 
 void 
 Title_Draw(ProgramState* State)
 {
 	Render_ClearScreen(&v4(1.0f, 1.0f, 1.0f, 1.0f));
-	Render_BindShaders(State->ShaderHandles[0]);
+	Render_BindShaders(ShaderHandles[0]);
 
-	Platform_GetCursorPosition(&State->CursorPosition.x,
-		&State->CursorPosition.y);
+	Platform_GetCursorPosition(&CursorPos.x,
+		&CursorPos.y);
 
 	Render_UpdateShaderVariable(ShaderVarArray1[1], 44,
-		(float*)&State->CameraArray[0].ViewMatrix, 1, 0);
+		(float*)&MainCamera.ViewMatrix, 1, 0);
 	Render_UpdateShaderVariable(ShaderVarArray1[2], 44,
-		(float*)&State->CameraArray[0].ProjectionMatrix, 1, 0);
+		(float*)&MainCamera.ProjectionMatrix, 1, 0);
 	Render_UpdateShaderVariable(ShaderVarArray1[3], 0);
 
 	for (uint32 Index = 0; Index < 3; Index++)
@@ -130,7 +119,7 @@ Title_Draw(ProgramState* State)
 		Asset_GetCollisionObj(AssetID[0])->Position =
 			v3(0.0f, Index * -42.0f, 0.0f);
 		uint32 CollisionResult =
-			Collision_ButtonClick(&State->CursorPosition,
+			Collision_ButtonClick(&CursorPos,
 			Asset_GetCollisionObj(AssetID[0]));
 
 		float ShaderVarMultiplier = (1 - CollisionResult) * 1.0f;
@@ -169,12 +158,12 @@ Title_Draw(ProgramState* State)
 	}
 	else
 	{
-		Render_BindShaders(State->ShaderHandles[1]);
+		Render_BindShaders(ShaderHandles[1]);
 		
 		Render_UpdateShaderVariable(ShaderVarArray2[1], 44,
-			(float*)&State->CameraArray[0].ViewMatrix, 1, 0);
+			(float*)&MainCamera.ViewMatrix, 1, 0);
 		Render_UpdateShaderVariable(ShaderVarArray2[2], 44,
-			(float*)&State->CameraArray[0].ProjectionMatrix, 1, 0);
+			(float*)&MainCamera.ProjectionMatrix, 1, 0);
 		Render_UpdateShaderVariable(ShaderVarArray2[3], 0);
 		Render_UpdateShaderVariable(ShaderVarArray2[4],
 			0.0f, 1.0f, 0.0f);
@@ -210,13 +199,8 @@ Title_Clean(ProgramState* State)
 
 	Platform_UpdateMouseState(0);
 	Render_ClearCurrentShaderProgram(); 
-	Render_DeleteShaderProgram(State->ShaderHandles[0]);
-	Render_DeleteShaderProgram(State->ShaderHandles[1]);
-
-	ModelObj_DeleteBlock(&State->ModelObjBlocks[0]);
-	RenderObj_DeleteBlock(&State->RenderObjBlocks[0]);
-	State->NumModelObjBlocks = 0;
-	State->NumRenderObjBlocks = 0;
+	Render_DeleteShaderProgram(ShaderHandles[0]);
+	Render_DeleteShaderProgram(ShaderHandles[1]);
 }
 
 int64

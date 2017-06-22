@@ -1,4 +1,10 @@
-﻿  asset_system.cpp
-c:\users\kevin\documents\github\gameengine\educationengine\asset_system.cpp(456): warning C4715: 'Asset_ScrollBarCollision': not all control paths return a value
+﻿  Skipping... (no relevant changes detected)
+  win32_layer.cpp
+  title_state.cpp
+  module_math.cpp
+  menu_state.cpp
+  input_state.cpp
+  game_state.cpp
+  game_layer.cpp
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.exe
   EducationEngine.vcxproj -> C:\Users\Kevin\Documents\GitHub\GameEngine\x64\Debug\EducationEngine.pdb (Partial PDB)

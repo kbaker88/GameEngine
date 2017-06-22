@@ -145,7 +145,6 @@
     <ClCompile Include="menu_state.cpp" />
     <ClCompile Include="opengl_layer.cpp" />
     <ClCompile Include="png.cpp" />
-    <ClCompile Include="state_system.cpp" />
     <ClCompile Include="text_system.cpp" />
     <ClCompile Include="title_state.cpp" />
     <ClCompile Include="utility.cpp" />
@@ -177,7 +176,6 @@
     <ClInclude Include="png.h" />
     <ClInclude Include="render_layer.h" />
     <ClInclude Include="shaders.h" />
-    <ClInclude Include="state_system.h" />
     <ClInclude Include="text_system.h" />
     <ClInclude Include="title_state.h" />
     <ClInclude Include="utility.h" />

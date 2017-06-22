@@ -18,6 +18,14 @@ struct CollisionObject
 	int32 CollisionCode;
 };
 
+struct AABB
+{
+	float Width;
+	float Height;
+	float Depth;
+	v3 Position;
+};
+
 struct SupportPoint
 {
 	SupportPoint() : MinkowskiPoint(0.0f, 0.0f, 0.0f),
@@ -67,26 +75,29 @@ void
 Collision_FillObject(CollisionObject* CollObj,
 	float Width, float Height, float Depth,
 	v3* Position);
-
-float
-Collision_PointDistanceFromPlane(v3* Point,
-	v3* PointOnPlane, v3* Normal);
-
 int
 Collision_ButtonClick(v2* MousePosition, 
 	CollisionObject* CollObj);
-
+void
+Collision_CreateScrollBarCollision(uint32 ScrollBarID,
+	CollisionObject* UpArrow, CollisionObject* Slider,
+	CollisionObject* DownArrow);
+uint32
+Collision_ScrollBar(uint32 ScrollBar, v2* MousePos);
+float
+Collision_PointDistanceFromPlane(v3* Point,
+	v3* PointOnPlane, v3* Normal);
+uint32
+Collision_AABB(AABB* CollideA, AABB* CollideB);
 // TODO: Change to OBB instead of just a point for other collide obj
 // TODO: Take into account rotations.
 // TODO: Find a better way to pass the Heightmap normals
 bool
 Collision_HeightMap(CollisionObject* HeightMapCollObj,
 	float* Normals, CollisionObject* OtherCollObj);
-
 SupportPoint
 Collision_MinkowskiSupport(CollisionObject* ObjectA,
 	CollisionObject* ObjectB, v3 *Direction);
-
 bool
 Collision_GJK(CollisionObject* ObjectA,
 	CollisionObject* ObjectB);
